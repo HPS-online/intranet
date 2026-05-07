@@ -696,6 +696,139 @@
       outline: none;
     }
 
+    /* ── NOTES / ACTIVITY THREAD ── */
+    .notes-section {
+      margin-top: 24px;
+      border-top: 1px solid var(--gray2);
+      padding-top: 20px;
+    }
+
+    .notes-section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--navy);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .activity-thread {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      margin-bottom: 20px;
+      position: relative;
+    }
+
+    .activity-item {
+      display: flex;
+      gap: 12px;
+      padding-bottom: 16px;
+      position: relative;
+    }
+
+    .activity-item:last-child { padding-bottom: 0; }
+
+    .activity-item:not(:last-child)::before {
+      content: '';
+      position: absolute;
+      left: 15px;
+      top: 32px;
+      bottom: 0;
+      width: 2px;
+      background: var(--gray2);
+    }
+
+    .activity-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 600;
+      flex-shrink: 0;
+      position: relative;
+      z-index: 1;
+    }
+
+    .activity-avatar.note    { background: var(--gold-light); color: var(--gold); border: 2px solid var(--gold); }
+    .activity-avatar.status  { background: #ede9fe; color: #5b21b6; border: 2px solid #c4b5fd; }
+    .activity-avatar.created { background: #d1fae5; color: #065f46; border: 2px solid #6ee7b7; }
+
+    .activity-content {
+      flex: 1;
+      background: var(--gray1);
+      border-radius: 10px;
+      padding: 12px 14px;
+    }
+
+    .activity-content.note-content {
+      background: #fffbeb;
+      border: 1px solid #fde68a;
+    }
+
+    .activity-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 5px;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+
+    .activity-author {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--navy);
+    }
+
+    .activity-time {
+      font-size: 11px;
+      color: var(--subtext);
+    }
+
+    .activity-text {
+      font-size: 13px;
+      color: var(--text);
+      line-height: 1.5;
+    }
+
+    .activity-text.status-change {
+      color: var(--subtext);
+      font-style: italic;
+    }
+
+    .note-input-area {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .note-input-area textarea {
+      width: 100%;
+      padding: 11px 14px;
+      border: 1.5px solid var(--gray2);
+      border-radius: var(--radius);
+      font-family: inherit;
+      font-size: 13px;
+      color: var(--text);
+      resize: vertical;
+      min-height: 80px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .note-input-area textarea:focus { border-color: var(--gold); }
+
+    .note-input-footer {
+      display: flex;
+      justify-content: flex-end;
+    }
+
     /* ── NEW TICKET FORM ── */
     .new-ticket-form { display: flex; flex-direction: column; gap: 18px; }
 
@@ -1221,6 +1354,7 @@ const firebaseConfig = {
   window.generateReport   = generateReport;
   window.openTicketDetail = openTicketDetail;
   window.updateTicketStatus = updateTicketStatus;
+  window.addNote = addNote;
 
   // ══════════════════════════════════════
   // AUTH STATE
@@ -1574,6 +1708,45 @@ const firebaseConfig = {
     const body = document.getElementById('td-body');
     const dateStr = t.createdAt?.toDate ? formatDate(t.createdAt.toDate()) : '—';
 
+    // Build activity thread — merge notes + status history
+    const notes = (t.notes || []).map(n => ({ ...n, type: 'note' }));
+    const history = (t.statusHistory || []).map(h => ({ ...h, type: 'status' }));
+    const allActivity = [...notes, ...history]
+      .sort((a, b) => new Date(a.changedAt || a.addedAt) - new Date(b.changedAt || b.addedAt));
+
+    const activityHTML = allActivity.length === 0
+      ? `<p style="font-size:13px;color:var(--subtext);font-style:italic;padding:8px 0">No activity yet.</p>`
+      : allActivity.map(item => {
+          if (item.type === 'note') {
+            const initials = (item.addedBy || '?').split(' ').map(w => w[0]).join('').slice(0,2).toUpperCase();
+            return `
+              <div class="activity-item">
+                <div class="activity-avatar note">${initials}</div>
+                <div class="activity-content note-content">
+                  <div class="activity-meta">
+                    <span class="activity-author">${escHtml(item.addedBy)}</span>
+                    <span class="activity-time">${formatDate(new Date(item.addedAt))}</span>
+                  </div>
+                  <div class="activity-text">${escHtml(item.text)}</div>
+                </div>
+              </div>`;
+          } else {
+            const initials = (item.changedBy || '?').split(' ').map(w => w[0]).join('').slice(0,2).toUpperCase();
+            const isFirst = item.status === 'New' && allActivity.indexOf(item) === 0;
+            return `
+              <div class="activity-item">
+                <div class="activity-avatar ${isFirst ? 'created' : 'status'}">${isFirst ? '✦' : initials}</div>
+                <div class="activity-content">
+                  <div class="activity-meta">
+                    <span class="activity-author">${isFirst ? 'Ticket Created' : escHtml(item.changedBy)}</span>
+                    <span class="activity-time">${formatDate(new Date(item.changedAt))}</span>
+                  </div>
+                  <div class="activity-text status-change">${isFirst ? 'Ticket lodged by ' + escHtml(item.changedBy) : 'Status changed to <strong>' + escHtml(item.status) + '</strong>'}</div>
+                </div>
+              </div>`;
+          }
+        }).join('');
+
     body.innerHTML = `
       ${t.photoURL ? `<img class="ticket-photo" src="${t.photoURL}" alt="Ticket photo" />` : ''}
       <div class="ticket-detail-grid">
@@ -1607,13 +1780,19 @@ const firebaseConfig = {
         <button class="btn btn-primary btn-sm" onclick="updateTicketStatus('${t.id}')">Update Status</button>
       </div>
 
-      ${(t.statusHistory||[]).length > 1 ? `
-        <p style="font-size:12px;color:var(--subtext);margin-top:16px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px">History</p>
-        ${(t.statusHistory||[]).slice().reverse().map(h => `
-          <div style="font-size:12px;color:var(--subtext);padding:6px 0;border-bottom:1px solid var(--gray1)">
-            <strong style="color:var(--text)">${escHtml(h.status)}</strong> — ${escHtml(h.changedBy)} — ${formatDate(new Date(h.changedAt))}
-          </div>`).join('')}
-      ` : ''}
+      <!-- ACTIVITY THREAD -->
+      <div class="notes-section">
+        <p class="notes-section-title">📋 Activity &amp; Notes</p>
+        <div class="activity-thread" id="activity-thread">
+          ${activityHTML}
+        </div>
+        <div class="note-input-area">
+          <textarea id="note-input" placeholder="Add a progress note — what's been done, who was contacted, what's next…"></textarea>
+          <div class="note-input-footer">
+            <button class="btn btn-gold btn-sm" onclick="addNote('${t.id}')">Add Note</button>
+          </div>
+        </div>
+      </div>
     `;
 
     openModal('ticket-detail-modal');
@@ -1659,6 +1838,42 @@ const firebaseConfig = {
     } catch(e) {
       console.error(e);
       showToast('Error updating status.', 'error');
+    }
+  }
+
+  // ══════════════════════════════════════
+  // ADD NOTE
+  // ══════════════════════════════════════
+  async function addNote(id) {
+    const input = document.getElementById('note-input');
+    const text = input?.value?.trim();
+    if (!text) { showToast('Please type a note first.', ''); return; }
+
+    const t = allTickets.find(x => x.id === id);
+    if (!t) return;
+
+    const newNote = {
+      text,
+      addedBy:    currentUser.displayName || currentUser.email,
+      addedByEmail: currentUser.email,
+      addedAt:    new Date().toISOString()
+    };
+
+    try {
+      const updatedNotes = [...(t.notes || []), newNote];
+      await updateDoc(doc(db, 'tickets', id), {
+        notes: updatedNotes,
+        updatedAt: serverTimestamp()
+      });
+
+      showToast('Note added.', 'success');
+      await loadAllTickets();
+      // Reopen the ticket detail to show updated thread
+      openTicketDetail(id);
+
+    } catch(e) {
+      console.error(e);
+      showToast('Error adding note.', 'error');
     }
   }
 

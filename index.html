@@ -4,14 +4,18 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Highbury Primary — Staff Intranet</title>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
   <style>
     :root {
       --navy:    #1a2744;
-      --navy2:   #223060;
-      --gold:    #f0a500;
-      --gold2:   #ffc93c;
-      --cream:   #f9f6f0;
+      --navy2:   #0f1a30;
+      --gold:    #c9962a;
+      --gold2:   #e8b84b;
+      --gold-light: #f5e6c0;
+      --maroon:  #7b1d2e;
+      --maroon2: #9b2538;
+      --maroon-light: #f5e0e3;
+      --cream:   #faf8f4;
       --white:   #ffffff;
       --gray1:   #f2f4f8;
       --gray2:   #e2e6ef;
@@ -38,7 +42,7 @@
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-      font-family: 'DM Sans', sans-serif;
+      font-family: 'Inter', sans-serif;
       background: var(--cream);
       color: var(--text);
       min-height: 100vh;
@@ -50,48 +54,81 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      background: linear-gradient(135deg, var(--navy) 0%, var(--navy2) 100%);
+      background: linear-gradient(150deg, var(--navy2) 0%, var(--navy) 50%, var(--maroon) 100%);
       padding: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    #auth-screen::before {
+      content: '';
+      position: absolute;
+      top: -100px;
+      right: -100px;
+      width: 400px;
+      height: 400px;
+      border-radius: 50%;
+      background: rgba(201,150,42,0.08);
+      pointer-events: none;
+    }
+
+    #auth-screen::after {
+      content: '';
+      position: absolute;
+      bottom: -80px;
+      left: -80px;
+      width: 300px;
+      height: 300px;
+      border-radius: 50%;
+      background: rgba(123,29,46,0.15);
+      pointer-events: none;
     }
 
     .auth-card {
       background: var(--white);
-      border-radius: 18px;
+      border-radius: 20px;
       padding: 48px 44px;
       width: 100%;
-      max-width: 420px;
-      box-shadow: var(--shadow-lg);
+      max-width: 440px;
+      box-shadow: 0 24px 80px rgba(0,0,0,0.3);
+      position: relative;
+      z-index: 1;
+      border-top: 4px solid var(--gold);
     }
 
     .auth-logo {
       display: flex;
+      flex-direction: column;
       align-items: center;
+      text-align: center;
       gap: 14px;
       margin-bottom: 36px;
+      padding-bottom: 28px;
+      border-bottom: 1px solid var(--gray2);
     }
 
-    .auth-logo-icon {
-      width: 52px;
-      height: 52px;
-      background: var(--navy);
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 24px;
+    .auth-logo-img {
+      width: 90px;
+      height: 90px;
+      object-fit: contain;
     }
 
     .auth-logo-text h1 {
-      font-size: 18px;
-      font-weight: 600;
+      font-family: 'Playfair Display', serif;
+      font-size: 22px;
+      font-weight: 700;
       color: var(--navy);
       line-height: 1.2;
+      letter-spacing: -0.3px;
     }
 
     .auth-logo-text p {
-      font-size: 13px;
+      font-size: 12px;
       color: var(--subtext);
-      margin-top: 2px;
+      margin-top: 4px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 500;
     }
 
     .auth-tabs {
@@ -104,22 +141,24 @@
 
     .auth-tab {
       flex: 1;
-      padding: 8px;
+      padding: 9px;
       text-align: center;
-      font-size: 14px;
-      font-weight: 500;
+      font-size: 13px;
+      font-weight: 600;
       border-radius: 6px;
       cursor: pointer;
       color: var(--subtext);
       transition: all 0.2s;
       border: none;
       background: none;
+      font-family: inherit;
+      letter-spacing: 0.2px;
     }
 
     .auth-tab.active {
-      background: var(--white);
-      color: var(--navy);
-      box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+      background: var(--navy);
+      color: var(--white);
+      box-shadow: 0 2px 8px rgba(26,39,68,0.2);
     }
 
     .auth-form { display: flex; flex-direction: column; gap: 16px; }
@@ -171,16 +210,19 @@
     .btn-primary {
       background: var(--navy);
       color: var(--white);
+      letter-spacing: 0.2px;
     }
 
-    .btn-primary:hover { background: var(--navy2); transform: translateY(-1px); }
+    .btn-primary:hover { background: var(--navy2); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(26,39,68,0.25); }
 
     .btn-gold {
-      background: var(--gold);
+      background: linear-gradient(135deg, var(--gold) 0%, var(--gold2) 100%);
       color: var(--navy);
+      font-weight: 600;
+      letter-spacing: 0.2px;
     }
 
-    .btn-gold:hover { background: var(--gold2); }
+    .btn-gold:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(201,150,42,0.35); }
 
     .btn-outline {
       background: transparent;
@@ -221,32 +263,60 @@
     #app-screen { display: none; min-height: 100vh; }
 
     .topbar {
-      background: var(--navy);
+      background: var(--navy2);
       color: var(--white);
-      padding: 0 28px;
-      height: 60px;
+      padding: 0 32px;
+      height: 64px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       position: sticky;
       top: 0;
       z-index: 100;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.2);
+      box-shadow: 0 2px 20px rgba(0,0,0,0.25);
+      border-bottom: 3px solid var(--gold);
     }
 
     .topbar-left {
       display: flex;
       align-items: center;
-      gap: 16px;
+      gap: 20px;
     }
 
     .topbar-logo {
-      font-size: 17px;
-      font-weight: 600;
-      letter-spacing: -0.3px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
     }
 
-    .topbar-logo span { color: var(--gold); }
+    .topbar-logo-img {
+      width: 36px;
+      height: 36px;
+      object-fit: contain;
+      opacity: 0.95;
+    }
+
+    .topbar-logo-text {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.1;
+    }
+
+    .topbar-logo-text span:first-child {
+      font-family: 'Playfair Display', serif;
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--white);
+      letter-spacing: -0.2px;
+    }
+
+    .topbar-logo-text span:last-child {
+      font-size: 10px;
+      color: var(--gold);
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      font-weight: 500;
+    }
 
     .topbar-divider {
       width: 1px;
@@ -260,20 +330,21 @@
     }
 
     .nav-btn {
-      padding: 7px 14px;
+      padding: 7px 16px;
       border-radius: 7px;
       font-size: 13px;
       font-weight: 500;
       cursor: pointer;
       border: none;
       background: transparent;
-      color: rgba(255,255,255,0.65);
+      color: rgba(255,255,255,0.6);
       transition: all 0.2s;
       font-family: inherit;
+      letter-spacing: 0.2px;
     }
 
     .nav-btn:hover { background: rgba(255,255,255,0.1); color: var(--white); }
-    .nav-btn.active { background: rgba(255,255,255,0.15); color: var(--white); }
+    .nav-btn.active { background: rgba(201,150,42,0.2); color: var(--gold2); border: 1px solid rgba(201,150,42,0.3); }
 
     .topbar-right {
       display: flex;
@@ -305,8 +376,9 @@
     }
 
     .page-header h2 {
-      font-size: 24px;
-      font-weight: 600;
+      font-family: 'Playfair Display', serif;
+      font-size: 26px;
+      font-weight: 700;
       color: var(--navy);
     }
 
@@ -326,31 +398,39 @@
     .stat-card {
       background: var(--white);
       border-radius: var(--radius);
-      padding: 20px;
+      padding: 22px;
       box-shadow: var(--shadow);
       border-left: 4px solid var(--navy);
+      transition: transform 0.15s, box-shadow 0.15s;
     }
 
+    .stat-card:hover { transform: translateY(-2px); box-shadow: 0 6px 24px rgba(26,39,68,0.14); }
+
     .stat-card.maint { border-color: var(--gold); }
-    .stat-card.it    { border-color: #3b82f6; }
+    .stat-card.it    { border-color: var(--maroon); }
     .stat-card.open  { border-color: var(--orange); }
     .stat-card.closed { border-color: var(--green); }
 
     .stat-number {
-      font-size: 32px;
-      font-weight: 600;
+      font-family: 'Playfair Display', serif;
+      font-size: 36px;
+      font-weight: 700;
       color: var(--navy);
       line-height: 1;
     }
 
     .stat-label {
-      font-size: 13px;
+      font-size: 12px;
       color: var(--subtext);
       margin-top: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-weight: 500;
     }
 
     .section-title {
-      font-size: 16px;
+      font-family: 'Playfair Display', serif;
+      font-size: 17px;
       font-weight: 600;
       color: var(--navy);
       margin-bottom: 16px;
@@ -418,14 +498,18 @@
     }
 
     thead th {
-      background: var(--navy);
+      background: linear-gradient(135deg, var(--navy2) 0%, var(--navy) 100%);
       color: var(--white);
-      font-size: 12px;
-      font-weight: 500;
+      font-size: 11px;
+      font-weight: 600;
       text-transform: uppercase;
-      letter-spacing: 0.5px;
-      padding: 13px 16px;
+      letter-spacing: 0.8px;
+      padding: 14px 16px;
       text-align: left;
+    }
+
+    thead th:first-child {
+      border-left: 3px solid var(--gold);
     }
 
     tbody tr {
@@ -467,8 +551,8 @@
       letter-spacing: 0.3px;
     }
 
-    .badge-cat-maint { background: #fef3c7; color: #92400e; }
-    .badge-cat-it    { background: #dbeafe; color: #1e40af; }
+    .badge-cat-maint { background: var(--gold-light); color: #7a5500; }
+    .badge-cat-it    { background: var(--maroon-light); color: var(--maroon); }
 
     .badge-new        { background: #dbeafe; color: #1e40af; }
     .badge-assigned   { background: #ede9fe; color: #5b21b6; }
@@ -519,25 +603,32 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
+      background: linear-gradient(135deg, var(--navy2) 0%, var(--navy) 100%);
+      border-radius: 16px 16px 0 0;
     }
 
-    .modal-header h3 { font-size: 18px; font-weight: 600; }
+    .modal-header h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--white);
+    }
 
     .modal-close {
       width: 32px;
       height: 32px;
       border-radius: 8px;
       border: none;
-      background: var(--gray1);
+      background: rgba(255,255,255,0.15);
       cursor: pointer;
       font-size: 18px;
       display: flex;
       align-items: center;
       justify-content: center;
-      color: var(--subtext);
+      color: var(--white);
     }
 
-    .modal-close:hover { background: var(--gray2); }
+    .modal-close:hover { background: rgba(255,255,255,0.25); }
 
     .modal-body { padding: 24px 28px; }
 
@@ -728,9 +819,9 @@
 <div id="auth-screen">
   <div class="auth-card">
     <div class="auth-logo">
-      <div class="auth-logo-icon">🏫</div>
+      <img class="auth-logo-img" src="https://hps-online.github.io/intranet/logo.png" alt="Highbury Primary Logo" onerror="this.style.display='none'" />
       <div class="auth-logo-text">
-        <h1>Highbury Primary</h1>
+        <h1>Highbury Primary School</h1>
         <p>Staff Intranet — Support Portal</p>
       </div>
     </div>
@@ -790,7 +881,13 @@
   <!-- TOPBAR -->
   <div class="topbar">
     <div class="topbar-left">
-      <div class="topbar-logo">Highbury <span>Primary</span></div>
+      <div class="topbar-logo">
+        <img class="topbar-logo-img" src="https://hps-online.github.io/intranet/logo.png" alt="HPS" onerror="this.style.display='none'" />
+        <div class="topbar-logo-text">
+          <span>Highbury Primary</span>
+          <span>Staff Intranet</span>
+        </div>
+      </div>
       <div class="topbar-divider"></div>
       <nav class="topbar-nav">
         <button class="nav-btn active" onclick="showView('dashboard')">Dashboard</button>
@@ -1085,17 +1182,17 @@ const firebaseConfig = {
   // ══════════════════════════════════════
   // 📧 EMAILJS CONFIG — REPLACE THESE
   // ══════════════════════════════════════
-const EMAILJS_SERVICE_ID  = "service_eg3m9ya";
-const EMAILJS_TEMPLATE_ID = "template_ost1b3l";
-const EMAILJS_PUBLIC_KEY  = "kxXi_jW2l1rXS8VFZ";
+  const EMAILJS_SERVICE_ID  = "YOUR_EMAILJS_SERVICE_ID";
+  const EMAILJS_TEMPLATE_ID = "YOUR_EMAILJS_TEMPLATE_ID";
+  const EMAILJS_PUBLIC_KEY  = "YOUR_EMAILJS_PUBLIC_KEY";
 
   // ══════════════════════════════════════
   // STAFF LIST — edit this list to add/remove staff
   // Format: { name: "Display Name", email: "email@schools.sa.edu.au" }
   // ══════════════════════════════════════
   const STAFF_LIST = [
-    { name: "Business Manager - Sarah",  email: "sarah.nobes347@schools.sa.edu.au" },
-    { name: "IT Manager - Nouman",        email: "Nouman.Haider53@schools.sa.edu.au" },
+    { name: "Business Manager",  email: "businessmanager@schools.sa.edu.au" },
+    { name: "IT Manager",        email: "itmanager@schools.sa.edu.au" },
     // Add more staff here as needed
   ];
 

@@ -1101,7 +1101,6 @@
         <select id="filter-status" onchange="applyFilters()">
           <option value="">All Statuses</option>
           <option value="New">New</option>
-          <option value="Assigned">Assigned</option>
           <option value="In Progress">In Progress</option>
           <option value="Resolved">Resolved</option>
           <option value="Closed">Closed</option>
@@ -1772,7 +1771,6 @@ const firebaseConfig = {
       <div class="status-update-bar">
         <select id="detail-status-sel">
           <option ${t.status==='New'?'selected':''}>New</option>
-          <option ${t.status==='Assigned'?'selected':''}>Assigned</option>
           <option ${t.status==='In Progress'?'selected':''}>In Progress</option>
           <option ${t.status==='Resolved'?'selected':''}>Resolved</option>
           <option ${t.status==='Closed'?'selected':''}>Closed</option>

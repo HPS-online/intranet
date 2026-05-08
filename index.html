@@ -1017,12 +1017,13 @@
     .duty-cell.highlighted { background: var(--gold2); color: var(--navy); font-weight: 700; border-radius: 4px; padding: 2px 8px; }
 
     .spec-table-wrap { overflow-x: auto; }
-    .spec-table { width: 100%; border-collapse: collapse; font-size: 11px; min-width: 900px; }
-    .spec-table th { background: var(--navy); color: var(--white); padding: 6px 8px; text-align: center; font-size: 10px; text-transform: uppercase; letter-spacing: 0.4px; border-right: 1px solid rgba(255,255,255,0.15); }
-    .spec-table th.day-header { background: #2d4a7a; font-size: 11px; }
-    .spec-table td { padding: 5px 7px; border: 1px solid var(--gray2); text-align: center; font-size: 11px; vertical-align: middle; line-height: 1.3; }
-    .spec-table td.lesson-label { background: var(--gray1); font-weight: 600; font-size: 10px; color: var(--gray3); text-align: left; white-space: nowrap; }
+    .spec-table { width: 100%; border-collapse: collapse; font-size: 8.5px; table-layout: fixed; }
+    .spec-table th { background: var(--navy); color: var(--white); padding: 4px 2px; text-align: center; font-size: 8px; text-transform: uppercase; letter-spacing: 0.3px; border-right: 1px solid rgba(255,255,255,0.15); }
+    .spec-table th.day-header { background: #2d4a7a; font-size: 9px; }
+    .spec-table td { padding: 4px 2px; border: 1px solid var(--gray2); text-align: center; font-size: 8.5px; vertical-align: middle; line-height: 1.3; word-break: break-word; }
+    .spec-table td.lesson-label { background: var(--gray1); font-weight: 600; font-size: 8px; color: var(--gray3); text-align: left; white-space: nowrap; padding: 3px 4px; width: 70px; }
     .spec-table td.highlighted { background: #fef3c7; font-weight: 700; color: var(--navy); }
+    .spec-table td.nit-highlighted { background: #dbeafe; color: #1e40af; font-weight: 700; font-style: normal; }
     .spec-table td.nit { color: var(--gray3); font-style: italic; font-size: 10px; }
     .spec-table td.recess { background: var(--gray1); color: var(--gray3); font-size: 10px; }
 
@@ -1486,6 +1487,7 @@
             <option>Tehya</option><option>Tonya</option>
           </select>
           <button class="tt-clear" onclick="document.getElementById('duty-name-select').value='';highlightDuties('')">Clear</button>
+          <button class="btn btn-sm" style="margin-left:auto;font-size:11px;padding:4px 12px" onclick="printTimetable('yard')">🖨 Print PDF</button>
           <span id="duty-count" style="font-size:12px;color:var(--gray3);margin-left:auto"></span>
         </div>
 
@@ -1585,10 +1587,11 @@
             <option>Tehya</option><option>Tonya</option>
           </select>
           <button class="tt-clear" onclick="document.getElementById('spec-name-select').value='';highlightSpec('')">Clear</button>
+          <button class="btn btn-sm" style="margin-left:auto;font-size:11px;padding:4px 12px" onclick="printTimetable('specialist')">🖨 Print PDF</button>
         </div>
         <div class="home-card">
           <div class="spec-table-wrap">
-            <table class="spec-table">
+            <table class="spec-table" id="spec-table">
               <thead>
                 <tr>
                   <th rowspan="2" style="width:80px">Time</th>
@@ -2085,6 +2088,7 @@ const firebaseConfig = {
   window.ttShowPane         = ttShowPane;
   window.highlightDuties    = highlightDuties;
   window.highlightSpec      = highlightSpec;
+  window.printTimetable     = printTimetable;
   window.renderHomeView     = renderHomeView;
 
   // ══════════════════════════════════════
@@ -3184,6 +3188,25 @@ const firebaseConfig = {
     document.querySelectorAll('.tt-tab').forEach(t => {
       if (t.textContent.toLowerCase().includes(pane === 'yard-duty' ? 'yard' : 'spec')) t.classList.add('active');
     });
+    if (pane === 'specialist') tagSpecCols();
+  }
+
+  // Tag each spec table data cell with its subject column key
+  function tagSpecCols() {
+    const colKeys = [
+      'auslan','pe','science','music',
+      'auslan','pe','science','music',
+      'chinese','pe','science','music',
+      'chinese','pe','science','music',
+      'chinese','pe','science','music',
+    ];
+    const rows = document.querySelectorAll('#spec-table tbody tr');
+    rows.forEach(row => {
+      const cells = row.querySelectorAll('td:not(.lesson-label):not(.recess)');
+      cells.forEach((cell, i) => {
+        if (i < colKeys.length) cell.dataset.col = colKeys[i];
+      });
+    });
   }
 
   function highlightDuties(name) {
@@ -3201,15 +3224,58 @@ const firebaseConfig = {
     if (countEl) countEl.textContent = name && count > 0 ? count + ' duties this week' : '';
   }
 
+  const specColMap = {
+    'Norma':     ['auslan'],
+    'Emily':     ['chinese'],
+    'Kerry':     ['pe'],
+    'Danni':     ['science'],
+    'Katy':      ['science'],
+    'Kirrabelle':['music'],
+    'Lisa':      ['music'],
+  };
+
   function highlightSpec(name) {
-    const cells = document.querySelectorAll('.spec-table td[data-s]');
-    cells.forEach(cell => {
-      if (name && cell.dataset.s === name) {
-        cell.classList.add('highlighted');
-      } else {
-        cell.classList.remove('highlighted');
-      }
+    document.querySelectorAll('.spec-table td').forEach(cell => {
+      cell.classList.remove('highlighted', 'nit-highlighted');
     });
+    if (!name) return;
+    const myCols = specColMap[name];
+    if (myCols) {
+      document.querySelectorAll('.spec-table td[data-col]').forEach(cell => {
+        if (myCols.includes(cell.dataset.col)) {
+          if (cell.classList.contains('nit')) {
+            cell.classList.add('nit-highlighted');
+          } else if (cell.dataset.s === name) {
+            cell.classList.add('highlighted');
+          }
+        }
+      });
+    } else {
+      document.querySelectorAll('.spec-table td[data-s]').forEach(cell => {
+        if (cell.dataset.s === name) cell.classList.add('highlighted');
+      });
+    }
+  }
+
+  function printTimetable(type) {
+    const printWin = window.open('', '_blank');
+    const css = `body{font-family:Arial,sans-serif;font-size:8px;margin:10mm}h2{font-size:13px;margin-bottom:4px;color:#1a2e52}p{font-size:9px;color:#666;margin-bottom:8px}table{width:100%;border-collapse:collapse;table-layout:fixed}th{background:#1a2e52;color:#fff;padding:3px 2px;text-align:center;font-size:7px;text-transform:uppercase}.day-header{background:#2d4a7a}td{padding:3px 2px;border:1px solid #ddd;text-align:center;font-size:7.5px;vertical-align:middle;word-break:break-word}.lesson-label{background:#f5f5f5;font-weight:bold;font-size:7px;text-align:left;padding:3px 4px}.nit{color:#aaa;font-style:italic}.recess{background:#f5f5f5;color:#888}.area-name{font-weight:bold;text-align:left}.period-h{margin-top:10px;margin-bottom:3px;font-size:10px;font-weight:bold;color:#1a2e52}.period-t{font-size:8px;color:#888;margin-left:8px}@page{size:A4 landscape;margin:10mm}`;
+    let body = '';
+    if (type === 'specialist') {
+      const tbl = document.getElementById('spec-table');
+      if (tbl) body = '<h2>Specialist Timetable &#8212; Term 2, 2026</h2><p>Highbury Primary School</p>' + tbl.outerHTML;
+    } else {
+      body = '<h2>Yard Duty Roster &#8212; Term 2, 2026</h2><p>Highbury Primary School</p>';
+      const labels = ['Before School (8:20&#8211;8:40)','Recess (10:30&#8211;11:00)','Lunch (12:50&#8211;1:20)','After School (3:00&#8211;3:20)'];
+      document.querySelectorAll('.duty-table').forEach((tbl, i) => {
+        body += '<div class="period-h">' + (labels[i]||'') + '</div>';
+        let h = tbl.outerHTML.replace(/<span[^>]*class="duty-cell[^"]*"[^>]*>(.*?)<\/span>/g,'$1');
+        body += h;
+      });
+    }
+    printWin.document.write('<html><head><title>Highbury Timetable</title><style>' + css + '</style></head><body>' + body + '</body></html>');
+    printWin.document.close();
+    setTimeout(() => { printWin.print(); }, 500);
   }
 </script>
 

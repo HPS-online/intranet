@@ -961,7 +961,6 @@
 
     <div class="auth-tabs">
       <button class="auth-tab active" onclick="switchAuthTab('login')">Sign In</button>
-      <button class="auth-tab" onclick="switchAuthTab('register')">Register</button>
     </div>
 
     <!-- LOGIN -->
@@ -981,28 +980,8 @@
       </p>
     </div>
 
-    <!-- REGISTER -->
-    <div id="register-form" class="auth-form" style="display:none">
-      <div class="auth-hint">
-        📋 Registration is open to <strong>@schools.sa.edu.au</strong> email addresses only.
-        After registering you can sign in immediately.
-      </div>
-      <div class="form-group">
-        <label>Full Name</label>
-        <input type="text" id="reg-name" placeholder="e.g. Sarah Johnson" />
-      </div>
-      <div class="form-group">
-        <label>School Email</label>
-        <input type="email" id="reg-email" placeholder="name@schools.sa.edu.au" />
-      </div>
-      <div class="form-group">
-        <label>Password</label>
-        <input type="password" id="reg-password" placeholder="Min. 6 characters" />
-      </div>
-      <div id="reg-error" style="display:none" class="error-msg"></div>
-      <div id="reg-success" style="display:none" class="success-msg"></div>
-      <button class="btn btn-primary" onclick="doRegister()">Create Account</button>
-    </div>
+    <!-- REGISTER — removed; accounts are admin-managed only -->
+    <div id="register-form" class="auth-form" style="display:none"></div>
   </div>
 </div>
 
@@ -1025,6 +1004,7 @@
         <button class="nav-btn active" onclick="showView('dashboard')">Dashboard</button>
         <button class="nav-btn" onclick="showView('tickets')">All Tickets</button>
         <button class="nav-btn" onclick="showView('reports')">Reports</button>
+        <button class="nav-btn admin-only" id="nav-admin" onclick="showView('admin')" style="display:none;color:#e8b84b;border:1px solid rgba(232,184,75,0.3)">⚙ Admin</button>
       </nav>
     </div>
     <div class="topbar-right">
@@ -1178,8 +1158,81 @@
       </div>
     </div>
 
+    <!-- ── ADMIN VIEW ── -->
+    <div id="view-admin" class="view">
+      <div class="page-header" style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px">
+        <div>
+          <h2>Admin Portal</h2>
+          <p>Manage staff access. Only approved accounts can sign in to this system.</p>
+        </div>
+        <button class="btn btn-gold" onclick="openAddUserModal()">+ Add Staff Account</button>
+      </div>
+
+      <div class="tickets-table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Role</th>
+              <th>Added</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="admin-user-list">
+            <tr><td colspan="5"><div class="spinner"></div></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div style="margin-top:28px;background:var(--gray1);border-radius:var(--radius);padding:18px 20px;font-size:13px;color:var(--subtext);line-height:1.7">
+        <strong style="color:var(--navy)">How accounts work:</strong><br>
+        When you add a staff member here, they receive a password reset email from Firebase and can set their own password.
+        Only accounts listed here can sign in — anyone else is automatically rejected, even if they have an <code>@schools.sa.edu.au</code> address.<br><br>
+        <strong style="color:var(--navy)">Admin accounts</strong> can access this portal and add/remove users. Regular staff can only submit and view tickets.
+      </div>
+    </div>
+
   </div><!-- /main -->
 </div><!-- /app-screen -->
+
+<!-- ADD USER MODAL -->
+<div class="modal-overlay" id="add-user-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Add Staff Account</h3>
+      <button class="modal-close" onclick="closeModal('add-user-modal')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="new-ticket-form">
+        <div class="auth-hint" style="margin-bottom:4px">
+          📧 Enter the staff member's school email. They'll receive an email to set their password.
+        </div>
+        <div class="form-group">
+          <label>Full Name</label>
+          <input type="text" id="add-name" placeholder="e.g. Sarah Johnson" />
+        </div>
+        <div class="form-group">
+          <label>School Email</label>
+          <input type="email" id="add-email" placeholder="name@schools.sa.edu.au" />
+        </div>
+        <div class="form-group">
+          <label>Role</label>
+          <select id="add-role">
+            <option value="staff">Staff (ticket access only)</option>
+            <option value="admin">Admin (can manage users)</option>
+          </select>
+        </div>
+        <div id="add-user-error" style="display:none" class="error-msg"></div>
+        <div id="add-user-success" style="display:none" class="success-msg"></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('add-user-modal')">Cancel</button>
+      <button class="btn btn-gold" id="add-user-btn" onclick="addStaffUser()">Add Account</button>
+    </div>
+  </div>
+</div>
 
 <!-- ════════════════════════════════════════
      MODALS
@@ -1272,10 +1325,8 @@
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import {
     getAuth,
-    createUserWithEmailAndPassword,
     signInWithEmailAndPassword,
     signOut,
-    updateProfile,
     sendPasswordResetEmail,
     onAuthStateChanged
   } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
@@ -1284,10 +1335,14 @@
     collection,
     addDoc,
     getDocs,
+    getDoc,
+    setDoc,
+    deleteDoc,
     doc,
     updateDoc,
     query,
     orderBy,
+    where,
     serverTimestamp,
     Timestamp
   } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
@@ -1318,14 +1373,10 @@ const firebaseConfig = {
   const EMAILJS_PUBLIC_KEY  = "YOUR_EMAILJS_PUBLIC_KEY";
 
   // ══════════════════════════════════════
-  // STAFF LIST — edit this list to add/remove staff
-  // Format: { name: "Display Name", email: "email@schools.sa.edu.au" }
+  // 🔐 BOOTSTRAP — first admin email
+  // This account is auto-approved as admin on first load.
   // ══════════════════════════════════════
-  const STAFF_LIST = [
-    { name: "Business Manager",  email: "businessmanager@schools.sa.edu.au" },
-    { name: "IT Manager",        email: "itmanager@schools.sa.edu.au" },
-    // Add more staff here as needed
-  ];
+  const BOOTSTRAP_ADMIN_EMAIL = "daniel.botten315@schools.sa.edu.au";
 
   // ══════════════════════════════════════
   // INIT
@@ -1335,50 +1386,104 @@ const firebaseConfig = {
   const db      = getFirestore(app);
   const storage = getStorage(app);
 
-  let currentUser  = null;
-  let allTickets   = [];
+  let currentUser     = null;
+  let currentIsAdmin  = false;
+  let allTickets      = [];
 
   // Expose to window for onclick handlers
-  window.switchAuthTab    = switchAuthTab;
-  window.doLogin          = doLogin;
-  window.doRegister       = doRegister;
-  window.doReset          = doReset;
-  window.doLogout         = doLogout;
-  window.showView         = showView;
-  window.openNewTicketModal  = openNewTicketModal;
-  window.closeModal       = closeModal;
-  window.submitTicket     = submitTicket;
-  window.applyFilters     = applyFilters;
-  window.previewPhoto     = previewPhoto;
-  window.generateReport   = generateReport;
-  window.openTicketDetail = openTicketDetail;
+  window.switchAuthTab      = switchAuthTab;
+  window.doLogin            = doLogin;
+  window.doReset            = doReset;
+  window.doLogout           = doLogout;
+  window.showView           = showView;
+  window.openNewTicketModal = openNewTicketModal;
+  window.openAddUserModal   = openAddUserModal;
+  window.addStaffUser       = addStaffUser;
+  window.removeStaffUser    = removeStaffUser;
+  window.toggleAdminRole    = toggleAdminRole;
+  window.closeModal         = closeModal;
+  window.submitTicket       = submitTicket;
+  window.applyFilters       = applyFilters;
+  window.previewPhoto       = previewPhoto;
+  window.generateReport     = generateReport;
+  window.openTicketDetail   = openTicketDetail;
   window.updateTicketStatus = updateTicketStatus;
-  window.addNote = addNote;
+  window.addNote            = addNote;
 
   // ══════════════════════════════════════
   // AUTH STATE
   // ══════════════════════════════════════
-  onAuthStateChanged(auth, user => {
+  // ══════════════════════════════════════
+  // AUTH STATE — allowlist check
+  // ══════════════════════════════════════
+  onAuthStateChanged(auth, async user => {
     if (user) {
+      // 1. Must be a school email
       if (!user.email.endsWith('@schools.sa.edu.au')) {
-        signOut(auth);
+        await signOut(auth);
         showAuthError('login-error', 'Only @schools.sa.edu.au accounts are allowed.');
         return;
       }
-      currentUser = user;
-      document.getElementById('auth-screen').style.display  = 'none';
-      document.getElementById('app-screen').style.display   = 'block';
-      document.getElementById('topbar-name').textContent    = user.displayName || user.email;
+
+      // 2. Ensure bootstrap admin exists in Firestore
+      await ensureBootstrapAdmin();
+
+      // 3. Check allowlist
+      const allowed = await isUserAllowed(user.email);
+      if (!allowed) {
+        await signOut(auth);
+        showAuthError('login-error', 'Your account has not been approved. Please contact your administrator.');
+        return;
+      }
+
+      currentUser    = user;
+      currentIsAdmin = allowed.role === 'admin';
+
+      document.getElementById('auth-screen').style.display = 'none';
+      document.getElementById('app-screen').style.display  = 'block';
+      document.getElementById('topbar-name').textContent   = user.displayName || user.email;
+
+      // Show/hide admin nav
+      document.getElementById('nav-admin').style.display = currentIsAdmin ? '' : 'none';
+
       setGreeting();
       populateStaffDropdowns();
       loadAllTickets();
       setupReportDropdowns();
+
     } else {
-      currentUser = null;
-      document.getElementById('auth-screen').style.display  = 'flex';
-      document.getElementById('app-screen').style.display   = 'none';
+      currentUser    = null;
+      currentIsAdmin = false;
+      document.getElementById('auth-screen').style.display = 'flex';
+      document.getElementById('app-screen').style.display  = 'none';
     }
   });
+
+  // ══════════════════════════════════════
+  // ALLOWLIST HELPERS
+  // ══════════════════════════════════════
+  async function isUserAllowed(email) {
+    try {
+      const snap = await getDoc(doc(db, 'allowed_users', email.toLowerCase()));
+      if (snap.exists()) return snap.data();
+      return null;
+    } catch(e) { return null; }
+  }
+
+  async function ensureBootstrapAdmin() {
+    try {
+      const ref = doc(db, 'allowed_users', BOOTSTRAP_ADMIN_EMAIL.toLowerCase());
+      const snap = await getDoc(ref);
+      if (!snap.exists()) {
+        await setDoc(ref, {
+          email: BOOTSTRAP_ADMIN_EMAIL.toLowerCase(),
+          name:  'Daniel Botten',
+          role:  'admin',
+          addedAt: serverTimestamp()
+        });
+      }
+    } catch(e) { /* silent — may fail on first load before rules propagate */ }
+  }
 
   // ══════════════════════════════════════
   // AUTH FUNCTIONS
@@ -1400,24 +1505,6 @@ const firebaseConfig = {
       await signInWithEmailAndPassword(auth, email, pass);
     } catch(e) {
       showAuthError('login-error', friendlyAuthError(e.code));
-    }
-  }
-
-  async function doRegister() {
-    const name  = document.getElementById('reg-name').value.trim();
-    const email = document.getElementById('reg-email').value.trim();
-    const pass  = document.getElementById('reg-password').value;
-    hideEl('reg-error'); hideEl('reg-success');
-    if (!name || !email || !pass) { showAuthError('reg-error','Please fill in all fields.'); return; }
-    if (!email.endsWith('@schools.sa.edu.au')) { showAuthError('reg-error','You must use your @schools.sa.edu.au email address.'); return; }
-    if (pass.length < 6) { showAuthError('reg-error','Password must be at least 6 characters.'); return; }
-    try {
-      const cred = await createUserWithEmailAndPassword(auth, email, pass);
-      await updateProfile(cred.user, { displayName: name });
-      showEl('reg-success');
-      document.getElementById('reg-success').textContent = '✅ Account created! Signing you in…';
-    } catch(e) {
-      showAuthError('reg-error', friendlyAuthError(e.code));
     }
   }
 
@@ -1454,14 +1541,21 @@ const firebaseConfig = {
   // NAVIGATION
   // ══════════════════════════════════════
   function showView(view) {
+    // Guard admin view
+    if (view === 'admin' && !currentIsAdmin) return;
+
     document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
     document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
     document.getElementById('view-' + view).classList.add('active');
     document.querySelectorAll('.nav-btn').forEach(b => {
-      if (b.textContent.toLowerCase().includes(view === 'dashboard' ? 'dash' : view === 'tickets' ? 'ticket' : 'report'))
+      if (b.textContent.toLowerCase().includes(
+        view === 'dashboard' ? 'dash' :
+        view === 'tickets'   ? 'ticket' :
+        view === 'admin'     ? 'admin' : 'report'))
         b.classList.add('active');
     });
     if (view === 'reports') generateReport();
+    if (view === 'admin')   loadAdminUsers();
   }
 
   // ══════════════════════════════════════
@@ -1577,14 +1671,18 @@ const firebaseConfig = {
   }
 
   // ══════════════════════════════════════
-  // STAFF DROPDOWNS
+  // STAFF DROPDOWNS — loaded from Firestore allowlist
   // ══════════════════════════════════════
-  function populateStaffDropdowns() {
+  async function populateStaffDropdowns() {
     const sel = document.getElementById('nt-assigned');
     sel.innerHTML = '<option value="">Unassigned</option>';
-    STAFF_LIST.forEach(s => {
-      sel.innerHTML += `<option value="${s.email}" data-name="${s.name}">${s.name}</option>`;
-    });
+    try {
+      const snap = await getDocs(collection(db, 'allowed_users'));
+      snap.forEach(d => {
+        const s = d.data();
+        sel.innerHTML += `<option value="${s.email}" data-name="${s.name || s.email}">${s.name || s.email}</option>`;
+      });
+    } catch(e) { console.error('Could not load staff list', e); }
   }
 
   // ══════════════════════════════════════
@@ -1968,6 +2066,141 @@ const firebaseConfig = {
     if (typeof emailjs === 'undefined') return;
     emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, params, EMAILJS_PUBLIC_KEY)
       .catch(e => console.warn('EmailJS error:', e));
+  }
+
+  // ══════════════════════════════════════
+  // ADMIN PORTAL
+  // ══════════════════════════════════════
+  async function loadAdminUsers() {
+    const tbody = document.getElementById('admin-user-list');
+    tbody.innerHTML = `<tr><td colspan="5"><div class="spinner"></div></td></tr>`;
+    try {
+      const snap = await getDocs(collection(db, 'allowed_users'));
+      const users = [];
+      snap.forEach(d => users.push(d.data()));
+      users.sort((a,b) => (a.name||'').localeCompare(b.name||''));
+
+      if (!users.length) {
+        tbody.innerHTML = `<tr><td colspan="5"><div class="empty-state"><p>No users yet.</p></div></td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = users.map(u => {
+        const isMe = u.email === currentUser?.email?.toLowerCase();
+        const addedStr = u.addedAt?.toDate ? formatDate(u.addedAt.toDate()) : '—';
+        const roleBadge = u.role === 'admin'
+          ? `<span class="badge badge-cat-it" style="background:#dbeafe;color:#1e40af">Admin</span>`
+          : `<span class="badge" style="background:var(--gray1);color:var(--subtext)">Staff</span>`;
+        return `
+          <tr>
+            <td>${escHtml(u.name || '—')}</td>
+            <td style="font-size:12px;color:var(--subtext)">${escHtml(u.email)}</td>
+            <td>${roleBadge}</td>
+            <td style="font-size:12px;color:var(--subtext)">${addedStr}</td>
+            <td style="display:flex;gap:8px;flex-wrap:wrap">
+              ${!isMe ? `
+                <button class="btn btn-sm btn-outline" onclick="toggleAdminRole('${u.email}','${u.role}')">
+                  ${u.role === 'admin' ? 'Make Staff' : 'Make Admin'}
+                </button>
+                <button class="btn btn-sm btn-danger" onclick="removeStaffUser('${u.email}','${escHtml(u.name||u.email)}')">Remove</button>
+              ` : `<span style="font-size:12px;color:var(--subtext)">You</span>`}
+            </td>
+          </tr>`;
+      }).join('');
+    } catch(e) {
+      console.error(e);
+      tbody.innerHTML = `<tr><td colspan="5" style="color:var(--red);padding:16px">Error loading users.</td></tr>`;
+    }
+  }
+
+  function openAddUserModal() {
+    document.getElementById('add-name').value  = '';
+    document.getElementById('add-email').value = '';
+    document.getElementById('add-role').value  = 'staff';
+    hideEl('add-user-error');
+    hideEl('add-user-success');
+    document.getElementById('add-user-btn').disabled = false;
+    openModal('add-user-modal');
+  }
+
+  async function addStaffUser() {
+    const name  = document.getElementById('add-name').value.trim();
+    const email = document.getElementById('add-email').value.trim().toLowerCase();
+    const role  = document.getElementById('add-role').value;
+
+    hideEl('add-user-error'); hideEl('add-user-success');
+
+    if (!name)  { showEl('add-user-error'); document.getElementById('add-user-error').textContent = 'Please enter a name.'; return; }
+    if (!email) { showEl('add-user-error'); document.getElementById('add-user-error').textContent = 'Please enter an email.'; return; }
+    if (!email.endsWith('@schools.sa.edu.au')) {
+      showEl('add-user-error');
+      document.getElementById('add-user-error').textContent = 'Email must end in @schools.sa.edu.au';
+      return;
+    }
+
+    const btn = document.getElementById('add-user-btn');
+    btn.disabled = true;
+
+    try {
+      // Check not already added
+      const existing = await getDoc(doc(db, 'allowed_users', email));
+      if (existing.exists()) {
+        showEl('add-user-error');
+        document.getElementById('add-user-error').textContent = 'This email is already in the system.';
+        btn.disabled = false;
+        return;
+      }
+
+      // Add to allowlist
+      await setDoc(doc(db, 'allowed_users', email), {
+        email, name, role,
+        addedBy: currentUser.email,
+        addedAt: serverTimestamp()
+      });
+
+      // Send password reset so they can set their own password
+      await sendPasswordResetEmail(auth, email);
+
+      showEl('add-user-success');
+      document.getElementById('add-user-success').textContent =
+        `✅ ${name} added. A password setup email has been sent to ${email}.`;
+
+      // Refresh dropdowns and user list
+      populateStaffDropdowns();
+      loadAdminUsers();
+
+    } catch(e) {
+      console.error(e);
+      showEl('add-user-error');
+      document.getElementById('add-user-error').textContent = 'Error adding user. Check the console.';
+      btn.disabled = false;
+    }
+  }
+
+  async function removeStaffUser(email, displayName) {
+    if (!confirm(`Remove ${displayName} from the system?\n\nThey will no longer be able to sign in.`)) return;
+    try {
+      await deleteDoc(doc(db, 'allowed_users', email.toLowerCase()));
+      showToast(`${displayName} removed.`, 'success');
+      loadAdminUsers();
+      populateStaffDropdowns();
+    } catch(e) {
+      console.error(e);
+      showToast('Error removing user.', 'error');
+    }
+  }
+
+  async function toggleAdminRole(email, currentRole) {
+    const newRole = currentRole === 'admin' ? 'staff' : 'admin';
+    const label   = newRole === 'admin' ? 'grant admin access to' : 'remove admin access from';
+    if (!confirm(`Are you sure you want to ${label} ${email}?`)) return;
+    try {
+      await updateDoc(doc(db, 'allowed_users', email.toLowerCase()), { role: newRole });
+      showToast(`Role updated to ${newRole}.`, 'success');
+      loadAdminUsers();
+    } catch(e) {
+      showToast('Error updating role.', 'error');
+    }
   }
 
   // ══════════════════════════════════════

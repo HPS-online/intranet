@@ -4,23 +4,22 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Highbury Primary — Staff Intranet</title>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
   <style>
     :root {
-      --navy:    #1a2744;
-      --navy2:   #0f1a30;
-      --gold:    #c9962a;
-      --gold2:   #e8b84b;
-      --gold-light: #f5e6c0;
-      --maroon:  #7b1d2e;
-      --maroon2: #9b2538;
-      --maroon-light: #f5e0e3;
-      --cream:   #faf8f4;
+      --navy:    #242b63;
+      --navy2:   #1a2050;
+      --navy3:   #131845;
+      --gold:    #f5ac1c;
+      --gold2:   #f7bc45;
+      --gold-light: #fef3d0;
+      --gold-dark:  #c88a0e;
+      --cream:   #faf9f6;
       --white:   #ffffff;
       --gray1:   #f2f4f8;
       --gray2:   #e2e6ef;
       --gray3:   #9aa3b8;
-      --text:    #1a2744;
+      --text:    #242b63;
       --subtext: #5a6480;
 
       --green:   #2ecc71;
@@ -35,14 +34,14 @@
       --status-closed:     #6b7280;
 
       --radius: 10px;
-      --shadow: 0 2px 16px rgba(26,39,68,0.10);
-      --shadow-lg: 0 8px 40px rgba(26,39,68,0.16);
+      --shadow: 0 2px 16px rgba(36,43,99,0.10);
+      --shadow-lg: 0 8px 40px rgba(36,43,99,0.16);
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-      font-family: 'Inter', sans-serif;
+      font-family: 'Montserrat', sans-serif;
       background: var(--cream);
       color: var(--text);
       min-height: 100vh;
@@ -52,83 +51,155 @@
     #auth-screen {
       min-height: 100vh;
       display: flex;
-      align-items: center;
-      justify-content: center;
-      background: linear-gradient(150deg, var(--navy2) 0%, var(--navy) 50%, var(--maroon) 100%);
-      padding: 24px;
-      position: relative;
-      overflow: hidden;
+      align-items: stretch;
+      background: var(--navy);
     }
 
-    #auth-screen::before {
-      content: '';
-      position: absolute;
-      top: -100px;
-      right: -100px;
-      width: 400px;
-      height: 400px;
-      border-radius: 50%;
-      background: rgba(201,150,42,0.08);
-      pointer-events: none;
-    }
-
-    #auth-screen::after {
-      content: '';
-      position: absolute;
-      bottom: -80px;
-      left: -80px;
-      width: 300px;
-      height: 300px;
-      border-radius: 50%;
-      background: rgba(123,29,46,0.15);
-      pointer-events: none;
-    }
-
-    .auth-card {
-      background: var(--white);
-      border-radius: 20px;
-      padding: 48px 44px;
-      width: 100%;
-      max-width: 440px;
-      box-shadow: 0 24px 80px rgba(0,0,0,0.3);
-      position: relative;
-      z-index: 1;
-      border-top: 4px solid var(--gold);
-    }
-
-    .auth-logo {
+    /* Left panel — full navy with branding */
+    .auth-left {
+      width: 45%;
+      background: var(--navy);
       display: flex;
       flex-direction: column;
-      align-items: center;
-      text-align: center;
-      gap: 14px;
-      margin-bottom: 36px;
-      padding-bottom: 28px;
-      border-bottom: 1px solid var(--gray2);
+      align-items: flex-start;
+      justify-content: center;
+      padding: 60px 48px;
+      position: relative;
+      overflow: hidden;
+      flex-shrink: 0;
     }
 
-    .auth-logo-img {
-      width: 90px;
-      height: 90px;
+    /* Gold bottom stripe on left panel */
+    .auth-left::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 5px;
+      background: var(--gold);
+    }
+
+    /* Decorative circle watermark */
+    .auth-left-watermark {
+      position: absolute;
+      bottom: -80px; right: -80px;
+      width: 300px; height: 300px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.04);
+      pointer-events: none;
+    }
+
+    .auth-left-watermark2 {
+      position: absolute;
+      top: -60px; left: -60px;
+      width: 200px; height: 200px;
+      border-radius: 50%;
+      background: rgba(245,172,28,0.06);
+      pointer-events: none;
+    }
+
+    .auth-left-logo {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 40px;
+    }
+
+    .auth-left-logo img {
+      width: 70px;
+      height: 70px;
       object-fit: contain;
     }
 
-    .auth-logo-text h1 {
-      font-family: 'Playfair Display', serif;
+    .auth-left-school-name {
+      font-family: 'Montserrat', sans-serif;
       font-size: 22px;
-      font-weight: 700;
-      color: var(--navy);
-      line-height: 1.2;
-      letter-spacing: -0.3px;
+      line-height: 1.15;
+      color: var(--white);
     }
 
-    .auth-logo-text p {
+    .auth-left-school-name strong { font-weight: 800; }
+    .auth-left-school-name span   { font-weight: 400; }
+
+    .auth-left-tagline {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 9px;
+      font-weight: 600;
+      color: var(--gold);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-top: 6px;
+    }
+
+    .auth-left-divider {
+      width: 48px;
+      height: 3px;
+      background: var(--gold);
+      border-radius: 2px;
+      margin-bottom: 24px;
+    }
+
+    .auth-left-desc {
+      font-size: 13px;
+      color: rgba(255,255,255,0.55);
+      line-height: 1.7;
+      font-weight: 400;
+      max-width: 260px;
+    }
+
+    /* Right panel — white login form */
+    .auth-right {
+      flex: 1;
+      background: #f4f5f9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 48px 40px;
+    }
+
+    .auth-form-card {
+      background: #ffffff;
+      border-radius: 16px;
+      padding: 40px 36px;
+      width: 100%;
+      max-width: 380px;
+      box-shadow: 0 8px 40px rgba(36,43,99,0.12);
+      border-top: 4px solid var(--gold);
+    }
+
+    .auth-form-title {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--navy);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+    }
+
+    .auth-form-subtitle {
       font-size: 12px;
       color: var(--subtext);
-      margin-top: 4px;
-      text-transform: uppercase;
-      letter-spacing: 1px;
+      margin-bottom: 28px;
       font-weight: 500;
+    }
+
+    .auth-form-subtitle strong { color: var(--navy); }
+
+    /* Hide old elements */
+    .auth-card        { display: none; }
+    .auth-wave-top    { display: none; }
+    .auth-tree-watermark { display: none; }
+    .auth-wave-bottom { display: none; }
+    .auth-card-header { display: none; }
+    .auth-card-body   { display: none; }
+    .auth-logo        { display: none; }
+    .auth-tabs        { display: none; }
+
+    @media (max-width: 640px) {
+      #auth-screen    { flex-direction: column; }
+      .auth-left      { width: 100%; padding: 32px 24px; min-height: auto; }
+      .auth-right     { padding: 32px 20px; }
+      .auth-form-card { padding: 28px 24px; }
     }
 
     .auth-tabs {
@@ -158,7 +229,7 @@
     .auth-tab.active {
       background: var(--navy);
       color: var(--white);
-      box-shadow: 0 2px 8px rgba(26,39,68,0.2);
+      box-shadow: 0 2px 8px rgba(36,43,99,0.25);
     }
 
     .auth-form { display: flex; flex-direction: column; gap: 16px; }
@@ -218,11 +289,11 @@
     .btn-gold {
       background: linear-gradient(135deg, var(--gold) 0%, var(--gold2) 100%);
       color: var(--navy);
-      font-weight: 600;
+      font-weight: 700;
       letter-spacing: 0.2px;
     }
 
-    .btn-gold:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(201,150,42,0.35); }
+    .btn-gold:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(245,172,28,0.4); }
 
     .btn-outline {
       background: transparent;
@@ -263,7 +334,7 @@
     #app-screen { display: none; min-height: 100vh; }
 
     .topbar {
-      background: var(--navy2);
+      background: linear-gradient(90deg, var(--navy3) 0%, var(--navy) 100%);
       color: var(--white);
       padding: 0 32px;
       height: 64px;
@@ -273,8 +344,8 @@
       position: sticky;
       top: 0;
       z-index: 100;
-      box-shadow: 0 2px 20px rgba(0,0,0,0.25);
-      border-bottom: 3px solid var(--gold);
+      box-shadow: 0 2px 20px rgba(0,0,0,0.3);
+      border-bottom: 4px solid var(--gold);
     }
 
     .topbar-left {
@@ -303,19 +374,19 @@
     }
 
     .topbar-logo-text span:first-child {
-      font-family: 'Playfair Display', serif;
-      font-size: 16px;
-      font-weight: 700;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 15px;
+      font-weight: 400;
       color: var(--white);
-      letter-spacing: -0.2px;
+      letter-spacing: 0.3px;
     }
 
     .topbar-logo-text span:last-child {
-      font-size: 10px;
+      font-size: 9px;
       color: var(--gold);
       text-transform: uppercase;
-      letter-spacing: 1.2px;
-      font-weight: 500;
+      letter-spacing: 2px;
+      font-weight: 600;
     }
 
     .topbar-divider {
@@ -376,16 +447,19 @@
     }
 
     .page-header h2 {
-      font-family: 'Playfair Display', serif;
+      font-family: 'Montserrat', sans-serif;
       font-size: 26px;
-      font-weight: 700;
+      font-weight: 800;
       color: var(--navy);
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
     }
 
     .page-header p {
-      font-size: 14px;
+      font-size: 13px;
       color: var(--subtext);
       margin-top: 4px;
+      font-weight: 500;
     }
 
     .stats-grid {
@@ -404,36 +478,38 @@
       transition: transform 0.15s, box-shadow 0.15s;
     }
 
-    .stat-card:hover { transform: translateY(-2px); box-shadow: 0 6px 24px rgba(26,39,68,0.14); }
+    .stat-card:hover { transform: translateY(-2px); box-shadow: 0 6px 24px rgba(36,43,99,0.14); }
 
-    .stat-card.maint { border-color: var(--gold); }
-    .stat-card.it    { border-color: var(--maroon); }
-    .stat-card.open  { border-color: var(--orange); }
+    .stat-card.maint  { border-color: var(--gold); }
+    .stat-card.it     { border-color: var(--navy2); }
+    .stat-card.open   { border-color: var(--orange); }
     .stat-card.closed { border-color: var(--green); }
 
     .stat-number {
-      font-family: 'Playfair Display', serif;
+      font-family: 'Montserrat', sans-serif;
       font-size: 36px;
-      font-weight: 700;
+      font-weight: 800;
       color: var(--navy);
       line-height: 1;
     }
 
     .stat-label {
-      font-size: 12px;
+      font-size: 11px;
       color: var(--subtext);
       margin-top: 6px;
       text-transform: uppercase;
-      letter-spacing: 0.5px;
-      font-weight: 500;
+      letter-spacing: 0.8px;
+      font-weight: 600;
     }
 
     .section-title {
-      font-family: 'Playfair Display', serif;
-      font-size: 17px;
-      font-weight: 600;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
       color: var(--navy);
       margin-bottom: 16px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
 
     /* ── AGE LEGEND ── */
@@ -498,12 +574,12 @@
     }
 
     thead th {
-      background: linear-gradient(135deg, var(--navy2) 0%, var(--navy) 100%);
+      background: linear-gradient(135deg, var(--navy3) 0%, var(--navy) 100%);
       color: var(--white);
       font-size: 11px;
-      font-weight: 600;
+      font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.8px;
+      letter-spacing: 1px;
       padding: 14px 16px;
       text-align: left;
     }
@@ -552,7 +628,7 @@
     }
 
     .badge-cat-maint { background: var(--gold-light); color: #7a5500; }
-    .badge-cat-it    { background: var(--maroon-light); color: var(--maroon); }
+    .badge-cat-it    { background: #e8eaf6; color: var(--navy); }
 
     .badge-new        { background: #dbeafe; color: #1e40af; }
     .badge-assigned   { background: #ede9fe; color: #5b21b6; }
@@ -603,15 +679,18 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      background: linear-gradient(135deg, var(--navy2) 0%, var(--navy) 100%);
+      background: linear-gradient(135deg, var(--navy3) 0%, var(--navy) 100%);
       border-radius: 16px 16px 0 0;
+      border-bottom: 3px solid var(--gold);
     }
 
     .modal-header h3 {
-      font-family: 'Playfair Display', serif;
-      font-size: 18px;
-      font-weight: 600;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 16px;
+      font-weight: 800;
       color: var(--white);
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
     }
 
     .modal-close {
@@ -704,7 +783,7 @@
     }
 
     .notes-section-title {
-      font-family: 'Playfair Display', serif;
+      font-family: 'Montserrat', sans-serif;
       font-size: 15px;
       font-weight: 600;
       color: var(--navy);
@@ -950,39 +1029,52 @@
      AUTH SCREEN
 ════════════════════════════════════════ -->
 <div id="auth-screen">
-  <div class="auth-card">
-    <div class="auth-logo">
-      <img class="auth-logo-img" src="https://hps-online.github.io/intranet/logo.png" alt="Highbury Primary Logo" onerror="this.style.display='none'" />
-      <div class="auth-logo-text">
-        <h1>Highbury Primary School</h1>
-        <p>Staff Intranet — Support Portal</p>
+
+  <!-- LEFT — branding panel -->
+  <div class="auth-left">
+    <div class="auth-left-watermark"></div>
+    <div class="auth-left-watermark2"></div>
+
+    <div class="auth-left-logo">
+      <img src="https://hps-online.github.io/intranet/logo.png" alt="Highbury Primary Logo" onerror="this.style.display='none'" />
+      <div>
+        <div class="auth-left-school-name"><strong>HIGHBURY</strong><br><span>PRIMARY SCHOOL</span></div>
+        <div class="auth-left-tagline">Learning Together, Achieving Excellence</div>
       </div>
     </div>
 
-    <div class="auth-tabs">
-      <button class="auth-tab active" onclick="switchAuthTab('login')">Sign In</button>
-    </div>
+    <div class="auth-left-divider"></div>
 
-    <!-- LOGIN -->
-    <div id="login-form" class="auth-form">
-      <div class="form-group">
-        <label>School Email</label>
-        <input type="email" id="login-email" placeholder="name@schools.sa.edu.au" />
-      </div>
-      <div class="form-group">
-        <label>Password</label>
-        <input type="password" id="login-password" placeholder="Your password" />
-      </div>
-      <div id="login-error" style="display:none" class="error-msg"></div>
-      <button class="btn btn-primary" onclick="doLogin()">Sign In</button>
-      <p style="font-size:12px;text-align:center;color:var(--subtext)">
-        Forgot password? <a href="#" onclick="doReset()" style="color:var(--navy)">Send reset link</a>
-      </p>
-    </div>
-
-    <!-- REGISTER — removed; accounts are admin-managed only -->
-    <div id="register-form" class="auth-form" style="display:none"></div>
+    <p class="auth-left-desc" style="font-size:16px;font-weight:600;color:rgba(255,255,255,0.85);letter-spacing:1.5px;text-transform:uppercase">Staff Intranet</p>
   </div>
+
+  <!-- RIGHT — login form -->
+  <div class="auth-right">
+    <div class="auth-form-card">
+      <div class="auth-form-title">Sign In</div>
+      <div class="auth-form-subtitle">Use your <strong>@schools.sa.edu.au</strong> email address</div>
+
+      <div id="login-form" class="auth-form">
+        <div class="form-group">
+          <label>School Email</label>
+          <input type="email" id="login-email" placeholder="name@schools.sa.edu.au" />
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" id="login-password" placeholder="Your password" />
+        </div>
+        <div id="login-error" style="display:none" class="error-msg"></div>
+        <button class="btn btn-primary" onclick="doLogin()">Sign In</button>
+        <p style="font-size:12px;text-align:center;color:var(--subtext)">
+          Forgot password? <a href="#" onclick="doReset()" style="color:var(--navy)">Send reset link</a>
+        </p>
+      </div>
+
+      <!-- REGISTER — removed; accounts are admin-managed only -->
+      <div id="register-form" class="auth-form" style="display:none"></div>
+    </div>
+  </div>
+
 </div>
 
 <!-- ════════════════════════════════════════
@@ -994,8 +1086,9 @@
   <div class="topbar">
     <div class="topbar-left">
       <div class="topbar-logo">
+        <img src="https://hps-online.github.io/intranet/logo.png" alt="" class="topbar-logo-img" onerror="this.style.display='none'" />
         <div class="topbar-logo-text">
-          <span>Highbury Primary</span>
+          <span><strong style="font-weight:800">HIGHBURY</strong> <span style="font-weight:400">PRIMARY SCHOOL</span></span>
           <span>Staff Intranet</span>
         </div>
       </div>
@@ -1004,7 +1097,7 @@
         <button class="nav-btn active" onclick="showView('dashboard')">Dashboard</button>
         <button class="nav-btn" onclick="showView('tickets')">All Tickets</button>
         <button class="nav-btn" onclick="showView('reports')">Reports</button>
-        <button class="nav-btn admin-only" id="nav-admin" onclick="showView('admin')" style="display:none;color:#e8b84b;border:1px solid rgba(232,184,75,0.3)">⚙ Admin</button>
+        <button class="nav-btn admin-only" id="nav-admin" onclick="showView('admin')" style="display:none;color:#f5ac1c;border:1px solid rgba(245,172,28,0.35)">⚙ Admin</button>
       </nav>
     </div>
     <div class="topbar-right">

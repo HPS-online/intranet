@@ -1358,6 +1358,10 @@
         <button onclick="daybookChangeDay(-1)">← Previous</button>
         <div class="daybook-date-label" id="daybook-nav-label">—</div>
         <button onclick="daybookChangeDay(1)" id="daybook-next-btn">Next →</button>
+        <div style="position:relative;margin-left:8px">
+          <button onclick="document.getElementById('daybook-date-picker').showPicker()" title="Pick a date" style="font-size:18px;background:none;border:1px solid var(--gray2);border-radius:6px;padding:4px 10px;cursor:pointer">📅</button>
+          <input type="date" id="daybook-date-picker" style="position:absolute;opacity:0;width:0;height:0;top:0;left:0" onchange="daybookPickDate(this.value)">
+        </div>
         <button onclick="daybookGoToday()" style="margin-left:auto">Today</button>
       </div>
 
@@ -1822,6 +1826,7 @@ const firebaseConfig = {
   window.daybookAddRow      = daybookAddRow;
   window.daybookDeleteRow   = daybookDeleteRow;
   window.daybookUpdateRow   = daybookUpdateRow;
+  window.daybookPickDate    = daybookPickDate;
   window.renderHomeView     = renderHomeView;
 
   // ══════════════════════════════════════
@@ -1988,7 +1993,11 @@ const firebaseConfig = {
     });
     if (view === 'reports') generateReport();
     if (view === 'admin')   loadAdminUsers();
-    if (view === 'daybook') { daybookCurrentDate = new Date(); daybookLoad(); }
+    if (view === 'daybook') { 
+      daybookCurrentDate = new Date(); 
+      daybookSkipWeekend(daybookCurrentDate, -1);
+      daybookLoad(); 
+    }
     if (view === 'home')    renderHomeView();
   }
 
@@ -2077,15 +2086,36 @@ const firebaseConfig = {
     return days[d.getDay()] + ' ' + d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear();
   }
 
+  function daybookSkipWeekend(d, direction) {
+    // direction: 1 = forward, -1 = backward
+    while (d.getDay() === 0 || d.getDay() === 6) {
+      d.setDate(d.getDate() + direction);
+    }
+    return d;
+  }
+
   function daybookChangeDay(offset) {
     const d = new Date(daybookCurrentDate);
     d.setDate(d.getDate() + offset);
+    daybookSkipWeekend(d, offset);
     daybookCurrentDate = d;
     daybookLoad();
   }
 
   function daybookGoToday() {
-    daybookCurrentDate = new Date();
+    const d = new Date();
+    daybookSkipWeekend(d, -1); // if today is weekend, go to Friday
+    daybookCurrentDate = d;
+    daybookLoad();
+  }
+
+  function daybookPickDate(val) {
+    if (!val) return;
+    const d = new Date(val + 'T00:00:00');
+    // If user picks a weekend, snap to nearest weekday
+    if (d.getDay() === 0) d.setDate(d.getDate() - 2); // Sunday → Friday
+    if (d.getDay() === 6) d.setDate(d.getDate() - 1); // Saturday → Friday
+    daybookCurrentDate = d;
     daybookLoad();
   }
 

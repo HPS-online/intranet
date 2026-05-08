@@ -990,6 +990,42 @@
       .topbar-nav { display: none; }
     }
 
+
+    /* ── TIMETABLES ── */
+    .tt-tabs { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
+    .tt-tab { padding: 8px 18px; border-radius: 20px; border: 1px solid var(--gray2); background: var(--white); cursor: pointer; font-size: 13px; font-weight: 500; color: var(--navy); transition: all 0.15s; }
+    .tt-tab.active { background: var(--navy); color: var(--white); border-color: var(--navy); }
+    .tt-tab:hover:not(.active) { background: var(--gray1); }
+    .tt-pane { display: none; }
+    .tt-pane.active { display: block; }
+
+    .tt-highlight-bar { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 20px; background: var(--white); border: 1px solid var(--gray2); border-radius: 10px; padding: 14px 18px; }
+    .tt-highlight-bar label { font-size: 13px; font-weight: 600; color: var(--navy); white-space: nowrap; }
+    .tt-highlight-bar select { border: 1px solid var(--gray2); border-radius: 6px; padding: 6px 10px; font-size: 13px; font-family: inherit; color: var(--navy); }
+    .tt-highlight-bar .tt-clear { font-size: 12px; color: var(--gray3); background: none; border: none; cursor: pointer; text-decoration: underline; }
+
+    .duty-period { margin-bottom: 24px; }
+    .duty-period-header { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+    .duty-period-header h3 { font-size: 14px; font-weight: 700; color: var(--navy); text-transform: uppercase; letter-spacing: 0.5px; }
+    .duty-period-header .duty-time { font-size: 12px; color: var(--gray3); background: var(--gray1); padding: 3px 10px; border-radius: 10px; }
+    .duty-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .duty-table th { background: var(--navy); color: var(--white); padding: 8px 12px; text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .duty-table td { padding: 8px 12px; border-bottom: 1px solid var(--gray2); }
+    .duty-table tr:last-child td { border-bottom: none; }
+    .duty-table td.area-name { font-weight: 500; color: var(--navy); }
+    .duty-cell { border-radius: 4px; padding: 2px 6px; display: inline-block; }
+    .duty-cell.highlighted { background: var(--gold2); color: var(--navy); font-weight: 700; border-radius: 4px; padding: 2px 8px; }
+
+    .spec-table-wrap { overflow-x: auto; }
+    .spec-table { width: 100%; border-collapse: collapse; font-size: 11px; min-width: 900px; }
+    .spec-table th { background: var(--navy); color: var(--white); padding: 6px 8px; text-align: center; font-size: 10px; text-transform: uppercase; letter-spacing: 0.4px; border-right: 1px solid rgba(255,255,255,0.15); }
+    .spec-table th.day-header { background: #2d4a7a; font-size: 11px; }
+    .spec-table td { padding: 5px 7px; border: 1px solid var(--gray2); text-align: center; font-size: 11px; vertical-align: middle; line-height: 1.3; }
+    .spec-table td.lesson-label { background: var(--gray1); font-weight: 600; font-size: 10px; color: var(--gray3); text-align: left; white-space: nowrap; }
+    .spec-table td.highlighted { background: #fef3c7; font-weight: 700; color: var(--navy); }
+    .spec-table td.nit { color: var(--gray3); font-style: italic; font-size: 10px; }
+    .spec-table td.recess { background: var(--gray1); color: var(--gray3); font-size: 10px; }
+
     /* ── HOME PAGE ── */
     .home-hero {
       background: linear-gradient(135deg, var(--navy3) 0%, var(--navy) 100%);
@@ -1254,6 +1290,7 @@
       <nav class="topbar-nav">
         <button class="nav-btn active" onclick="showView('home')">🏠 Home</button>
         <button class="nav-btn" onclick="showView('daybook')">📋 Daybook</button>
+        <button class="nav-btn" onclick="showView('timetables')">📅 Timetables</button>
         <button class="nav-btn" onclick="showView('dashboard')">Tickets</button>
         <button class="nav-btn" onclick="showView('reports')">Reports</button>
         <button class="nav-btn admin-only" id="nav-admin" onclick="showView('admin')" style="display:none;color:#f5ac1c;border:1px solid rgba(245,172,28,0.35)">⚙ Admin</button>
@@ -1414,6 +1451,224 @@
         <button class="btn btn-primary" onclick="daybookSave()">💾 Save Daybook</button>
         <button class="btn btn-outline" onclick="daybookCancelEdit()">Cancel</button>
         <span id="daybook-save-status" style="font-size:13px;color:var(--gray3)"></span>
+      </div>
+    </div>
+
+    <!-- ── TIMETABLES VIEW ── -->
+    <div id="view-timetables" class="view">
+      <div class="page-header">
+        <h2>Timetables</h2>
+        <p>Yard duty roster and specialist timetable — Term 2, 2026.</p>
+      </div>
+
+      <div class="tt-tabs">
+        <button class="tt-tab active" onclick="ttShowPane('yard-duty')">🏃 Yard Duty</button>
+        <button class="tt-tab" onclick="ttShowPane('specialist')">📚 Specialist Timetable</button>
+      </div>
+
+      <!-- YARD DUTY PANE -->
+      <div id="tt-yard-duty" class="tt-pane active">
+        <div class="tt-highlight-bar">
+          <label>🔍 Highlight my duties:</label>
+          <select id="duty-name-select" onchange="highlightDuties(this.value)">
+            <option value="">— Select your name —</option>
+            <option>Adele</option><option>Arthur</option><option>Beck</option>
+            <option>Belinda</option><option>Callie</option><option>Carolyne</option>
+            <option>Daniel</option><option>Danni</option><option>Eleanor</option>
+            <option>Emily</option><option>Gabby</option><option>Hannah</option>
+            <option>Jess</option><option>Karine</option><option>Katherine</option>
+            <option>Katy</option><option>Keely</option><option>Kerry</option>
+            <option>Kristel</option><option>Laura</option><option>Lauren</option>
+            <option>Lisa</option><option>Megan</option><option>Melissa</option>
+            <option>Mike</option><option>Nicole</option><option>Nikki</option>
+            <option>Norma</option><option>Sam</option><option>Sara</option>
+            <option>Sharon</option><option>Steph</option><option>Tamika</option>
+            <option>Tehya</option><option>Tonya</option>
+          </select>
+          <button class="tt-clear" onclick="document.getElementById('duty-name-select').value='';highlightDuties('')">Clear</button>
+          <span id="duty-count" style="font-size:12px;color:var(--gray3);margin-left:auto"></span>
+        </div>
+
+        <div id="duty-tables-wrap">
+          <!-- Before School -->
+          <div class="duty-period">
+            <div class="duty-period-header">
+              <h3>Before School</h3>
+              <span class="duty-time">8:20 – 8:40</span>
+            </div>
+            <div class="home-card"><div class="daybook-table-wrap">
+            <table class="duty-table">
+              <thead><tr><th>Area</th><th>Monday</th><th>Tuesday</th><th>Wednesday</th><th>Thursday</th><th>Friday</th></tr></thead>
+              <tbody>
+                <tr><td class="area-name">Kangaroo Building</td><td><span class="duty-cell" data-name="Keely">Keely</span></td><td><span class="duty-cell" data-name="Sara">Sara</span></td><td><span class="duty-cell" data-name="Keely">Keely</span></td><td><span class="duty-cell" data-name="Belinda">Belinda</span></td><td><span class="duty-cell" data-name="Daniel">Daniel</span></td></tr>
+                <tr><td class="area-name">Lorikeet Building</td><td><span class="duty-cell" data-name="Norma">Norma</span></td><td><span class="duty-cell" data-name="Kerry">Kerry</span></td><td><span class="duty-cell" data-name="Kerry">Kerry</span></td><td><span class="duty-cell" data-name="Kerry">Kerry</span></td><td><span class="duty-cell" data-name="Belinda">Belinda</span></td></tr>
+                <tr><td class="area-name">Koala Building</td><td><span class="duty-cell" data-name="Danni">Danni</span></td><td><span class="duty-cell" data-name="Belinda">Belinda</span></td><td><span class="duty-cell" data-name="Lisa">Lisa</span></td><td><span class="duty-cell" data-name="Emily">Emily</span></td><td><span class="duty-cell" data-name="Sara">Sara</span></td></tr>
+              </tbody>
+            </table>
+            </div></div>
+          </div>
+
+          <!-- Recess -->
+          <div class="duty-period">
+            <div class="duty-period-header">
+              <h3>Recess</h3>
+              <span class="duty-time">10:30 – 11:00</span>
+            </div>
+            <div class="home-card"><div class="daybook-table-wrap">
+            <table class="duty-table">
+              <thead><tr><th>Area</th><th>Monday</th><th>Tuesday</th><th>Wednesday</th><th>Thursday</th><th>Friday</th></tr></thead>
+              <tbody>
+                <tr><td class="area-name">Kangaroo Building</td><td><span class="duty-cell" data-name="Melissa">Melissa</span></td><td><span class="duty-cell" data-name="Daniel">Daniel</span></td><td><span class="duty-cell" data-name="Gabby">Gabby</span></td><td><span class="duty-cell" data-name="Melissa">Melissa</span></td><td><span class="duty-cell" data-name="Gabby">Gabby</span></td></tr>
+                <tr><td class="area-name">North Oval</td><td><span class="duty-cell" data-name="Tehya">Tehya</span></td><td><span class="duty-cell" data-name="Tonya">Tonya</span></td><td><span class="duty-cell" data-name="Arthur">Arthur</span></td><td><span class="duty-cell" data-name="Nikki">Nikki</span></td><td><span class="duty-cell" data-name="Hannah">Hannah</span></td></tr>
+                <tr><td class="area-name">Basketball Courts</td><td><span class="duty-cell" data-name="Tamika">Tamika</span></td><td><span class="duty-cell" data-name="Adele">Adele</span></td><td><span class="duty-cell" data-name="Kristel">Kristel</span></td><td><span class="duty-cell" data-name="Sam">Sam</span></td><td><span class="duty-cell" data-name="Callie">Callie</span></td></tr>
+                <tr><td class="area-name">South Oval / Green / Sandpits</td><td><span class="duty-cell" data-name="Eleanor">Eleanor</span></td><td><span class="duty-cell" data-name="Beck">Beck</span></td><td><span class="duty-cell" data-name="Megan">Megan</span></td><td><span class="duty-cell" data-name="Sharon">Sharon</span></td><td><span class="duty-cell" data-name="Beck">Beck</span></td></tr>
+                <tr><td class="area-name">Nature Play</td><td><span class="duty-cell" data-name="Nicole">Nicole</span></td><td><span class="duty-cell" data-name="Arthur">Arthur</span></td><td><span class="duty-cell" data-name="Katherine">Katherine</span></td><td><span class="duty-cell" data-name="Tehya">Tehya</span></td><td><span class="duty-cell" data-name="Daniel">Daniel</span></td></tr>
+                <tr><td class="area-name">JP Playground</td><td><span class="duty-cell" data-name="Lauren">Lauren</span></td><td><span class="duty-cell" data-name="Megan">Megan</span></td><td><span class="duty-cell" data-name="Nikki">Nikki</span></td><td><span class="duty-cell" data-name="Lauren">Lauren</span></td><td><span class="duty-cell" data-name="Katherine">Katherine</span></td></tr>
+                <tr><td class="area-name">Kangaroo Building (2)</td><td><span class="duty-cell" data-name="Hannah">Hannah</span></td><td><span class="duty-cell" data-name="Melissa">Melissa</span></td><td><span class="duty-cell" data-name="Hannah">Hannah</span></td><td><span class="duty-cell" data-name="Keely">Keely</span></td><td><span class="duty-cell" data-name="Sara">Sara</span></td></tr>
+              </tbody>
+            </table>
+            </div></div>
+          </div>
+
+          <!-- Lunch -->
+          <div class="duty-period">
+            <div class="duty-period-header">
+              <h3>Lunch</h3>
+              <span class="duty-time">12:50 – 1:20</span>
+            </div>
+            <div class="home-card"><div class="daybook-table-wrap">
+            <table class="duty-table">
+              <thead><tr><th>Area</th><th>Monday</th><th>Tuesday</th><th>Wednesday</th><th>Thursday</th><th>Friday</th></tr></thead>
+              <tbody>
+                <tr><td class="area-name">North Oval</td><td><span class="duty-cell" data-name="Callie">Callie</span></td><td><span class="duty-cell" data-name="Sam">Sam</span></td><td><span class="duty-cell" data-name="Nicole">Nicole</span></td><td><span class="duty-cell" data-name="Mike">Mike</span></td><td><span class="duty-cell" data-name="Sam">Sam</span></td></tr>
+                <tr><td class="area-name">Basketball</td><td><span class="duty-cell" data-name="Jess">Jess</span></td><td><span class="duty-cell" data-name="Tehya">Tehya</span></td><td><span class="duty-cell" data-name="Carolyne">Carolyne</span></td><td><span class="duty-cell" data-name="Tonya">Tonya</span></td><td><span class="duty-cell" data-name="Arthur">Arthur</span></td></tr>
+                <tr><td class="area-name">South Oval / Green / Sandpits</td><td><span class="duty-cell" data-name="Laura">Laura</span></td><td><span class="duty-cell" data-name="Tamika">Tamika</span></td><td><span class="duty-cell" data-name="Tonya">Tonya</span></td><td><span class="duty-cell" data-name="Callie">Callie</span></td><td><span class="duty-cell" data-name="Keely">Keely</span></td></tr>
+                <tr><td class="area-name">Nature Play</td><td><span class="duty-cell" data-name="Katherine">Katherine</span></td><td><span class="duty-cell" data-name="Nikki">Nikki</span></td><td><span class="duty-cell" data-name="Sharon">Sharon</span></td><td><span class="duty-cell" data-name="Megan">Megan</span></td><td><span class="duty-cell" data-name="Lauren">Lauren</span></td></tr>
+                <tr><td class="area-name">JP Playground</td><td><span class="duty-cell" data-name="Beck">Beck</span></td><td><span class="duty-cell" data-name="Carolyne">Carolyne</span></td><td><span class="duty-cell" data-name="Eleanor">Eleanor</span></td><td><span class="duty-cell" data-name="Sara">Sara</span></td><td><span class="duty-cell" data-name="Steph">Steph</span></td></tr>
+                <tr><td class="area-name">Library</td><td><span class="duty-cell" data-name="Adele">Adele</span></td><td><span class="duty-cell" data-name="Gabby">Gabby</span></td><td><span class="duty-cell" data-name="Karine">Karine</span></td><td><span class="duty-cell" data-name="Tamika">Tamika</span></td><td><span class="duty-cell" data-name="Kristel">Kristel</span></td></tr>
+              </tbody>
+            </table>
+            </div></div>
+          </div>
+
+          <!-- After School -->
+          <div class="duty-period">
+            <div class="duty-period-header">
+              <h3>After School</h3>
+              <span class="duty-time">3:00 – 3:20</span>
+            </div>
+            <div class="home-card"><div class="daybook-table-wrap">
+            <table class="duty-table">
+              <thead><tr><th>Area</th><th>Monday</th><th>Tuesday</th><th>Wednesday</th><th>Thursday</th><th>Friday</th></tr></thead>
+              <tbody>
+                <tr><td class="area-name">Lorikeet Building</td><td><span class="duty-cell" data-name="Belinda">Belinda</span></td><td><span class="duty-cell" data-name="Kristel">Kristel</span></td><td><span class="duty-cell" data-name="Katy">Katy</span></td><td><span class="duty-cell" data-name="Sara">Sara</span></td><td><span class="duty-cell" data-name="Belinda">Belinda</span></td></tr>
+                <tr><td class="area-name">Koala Building</td><td><span class="duty-cell" data-name="Daniel">Daniel</span></td><td><span class="duty-cell" data-name="Norma">Norma</span></td><td><span class="duty-cell" data-name="Sharon">Sharon</span></td><td><span class="duty-cell" data-name="Daniel">Daniel</span></td><td><span class="duty-cell" data-name="Emily">Emily</span></td></tr>
+              </tbody>
+            </table>
+            </div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SPECIALIST TIMETABLE PANE -->
+      <div id="tt-specialist" class="tt-pane">
+        <div class="tt-highlight-bar">
+          <label>🔍 Highlight my lessons:</label>
+          <select id="spec-name-select" onchange="highlightSpec(this.value)">
+            <option value="">— Select your name —</option>
+            <option>Adele</option><option>Arthur</option><option>Beck</option><option>Callie</option>
+            <option>Carolyne</option><option>Danni</option><option>Eleanor</option><option>Jess</option>
+            <option>Karine</option><option>Katherine</option><option>Kirrabelle</option><option>Kristel</option>
+            <option>Lauren</option><option>Lisa</option><option>Megan</option><option>Mike</option>
+            <option>Nikki</option><option>Nicole</option><option>Norma</option><option>Sam</option>
+            <option>Sharon</option><option>Sim</option><option>Steph</option><option>Tamika</option>
+            <option>Tehya</option><option>Tonya</option>
+          </select>
+          <button class="tt-clear" onclick="document.getElementById('spec-name-select').value='';highlightSpec('')">Clear</button>
+        </div>
+        <div class="home-card">
+          <div class="spec-table-wrap">
+            <table class="spec-table">
+              <thead>
+                <tr>
+                  <th rowspan="2" style="width:80px">Time</th>
+                  <th colspan="4" class="day-header">Monday</th>
+                  <th colspan="4" class="day-header">Tuesday</th>
+                  <th colspan="4" class="day-header">Wednesday</th>
+                  <th colspan="4" class="day-header">Thursday</th>
+                  <th colspan="4" class="day-header">Friday</th>
+                </tr>
+                <tr>
+                  <th>Auslan</th><th>PE</th><th>Science</th><th>Music</th>
+                  <th>Auslan</th><th>PE</th><th>Science</th><th>Music</th>
+                  <th>Chinese</th><th>PE</th><th>Science</th><th>Music</th>
+                  <th>Chinese</th><th>PE</th><th>Science</th><th>Music</th>
+                  <th>Chinese</th><th>PE</th><th>Science</th><th>Music</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="lesson-label">8:40–8:50</td>
+                  <td data-s="Norma">Norma</td><td data-s="Kerry">Kerry</td><td data-s="Danni">Danni</td><td data-s="Kirrabelle">Kirrabelle</td>
+                  <td data-s="Norma">Norma</td><td data-s="Kerry">Kerry</td><td data-s="Danni">Danni</td><td data-s="Kirrabelle">Kirrabelle</td>
+                  <td data-s="Emily">Emily</td><td data-s="Kerry">Kerry</td><td data-s="Katy">Katy</td><td data-s="Lisa">Lisa</td>
+                  <td data-s="Emily">Emily</td><td data-s="Kerry">Kerry</td><td data-s="Katy">Katy</td><td data-s="Kirrabelle">Kirrabelle</td>
+                  <td data-s="Emily">Emily</td><td data-s="Kerry">Kerry</td><td data-s="Katy">Katy</td><td data-s="Kirrabelle">Kirrabelle</td>
+                </tr>
+                <tr>
+                  <td class="lesson-label">L1 8:50–9:40</td>
+                  <td class="nit">NIT</td><td class="nit">NIT</td><td class="nit">NIT</td><td class="nit">NIT</td>
+                  <td class="nit">NIT</td><td class="nit">NIT</td><td class="nit">NIT</td><td class="nit">NIT</td>
+                  <td data-s="Tamika">Tamika Yr3</td><td class="nit">NIT</td><td class="nit">NIT</td><td class="nit">NIT</td>
+                  <td data-s="Carolyne">Carolyne Yr1</td><td class="nit">NIT</td><td class="nit">NIT</td><td class="nit">NIT</td>
+                  <td data-s="Sharon">Sharon Rm7</td><td class="nit">NIT</td><td class="nit">NIT</td><td>Jnr Choir</td>
+                </tr>
+                <tr>
+                  <td class="lesson-label">L2 9:40–10:30</td>
+                  <td data-s="Tehya">Tehya Yr¾</td><td data-s="Sam">Sam Yr3</td><td data-s="Katherine">Kath. Rec</td><td data-s="Tamika">Tamika Yr3</td>
+                  <td data-s="Tonya">Tonya Yr6</td><td>PE Admin</td><td data-s="Eleanor">Eleanor Yr2</td><td data-s="Megan">Megan Yr½</td>
+                  <td data-s="Karine">Karine Yr2</td><td>PE Admin</td><td data-s="Kristel">Kristel Yr5</td><td data-s="Nikki">Nikki UP</td>
+                  <td data-s="Nicole">Nicole Rec</td><td data-s="Adele">Adele Yr5</td><td data-s="Tonya">Tonya Yr6</td><td data-s="Arthur">Arthur Yr6</td>
+                  <td data-s="Lauren">Lauren Yr1</td><td data-s="Arthur">Arthur Yr6</td><td data-s="Sam">Sam Yr3</td><td data-s="Kristel">Kristel Yr5</td>
+                </tr>
+                <tr><td colspan="21" class="recess">— Recess 10:30–11:00 —</td></tr>
+                <tr>
+                  <td class="lesson-label">L3 11:00–11:50</td>
+                  <td data-s="Sharon">Sharon JP</td><td data-s="Beck">Beck Rec</td><td data-s="Nicole">Nicole Rec</td><td data-s="Katherine">Kath. Rec</td>
+                  <td data-s="Kristel">Kristel Yr5</td><td data-s="Adele">Adele Yr5</td><td data-s="Lauren">Lauren Yr1</td><td data-s="Sam">Sam Yr3</td>
+                  <td data-s="Beck">Beck Rec</td><td data-s="Jess">Jess Yr4</td><td data-s="Tehya">Tehya Yr¾</td><td data-s="Sharon">Sharon JP</td>
+                  <td data-s="Sam">Sam Yr3</td><td data-s="Kristel">Kristel Yr5</td><td data-s="Callie">Callie Yr4</td><td data-s="Tonya">Tonya Yr6</td>
+                  <td data-s="Megan">Megan Yr½</td><td data-s="Kristel">Kristel Yr5</td><td data-s="Callie">Callie Yr4</td><td data-s="Adele">Adele Yr5</td>
+                </tr>
+                <tr>
+                  <td class="lesson-label">L4 11:50–12:40</td>
+                  <td data-s="Adele">Adele Yr5</td><td data-s="Karine">Karine Yr2</td><td data-s="Megan">Megan Yr½</td><td data-s="Eleanor">Eleanor Yr2</td>
+                  <td data-s="Jess">Jess Yr4</td><td data-s="Tamika">Tamika Yr3</td><td data-s="Nikki">Nikki UP</td><td>Snr Choir</td>
+                  <td data-s="Eleanor">Eleanor Yr2</td><td data-s="Tonya">Tonya Yr6</td><td data-s="Arthur">Arthur Yr6</td><td data-s="Megan">Megan Yr½</td>
+                  <td data-s="Beck">Beck Rec</td><td data-s="Lauren">Lauren Yr1</td><td data-s="Nikki">Nikki UP</td><td data-s="Callie">Callie Yr4</td>
+                  <td data-s="Steph">Steph Yr2</td><td data-s="Sim">Sim Yr1</td><td data-s="Tamika">Tamika Yr3</td><td class="nit">NIT</td>
+                </tr>
+                <tr><td colspan="21" class="recess">— Lunch 12:40–1:20 —</td></tr>
+                <tr>
+                  <td class="lesson-label">L5 1:20–2:10</td>
+                  <td data-s="Callie">Callie Yr4</td><td data-s="Arthur">Arthur Yr6</td><td data-s="Eleanor">Eleanor Yr2</td><td data-s="Jess">Jess Yr4</td>
+                  <td data-s="Arthur">Arthur Yr6</td><td data-s="Nikki">Nikki UP</td><td data-s="Beck">Beck Rec</td><td data-s="Carolyne">Carolyne Yr1</td>
+                  <td data-s="Nicole">Nicole Rec</td><td data-s="Katherine">Kath. Rec</td><td data-s="Sam">Sam Yr3</td><td data-s="Lauren">Lauren Yr1</td>
+                  <td data-s="Katherine">Kath. Rec</td><td data-s="Sharon">Sharon JP</td><td data-s="Tamika">Tamika Yr3</td><td data-s="Tehya">Tehya Yr¾</td>
+                  <td data-s="Katherine">Kath. Rec</td><td data-s="Nicole">Nicole Rec</td><td data-s="Tehya">Tehya Yr¾</td><td>Music Admin</td>
+                </tr>
+                <tr>
+                  <td class="lesson-label">L6 2:10–3:00</td>
+                  <td data-s="Nikki">Nikki UP</td><td data-s="Tonya">Tonya Yr6</td><td data-s="Carolyne">Carolyne Yr1</td><td data-s="Lauren">Lauren Yr1</td>
+                  <td data-s="Sharon">Sharon JP</td><td data-s="Tehya">Tehya Yr¾</td><td data-s="Karine">Karine Yr2</td><td data-s="Nicole">Nicole Rec</td>
+                  <td class="nit">NIT</td><td data-s="Callie">Callie Yr4</td><td data-s="Adele">Adele Yr5</td><td data-s="Carolyne">Carolyne Yr1</td>
+                  <td class="nit">NIT</td><td data-s="Megan">Megan Yr½</td><td data-s="Mike">Mike Yr4</td><td data-s="Steph">Steph Yr2</td>
+                  <td class="nit">NIT</td><td data-s="Eleanor">Eleanor Yr2</td><td data-s="Mike">Mike Yr4</td><td data-s="Beck">Beck Rec</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -1827,6 +2082,9 @@ const firebaseConfig = {
   window.daybookDeleteRow   = daybookDeleteRow;
   window.daybookUpdateRow   = daybookUpdateRow;
   window.daybookPickDate    = daybookPickDate;
+  window.ttShowPane         = ttShowPane;
+  window.highlightDuties    = highlightDuties;
+  window.highlightSpec      = highlightSpec;
   window.renderHomeView     = renderHomeView;
 
   // ══════════════════════════════════════
@@ -1985,6 +2243,7 @@ const firebaseConfig = {
       const t = b.textContent.toLowerCase();
       if (
         (view === 'home'      && t.includes('home')) ||
+        (view === 'timetables' && t.includes('timetable')) ||
         (view === 'daybook'   && t.includes('daybook')) ||
         (view === 'dashboard' && t.includes('ticket')) ||
         (view === 'reports'   && t.includes('report')) ||
@@ -1993,6 +2252,7 @@ const firebaseConfig = {
     });
     if (view === 'reports') generateReport();
     if (view === 'admin')   loadAdminUsers();
+    if (view === 'timetables') { /* static, no load needed */ }
     if (view === 'daybook') { 
       daybookCurrentDate = new Date(); 
       daybookSkipWeekend(daybookCurrentDate, -1);
@@ -2128,7 +2388,9 @@ const firebaseConfig = {
     const today = daybookDateKey(new Date());
     const key   = daybookDateKey(daybookCurrentDate);
     label.textContent = daybookFriendlyDate(daybookCurrentDate);
-    document.getElementById('daybook-next-btn').disabled = key >= today;
+    document.getElementById('daybook-next-btn').disabled = false;
+    // Only show Edit button for today or future days
+    document.getElementById('daybook-edit-btn').style.display = key >= today ? '' : 'none';
 
     const snap = await getDoc(doc(db, 'daybook', key));
     daybookCurrentData = snap.exists() ? snap.data() : { rows: [], dutyTeam: '', pblFocus: '', assembly: '', notices: '' };
@@ -2190,7 +2452,7 @@ const firebaseConfig = {
   function daybookToggleEdit() {
     const today = daybookDateKey(new Date());
     const key   = daybookDateKey(daybookCurrentDate);
-    if (key !== today) { showToast('You can only edit today\'s daybook.', 'error'); return; }
+    if (key < today) { showToast('Past daybooks are read-only.', 'error'); return; }
     daybookIsEditing = !daybookIsEditing;
     document.getElementById('daybook-edit-btn').textContent = daybookIsEditing ? '✕ Cancel' : '✏️ Edit';
     document.getElementById('daybook-save-bar').style.display  = daybookIsEditing ? 'flex' : 'none';
@@ -2912,6 +3174,43 @@ const firebaseConfig = {
   }
   function doLogout() { if (window._doLogoutModule) window._doLogoutModule(); }
   function doReset()  { if (window._doResetModule)  window._doResetModule(); }
+  // ══════════════════════════════════════
+  // TIMETABLES
+  // ══════════════════════════════════════
+  function ttShowPane(pane) {
+    document.querySelectorAll('.tt-pane').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tt-tab').forEach(t => t.classList.remove('active'));
+    document.getElementById('tt-' + pane).classList.add('active');
+    document.querySelectorAll('.tt-tab').forEach(t => {
+      if (t.textContent.toLowerCase().includes(pane === 'yard-duty' ? 'yard' : 'spec')) t.classList.add('active');
+    });
+  }
+
+  function highlightDuties(name) {
+    const cells = document.querySelectorAll('.duty-cell');
+    let count = 0;
+    cells.forEach(cell => {
+      if (name && cell.dataset.name === name) {
+        cell.classList.add('highlighted');
+        count++;
+      } else {
+        cell.classList.remove('highlighted');
+      }
+    });
+    const countEl = document.getElementById('duty-count');
+    if (countEl) countEl.textContent = name && count > 0 ? count + ' duties this week' : '';
+  }
+
+  function highlightSpec(name) {
+    const cells = document.querySelectorAll('.spec-table td[data-s]');
+    cells.forEach(cell => {
+      if (name && cell.dataset.s === name) {
+        cell.classList.add('highlighted');
+      } else {
+        cell.classList.remove('highlighted');
+      }
+    });
+  }
 </script>
 
 <!-- EmailJS SDK -->

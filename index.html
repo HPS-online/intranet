@@ -1223,9 +1223,9 @@
           <input type="password" id="login-password" placeholder="Your password" />
         </div>
         <div id="login-error" style="display:none" class="error-msg"></div>
-        <button class="btn btn-primary" id="sign-in-btn">Sign In</button>
+        <button class="btn btn-primary" id="sign-in-btn" onclick="doLogin()">Sign In</button>
         <p style="font-size:12px;text-align:center;color:var(--subtext)">
-          Forgot password? <a href="#" id="reset-link" style="color:var(--navy)">Send reset link</a>
+          Forgot password? <a href="#" id="reset-link" onclick="doReset()" style="color:var(--navy)">Send reset link</a>
         </p>
       </div>
 
@@ -1791,6 +1791,9 @@ const firebaseConfig = {
   // Expose to window for onclick handlers
   window.switchAuthTab      = switchAuthTab;
   window.doLogin            = doLogin;
+  window._doLoginModule     = doLogin;
+  window._doLogoutModule    = doLogout;
+  window._doResetModule     = doReset;
   window.doReset            = doReset;
   window.doLogout           = doLogout;
   window.showView           = showView;
@@ -2861,6 +2864,19 @@ const firebaseConfig = {
     if (!str) return '';
     return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   }
+</script>
+
+<!-- Login bridge — plain script so onclick always works regardless of module loading -->
+<script>
+  function doLogin() {
+    var btn = document.getElementById('sign-in-btn');
+    if (btn) btn.click();
+    // If module not loaded yet, retry
+    if (window._doLoginModule) { window._doLoginModule(); return; }
+    setTimeout(function() { if (window._doLoginModule) window._doLoginModule(); }, 500);
+  }
+  function doLogout() { if (window._doLogoutModule) window._doLogoutModule(); }
+  function doReset()  { if (window._doResetModule)  window._doResetModule(); }
 </script>
 
 <!-- EmailJS SDK -->

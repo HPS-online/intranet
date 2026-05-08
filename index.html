@@ -1223,9 +1223,9 @@
           <input type="password" id="login-password" placeholder="Your password" />
         </div>
         <div id="login-error" style="display:none" class="error-msg"></div>
-        <button class="btn btn-primary" onclick="doLogin()">Sign In</button>
+        <button class="btn btn-primary" id="sign-in-btn">Sign In</button>
         <p style="font-size:12px;text-align:center;color:var(--subtext)">
-          Forgot password? <a href="#" onclick="doReset()" style="color:var(--navy)">Send reset link</a>
+          Forgot password? <a href="#" id="reset-link" style="color:var(--navy)">Send reset link</a>
         </p>
       </div>
 
@@ -1261,7 +1261,7 @@
     </div>
     <div class="topbar-right">
       <span class="user-chip">Signed in as <strong id="topbar-name">—</strong></span>
-      <button class="btn btn-outline btn-sm" style="color:#fff;border-color:rgba(255,255,255,0.3)" onclick="doLogout()">Sign Out</button>
+      <button class="btn btn-outline btn-sm" style="color:#fff;border-color:rgba(255,255,255,0.3)" id="sign-out-btn">Sign Out</button>
     </div>
   </div>
 
@@ -1817,6 +1817,26 @@ const firebaseConfig = {
   window.daybookDeleteRow   = daybookDeleteRow;
   window.daybookUpdateRow   = daybookUpdateRow;
   window.renderHomeView     = renderHomeView;
+
+  // ══════════════════════════════════════
+  // DOM EVENT LISTENERS (no window needed)
+  // ══════════════════════════════════════
+  document.addEventListener('DOMContentLoaded', () => {
+    const signInBtn  = document.getElementById('sign-in-btn');
+    const resetLink  = document.getElementById('reset-link');
+    const signOutBtn = document.getElementById('sign-out-btn');
+    if (signInBtn)  signInBtn.addEventListener('click', doLogin);
+    if (resetLink)  resetLink.addEventListener('click', (e) => { e.preventDefault(); doReset(); });
+    if (signOutBtn) signOutBtn.addEventListener('click', doLogout);
+
+    // Allow Enter key on login form
+    document.getElementById('login-password').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') doLogin();
+    });
+    document.getElementById('login-email').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') doLogin();
+    });
+  });
 
   // ══════════════════════════════════════
   // AUTH STATE

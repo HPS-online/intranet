@@ -2016,7 +2016,7 @@ const firebaseConfig = {
     const el = document.getElementById('home-daybook-preview');
     const noticesEl = document.getElementById('home-notices-body');
     if (!snap.exists()) {
-      el.innerHTML = '<div class="db-empty">No daybook entry yet for today. <a href="#" onclick="showView('daybook')">Add one →</a></div>';
+      el.innerHTML = '<div class="db-empty">No daybook entry yet for today. <a href="#" onclick="showView(\'daybook\')">Add one \u2192</a></div>';
       noticesEl.innerHTML = '<div class="db-empty">No notices for today.</div>';
       return;
     }

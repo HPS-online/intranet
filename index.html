@@ -1720,6 +1720,9 @@
      FIREBASE + APP SCRIPT
 ════════════════════════════════════════ -->
 <script type="module">
+  // ── GLOBAL ERROR CATCH ──
+  window.addEventListener('error', e => console.error('GLOBAL ERROR:', e.message, e.filename, e.lineno));
+  window.addEventListener('unhandledrejection', e => console.error('UNHANDLED PROMISE:', e.reason));
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import {
     getAuth,
@@ -2869,11 +2872,13 @@ const firebaseConfig = {
 <!-- Login bridge — plain script so onclick always works regardless of module loading -->
 <script>
   function doLogin() {
-    var btn = document.getElementById('sign-in-btn');
-    if (btn) btn.click();
-    // If module not loaded yet, retry
-    if (window._doLoginModule) { window._doLoginModule(); return; }
-    setTimeout(function() { if (window._doLoginModule) window._doLoginModule(); }, 500);
+    if (window._doLoginModule) { 
+      window._doLoginModule(); 
+    } else {
+      setTimeout(function() { 
+        if (window._doLoginModule) window._doLoginModule();
+      }, 800);
+    }
   }
   function doLogout() { if (window._doLogoutModule) window._doLogoutModule(); }
   function doReset()  { if (window._doResetModule)  window._doResetModule(); }

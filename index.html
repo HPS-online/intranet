@@ -1819,24 +1819,13 @@ const firebaseConfig = {
   window.renderHomeView     = renderHomeView;
 
   // ══════════════════════════════════════
-  // DOM EVENT LISTENERS (no window needed)
+  // DOM EVENT LISTENERS
   // ══════════════════════════════════════
-  document.addEventListener('DOMContentLoaded', () => {
-    const signInBtn  = document.getElementById('sign-in-btn');
-    const resetLink  = document.getElementById('reset-link');
-    const signOutBtn = document.getElementById('sign-out-btn');
-    if (signInBtn)  signInBtn.addEventListener('click', doLogin);
-    if (resetLink)  resetLink.addEventListener('click', (e) => { e.preventDefault(); doReset(); });
-    if (signOutBtn) signOutBtn.addEventListener('click', doLogout);
-
-    // Allow Enter key on login form
-    document.getElementById('login-password').addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') doLogin();
-    });
-    document.getElementById('login-email').addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') doLogin();
-    });
-  });
+  document.getElementById('sign-in-btn').addEventListener('click', doLogin);
+  document.getElementById('reset-link').addEventListener('click', (e) => { e.preventDefault(); doReset(); });
+  document.getElementById('sign-out-btn').addEventListener('click', doLogout);
+  document.getElementById('login-password').addEventListener('keydown', (e) => { if (e.key === 'Enter') doLogin(); });
+  document.getElementById('login-email').addEventListener('keydown', (e) => { if (e.key === 'Enter') doLogin(); });
 
   // ══════════════════════════════════════
   // AUTH STATE
@@ -1845,25 +1834,32 @@ const firebaseConfig = {
   // AUTH STATE — allowlist check
   // ══════════════════════════════════════
   onAuthStateChanged(auth, async user => {
+    console.log('AUTH STATE CHANGED — user:', user ? user.email : 'null');
     if (user) {
       // 1. Must be a school email
       if (!user.email.endsWith('@schools.sa.edu.au')) {
+        console.log('BLOCKED: not a school email');
         await signOut(auth);
         showAuthError('login-error', 'Only @schools.sa.edu.au accounts are allowed.');
         return;
       }
 
       // 2. Ensure bootstrap admin exists in Firestore
+      console.log('Checking bootstrap admin...');
       await ensureBootstrapAdmin();
 
       // 3. Check allowlist
+      console.log('Checking allowlist for:', user.email);
       const allowed = await isUserAllowed(user.email);
+      console.log('Allowlist result:', allowed);
       if (!allowed) {
+        console.log('BLOCKED: not in allowlist');
         await signOut(auth);
         showAuthError('login-error', 'Your account has not been approved. Please contact your administrator.');
         return;
       }
 
+      console.log('LOGIN SUCCESS — role:', allowed.role);
       currentUser    = user;
       currentIsAdmin = allowed.role === 'admin';
 
@@ -1871,7 +1867,6 @@ const firebaseConfig = {
       document.getElementById('app-screen').style.display  = 'block';
       document.getElementById('topbar-name').textContent   = user.displayName || user.email;
 
-      // Show/hide admin nav
       document.getElementById('nav-admin').style.display = currentIsAdmin ? '' : 'none';
 
       setGreeting();
@@ -1881,6 +1876,7 @@ const firebaseConfig = {
       showView('home');
 
     } else {
+      console.log('AUTH STATE: signed out');
       currentUser    = null;
       currentIsAdmin = false;
       document.getElementById('auth-screen').style.display = 'flex';

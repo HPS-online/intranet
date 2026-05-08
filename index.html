@@ -990,6 +990,166 @@
       .topbar-nav { display: none; }
     }
 
+    /* ── HOME PAGE ── */
+    .home-hero {
+      background: linear-gradient(135deg, var(--navy3) 0%, var(--navy) 100%);
+      color: var(--white);
+      padding: 28px 32px;
+      border-radius: 12px;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .home-hero h1 { font-size: 22px; font-weight: 600; margin-bottom: 4px; }
+    .home-hero p  { font-size: 14px; color: rgba(255,255,255,0.75); }
+    .home-date-badge {
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 8px;
+      padding: 10px 18px;
+      text-align: center;
+      font-size: 13px;
+      color: rgba(255,255,255,0.85);
+    }
+    .home-date-badge strong { display: block; font-size: 20px; color: var(--gold2); }
+
+    .quick-tiles {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+    .quick-tile {
+      background: var(--white);
+      border: 1px solid var(--gray2);
+      border-radius: 10px;
+      padding: 18px 10px;
+      text-align: center;
+      cursor: pointer;
+      transition: box-shadow 0.15s, transform 0.15s;
+      text-decoration: none;
+      color: var(--navy);
+    }
+    .quick-tile:hover { box-shadow: 0 4px 16px rgba(36,43,99,0.12); transform: translateY(-2px); }
+    .quick-tile .tile-icon { font-size: 26px; margin-bottom: 8px; }
+    .quick-tile .tile-label { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--navy); }
+
+    .home-grid {
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      gap: 20px;
+      align-items: start;
+    }
+    @media (max-width: 900px) { .home-grid { grid-template-columns: 1fr; } }
+
+    .home-card {
+      background: var(--white);
+      border: 1px solid var(--gray2);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .home-card-header {
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--gray2);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .home-card-header h3 { font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--navy); }
+    .home-card-body { padding: 16px 18px; }
+
+    .daybook-preview-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr;
+      gap: 0;
+      font-size: 12px;
+      border-bottom: 1px solid var(--gray2);
+      padding: 8px 0;
+    }
+    .daybook-preview-row:last-child { border-bottom: none; }
+    .daybook-preview-row .col-absent { font-weight: 600; color: var(--navy); }
+    .daybook-preview-row .col-duty   { color: #555; }
+    .daybook-preview-row .col-nit    { color: #555; font-size: 11px; }
+    .daybook-col-head {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--gray3);
+      padding-bottom: 6px;
+      border-bottom: 2px solid var(--navy);
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr;
+      gap: 0;
+    }
+
+    .notice-item {
+      border-left: 3px solid var(--gold2);
+      padding: 8px 12px;
+      margin-bottom: 10px;
+      background: #fffbf0;
+      border-radius: 0 6px 6px 0;
+      font-size: 13px;
+    }
+    .notice-item:last-child { margin-bottom: 0; }
+    .notice-item.urgent { border-color: #dc2626; background: #fef2f2; }
+
+    /* ── DAYBOOK VIEW ── */
+    .daybook-nav {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    .daybook-nav button { background: var(--white); border: 1px solid var(--gray2); border-radius: 6px; padding: 6px 14px; cursor: pointer; font-size: 13px; color: var(--navy); }
+    .daybook-nav button:hover { background: var(--gray1); }
+    .daybook-date-label { font-size: 16px; font-weight: 700; color: var(--navy); min-width: 180px; text-align: center; }
+
+    .daybook-table-wrap { overflow-x: auto; margin-bottom: 24px; }
+    .daybook-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .daybook-table th { background: var(--navy); color: var(--white); padding: 10px 12px; text-align: left; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .daybook-table td { padding: 10px 12px; border-bottom: 1px solid var(--gray2); vertical-align: top; }
+    .daybook-table tr:last-child td { border-bottom: none; }
+    .daybook-table tr:hover td { background: #f8f8fc; }
+    .daybook-table input, .daybook-table textarea {
+      width: 100%; border: 1px solid var(--gray2); border-radius: 6px; padding: 6px 8px; font-size: 12px; font-family: inherit; resize: vertical;
+    }
+    .daybook-table input:focus, .daybook-table textarea:focus { outline: none; border-color: var(--navy); }
+
+    .daybook-info-section {
+      background: var(--white);
+      border: 1px solid var(--gray2);
+      border-radius: 12px;
+      padding: 18px;
+      margin-bottom: 20px;
+    }
+    .daybook-info-section h3 { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--navy); margin-bottom: 12px; }
+
+    .db-info-field { margin-bottom: 12px; }
+    .db-info-field label { font-size: 12px; font-weight: 600; color: var(--gray3); display: block; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.4px; }
+    .db-info-field input, .db-info-field textarea {
+      width: 100%; border: 1px solid var(--gray2); border-radius: 6px; padding: 8px 10px; font-size: 13px; font-family: inherit; resize: vertical;
+    }
+    .db-info-field input:focus, .db-info-field textarea:focus { outline: none; border-color: var(--navy); }
+
+    .daybook-view-mode .daybook-table input,
+    .daybook-view-mode .daybook-table textarea,
+    .daybook-view-mode .db-info-field input,
+    .daybook-view-mode .db-info-field textarea {
+      border-color: transparent; background: transparent; resize: none; padding: 0; pointer-events: none;
+    }
+    .edit-row-btn { background: none; border: none; cursor: pointer; color: var(--gold2); font-size: 16px; padding: 2px 6px; }
+    .edit-row-btn:hover { color: var(--navy); }
+    .add-row-btn { font-size: 12px; color: var(--navy); background: none; border: 1px dashed var(--gray2); border-radius: 6px; padding: 6px 14px; cursor: pointer; margin-top: 8px; }
+    .add-row-btn:hover { background: var(--gray1); }
+    .daybook-save-bar { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+
+    .db-empty { text-align: center; color: var(--gray3); font-size: 13px; padding: 30px 0; }
+
     .spinner {
       border: 3px solid var(--gray2);
       border-top-color: var(--navy);
@@ -1085,7 +1245,6 @@
   <div class="topbar">
     <div class="topbar-left">
       <div class="topbar-logo">
-        <img src="https://hps-online.github.io/intranet/logo.png" alt="" class="topbar-logo-img" onerror="this.style.display='none'" />
         <div class="topbar-logo-text">
           <span><strong style="font-weight:800">HIGHBURY</strong> <span style="font-weight:400">PRIMARY SCHOOL</span></span>
           <span>Staff Intranet</span>
@@ -1093,8 +1252,9 @@
       </div>
       <div class="topbar-divider"></div>
       <nav class="topbar-nav">
-        <button class="nav-btn active" onclick="showView('dashboard')">Dashboard</button>
-        <button class="nav-btn" onclick="showView('tickets')">All Tickets</button>
+        <button class="nav-btn active" onclick="showView('home')">🏠 Home</button>
+        <button class="nav-btn" onclick="showView('daybook')">📋 Daybook</button>
+        <button class="nav-btn" onclick="showView('dashboard')">Tickets</button>
         <button class="nav-btn" onclick="showView('reports')">Reports</button>
         <button class="nav-btn admin-only" id="nav-admin" onclick="showView('admin')" style="display:none;color:#f5ac1c;border:1px solid rgba(245,172,28,0.35)">⚙ Admin</button>
       </nav>
@@ -1107,8 +1267,154 @@
 
   <div class="main">
 
+    <!-- ── HOME VIEW ── -->
+    <div id="view-home" class="view active">
+
+      <div class="home-hero">
+        <div>
+          <h1 id="home-greeting">Good morning, —</h1>
+          <p id="home-subtext">Welcome to Highbury Primary Staff Intranet</p>
+        </div>
+        <div class="home-date-badge">
+          <strong id="home-day">—</strong>
+          <span id="home-date-full">—</span>
+        </div>
+      </div>
+
+      <div class="quick-tiles">
+        <div class="quick-tile" onclick="showView('daybook')">
+          <div class="tile-icon">📋</div>
+          <div class="tile-label">Daybook</div>
+        </div>
+        <div class="quick-tile" onclick="showView('dashboard')">
+          <div class="tile-icon">🎫</div>
+          <div class="tile-label">Tickets</div>
+        </div>
+        <div class="quick-tile" onclick="openNewTicketModal()">
+          <div class="tile-icon">➕</div>
+          <div class="tile-label">New Ticket</div>
+        </div>
+        <div class="quick-tile" onclick="showView('reports')">
+          <div class="tile-icon">📊</div>
+          <div class="tile-label">Reports</div>
+        </div>
+        <div class="quick-tile" onclick="window.open('https://www.education.sa.gov.au','_blank')">
+          <div class="tile-icon">🏛️</div>
+          <div class="tile-label">DECD Portal</div>
+        </div>
+        <div class="quick-tile" onclick="window.open('https://app.seesawme.net','_blank')">
+          <div class="tile-icon">👁️</div>
+          <div class="tile-label">Seesaw</div>
+        </div>
+        <div class="quick-tile" onclick="window.open('https://portal.schools.sa.edu.au','_blank')">
+          <div class="tile-icon">🖥️</div>
+          <div class="tile-label">Schools Portal</div>
+        </div>
+        <div class="quick-tile" onclick="window.open('https://olm.schools.sa.edu.au','_blank')">
+          <div class="tile-icon">📅</div>
+          <div class="tile-label">OLM Leave</div>
+        </div>
+      </div>
+
+      <div class="home-grid">
+        <div class="home-card">
+          <div class="home-card-header">
+            <h3>📋 Today's Daybook</h3>
+            <button class="btn btn-sm" style="font-size:12px;padding:4px 12px" onclick="showView('daybook')">View / Edit →</button>
+          </div>
+          <div class="home-card-body" id="home-daybook-preview">
+            <div class="db-empty">Loading today's daybook…</div>
+          </div>
+        </div>
+
+        <div>
+          <div class="home-card" style="margin-bottom:16px">
+            <div class="home-card-header"><h3>📣 Daily Notices</h3></div>
+            <div class="home-card-body" id="home-notices-body">
+              <div class="db-empty">No notices for today.</div>
+            </div>
+          </div>
+          <div class="home-card">
+            <div class="home-card-header"><h3>🎫 Open Tickets</h3></div>
+            <div class="home-card-body" id="home-tickets-summary">
+              <div class="db-empty">Loading…</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── DAYBOOK VIEW ── -->
+    <div id="view-daybook" class="view">
+      <div class="page-header" style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px">
+        <div>
+          <h2>Daybook</h2>
+          <p>Daily staff absences, reliever duties and notices.</p>
+        </div>
+        <button class="btn btn-gold" id="daybook-edit-btn" onclick="daybookToggleEdit()">✏️ Edit Today</button>
+      </div>
+
+      <div class="daybook-nav">
+        <button onclick="daybookChangeDay(-1)">← Previous</button>
+        <div class="daybook-date-label" id="daybook-nav-label">—</div>
+        <button onclick="daybookChangeDay(1)" id="daybook-next-btn">Next →</button>
+        <button onclick="daybookGoToday()" style="margin-left:auto">Today</button>
+      </div>
+
+      <div class="home-card" style="margin-bottom:20px">
+        <div class="home-card-header"><h3>Staff Absences & Duties</h3></div>
+        <div class="daybook-table-wrap">
+          <table class="daybook-table">
+            <thead>
+              <tr>
+                <th style="width:18%">Absent</th>
+                <th style="width:18%">Reliever</th>
+                <th style="width:24%">Duty</th>
+                <th style="width:34%">NIT Coverage</th>
+                <th style="width:6%"></th>
+              </tr>
+            </thead>
+            <tbody id="daybook-rows">
+              <tr><td colspan="5"><div class="spinner"></div></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div style="padding:12px 18px" id="daybook-add-row-wrap">
+          <button class="add-row-btn" onclick="daybookAddRow()" style="display:none" id="daybook-add-btn">+ Add row</button>
+        </div>
+      </div>
+
+      <div class="daybook-info-section">
+        <h3>Daily Information</h3>
+        <div class="form-row" style="grid-template-columns:1fr 1fr;gap:16px">
+          <div class="db-info-field">
+            <label>Staff Room Duty Team</label>
+            <input type="text" id="db-duty-team" placeholder="e.g. Kristel, Karine, Steph…">
+          </div>
+          <div class="db-info-field">
+            <label>PBL Focus Reminder</label>
+            <input type="text" id="db-pbl-focus" placeholder="e.g. Calm Bodies, Quiet Voices">
+          </div>
+        </div>
+        <div class="db-info-field">
+          <label>Assembly / Award Notices</label>
+          <input type="text" id="db-assembly" placeholder="e.g. Award recipients to Jacki by Tuesday">
+        </div>
+        <div class="db-info-field">
+          <label>Other Notices / Reminders</label>
+          <textarea id="db-notices" rows="3" placeholder="Birthday morning tea, events, other reminders…"></textarea>
+        </div>
+      </div>
+
+      <div class="daybook-save-bar" id="daybook-save-bar" style="display:none">
+        <button class="btn btn-primary" onclick="daybookSave()">💾 Save Daybook</button>
+        <button class="btn btn-outline" onclick="daybookCancelEdit()">Cancel</button>
+        <span id="daybook-save-status" style="font-size:13px;color:var(--gray3)"></span>
+      </div>
+    </div>
+
     <!-- ── DASHBOARD VIEW ── -->
-    <div id="view-dashboard" class="view active">
+    <div id="view-dashboard" class="view">
       <div class="page-header" style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px">
         <div>
           <h2>Dashboard</h2>
@@ -1502,6 +1808,14 @@ const firebaseConfig = {
   window.updateTicketStatus = updateTicketStatus;
   window.addNote            = addNote;
 
+  window.daybookToggleEdit  = daybookToggleEdit;
+  window.daybookSave        = daybookSave;
+  window.daybookCancelEdit  = daybookCancelEdit;
+  window.daybookChangeDay   = daybookChangeDay;
+  window.daybookGoToday     = daybookGoToday;
+  window.daybookAddRow      = daybookAddRow;
+  window.daybookDeleteRow   = daybookDeleteRow;
+
   // ══════════════════════════════════════
   // AUTH STATE
   // ══════════════════════════════════════
@@ -1542,6 +1856,7 @@ const firebaseConfig = {
       populateStaffDropdowns();
       loadAllTickets();
       setupReportDropdowns();
+      showView('home');
 
     } else {
       currentUser    = null;
@@ -1633,21 +1948,225 @@ const firebaseConfig = {
   // NAVIGATION
   // ══════════════════════════════════════
   function showView(view) {
-    // Guard admin view
     if (view === 'admin' && !currentIsAdmin) return;
-
     document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
     document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
     document.getElementById('view-' + view).classList.add('active');
     document.querySelectorAll('.nav-btn').forEach(b => {
-      if (b.textContent.toLowerCase().includes(
-        view === 'dashboard' ? 'dash' :
-        view === 'tickets'   ? 'ticket' :
-        view === 'admin'     ? 'admin' : 'report'))
-        b.classList.add('active');
+      const t = b.textContent.toLowerCase();
+      if (
+        (view === 'home'      && t.includes('home')) ||
+        (view === 'daybook'   && t.includes('daybook')) ||
+        (view === 'dashboard' && t.includes('ticket')) ||
+        (view === 'reports'   && t.includes('report')) ||
+        (view === 'admin'     && t.includes('admin'))
+      ) b.classList.add('active');
     });
     if (view === 'reports') generateReport();
     if (view === 'admin')   loadAdminUsers();
+    if (view === 'daybook') { daybookCurrentDate = new Date(); daybookLoad(); }
+    if (view === 'home')    renderHomeView();
+  }
+
+  // ══════════════════════════════════════
+  // HOME VIEW
+  // ══════════════════════════════════════
+  function renderHomeView() {
+    const now = new Date();
+    const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+    const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    const hour = now.getHours();
+    const greet = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
+    const nameEl = document.getElementById('topbar-name');
+    const firstName = nameEl ? nameEl.textContent.split(' ')[0] : '';
+    document.getElementById('home-greeting').textContent = greet + (firstName ? ', ' + firstName : '') + '!';
+    document.getElementById('home-day').textContent = days[now.getDay()];
+    document.getElementById('home-date-full').textContent = now.getDate() + ' ' + months[now.getMonth()] + ' ' + now.getFullYear();
+    loadHomeDaybookPreview();
+    renderHomeTicketSummary();
+  }
+
+  async function loadHomeDaybookPreview() {
+    const dateKey = daybookDateKey(new Date());
+    const snap = await getDoc(doc(db, 'daybook', dateKey));
+    const el = document.getElementById('home-daybook-preview');
+    const noticesEl = document.getElementById('home-notices-body');
+    if (!snap.exists()) {
+      el.innerHTML = '<div class="db-empty">No daybook entry yet for today. <a href="#" onclick="showView('daybook')">Add one →</a></div>';
+      noticesEl.innerHTML = '<div class="db-empty">No notices for today.</div>';
+      return;
+    }
+    const data = snap.data();
+    const rows = data.rows || [];
+    if (rows.length === 0) {
+      el.innerHTML = '<div class="db-empty">No absences recorded today.</div>';
+    } else {
+      let html = '<div class="daybook-col-head"><span>Absent</span><span>Reliever</span><span>Duty</span><span>NIT</span></div>';
+      rows.forEach(r => {
+        html += `<div class="daybook-preview-row">
+          <span class="col-absent">${escHtml(r.absent||'')}</span>
+          <span>${escHtml(r.reliever||'')}</span>
+          <span class="col-duty">${escHtml(r.duty||'')}</span>
+          <span class="col-nit">${escHtml(r.nit||'')}</span>
+        </div>`;
+      });
+      el.innerHTML = html;
+    }
+    let noticesHtml = '';
+    if (data.dutyTeam)  noticesHtml += `<div class="notice-item"><strong>Staff Room Duty:</strong> ${escHtml(data.dutyTeam)}</div>`;
+    if (data.assembly)  noticesHtml += `<div class="notice-item urgent"><strong>Assembly:</strong> ${escHtml(data.assembly)}</div>`;
+    if (data.pblFocus)  noticesHtml += `<div class="notice-item"><strong>PBL Focus:</strong> ${escHtml(data.pblFocus)}</div>`;
+    if (data.notices)   noticesHtml += `<div class="notice-item">${escHtml(data.notices)}</div>`;
+    noticesEl.innerHTML = noticesHtml || '<div class="db-empty">No notices for today.</div>';
+  }
+
+  function renderHomeTicketSummary() {
+    const el = document.getElementById('home-tickets-summary');
+    if (!allTickets || allTickets.length === 0) { el.innerHTML = '<div class="db-empty">No open tickets.</div>'; return; }
+    const open = allTickets.filter(t => t.status !== 'resolved' && t.status !== 'closed');
+    if (open.length === 0) { el.innerHTML = '<div class="db-empty">All tickets resolved! 🎉</div>'; return; }
+    let html = `<p style="font-size:13px;color:var(--gray3);margin-bottom:10px">${open.length} open ticket${open.length>1?'s':''}</p>`;
+    open.slice(0,4).forEach(t => {
+      html += `<div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--gray2);font-size:13px">
+        <span style="font-weight:500;color:var(--navy)">${escHtml(t.title||'Untitled')}</span>
+        <span class="badge-status badge-status-${(t.status||'new').replace(' ','-')}">${escHtml(t.status||'new')}</span>
+      </div>`;
+    });
+    if (open.length > 4) html += `<p style="font-size:12px;color:var(--gray3);margin-top:8px"><a href="#" onclick="showView('dashboard')">+${open.length-4} more</a></p>`;
+    el.innerHTML = html;
+  }
+
+  // ══════════════════════════════════════
+  // DAYBOOK
+  // ══════════════════════════════════════
+  let daybookCurrentDate  = new Date();
+  let daybookIsEditing    = false;
+  let daybookCurrentData  = null;
+
+  function daybookDateKey(d) {
+    return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+  }
+
+  function daybookFriendlyDate(d) {
+    const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+    const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    return days[d.getDay()] + ' ' + d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear();
+  }
+
+  function daybookChangeDay(offset) {
+    const d = new Date(daybookCurrentDate);
+    d.setDate(d.getDate() + offset);
+    daybookCurrentDate = d;
+    daybookLoad();
+  }
+
+  function daybookGoToday() {
+    daybookCurrentDate = new Date();
+    daybookLoad();
+  }
+
+  async function daybookLoad() {
+    daybookIsEditing = false;
+    document.getElementById('daybook-save-bar').style.display = 'none';
+    document.getElementById('daybook-add-btn').style.display = 'none';
+    document.getElementById('daybook-edit-btn').textContent = '✏️ Edit';
+    const label = document.getElementById('daybook-nav-label');
+    const today = daybookDateKey(new Date());
+    const key   = daybookDateKey(daybookCurrentDate);
+    label.textContent = daybookFriendlyDate(daybookCurrentDate);
+    document.getElementById('daybook-next-btn').disabled = key >= today;
+
+    const snap = await getDoc(doc(db, 'daybook', key));
+    daybookCurrentData = snap.exists() ? snap.data() : { rows: [], dutyTeam: '', pblFocus: '', assembly: '', notices: '' };
+
+    daybookRenderRows(daybookCurrentData.rows || [], false);
+    document.getElementById('db-duty-team').value = daybookCurrentData.dutyTeam || '';
+    document.getElementById('db-pbl-focus').value = daybookCurrentData.pblFocus || '';
+    document.getElementById('db-assembly').value  = daybookCurrentData.assembly  || '';
+    document.getElementById('db-notices').value   = daybookCurrentData.notices   || '';
+    daybookSetFieldsReadOnly(true);
+  }
+
+  function daybookRenderRows(rows, editing) {
+    const tbody = document.getElementById('daybook-rows');
+    if (rows.length === 0 && !editing) {
+      tbody.innerHTML = '<tr><td colspan="5"><div class="db-empty">No absences recorded.</div></td></tr>';
+      return;
+    }
+    tbody.innerHTML = rows.map(function(r, i) {
+      var deleteBtn = editing ? '<button class="edit-row-btn" onclick="daybookDeleteRow(' + i + ')" title="Remove row">&#x2715;</button>' : '';
+      var ro = editing ? '' : 'readonly';
+      return '<tr>' +
+        '<td><input type="text" value="' + escHtml(r.absent||'') + '" placeholder="Staff name" ' + ro + ' onchange="daybookUpdateRow(' + i + ',\'absent\',this.value)"></td>' +
+        '<td><input type="text" value="' + escHtml(r.reliever||'') + '" placeholder="Reliever" ' + ro + ' onchange="daybookUpdateRow(' + i + ',\'reliever\',this.value)"></td>' +
+        '<td><input type="text" value="' + escHtml(r.duty||'') + '" placeholder="e.g. Recess North Oval" ' + ro + ' onchange="daybookUpdateRow(' + i + ',\'duty\',this.value)"></td>' +
+        '<td><input type="text" value="' + escHtml(r.nit||'') + '" placeholder="e.g. L3 Science" ' + ro + ' onchange="daybookUpdateRow(' + i + ',\'nit\',this.value)"></td>' +
+        '<td>' + deleteBtn + '</td>' +
+        '</tr>';
+    }).join('');
+    if (editing && rows.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--gray3);font-size:13px;padding:16px">No rows yet — click + Add row below</td></tr>';
+    }
+  }
+
+  function daybookUpdateRow(i, field, val) {
+    if (!daybookCurrentData.rows) daybookCurrentData.rows = [];
+    daybookCurrentData.rows[i][field] = val;
+  }
+
+  function daybookAddRow() {
+    if (!daybookCurrentData.rows) daybookCurrentData.rows = [];
+    daybookCurrentData.rows.push({ absent:'', reliever:'', duty:'', nit:'' });
+    daybookRenderRows(daybookCurrentData.rows, true);
+  }
+
+  function daybookDeleteRow(i) {
+    daybookCurrentData.rows.splice(i, 1);
+    daybookRenderRows(daybookCurrentData.rows, true);
+  }
+
+  function daybookSetFieldsReadOnly(readonly) {
+    ['db-duty-team','db-pbl-focus','db-assembly','db-notices'].forEach(id => {
+      const el = document.getElementById(id);
+      if (readonly) { el.setAttribute('readonly',''); el.style.background='transparent'; el.style.border='1px solid transparent'; }
+      else          { el.removeAttribute('readonly'); el.style.background=''; el.style.border=''; }
+    });
+  }
+
+  function daybookToggleEdit() {
+    const today = daybookDateKey(new Date());
+    const key   = daybookDateKey(daybookCurrentDate);
+    if (key !== today) { showToast('You can only edit today's daybook.', 'error'); return; }
+    daybookIsEditing = !daybookIsEditing;
+    document.getElementById('daybook-edit-btn').textContent = daybookIsEditing ? '✕ Cancel' : '✏️ Edit';
+    document.getElementById('daybook-save-bar').style.display  = daybookIsEditing ? 'flex' : 'none';
+    document.getElementById('daybook-add-btn').style.display   = daybookIsEditing ? 'inline-block' : 'none';
+    daybookRenderRows(daybookCurrentData.rows || [], daybookIsEditing);
+    daybookSetFieldsReadOnly(!daybookIsEditing);
+  }
+
+  function daybookCancelEdit() {
+    daybookLoad();
+  }
+
+  async function daybookSave() {
+    const key = daybookDateKey(daybookCurrentDate);
+    const statusEl = document.getElementById('daybook-save-status');
+    statusEl.textContent = 'Saving…';
+    daybookCurrentData.dutyTeam = document.getElementById('db-duty-team').value;
+    daybookCurrentData.pblFocus = document.getElementById('db-pbl-focus').value;
+    daybookCurrentData.assembly = document.getElementById('db-assembly').value;
+    daybookCurrentData.notices  = document.getElementById('db-notices').value;
+    daybookCurrentData.updatedAt = serverTimestamp();
+    daybookCurrentData.updatedBy = currentUser.displayName || currentUser.email;
+    try {
+      await setDoc(doc(db, 'daybook', key), daybookCurrentData);
+      statusEl.textContent = '';
+      showToast('Daybook saved!', 'success');
+      daybookLoad();
+    } catch(e) {
+      statusEl.textContent = 'Error saving: ' + e.message;
+    }
   }
 
   // ══════════════════════════════════════

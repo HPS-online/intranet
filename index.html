@@ -1815,6 +1815,8 @@ const firebaseConfig = {
   window.daybookGoToday     = daybookGoToday;
   window.daybookAddRow      = daybookAddRow;
   window.daybookDeleteRow   = daybookDeleteRow;
+  window.daybookUpdateRow   = daybookUpdateRow;
+  window.renderHomeView     = renderHomeView;
 
   // ══════════════════════════════════════
   // AUTH STATE
@@ -2179,6 +2181,7 @@ const firebaseConfig = {
       allTickets = snap.docs.map(d => ({ id: d.id, ...d.data() }));
       renderDashboard();
       renderAllTickets(allTickets);
+      renderHomeTicketSummary();
     } catch(e) {
       console.error(e);
     }

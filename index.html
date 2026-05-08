@@ -3684,13 +3684,15 @@ const firebaseConfig = {
     const maint  = allTickets.filter(t => t.category === 'Maintenance & Facilities');
     const it     = allTickets.filter(t => t.category === 'IT Issues');
 
-    document.getElementById('stat-total').textContent  = allTickets.length;
-    document.getElementById('stat-open').textContent   = open.length;
-    document.getElementById('stat-maint').textContent  = maint.length;
-    document.getElementById('stat-it').textContent     = it.length;
-    document.getElementById('stat-closed').textContent = closed.length;
+    const setEl = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+    setEl('stat-total',  allTickets.length);
+    setEl('stat-open',   open.length);
+    setEl('stat-maint',  maint.length);
+    setEl('stat-it',     it.length);
+    setEl('stat-closed', closed.length);
 
     const tbody = document.getElementById('all-ticket-list');
+    if (!tbody) return;
     if (open.length === 0) {
       tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state"><div class="empty-icon">🎉</div><p>No open tickets — everything is up to date!</p></div></td></tr>`;
       return;
@@ -3745,6 +3747,7 @@ const firebaseConfig = {
   // ══════════════════════════════════════
   function renderAllTickets(tickets) {
     const tbody = document.getElementById('all-ticket-list');
+    if (!tbody) return;
     if (!tickets.length) {
       tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state"><div class="empty-icon">📭</div><p>No tickets match your filters.</p></div></td></tr>`;
       return;

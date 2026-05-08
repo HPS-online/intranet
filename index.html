@@ -1384,6 +1384,7 @@
         <div>
           <h1 id="home-greeting">Good morning, —</h1>
           <p id="home-subtext">Welcome to Highbury Primary Staff Intranet</p>
+          <div id="home-term-badge" style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap"></div>
         </div>
         <div class="home-date-badge">
           <strong id="home-day">—</strong>
@@ -2893,6 +2894,72 @@ const firebaseConfig = {
   const BOOTSTRAP_ADMIN_EMAIL = "daniel.botten315@schools.sa.edu.au";
 
   // ══════════════════════════════════════
+  // 📅 TERM & WEEK CALENDAR 2026
+  // ══════════════════════════════════════
+  const TERM_WEEKS_2026 = [
+    // Term 1 — Weeks 1–11
+    { term:1, week:1,  mon:'2026-01-26', fri:'2026-01-30' },
+    { term:1, week:2,  mon:'2026-02-02', fri:'2026-02-06' },
+    { term:1, week:3,  mon:'2026-02-09', fri:'2026-02-13' },
+    { term:1, week:4,  mon:'2026-02-16', fri:'2026-02-20' },
+    { term:1, week:5,  mon:'2026-02-23', fri:'2026-02-27' },
+    { term:1, week:6,  mon:'2026-03-02', fri:'2026-03-06' },
+    { term:1, week:7,  mon:'2026-03-09', fri:'2026-03-13' },
+    { term:1, week:8,  mon:'2026-03-16', fri:'2026-03-20' },
+    { term:1, week:9,  mon:'2026-03-23', fri:'2026-03-27' },
+    { term:1, week:10, mon:'2026-03-30', fri:'2026-04-03' },
+    { term:1, week:11, mon:'2026-04-06', fri:'2026-04-10' },
+    // Term 2 — Weeks 1–10
+    { term:2, week:1,  mon:'2026-04-27', fri:'2026-05-01' },
+    { term:2, week:2,  mon:'2026-05-04', fri:'2026-05-08' },
+    { term:2, week:3,  mon:'2026-05-11', fri:'2026-05-15' },
+    { term:2, week:4,  mon:'2026-05-18', fri:'2026-05-22' },
+    { term:2, week:5,  mon:'2026-05-25', fri:'2026-05-29' },
+    { term:2, week:6,  mon:'2026-06-01', fri:'2026-06-05' },
+    { term:2, week:7,  mon:'2026-06-08', fri:'2026-06-12' },
+    { term:2, week:8,  mon:'2026-06-15', fri:'2026-06-19' },
+    { term:2, week:9,  mon:'2026-06-22', fri:'2026-06-26' },
+    { term:2, week:10, mon:'2026-06-29', fri:'2026-07-03' },
+    // Term 3 — Weeks 1–10
+    { term:3, week:1,  mon:'2026-07-20', fri:'2026-07-24' },
+    { term:3, week:2,  mon:'2026-07-27', fri:'2026-07-31' },
+    { term:3, week:3,  mon:'2026-08-03', fri:'2026-08-07' },
+    { term:3, week:4,  mon:'2026-08-10', fri:'2026-08-14' },
+    { term:3, week:5,  mon:'2026-08-17', fri:'2026-08-21' },
+    { term:3, week:6,  mon:'2026-08-24', fri:'2026-08-28' },
+    { term:3, week:7,  mon:'2026-08-31', fri:'2026-09-04' },
+    { term:3, week:8,  mon:'2026-09-07', fri:'2026-09-11' },
+    { term:3, week:9,  mon:'2026-09-14', fri:'2026-09-18' },
+    { term:3, week:10, mon:'2026-09-21', fri:'2026-09-25' },
+    // Term 4 — Weeks 1–9
+    { term:4, week:1,  mon:'2026-10-12', fri:'2026-10-16' },
+    { term:4, week:2,  mon:'2026-10-19', fri:'2026-10-23' },
+    { term:4, week:3,  mon:'2026-10-26', fri:'2026-10-30' },
+    { term:4, week:4,  mon:'2026-11-02', fri:'2026-11-06' },
+    { term:4, week:5,  mon:'2026-11-09', fri:'2026-11-13' },
+    { term:4, week:6,  mon:'2026-11-16', fri:'2026-11-20' },
+    { term:4, week:7,  mon:'2026-11-23', fri:'2026-11-27' },
+    { term:4, week:8,  mon:'2026-11-30', fri:'2026-12-04' },
+    { term:4, week:9,  mon:'2026-12-07', fri:'2026-12-11' },
+  ];
+
+  const HAT_TERMS = [1, 3, 4]; // Hats on in Terms 1, 3 and 4
+
+  function getTermWeek(dateStr) {
+    // dateStr: 'YYYY-MM-DD'
+    for (const tw of TERM_WEEKS_2026) {
+      if (dateStr >= tw.mon && dateStr <= tw.fri) return tw;
+    }
+    return null;
+  }
+
+  function termWeekLabel(dateStr) {
+    const tw = getTermWeek(dateStr);
+    if (!tw) return null;
+    return { label: `Term ${tw.term} · Week ${tw.week}`, term: tw.term, week: tw.week };
+  }
+
+  // ══════════════════════════════════════
   // INIT
   // ══════════════════════════════════════
   const app     = initializeApp(firebaseConfig);
@@ -3146,6 +3213,21 @@ const firebaseConfig = {
     document.getElementById('home-greeting').textContent = greet + (firstName ? ', ' + firstName : '') + '!';
     document.getElementById('home-day').textContent = days[now.getDay()];
     document.getElementById('home-date-full').textContent = now.getDate() + ' ' + months[now.getMonth()] + ' ' + now.getFullYear();
+
+    // Term & week badge on home page
+    const todayKey = daybookDateKey(now);
+    const tw = termWeekLabel(todayKey);
+    const homeBadge = document.getElementById('home-term-badge');
+    if (homeBadge) {
+      if (tw) {
+        const hatTerms = HAT_TERMS.includes(tw.term);
+        homeBadge.innerHTML = `<span style="background:rgba(255,255,255,0.15);color:var(--gold2);font-size:11px;font-weight:700;padding:3px 12px;border-radius:20px;letter-spacing:0.3px">Term ${tw.term} · Week ${tw.week}</span>`
+          + (hatTerms ? `<span style="background:rgba(245,172,28,0.2);color:var(--gold2);font-size:11px;font-weight:600;padding:3px 12px;border-radius:20px">🧢 Hats on</span>` : '');
+      } else {
+        homeBadge.innerHTML = `<span style="background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.5);font-size:11px;padding:3px 12px;border-radius:20px">School Holidays</span>`;
+      }
+    }
+
     loadHomeDaybookPreview();
     loadHomeWeekPreview();
     loadUVIndex();
@@ -3530,6 +3612,23 @@ const firebaseConfig = {
     const today = daybookDateKey(new Date());
     const key   = daybookDateKey(daybookCurrentDate);
     label.textContent = daybookFriendlyDate(daybookCurrentDate);
+
+    // Term & week badge
+    const tw = termWeekLabel(key);
+    let badge = document.getElementById('daybook-term-badge');
+    if (!badge) {
+      badge = document.createElement('div');
+      badge.id = 'daybook-term-badge';
+      badge.style.cssText = 'display:inline-flex;gap:8px;align-items:center;margin-top:4px;flex-wrap:wrap';
+      label.parentNode.insertBefore(badge, label.nextSibling);
+    }
+    if (tw) {
+      const hatTerms = HAT_TERMS.includes(tw.term);
+      badge.innerHTML = `<span style="background:var(--navy);color:var(--gold2);font-size:11px;font-weight:700;padding:2px 10px;border-radius:20px;letter-spacing:0.3px">Term ${tw.term} · Week ${tw.week}</span>`
+        + (hatTerms ? `<span style="background:#fef3c7;color:#92400e;font-size:11px;font-weight:600;padding:2px 10px;border-radius:20px">🧢 Hats on</span>` : '');
+    } else {
+      badge.innerHTML = '<span style="background:var(--gray2);color:var(--gray3);font-size:11px;padding:2px 10px;border-radius:20px">School Holidays</span>';
+    }
     document.getElementById('daybook-next-btn').disabled = false;
     document.getElementById('daybook-edit-btn').style.display = key >= today ? '' : 'none';
 

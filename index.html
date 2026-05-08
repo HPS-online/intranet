@@ -1016,17 +1016,6 @@
     .duty-cell { border-radius: 4px; padding: 2px 6px; display: inline-block; }
     .duty-cell.highlighted { background: var(--gold2); color: var(--navy); font-weight: 700; border-radius: 4px; padding: 2px 8px; }
 
-    .spec-table-wrap { overflow-x: auto; }
-    .spec-table { width: 100%; border-collapse: collapse; font-size: 8.5px; table-layout: fixed; }
-    .spec-table th { background: var(--navy); color: var(--white); padding: 4px 2px; text-align: center; font-size: 8px; text-transform: uppercase; letter-spacing: 0.3px; border-right: 1px solid rgba(255,255,255,0.15); }
-    .spec-table th.day-header { background: #2d4a7a; font-size: 9px; }
-    .spec-table td { padding: 4px 2px; border: 1px solid var(--gray2); text-align: center; font-size: 8.5px; vertical-align: middle; line-height: 1.3; word-break: break-word; }
-    .spec-table td.lesson-label { background: var(--gray1); font-weight: 600; font-size: 8px; color: var(--gray3); text-align: left; white-space: nowrap; padding: 3px 4px; width: 70px; }
-    .spec-table td.highlighted { background: #fef3c7; font-weight: 700; color: var(--navy); }
-    .spec-table td.nit-highlighted { background: #dbeafe; color: #1e40af; font-weight: 700; font-style: normal; }
-    .spec-table td.nit { color: var(--gray3); font-style: italic; font-size: 10px; }
-    .spec-table td.recess { background: var(--gray1); color: var(--gray3); font-size: 10px; }
-
     /* ── HOME PAGE ── */
     .home-hero {
       background: linear-gradient(135deg, var(--navy3) 0%, var(--navy) 100%);
@@ -1166,6 +1155,88 @@
     }
     .daybook-info-section h3 { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--navy); margin-bottom: 12px; }
 
+    /* ── Specialist timetable — scrollable ── */
+    .spec-table-wrap { overflow-x: auto; }
+    .spec-table { border-collapse: collapse; font-size: 11px; table-layout: auto; min-width: 900px; }
+    .spec-table th { background: var(--navy); color: var(--white); padding: 6px 5px; text-align: center; font-size: 10px; text-transform: uppercase; letter-spacing: 0.3px; border-right: 1px solid rgba(255,255,255,0.15); white-space: nowrap; }
+    .spec-table th.day-header { background: #2d4a7a; font-size: 11px; }
+    .spec-table td { padding: 6px 4px; border: 1px solid var(--gray2); text-align: center; font-size: 11px; vertical-align: middle; line-height: 1.4; }
+    .spec-table td.lesson-label { background: var(--gray1); font-weight: 600; font-size: 10px; color: var(--gray3); text-align: left; white-space: nowrap; padding: 4px 6px; width: 80px; }
+    .spec-table td.highlighted { background: #fef3c7; font-weight: 700; color: var(--navy); }
+    .spec-table td.nit-highlighted { background: #dbeafe; color: #1e40af; font-weight: 700; font-style: normal; }
+    .spec-table td.nit { color: var(--gray3); font-style: italic; font-size: 11px; }
+    .spec-table td.recess { background: var(--gray1); color: var(--gray3); font-size: 11px; }
+
+    /* ── Daily info dot-points ── */
+    .db-dotpoint-list { list-style: none; padding: 0; margin: 0; }
+    .db-dotpoint-list li { display: flex; align-items: flex-start; gap: 8px; padding: 6px 0; border-bottom: 1px solid var(--gray1); font-size: 13.5px; color: var(--text); line-height: 1.5; }
+    .db-dotpoint-list li:last-child { border-bottom: none; }
+    .db-dotpoint-list li::before { content: '•'; color: var(--gold); font-size: 18px; line-height: 1.2; flex-shrink: 0; }
+    .db-edit-item { display: flex; align-items: center; gap: 8px; padding: 6px 0; border-bottom: 1px solid var(--gray1); }
+    .db-edit-item:last-child { border-bottom: none; }
+    .db-edit-item input { flex: 1; padding: 7px 10px; border: 1.5px solid var(--gray2); border-radius: 8px; font-family: inherit; font-size: 13px; outline: none; }
+    .db-edit-item input:focus { border-color: var(--navy); }
+    .db-edit-item .del-btn { width: 28px; height: 28px; border-radius: 6px; border: none; background: #fee2e2; color: var(--red); cursor: pointer; font-size: 15px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .db-edit-item .del-btn:hover { background: #fecaca; }
+
+    /* ── UV Widget ── */
+    .uv-widget { background: linear-gradient(135deg, var(--navy3) 0%, var(--navy) 100%); border-radius: var(--radius); padding: 18px 20px; box-shadow: var(--shadow); border-bottom: 3px solid var(--gold); margin-bottom: 16px; }
+    .uv-widget-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+    .uv-widget-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--gold2); }
+    .uv-widget-loc   { font-size: 11px; color: rgba(255,255,255,0.45); }
+    .uv-main { display: flex; align-items: center; gap: 16px; }
+    .uv-index { font-family: 'Montserrat', sans-serif; font-size: 48px; font-weight: 800; line-height: 1; color: var(--white); }
+    .uv-right { flex: 1; }
+    .uv-category { font-size: 15px; font-weight: 700; margin-bottom: 2px; }
+    .uv-advice   { font-size: 11px; color: rgba(255,255,255,0.65); line-height: 1.5; }
+    .uv-bar-track { height: 8px; border-radius: 4px; overflow: hidden; background: rgba(255,255,255,0.15); margin: 8px 0 4px; }
+    .uv-bar-fill { height: 100%; border-radius: 4px; }
+    .uv-scale-labels { display: flex; justify-content: space-between; font-size: 9px; color: rgba(255,255,255,0.35); }
+    .uv-footer { margin-top: 10px; font-size: 10px; color: rgba(255,255,255,0.3); text-align: right; }
+
+    /* ── Planner ── */
+    .planner-grid { display: grid; grid-template-columns: 1fr 340px; gap: 20px; }
+    @media (max-width: 900px) { .planner-grid { grid-template-columns: 1fr; } }
+    .planner-week { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-bottom: 20px; }
+    @media (max-width: 700px) { .planner-week { grid-template-columns: 1fr 1fr; } }
+    .planner-day-col { background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; }
+    .planner-day-head { background: linear-gradient(135deg, var(--navy3) 0%, var(--navy) 100%); color: var(--white); padding: 10px 12px; }
+    .planner-day-head .pd-name { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+    .planner-day-head .pd-date { font-size: 11px; color: rgba(255,255,255,0.6); margin-top: 2px; }
+    .planner-day-head.today { border-bottom: 3px solid var(--gold); }
+    .planner-day-body { padding: 8px; min-height: 80px; }
+    .planner-event { padding: 5px 8px; border-radius: 6px; margin-bottom: 5px; font-size: 11.5px; line-height: 1.4; cursor: pointer; position: relative; }
+    .planner-event:hover { opacity: 0.85; }
+    .planner-event .pe-time { font-size: 10px; font-weight: 600; opacity: 0.75; display: block; }
+    .planner-event .pe-title { font-weight: 600; display: block; }
+    .planner-event .pe-who  { font-size: 10px; opacity: 0.7; display: block; }
+    .pe-cat-all    { background: #e0e7ff; color: #3730a3; }
+    .pe-cat-yr3    { background: #d1fae5; color: #065f46; }
+    .pe-cat-yr4    { background: #fef3c7; color: #92400e; }
+    .pe-cat-yr5    { background: #fee2e2; color: #991b1b; }
+    .pe-cat-yr6    { background: #ede9fe; color: #5b21b6; }
+    .pe-cat-staff  { background: #fce7f3; color: #9d174d; }
+    .pe-cat-other  { background: #f3f4f6; color: #374151; }
+    .planner-add-btn { width: 100%; padding: 6px; background: none; border: 1.5px dashed var(--gray2); border-radius: 6px; font-size: 11px; color: var(--subtext); cursor: pointer; margin-top: 4px; }
+    .planner-add-btn:hover { border-color: var(--navy); color: var(--navy); }
+    .activity-log { background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; }
+    .activity-log-header { background: linear-gradient(135deg, var(--navy3) 0%, var(--navy) 100%); color: var(--white); padding: 14px 18px; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 2px solid var(--gold); }
+    .activity-item { display: flex; gap: 10px; padding: 10px 16px; border-bottom: 1px solid var(--gray1); font-size: 12px; }
+    .activity-item:last-child { border-bottom: none; }
+    .activity-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--navy); flex-shrink: 0; margin-top: 4px; }
+    .activity-dot.add  { background: var(--green); }
+    .activity-dot.edit { background: var(--gold); }
+    .activity-dot.del  { background: var(--red); }
+    .activity-text { flex: 1; line-height: 1.5; color: var(--text); }
+    .activity-who  { font-size: 11px; color: var(--subtext); margin-top: 2px; }
+    .week-event-item { display: flex; gap: 10px; align-items: flex-start; padding: 7px 0; border-bottom: 1px solid var(--gray1); font-size: 12.5px; }
+    .week-event-item:last-child { border-bottom: none; }
+    .week-event-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; margin-top: 3px; }
+    .week-event-day  { font-size: 11px; font-weight: 700; color: var(--subtext); width: 34px; flex-shrink: 0; }
+    .week-event-body { flex: 1; }
+    .week-event-title { font-weight: 600; color: var(--navy); }
+    .week-event-meta  { font-size: 11px; color: var(--subtext); }
+
     .db-info-field { margin-bottom: 12px; }
     .db-info-field label { font-size: 12px; font-weight: 600; color: var(--gray3); display: block; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.4px; }
     .db-info-field input, .db-info-field textarea {
@@ -1291,9 +1362,9 @@
       <nav class="topbar-nav">
         <button class="nav-btn active" onclick="showView('home')">🏠 Home</button>
         <button class="nav-btn" onclick="showView('daybook')">📋 Daybook</button>
-        <button class="nav-btn" onclick="showView('timetables')">📅 Timetables</button>
-        <button class="nav-btn" onclick="showView('dashboard')">Tickets</button>
-        <button class="nav-btn" onclick="showView('reports')">Reports</button>
+        <button class="nav-btn" onclick="showView('planner')">📅 Planner</button>
+        <button class="nav-btn" onclick="showView('timetables')">🗓 Timetables</button>
+        <button class="nav-btn" onclick="showView('tickets')">🎫 Lodge a Ticket</button>
         <button class="nav-btn" onclick="showView('naplan')">📊 NAPLAN Data</button>
         <button class="nav-btn admin-only" id="nav-admin" onclick="showView('admin')" style="display:none;color:#f5ac1c;border:1px solid rgba(245,172,28,0.35)">⚙ Admin</button>
       </nav>
@@ -1325,17 +1396,13 @@
           <div class="tile-icon">📋</div>
           <div class="tile-label">Daybook</div>
         </div>
-        <div class="quick-tile" onclick="showView('dashboard')">
+        <div class="quick-tile" onclick="showView('planner')">
+          <div class="tile-icon">📅</div>
+          <div class="tile-label">Planner</div>
+        </div>
+        <div class="quick-tile" onclick="showView('tickets')">
           <div class="tile-icon">🎫</div>
-          <div class="tile-label">Tickets</div>
-        </div>
-        <div class="quick-tile" onclick="openNewTicketModal()">
-          <div class="tile-icon">➕</div>
-          <div class="tile-label">New Ticket</div>
-        </div>
-        <div class="quick-tile" onclick="showView('reports')">
-          <div class="tile-icon">📊</div>
-          <div class="tile-label">Reports</div>
+          <div class="tile-label">Lodge a Ticket</div>
         </div>
         <div class="quick-tile" onclick="window.open('https://www.education.sa.gov.au','_blank')">
           <div class="tile-icon">🏛️</div>
@@ -1350,8 +1417,12 @@
           <div class="tile-label">Schools Portal</div>
         </div>
         <div class="quick-tile" onclick="window.open('https://olm.schools.sa.edu.au','_blank')">
-          <div class="tile-icon">📅</div>
+          <div class="tile-icon">🗒️</div>
           <div class="tile-label">OLM Leave</div>
+        </div>
+        <div class="quick-tile" onclick="showView('naplan')">
+          <div class="tile-icon">📊</div>
+          <div class="tile-label">NAPLAN Data</div>
         </div>
       </div>
 
@@ -1367,16 +1438,35 @@
         </div>
 
         <div>
-          <div class="home-card" style="margin-bottom:16px">
-            <div class="home-card-header"><h3>📣 Daily Notices</h3></div>
-            <div class="home-card-body" id="home-notices-body">
-              <div class="db-empty">No notices for today.</div>
+          <!-- UV Widget -->
+          <div class="uv-widget">
+            <div class="uv-widget-header">
+              <div class="uv-widget-title">☀️ UV Index — Adelaide</div>
+              <div class="uv-widget-loc" id="uv-updated"></div>
             </div>
+            <div class="uv-main">
+              <div class="uv-index" id="uv-index">—</div>
+              <div class="uv-right">
+                <div class="uv-category" id="uv-category" style="color:var(--gold)">Loading…</div>
+                <div class="uv-advice" id="uv-advice"></div>
+                <div id="uv-hat-notice" style="display:none;margin-top:6px;background:rgba(245,172,28,0.18);border:1px solid rgba(245,172,28,0.4);border-radius:6px;padding:5px 10px;font-size:11px;font-weight:700;color:var(--gold2)">🧢 Hat rule in effect — students must wear hats outdoors</div>
+                <div class="uv-bar-track">
+                  <div class="uv-bar-fill" id="uv-bar" style="width:0%"></div>
+                </div>
+                <div class="uv-scale-labels"><span>0</span><span>3</span><span>6</span><span>8</span><span>11+</span></div>
+              </div>
+            </div>
+            <div class="uv-footer" id="uv-footer">Open-Meteo · Adelaide</div>
           </div>
+
+          <!-- Week Ahead -->
           <div class="home-card">
-            <div class="home-card-header"><h3>🎫 Open Tickets</h3></div>
-            <div class="home-card-body" id="home-tickets-summary">
-              <div class="db-empty">Loading…</div>
+            <div class="home-card-header">
+              <h3>📅 Week Ahead</h3>
+              <button class="btn btn-sm" style="font-size:12px;padding:4px 12px" onclick="showView('planner')">Full Planner →</button>
+            </div>
+            <div class="home-card-body" id="home-week-preview">
+              <div class="db-empty">Loading upcoming events…</div>
             </div>
           </div>
         </div>
@@ -1427,25 +1517,19 @@
         </div>
       </div>
 
-      <div class="daybook-info-section">
+      <div class="daybook-info-section" id="db-info-section">
         <h3>Daily Information</h3>
-        <div class="form-row" style="grid-template-columns:1fr 1fr;gap:16px">
-          <div class="db-info-field">
-            <label>Staff Room Duty Team</label>
-            <input type="text" id="db-duty-team" placeholder="e.g. Kristel, Karine, Steph…">
+        <p style="font-size:12px;color:var(--subtext);margin-bottom:14px;margin-top:-6px">Each item appears as a dot point on the home page. Click Edit to add or remove items.</p>
+        <div id="db-info-view"><div id="db-info-dotpoints" style="padding:4px 0"></div></div>
+        <div id="db-info-edit" style="display:none">
+          <div id="db-info-edit-list" style="margin-bottom:12px"></div>
+          <div style="display:flex;gap:8px;align-items:center">
+            <input type="text" id="db-info-new-input" placeholder="Add a new notice or reminder…"
+              style="flex:1;padding:10px 14px;border:1.5px solid var(--gray2);border-radius:var(--radius);font-family:inherit;font-size:14px;outline:none"
+              onkeydown="if(event.key==='Enter'){dbInfoAddItem();event.preventDefault()}"
+              onfocus="this.style.borderColor='var(--navy)'" onblur="this.style.borderColor='var(--gray2)'">
+            <button class="btn btn-primary btn-sm" onclick="dbInfoAddItem()">+ Add</button>
           </div>
-          <div class="db-info-field">
-            <label>PBL Focus Reminder</label>
-            <input type="text" id="db-pbl-focus" placeholder="e.g. Calm Bodies, Quiet Voices">
-          </div>
-        </div>
-        <div class="db-info-field">
-          <label>Assembly / Award Notices</label>
-          <input type="text" id="db-assembly" placeholder="e.g. Award recipients to Jacki by Tuesday">
-        </div>
-        <div class="db-info-field">
-          <label>Other Notices / Reminders</label>
-          <textarea id="db-notices" rows="3" placeholder="Birthday morning tea, events, other reminders…"></textarea>
         </div>
       </div>
 
@@ -1676,17 +1760,18 @@
       </div>
     </div>
 
-    <!-- ── DASHBOARD VIEW ── -->
-    <div id="view-dashboard" class="view">
+    <!-- ── LODGE A TICKET VIEW ── -->
+    <div id="view-tickets" class="view">
       <div class="page-header" style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px">
         <div>
-          <h2>Dashboard</h2>
-          <p id="dash-greeting">Good morning — here's today's overview.</p>
+          <h2>Lodge a Ticket</h2>
+          <p>Submit and track maintenance &amp; IT support requests.</p>
         </div>
         <button class="btn btn-gold" onclick="openNewTicketModal()">+ New Ticket</button>
       </div>
 
-      <div class="stats-grid" id="stats-grid">
+      <!-- Stats strip -->
+      <div class="stats-grid" id="stats-grid" style="margin-bottom:20px">
         <div class="stat-card"><div class="stat-number" id="stat-total">—</div><div class="stat-label">Total Tickets</div></div>
         <div class="stat-card open"><div class="stat-number" id="stat-open">—</div><div class="stat-label">Open / Active</div></div>
         <div class="stat-card maint"><div class="stat-number" id="stat-maint">—</div><div class="stat-label">Maintenance</div></div>
@@ -1694,128 +1779,110 @@
         <div class="stat-card closed"><div class="stat-number" id="stat-closed">—</div><div class="stat-label">Resolved/Closed</div></div>
       </div>
 
-      <div class="age-legend">
-        <span class="age-chip"><span class="age-dot age-green"></span> Opened today</span>
-        <span class="age-chip"><span class="age-dot age-yellow"></span> 1–7 days</span>
-        <span class="age-chip"><span class="age-dot age-orange"></span> 8–14 days</span>
-        <span class="age-chip"><span class="age-dot age-red"></span> 2+ weeks</span>
+      <!-- Tabs: All Tickets | Reports -->
+      <div style="display:flex;gap:8px;margin-bottom:18px;border-bottom:2px solid var(--gray2);padding-bottom:0">
+        <button id="tkttab-all" class="nav-btn active" style="border-radius:6px 6px 0 0;border-bottom:2px solid var(--navy);margin-bottom:-2px" onclick="ticketsShowTab('all')">All Tickets</button>
+        <button id="tkttab-reports" class="nav-btn" style="border-radius:6px 6px 0 0" onclick="ticketsShowTab('reports')">📈 Reports</button>
       </div>
 
-      <p class="section-title">Open Tickets Requiring Attention</p>
-      <div class="tickets-table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th style="width:8px"></th>
-              <th>Ticket</th>
-              <th>Category</th>
-              <th>Priority</th>
-              <th>Status</th>
-              <th>Assigned To</th>
-              <th>Opened</th>
-            </tr>
-          </thead>
-          <tbody id="dash-ticket-list">
-            <tr><td colspan="7"><div class="spinner"></div></td></tr>
-          </tbody>
-        </table>
+      <!-- All tickets panel -->
+      <div id="tkt-panel-all">
+        <div class="filter-bar">
+          <input type="text" id="search-input" placeholder="🔍  Search tickets…" oninput="applyFilters()" />
+          <select id="filter-category" onchange="applyFilters()">
+            <option value="">All Categories</option>
+            <option value="Maintenance & Facilities">Maintenance &amp; Facilities</option>
+            <option value="IT Issues">IT Issues</option>
+          </select>
+          <select id="filter-status" onchange="applyFilters()">
+            <option value="">All Statuses</option>
+            <option value="New">New</option>
+            <option value="In Progress">In Progress</option>
+            <option value="Resolved">Resolved</option>
+            <option value="Closed">Closed</option>
+          </select>
+          <select id="filter-priority" onchange="applyFilters()">
+            <option value="">All Priorities</option>
+            <option value="Urgent">Urgent</option>
+            <option value="Normal">Normal</option>
+            <option value="Low">Low</option>
+          </select>
+        </div>
+        <div class="age-legend">
+          <span class="age-chip"><span class="age-dot age-green"></span> Today</span>
+          <span class="age-chip"><span class="age-dot age-yellow"></span> 1–7 days</span>
+          <span class="age-chip"><span class="age-dot age-orange"></span> 8–14 days</span>
+          <span class="age-chip"><span class="age-dot age-red"></span> 2+ weeks</span>
+        </div>
+        <div class="tickets-table-wrap">
+          <table>
+            <thead><tr>
+              <th style="width:8px"></th><th>Ticket</th><th>Category</th>
+              <th>Priority</th><th>Status</th><th>Assigned To</th><th>Opened</th>
+            </tr></thead>
+            <tbody id="all-ticket-list"><tr><td colspan="7"><div class="spinner"></div></td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Reports panel -->
+      <div id="tkt-panel-reports" style="display:none">
+        <div class="report-controls">
+          <select id="report-month" onchange="generateReport()"></select>
+          <select id="report-year" onchange="generateReport()"></select>
+        </div>
+        <div class="report-grid" id="report-grid"><div class="report-card"><div class="spinner"></div></div></div>
+        <div class="tickets-table-wrap" id="report-table-wrap" style="display:none">
+          <p class="section-title" style="padding:20px 20px 0">Tickets This Period</p>
+          <table>
+            <thead><tr>
+              <th>ID</th><th>Title</th><th>Category</th>
+              <th>Priority</th><th>Status</th><th>Opened</th><th>Assigned To</th>
+            </tr></thead>
+            <tbody id="report-ticket-list"></tbody>
+          </table>
+        </div>
       </div>
     </div>
 
-    <!-- ── ALL TICKETS VIEW ── -->
-    <div id="view-tickets" class="view">
+    <!-- ── PLANNER VIEW ── -->
+    <div id="view-planner" class="view">
       <div class="page-header" style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px">
         <div>
-          <h2>All Tickets</h2>
-          <p>Search, filter and manage all support requests.</p>
+          <h2>School Planner</h2>
+          <p id="planner-week-label">Week of —</p>
         </div>
-        <button class="btn btn-gold" onclick="openNewTicketModal()">+ New Ticket</button>
-      </div>
-
-      <div class="filter-bar">
-        <input type="text" id="search-input" placeholder="🔍  Search tickets…" oninput="applyFilters()" />
-        <select id="filter-category" onchange="applyFilters()">
-          <option value="">All Categories</option>
-          <option value="Maintenance & Facilities">Maintenance & Facilities</option>
-          <option value="IT Issues">IT Issues</option>
-        </select>
-        <select id="filter-status" onchange="applyFilters()">
-          <option value="">All Statuses</option>
-          <option value="New">New</option>
-          <option value="In Progress">In Progress</option>
-          <option value="Resolved">Resolved</option>
-          <option value="Closed">Closed</option>
-        </select>
-        <select id="filter-priority" onchange="applyFilters()">
-          <option value="">All Priorities</option>
-          <option value="Urgent">Urgent</option>
-          <option value="Normal">Normal</option>
-          <option value="Low">Low</option>
-        </select>
-      </div>
-
-      <div class="age-legend">
-        <span class="age-chip"><span class="age-dot age-green"></span> Today</span>
-        <span class="age-chip"><span class="age-dot age-yellow"></span> 1–7 days</span>
-        <span class="age-chip"><span class="age-dot age-orange"></span> 8–14 days</span>
-        <span class="age-chip"><span class="age-dot age-red"></span> 2+ weeks</span>
-      </div>
-
-      <div class="tickets-table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th style="width:8px"></th>
-              <th>Ticket</th>
-              <th>Category</th>
-              <th>Priority</th>
-              <th>Status</th>
-              <th>Assigned To</th>
-              <th>Opened</th>
-            </tr>
-          </thead>
-          <tbody id="all-ticket-list">
-            <tr><td colspan="7"><div class="spinner"></div></td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- ── REPORTS VIEW ── -->
-    <div id="view-reports" class="view">
-      <div class="page-header" style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px">
-        <div>
-          <h2>Reports</h2>
-          <p>Monthly summaries of ticket activity.</p>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+          <button class="btn btn-outline btn-sm" onclick="plannerChangeWeek(-1)">← Prev Week</button>
+          <button class="btn btn-outline btn-sm" onclick="plannerGoToday()">This Week</button>
+          <button class="btn btn-outline btn-sm" onclick="plannerChangeWeek(1)">Next Week →</button>
+          <button class="btn btn-gold" onclick="openPlannerModal()">+ Add Event</button>
         </div>
-        <button class="btn btn-outline print-btn" onclick="window.print()">🖨 Print Report</button>
       </div>
 
-      <div class="report-controls">
-        <select id="report-month" onchange="generateReport()"></select>
-        <select id="report-year" onchange="generateReport()"></select>
+      <!-- Week columns -->
+      <div class="planner-week" id="planner-week-grid">
+        <!-- rendered by JS -->
       </div>
 
-      <div class="report-grid" id="report-grid">
-        <div class="report-card"><div class="spinner"></div></div>
+      <!-- Category legend -->
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px">
+        <span style="font-size:11px;font-weight:700;color:var(--subtext);text-transform:uppercase;letter-spacing:0.5px;align-self:center">Category:</span>
+        <span class="planner-event pe-cat-all" style="padding:3px 10px;border-radius:20px;font-size:11px">Whole School</span>
+        <span class="planner-event pe-cat-yr3" style="padding:3px 10px;border-radius:20px;font-size:11px">Year 3</span>
+        <span class="planner-event pe-cat-yr4" style="padding:3px 10px;border-radius:20px;font-size:11px">Year 4</span>
+        <span class="planner-event pe-cat-yr5" style="padding:3px 10px;border-radius:20px;font-size:11px">Year 5</span>
+        <span class="planner-event pe-cat-yr6" style="padding:3px 10px;border-radius:20px;font-size:11px">Year 6</span>
+        <span class="planner-event pe-cat-staff" style="padding:3px 10px;border-radius:20px;font-size:11px">Staff</span>
+        <span class="planner-event pe-cat-other" style="padding:3px 10px;border-radius:20px;font-size:11px">Other</span>
       </div>
 
-      <div class="tickets-table-wrap" id="report-table-wrap" style="display:none">
-        <p class="section-title" style="padding:20px 20px 0">Tickets This Period</p>
-        <table>
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Title</th>
-              <th>Category</th>
-              <th>Priority</th>
-              <th>Status</th>
-              <th>Opened</th>
-              <th>Assigned To</th>
-            </tr>
-          </thead>
-          <tbody id="report-ticket-list"></tbody>
-        </table>
+      <!-- Activity log -->
+      <div class="activity-log">
+        <div class="activity-log-header">📝 Recent Changes</div>
+        <div id="planner-activity-log">
+          <div class="activity-item"><div class="activity-dot"></div><div class="activity-text" style="color:var(--subtext)">No recent activity.</div></div>
+        </div>
       </div>
     </div>
 
@@ -2700,6 +2767,65 @@
 </div>
 
 <!-- TOAST -->
+<!-- PLANNER EVENT MODAL -->
+<div class="modal-overlay" id="planner-event-modal">
+  <div class="modal" style="max-width:500px">
+    <div class="modal-header">
+      <h3 id="planner-modal-title">Add Event</h3>
+      <button class="modal-close" onclick="closeModal('planner-event-modal')">×</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="pe-id">
+      <div class="form-group" style="margin-bottom:14px">
+        <label>Event Title *</label>
+        <input type="text" id="pe-title" placeholder="e.g. Year 3 Swimming Carnival">
+      </div>
+      <div class="form-row" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px">
+        <div class="form-group">
+          <label>Date *</label>
+          <input type="date" id="pe-date">
+        </div>
+        <div class="form-group">
+          <label>Time (optional)</label>
+          <input type="time" id="pe-time" placeholder="e.g. 09:00">
+        </div>
+      </div>
+      <div class="form-row" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px">
+        <div class="form-group">
+          <label>Category</label>
+          <select id="pe-category">
+            <option value="all">Whole School</option>
+            <option value="yr3">Year 3</option>
+            <option value="yr4">Year 4</option>
+            <option value="yr5">Year 5</option>
+            <option value="yr6">Year 6</option>
+            <option value="staff">Staff</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Organiser / Who</label>
+          <input type="text" id="pe-who" placeholder="e.g. Keely, PE Dept…">
+        </div>
+      </div>
+      <div class="form-group" style="margin-bottom:14px">
+        <label>Notes (optional)</label>
+        <textarea id="pe-notes" rows="2" placeholder="Any extra details…"></textarea>
+      </div>
+      <div id="pe-error" style="display:none" class="error-msg"></div>
+    </div>
+    <div class="modal-footer" style="display:flex;justify-content:space-between">
+      <div>
+        <button class="btn btn-danger btn-sm" id="pe-delete-btn" style="display:none" onclick="deletePlannerEvent()">🗑 Delete</button>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-outline" onclick="closeModal('planner-event-modal')">Cancel</button>
+        <button class="btn btn-gold" onclick="savePlannerEvent()">💾 Save Event</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <!-- ════════════════════════════════════════
@@ -2730,6 +2856,7 @@
     query,
     orderBy,
     where,
+    limit,
     serverTimestamp,
     Timestamp
   } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
@@ -2809,6 +2936,10 @@ const firebaseConfig = {
   window.daybookDeleteRow   = daybookDeleteRow;
   window.daybookUpdateRow   = daybookUpdateRow;
   window.daybookPickDate    = daybookPickDate;
+  window.dbInfoAddItem      = dbInfoAddItem;
+  window.dbInfoDeleteItem   = dbInfoDeleteItem;
+  window.plannerChangeWeek  = plannerChangeWeek;
+  window.plannerGoToday     = plannerGoToday;
   window.ttShowPane         = ttShowPane;
   window.highlightDuties    = highlightDuties;
   window.highlightSpec      = highlightSpec;
@@ -2966,30 +3097,40 @@ const firebaseConfig = {
     if (view === 'admin' && !currentIsAdmin) return;
     document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
     document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-    document.getElementById('view-' + view).classList.add('active');
+    const viewEl = document.getElementById('view-' + view);
+    if (viewEl) viewEl.classList.add('active');
     document.querySelectorAll('.nav-btn').forEach(b => {
       const t = b.textContent.toLowerCase();
       if (
-        (view === 'home'      && t.includes('home')) ||
+        (view === 'home'       && t.includes('home')) ||
         (view === 'timetables' && t.includes('timetable')) ||
-        (view === 'daybook'   && t.includes('daybook')) ||
-        (view === 'dashboard' && t.includes('ticket')) ||
-        (view === 'reports'   && t.includes('report')) ||
-        (view === 'naplan'    && t.includes('naplan')) ||
-        (view === 'admin'     && t.includes('admin'))
+        (view === 'daybook'    && t.includes('daybook')) ||
+        (view === 'planner'    && t.includes('planner')) ||
+        (view === 'tickets'    && t.includes('ticket')) ||
+        (view === 'naplan'     && t.includes('naplan')) ||
+        (view === 'admin'      && t.includes('admin'))
       ) b.classList.add('active');
     });
-    if (view === 'reports') generateReport();
-    if (view === 'admin')   loadAdminUsers();
+    if (view === 'tickets')  { renderDashboard(); renderAllTickets(allTickets); setupReportDropdowns(); }
+    if (view === 'admin')    loadAdminUsers();
     if (view === 'naplan' && !_npInited) { _npInited = true; npInitDashboard(); }
-    if (view === 'timetables') { /* static, no load needed */ }
-    if (view === 'daybook') { 
-      daybookCurrentDate = new Date(); 
+    if (view === 'planner')  plannerLoad();
+    if (view === 'daybook') {
+      daybookCurrentDate = new Date();
       daybookSkipWeekend(daybookCurrentDate, -1);
-      daybookLoad(); 
+      daybookLoad();
     }
-    if (view === 'home')    renderHomeView();
+    if (view === 'home') renderHomeView();
   }
+
+  function ticketsShowTab(tab) {
+    document.getElementById('tkt-panel-all').style.display     = tab === 'all'     ? '' : 'none';
+    document.getElementById('tkt-panel-reports').style.display = tab === 'reports' ? '' : 'none';
+    document.getElementById('tkttab-all').classList.toggle('active', tab === 'all');
+    document.getElementById('tkttab-reports').classList.toggle('active', tab === 'reports');
+    if (tab === 'reports') generateReport();
+  }
+  window.ticketsShowTab = ticketsShowTab;
 
   // ══════════════════════════════════════
   // HOME VIEW
@@ -3006,25 +3147,25 @@ const firebaseConfig = {
     document.getElementById('home-day').textContent = days[now.getDay()];
     document.getElementById('home-date-full').textContent = now.getDate() + ' ' + months[now.getMonth()] + ' ' + now.getFullYear();
     loadHomeDaybookPreview();
-    renderHomeTicketSummary();
+    loadHomeWeekPreview();
+    loadUVIndex();
   }
 
   async function loadHomeDaybookPreview() {
     const dateKey = daybookDateKey(new Date());
     const snap = await getDoc(doc(db, 'daybook', dateKey));
     const el = document.getElementById('home-daybook-preview');
-    const noticesEl = document.getElementById('home-notices-body');
     if (!snap.exists()) {
-      el.innerHTML = '<div class="db-empty">No daybook entry yet for today. <a href="#" onclick="showView(\'daybook\')">Add one \u2192</a></div>';
-      noticesEl.innerHTML = '<div class="db-empty">No notices for today.</div>';
+      el.innerHTML = '<div class="db-empty">No daybook entry yet for today. <a href="#" onclick="showView(\'daybook\')">Add one →</a></div>';
       return;
     }
     const data = snap.data();
     const rows = data.rows || [];
+    let html = '';
     if (rows.length === 0) {
-      el.innerHTML = '<div class="db-empty">No absences recorded today.</div>';
+      html += '<div class="db-empty" style="margin-bottom:12px">No absences recorded today.</div>';
     } else {
-      let html = '<div class="daybook-col-head"><span>Absent</span><span>Reliever</span><span>Duty</span><span>NIT</span></div>';
+      html += '<div class="daybook-col-head"><span>Absent</span><span>Reliever</span><span>Duty</span><span>NIT</span></div>';
       rows.forEach(r => {
         html += `<div class="daybook-preview-row">
           <span class="col-absent">${escHtml(r.absent||'')}</span>
@@ -3033,31 +3174,302 @@ const firebaseConfig = {
           <span class="col-nit">${escHtml(r.nit||'')}</span>
         </div>`;
       });
-      el.innerHTML = html;
     }
-    let noticesHtml = '';
-    if (data.dutyTeam)  noticesHtml += `<div class="notice-item"><strong>Staff Room Duty:</strong> ${escHtml(data.dutyTeam)}</div>`;
-    if (data.assembly)  noticesHtml += `<div class="notice-item urgent"><strong>Assembly:</strong> ${escHtml(data.assembly)}</div>`;
-    if (data.pblFocus)  noticesHtml += `<div class="notice-item"><strong>PBL Focus:</strong> ${escHtml(data.pblFocus)}</div>`;
-    if (data.notices)   noticesHtml += `<div class="notice-item">${escHtml(data.notices)}</div>`;
-    noticesEl.innerHTML = noticesHtml || '<div class="db-empty">No notices for today.</div>';
-  }
-
-  function renderHomeTicketSummary() {
-    const el = document.getElementById('home-tickets-summary');
-    if (!allTickets || allTickets.length === 0) { el.innerHTML = '<div class="db-empty">No open tickets.</div>'; return; }
-    const open = allTickets.filter(t => t.status !== 'resolved' && t.status !== 'closed');
-    if (open.length === 0) { el.innerHTML = '<div class="db-empty">All tickets resolved! 🎉</div>'; return; }
-    let html = `<p style="font-size:13px;color:var(--gray3);margin-bottom:10px">${open.length} open ticket${open.length>1?'s':''}</p>`;
-    open.slice(0,4).forEach(t => {
-      html += `<div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--gray2);font-size:13px">
-        <span style="font-weight:500;color:var(--navy)">${escHtml(t.title||'Untitled')}</span>
-        <span class="badge-status badge-status-${(t.status||'new').replace(' ','-')}">${escHtml(t.status||'new')}</span>
-      </div>`;
-    });
-    if (open.length > 4) html += `<p style="font-size:12px;color:var(--gray3);margin-top:8px"><a href="#" onclick="showView('dashboard')">+${open.length-4} more</a></p>`;
+    // Dot-point daily info
+    const items = data.infoItems || [];
+    if (!items.length) {
+      const legacy = [];
+      if (data.dutyTeam) legacy.push('Staff Room Duty: ' + data.dutyTeam);
+      if (data.assembly)  legacy.push('Assembly: ' + data.assembly);
+      if (data.pblFocus)  legacy.push('PBL Focus: ' + data.pblFocus);
+      if (data.notices)   legacy.push(data.notices);
+      items.push(...legacy);
+    }
+    if (items.length) {
+      html += '<div style="border-top:1px solid var(--gray2);margin-top:12px;padding-top:10px">';
+      html += '<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--subtext);margin-bottom:8px">Daily Information</div>';
+      html += '<ul class="db-dotpoint-list">' + items.map(i => `<li>${escHtml(i)}</li>`).join('') + '</ul>';
+      html += '</div>';
+    }
     el.innerHTML = html;
   }
+
+  // Week preview on home page — loads this week's planner events
+  async function loadHomeWeekPreview() {
+    const el = document.getElementById('home-week-preview');
+    if (!el) return;
+    try {
+      const { mon, sun } = plannerWeekRange(new Date());
+      const monKey = plannerDateKey(mon);
+      const sunKey = plannerDateKey(sun);
+      const q = query(collection(db, 'planner_events'),
+        where('date', '>=', monKey), where('date', '<=', sunKey),
+        orderBy('date'), orderBy('time'));
+      const snap = await getDocs(q);
+      if (snap.empty) { el.innerHTML = '<div class="db-empty">No events this week.</div>'; return; }
+      const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+      let html = '';
+      snap.docs.forEach(d => {
+        const e = d.data();
+        const dt = new Date(e.date + 'T00:00:00');
+        const dayLabel = days[dt.getDay()];
+        const catCls = 'pe-cat-' + (e.category || 'other');
+        const dot = `background:var(--navy)`;
+        html += `<div class="week-event-item">
+          <div class="week-event-day">${dayLabel}</div>
+          <div class="week-event-dot" style="${dot}"></div>
+          <div class="week-event-body">
+            <div class="week-event-title">${escHtml(e.title)}</div>
+            <div class="week-event-meta">${e.time ? e.time + ' · ' : ''}${escHtml(e.who||'')}${e.who && e.category ? ' · ' : ''}${catLabel(e.category)}</div>
+          </div>
+        </div>`;
+      });
+      el.innerHTML = html;
+    } catch(err) {
+      el.innerHTML = '<div class="db-empty">Could not load events.</div>';
+    }
+  }
+
+  // ── UV Index ──
+  async function loadUVIndex() {
+    try {
+      const url = 'https://api.open-meteo.com/v1/forecast?latitude=-34.9285&longitude=138.6007&hourly=uv_index&timezone=Australia%2FAdelaide&forecast_days=1';
+      const resp = await fetch(url);
+      const json = await resp.json();
+      const now = new Date();
+      const hour = now.getHours();
+      const uvValues = json.hourly?.uv_index || [];
+      const currentUV = uvValues[hour] ?? Math.max(...uvValues.filter(v => v !== null && v !== undefined));
+      renderUVWidget(currentUV, now);
+    } catch(e) {
+      const cat = document.getElementById('uv-category');
+      if (cat) { cat.textContent = 'Unavailable'; cat.style.color = 'rgba(255,255,255,0.5)'; }
+    }
+  }
+
+  function renderUVWidget(uv, now) {
+    const rounded = Math.round(uv * 10) / 10;
+    document.getElementById('uv-index').textContent = isNaN(rounded) ? '—' : rounded;
+    let cat, advice, color;
+    if      (uv < 3)  { cat = 'Low';       color = '#4caf50'; advice = 'No sun protection needed.'; }
+    else if (uv < 6)  { cat = 'Moderate';  color = '#f5ac1c'; advice = 'SPF 30+ sunscreen, hat and sunglasses recommended.'; }
+    else if (uv < 8)  { cat = 'High';      color = '#e67e22'; advice = 'Protection essential — SPF 50+, hat, shade between 10am–3pm.'; }
+    else if (uv < 11) { cat = 'Very High'; color = '#e74c3c'; advice = 'Extra protection needed. Minimise outdoor time at peak hours.'; }
+    else              { cat = 'Extreme';   color = '#9b59b6'; advice = 'Stay indoors during midday. Full protection required if outside.'; }
+    const catEl = document.getElementById('uv-category');
+    catEl.textContent = cat; catEl.style.color = color;
+    document.getElementById('uv-advice').textContent = advice;
+    // Hat notice: UV ≥ 3
+    const hatEl = document.getElementById('uv-hat-notice');
+    if (hatEl) hatEl.style.display = uv >= 3 ? '' : 'none';
+    const pct = Math.min(uv / 13 * 100, 100);
+    const bar = document.getElementById('uv-bar');
+    bar.style.width = pct + '%';
+    bar.style.background = 'linear-gradient(90deg, #4caf50, #f5ac1c, #e67e22, #e74c3c, #9b59b6)';
+    const h = now.getHours(), m = String(now.getMinutes()).padStart(2,'0');
+    const ampm = h >= 12 ? 'pm' : 'am';
+    document.getElementById('uv-updated').textContent = `${h%12||12}:${m}${ampm}`;
+    document.getElementById('uv-footer').textContent = 'Open-Meteo · Adelaide · ' + now.toLocaleDateString('en-AU',{weekday:'short',day:'numeric',month:'short'});
+  }
+
+  // ══════════════════════════════════════
+  // PLANNER
+  // ══════════════════════════════════════
+  let plannerCurrentWeekStart = null; // Monday of current displayed week
+
+  function plannerDateKey(d) {
+    return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+  }
+
+  function plannerWeekRange(d) {
+    const mon = new Date(d);
+    const day = mon.getDay();
+    mon.setDate(mon.getDate() - (day === 0 ? 6 : day - 1));
+    mon.setHours(0,0,0,0);
+    const sun = new Date(mon);
+    sun.setDate(sun.getDate() + 6);
+    return { mon, sun };
+  }
+
+  function plannerGoToday() {
+    plannerCurrentWeekStart = null;
+    plannerLoad();
+  }
+
+  function plannerChangeWeek(offset) {
+    if (!plannerCurrentWeekStart) {
+      const { mon } = plannerWeekRange(new Date());
+      plannerCurrentWeekStart = mon;
+    }
+    plannerCurrentWeekStart = new Date(plannerCurrentWeekStart);
+    plannerCurrentWeekStart.setDate(plannerCurrentWeekStart.getDate() + offset * 7);
+    plannerLoad();
+  }
+
+  async function plannerLoad() {
+    const { mon, sun } = plannerWeekRange(plannerCurrentWeekStart || new Date());
+    if (!plannerCurrentWeekStart) plannerCurrentWeekStart = mon;
+
+    const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    document.getElementById('planner-week-label').textContent =
+      `Week of ${mon.getDate()} ${months[mon.getMonth()]} – ${sun.getDate()} ${months[sun.getMonth()]} ${sun.getFullYear()}`;
+
+    const todayKey = plannerDateKey(new Date());
+    const grid = document.getElementById('planner-week-grid');
+    grid.innerHTML = '';
+
+    // Build 5 day columns Mon-Fri
+    const dayNames = ['Monday','Tuesday','Wednesday','Thursday','Friday'];
+    const dayKeys = [];
+    for (let i = 0; i < 5; i++) {
+      const d = new Date(mon); d.setDate(mon.getDate() + i);
+      dayKeys.push(plannerDateKey(d));
+      const isToday = plannerDateKey(d) === todayKey;
+      const col = document.createElement('div');
+      col.className = 'planner-day-col';
+      col.innerHTML = `
+        <div class="planner-day-head ${isToday ? 'today' : ''}">
+          <div class="pd-name">${dayNames[i]}</div>
+          <div class="pd-date">${d.getDate()} ${months[d.getMonth()]}</div>
+        </div>
+        <div class="planner-day-body" id="pcol-${dayKeys[i]}">
+          <div class="db-empty" style="font-size:11px;padding:8px 4px">—</div>
+        </div>`;
+      grid.appendChild(col);
+    }
+
+    // Fetch events for this week
+    try {
+      const monKey = dayKeys[0], friKey = dayKeys[4];
+      const q = query(collection(db, 'planner_events'),
+        where('date', '>=', monKey), where('date', '<=', friKey),
+        orderBy('date'), orderBy('time'));
+      const snap = await getDocs(q);
+      // Clear placeholders
+      dayKeys.forEach(k => {
+        const el = document.getElementById('pcol-' + k);
+        if (el) el.innerHTML = `<button class="planner-add-btn" onclick="openPlannerModal('${k}')">+ Add</button>`;
+      });
+      snap.docs.forEach(d => {
+        const e = { id: d.id, ...d.data() };
+        const col = document.getElementById('pcol-' + e.date);
+        if (!col) return;
+        const btn = col.querySelector('.planner-add-btn');
+        const ev = document.createElement('div');
+        ev.className = `planner-event pe-cat-${e.category || 'other'}`;
+        ev.onclick = () => openPlannerModal(e.date, e);
+        ev.innerHTML = `
+          ${e.time ? `<span class="pe-time">${e.time}</span>` : ''}
+          <span class="pe-title">${escHtml(e.title)}</span>
+          ${e.who ? `<span class="pe-who">${escHtml(e.who)}</span>` : ''}`;
+        col.insertBefore(ev, btn);
+      });
+    } catch(err) { console.error('Planner load error:', err); }
+
+    // Load activity log
+    plannerLoadActivity();
+  }
+
+  async function plannerLoadActivity() {
+    try {
+      const q = query(collection(db, 'planner_activity'), orderBy('at', 'desc'), limit(15));
+      const snap = await getDocs(q);
+      const logEl = document.getElementById('planner-activity-log');
+      if (!logEl) return;
+      if (snap.empty) { logEl.innerHTML = '<div class="activity-item"><div class="activity-dot"></div><div class="activity-text" style="color:var(--subtext)">No recent activity.</div></div>'; return; }
+      logEl.innerHTML = snap.docs.map(d => {
+        const a = d.data();
+        const when = a.at?.toDate ? a.at.toDate().toLocaleString('en-AU',{day:'numeric',month:'short',hour:'numeric',minute:'2-digit'}) : '—';
+        return `<div class="activity-item">
+          <div class="activity-dot ${a.action || ''}"></div>
+          <div class="activity-text">
+            <span>${escHtml(a.description || '')}</span>
+            <div class="activity-who">${escHtml(a.by || '')} · ${when}</div>
+          </div>
+        </div>`;
+      }).join('');
+    } catch(e) { /* silent */ }
+  }
+
+  function catLabel(cat) {
+    const map = { all:'Whole School', yr3:'Year 3', yr4:'Year 4', yr5:'Year 5', yr6:'Year 6', staff:'Staff', other:'Other' };
+    return map[cat] || 'Other';
+  }
+
+  function openPlannerModal(dateStr, event) {
+    document.getElementById('pe-id').value    = event?.id    || '';
+    document.getElementById('pe-title').value = event?.title || '';
+    document.getElementById('pe-date').value  = event?.date  || dateStr || plannerDateKey(new Date());
+    document.getElementById('pe-time').value  = event?.time  || '';
+    document.getElementById('pe-category').value = event?.category || 'all';
+    document.getElementById('pe-who').value   = event?.who   || '';
+    document.getElementById('pe-notes').value = event?.notes || '';
+    document.getElementById('pe-error').style.display = 'none';
+    document.getElementById('planner-modal-title').textContent = event ? 'Edit Event' : 'Add Event';
+    document.getElementById('pe-delete-btn').style.display = event ? '' : 'none';
+    openModal('planner-event-modal');
+  }
+  window.openPlannerModal = openPlannerModal;
+
+  async function savePlannerEvent() {
+    const id       = document.getElementById('pe-id').value;
+    const title    = document.getElementById('pe-title').value.trim();
+    const date     = document.getElementById('pe-date').value;
+    const time     = document.getElementById('pe-time').value;
+    const category = document.getElementById('pe-category').value;
+    const who      = document.getElementById('pe-who').value.trim();
+    const notes    = document.getElementById('pe-notes').value.trim();
+    const errEl    = document.getElementById('pe-error');
+    errEl.style.display = 'none';
+    if (!title) { errEl.textContent = 'Please enter an event title.'; errEl.style.display = 'block'; return; }
+    if (!date)  { errEl.textContent = 'Please select a date.'; errEl.style.display = 'block'; return; }
+
+    const payload = { title, date, time, category, who, notes,
+      updatedAt: serverTimestamp(), updatedBy: currentUser.displayName || currentUser.email };
+    const isNew = !id;
+
+    try {
+      if (isNew) {
+        payload.createdAt = serverTimestamp();
+        const ref = await addDoc(collection(db, 'planner_events'), payload);
+        await addDoc(collection(db, 'planner_activity'), {
+          action: 'add', description: `Added "${title}" on ${date}`,
+          by: currentUser.displayName || currentUser.email, at: serverTimestamp()
+        });
+      } else {
+        await setDoc(doc(db, 'planner_events', id), payload);
+        await addDoc(collection(db, 'planner_activity'), {
+          action: 'edit', description: `Edited "${title}" (${date})`,
+          by: currentUser.displayName || currentUser.email, at: serverTimestamp()
+        });
+      }
+      closeModal('planner-event-modal');
+      showToast(isNew ? 'Event added!' : 'Event updated!', 'success');
+      plannerLoad();
+    } catch(e) {
+      errEl.textContent = 'Error saving: ' + e.message;
+      errEl.style.display = 'block';
+    }
+  }
+  window.savePlannerEvent = savePlannerEvent;
+
+  async function deletePlannerEvent() {
+    const id    = document.getElementById('pe-id').value;
+    const title = document.getElementById('pe-title').value;
+    const date  = document.getElementById('pe-date').value;
+    if (!id || !confirm(`Delete "${title}"?`)) return;
+    try {
+      await deleteDoc(doc(db, 'planner_events', id));
+      await addDoc(collection(db, 'planner_activity'), {
+        action: 'del', description: `Deleted "${title}" (${date})`,
+        by: currentUser.displayName || currentUser.email, at: serverTimestamp()
+      });
+      closeModal('planner-event-modal');
+      showToast('Event deleted.', 'success');
+      plannerLoad();
+    } catch(e) { showToast('Error deleting event.', 'error'); }
+  }
+  window.deletePlannerEvent = deletePlannerEvent;
 
   // ══════════════════════════════════════
   // DAYBOOK
@@ -3119,18 +3531,22 @@ const firebaseConfig = {
     const key   = daybookDateKey(daybookCurrentDate);
     label.textContent = daybookFriendlyDate(daybookCurrentDate);
     document.getElementById('daybook-next-btn').disabled = false;
-    // Only show Edit button for today or future days
     document.getElementById('daybook-edit-btn').style.display = key >= today ? '' : 'none';
 
     const snap = await getDoc(doc(db, 'daybook', key));
-    daybookCurrentData = snap.exists() ? snap.data() : { rows: [], dutyTeam: '', pblFocus: '', assembly: '', notices: '' };
-
+    daybookCurrentData = snap.exists() ? snap.data() : { rows: [], infoItems: [] };
+    if (!daybookCurrentData.infoItems) {
+      const legacy = [];
+      if (daybookCurrentData.dutyTeam) legacy.push('Staff Room Duty: ' + daybookCurrentData.dutyTeam);
+      if (daybookCurrentData.assembly)  legacy.push('Assembly: ' + daybookCurrentData.assembly);
+      if (daybookCurrentData.pblFocus)  legacy.push('PBL Focus: ' + daybookCurrentData.pblFocus);
+      if (daybookCurrentData.notices)   legacy.push(daybookCurrentData.notices);
+      daybookCurrentData.infoItems = legacy;
+    }
     daybookRenderRows(daybookCurrentData.rows || [], false);
-    document.getElementById('db-duty-team').value = daybookCurrentData.dutyTeam || '';
-    document.getElementById('db-pbl-focus').value = daybookCurrentData.pblFocus || '';
-    document.getElementById('db-assembly').value  = daybookCurrentData.assembly  || '';
-    document.getElementById('db-notices').value   = daybookCurrentData.notices   || '';
-    daybookSetFieldsReadOnly(true);
+    dbInfoRenderView(daybookCurrentData.infoItems || []);
+    document.getElementById('db-info-view').style.display = '';
+    document.getElementById('db-info-edit').style.display = 'none';
   }
 
   function daybookRenderRows(rows, editing) {
@@ -3171,13 +3587,7 @@ const firebaseConfig = {
     daybookRenderRows(daybookCurrentData.rows, true);
   }
 
-  function daybookSetFieldsReadOnly(readonly) {
-    ['db-duty-team','db-pbl-focus','db-assembly','db-notices'].forEach(id => {
-      const el = document.getElementById(id);
-      if (readonly) { el.setAttribute('readonly',''); el.style.background='transparent'; el.style.border='1px solid transparent'; }
-      else          { el.removeAttribute('readonly'); el.style.background=''; el.style.border=''; }
-    });
-  }
+  function daybookSetFieldsReadOnly() { /* replaced by show/hide approach */ }
 
   function daybookToggleEdit() {
     const today = daybookDateKey(new Date());
@@ -3188,21 +3598,19 @@ const firebaseConfig = {
     document.getElementById('daybook-save-bar').style.display  = daybookIsEditing ? 'flex' : 'none';
     document.getElementById('daybook-add-btn').style.display   = daybookIsEditing ? 'inline-block' : 'none';
     daybookRenderRows(daybookCurrentData.rows || [], daybookIsEditing);
-    daybookSetFieldsReadOnly(!daybookIsEditing);
+    document.getElementById('db-info-view').style.display = daybookIsEditing ? 'none' : '';
+    document.getElementById('db-info-edit').style.display = daybookIsEditing ? '' : 'none';
+    if (daybookIsEditing) dbInfoRenderEdit(daybookCurrentData.infoItems || []);
   }
 
-  function daybookCancelEdit() {
-    daybookLoad();
-  }
+  function daybookCancelEdit() { daybookLoad(); }
 
   async function daybookSave() {
     const key = daybookDateKey(daybookCurrentDate);
     const statusEl = document.getElementById('daybook-save-status');
     statusEl.textContent = 'Saving…';
-    daybookCurrentData.dutyTeam = document.getElementById('db-duty-team').value;
-    daybookCurrentData.pblFocus = document.getElementById('db-pbl-focus').value;
-    daybookCurrentData.assembly = document.getElementById('db-assembly').value;
-    daybookCurrentData.notices  = document.getElementById('db-notices').value;
+    const editInputs = document.querySelectorAll('#db-info-edit-list .db-edit-item input');
+    daybookCurrentData.infoItems = Array.from(editInputs).map(i => i.value.trim()).filter(Boolean);
     daybookCurrentData.updatedAt = serverTimestamp();
     daybookCurrentData.updatedBy = currentUser.displayName || currentUser.email;
     try {
@@ -3213,6 +3621,42 @@ const firebaseConfig = {
     } catch(e) {
       statusEl.textContent = 'Error saving: ' + e.message;
     }
+  }
+
+  // Daily info dot-point helpers
+  function dbInfoRenderView(items) {
+    const el = document.getElementById('db-info-dotpoints');
+    if (!items || items.length === 0) {
+      el.innerHTML = '<div class="db-empty" style="padding:8px 0">No daily information added yet.</div>';
+      return;
+    }
+    el.innerHTML = '<ul class="db-dotpoint-list">' + items.map(i => `<li>${escHtml(i)}</li>`).join('') + '</ul>';
+  }
+
+  function dbInfoRenderEdit(items) {
+    const list = document.getElementById('db-info-edit-list');
+    list.innerHTML = (items||[]).map((item,i) =>
+      `<div class="db-edit-item">
+        <input type="text" value="${escHtml(item)}" placeholder="Notice or reminder…">
+        <button class="del-btn" onclick="dbInfoDeleteItem(${i})" title="Remove">✕</button>
+      </div>`
+    ).join('') || '<div style="font-size:13px;color:var(--subtext);padding:6px 0">No items yet — add one below.</div>';
+  }
+
+  function dbInfoAddItem() {
+    const input = document.getElementById('db-info-new-input');
+    const val = input.value.trim();
+    if (!val) return;
+    if (!daybookCurrentData.infoItems) daybookCurrentData.infoItems = [];
+    daybookCurrentData.infoItems.push(val);
+    input.value = '';
+    dbInfoRenderEdit(daybookCurrentData.infoItems);
+    input.focus();
+  }
+
+  function dbInfoDeleteItem(i) {
+    daybookCurrentData.infoItems.splice(i, 1);
+    dbInfoRenderEdit(daybookCurrentData.infoItems);
   }
 
   // ══════════════════════════════════════
@@ -3246,7 +3690,7 @@ const firebaseConfig = {
     document.getElementById('stat-it').textContent     = it.length;
     document.getElementById('stat-closed').textContent = closed.length;
 
-    const tbody = document.getElementById('dash-ticket-list');
+    const tbody = document.getElementById('all-ticket-list');
     if (open.length === 0) {
       tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state"><div class="empty-icon">🎉</div><p>No open tickets — everything is up to date!</p></div></td></tr>`;
       return;
@@ -3258,7 +3702,7 @@ const firebaseConfig = {
     const h = new Date().getHours();
     const g = h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening';
     const name = currentUser?.displayName?.split(' ')[0] || '';
-    document.getElementById('dash-greeting').textContent = `${g}, ${name} — here's today's overview.`;
+    // dash-greeting removed; greeting is now on home view
   }
 
   // ══════════════════════════════════════
@@ -4163,6 +4607,14 @@ const firebaseConfig = {
   function doLogout() { if (window._doLogoutModule) window._doLogoutModule(); }
   function doReset()  { if (window._doResetModule)  window._doResetModule(); }
   function npShowPanel(id, btn) { if (window._npShowPanelModule) window._npShowPanelModule(id, btn); }
+  function plannerChangeWeek(n) { if (window.plannerChangeWeek) window.plannerChangeWeek(n); }
+  function plannerGoToday()     { if (window.plannerGoToday)    window.plannerGoToday(); }
+  function openPlannerModal(d,e){ if (window.openPlannerModal)  window.openPlannerModal(d,e); }
+  function savePlannerEvent()   { if (window.savePlannerEvent)  window.savePlannerEvent(); }
+  function deletePlannerEvent() { if (window.deletePlannerEvent) window.deletePlannerEvent(); }
+  function ticketsShowTab(t)    { if (window.ticketsShowTab)    window.ticketsShowTab(t); }
+  function dbInfoAddItem()      { if (window.dbInfoAddItem)     window.dbInfoAddItem(); }
+  function dbInfoDeleteItem(i)  { if (window.dbInfoDeleteItem)  window.dbInfoDeleteItem(i); }
   // ══════════════════════════════════════
   // TIMETABLES
   // ══════════════════════════════════════

@@ -2160,7 +2160,7 @@ const firebaseConfig = {
   function daybookToggleEdit() {
     const today = daybookDateKey(new Date());
     const key   = daybookDateKey(daybookCurrentDate);
-    if (key !== today) { showToast('You can only edit today's daybook.', 'error'); return; }
+    if (key !== today) { showToast('You can only edit today\'s daybook.', 'error'); return; }
     daybookIsEditing = !daybookIsEditing;
     document.getElementById('daybook-edit-btn').textContent = daybookIsEditing ? '✕ Cancel' : '✏️ Edit';
     document.getElementById('daybook-save-bar').style.display  = daybookIsEditing ? 'flex' : 'none';

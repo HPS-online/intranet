@@ -4977,6 +4977,26 @@ const firebaseConfig = {
   function plannerShowTab(t)    { if (window.plannerShowTab)    window.plannerShowTab(t); }
   function plannerLoadTerm(t)   { if (window.plannerLoadTerm)   window.plannerLoadTerm(t); }
   function printPlanner()       { if (window.printPlanner)      window.printPlanner(); }
+  function printTimetable(type) {
+    const printWin = window.open('', '_blank');
+    const css = `body{font-family:Arial,sans-serif;font-size:8px;margin:10mm}h2{font-size:13px;margin-bottom:4px;color:#1a2e52}p{font-size:9px;color:#666;margin-bottom:8px}table{width:100%;border-collapse:collapse;table-layout:fixed}th{background:#1a2e52;color:#fff;padding:3px 2px;text-align:center;font-size:7px;text-transform:uppercase}.day-header{background:#2d4a7a}td{padding:3px 2px;border:1px solid #ddd;text-align:center;font-size:7.5px;vertical-align:middle;word-break:break-word}.lesson-label{background:#f5f5f5;font-weight:bold;font-size:7px;text-align:left;padding:3px 4px}.nit{color:#aaa;font-style:italic}.recess{background:#f5f5f5;color:#888}.area-name{font-weight:bold;text-align:left}.period-h{margin-top:10px;margin-bottom:3px;font-size:10px;font-weight:bold;color:#1a2e52}.period-t{font-size:8px;color:#888;margin-left:8px}@page{size:A4 landscape;margin:10mm}`;
+    let body = '';
+    if (type === 'specialist') {
+      const tbl = document.getElementById('spec-table');
+      if (tbl) body = '<h2>Specialist Timetable — Term 2, 2026</h2><p>Highbury Primary School</p>' + tbl.outerHTML;
+    } else {
+      body = '<h2>Yard Duty Roster — Term 2, 2026</h2><p>Highbury Primary School</p>';
+      const labels = ['Before School (8:20–8:40)','Recess (10:30–11:00)','Lunch (12:50–1:20)','After School (3:00–3:20)'];
+      document.querySelectorAll('.duty-table').forEach((tbl, i) => {
+        body += '<div class="period-h">' + (labels[i]||'') + '</div>';
+        let h = tbl.outerHTML.replace(/<span[^>]*class="duty-cell[^"]*"[^>]*>(.*?)<\/span>/g,'$1');
+        body += h;
+      });
+    }
+    printWin.document.write('<html><head><title>Highbury Timetable</title><style>' + css + '</style></head><body>' + body + '</body></html>');
+    printWin.document.close();
+    setTimeout(() => { printWin.print(); }, 500);
+  }
   // ══════════════════════════════════════
   // TIMETABLES
   // ══════════════════════════════════════

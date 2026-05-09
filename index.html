@@ -2954,9 +2954,19 @@ const firebaseConfig = {
   }
 
   function termWeekLabel(dateStr) {
-    const tw = getTermWeek(dateStr);
-    if (!tw) return null;
-    return { label: `Term ${tw.term} · Week ${tw.week}`, term: tw.term, week: tw.week };
+    // Direct match — we're in a school week
+    for (const tw of TERM_WEEKS_2026) {
+      if (dateStr >= tw.mon && dateStr <= tw.fri) {
+        return { label: `Term ${tw.term} · Week ${tw.week}`, term: tw.term, week: tw.week, comingUp: false };
+      }
+    }
+    // Weekend or holiday — find the next school week
+    for (const tw of TERM_WEEKS_2026) {
+      if (tw.mon > dateStr) {
+        return { label: `Term ${tw.term} · Week ${tw.week}`, term: tw.term, week: tw.week, comingUp: true };
+      }
+    }
+    return null;
   }
 
   // ══════════════════════════════════════
@@ -3219,12 +3229,16 @@ const firebaseConfig = {
     const tw = termWeekLabel(todayKey);
     const homeBadge = document.getElementById('home-term-badge');
     if (homeBadge) {
-      if (tw) {
-        const hatTerms = HAT_TERMS.includes(tw.term);
+      if (tw && !tw.comingUp) {
+        const hats = HAT_TERMS.includes(tw.term);
         homeBadge.innerHTML = `<span style="background:rgba(255,255,255,0.15);color:var(--gold2);font-size:11px;font-weight:700;padding:3px 12px;border-radius:20px;letter-spacing:0.3px">Term ${tw.term} · Week ${tw.week}</span>`
-          + (hatTerms ? `<span style="background:rgba(245,172,28,0.2);color:var(--gold2);font-size:11px;font-weight:600;padding:3px 12px;border-radius:20px">🧢 Hats on</span>` : '');
+          + (hats ? `<span style="background:rgba(245,172,28,0.2);color:var(--gold2);font-size:11px;font-weight:600;padding:3px 12px;border-radius:20px">🧢 Hats on</span>` : '');
+      } else if (tw && tw.comingUp) {
+        const hats = HAT_TERMS.includes(tw.term);
+        homeBadge.innerHTML = `<span style="background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.55);font-size:11px;padding:3px 12px;border-radius:20px">Coming up · Term ${tw.term} Week ${tw.week}</span>`
+          + (hats ? `<span style="background:rgba(245,172,28,0.15);color:var(--gold2);font-size:11px;font-weight:600;padding:3px 12px;border-radius:20px">🧢 Hats on</span>` : '');
       } else {
-        homeBadge.innerHTML = `<span style="background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.5);font-size:11px;padding:3px 12px;border-radius:20px">School Holidays</span>`;
+        homeBadge.innerHTML = `<span style="background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.4);font-size:11px;padding:3px 12px;border-radius:20px">School Holidays</span>`;
       }
     }
 
@@ -3395,6 +3409,14 @@ const firebaseConfig = {
     const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
     document.getElementById('planner-week-label').textContent =
       `Week of ${mon.getDate()} ${months[mon.getMonth()]} – ${sun.getDate()} ${months[sun.getMonth()]} ${sun.getFullYear()}`;
+
+    // Term/week label on planner header
+    const twLabel = termWeekLabel(plannerDateKey(mon));
+    const plannerSubEl = document.getElementById('planner-week-label');
+    if (twLabel) {
+      const prefix = twLabel.comingUp ? 'Coming up · ' : '';
+      plannerSubEl.textContent = `${prefix}Term ${twLabel.term} · Week ${twLabel.week}  ·  Week of ${mon.getDate()} ${months[mon.getMonth()]} – ${sun.getDate()} ${months[sun.getMonth()]} ${sun.getFullYear()}`;
+    }
 
     const todayKey = plannerDateKey(new Date());
     const grid = document.getElementById('planner-week-grid');
@@ -3623,9 +3645,14 @@ const firebaseConfig = {
       label.parentNode.insertBefore(badge, label.nextSibling);
     }
     if (tw) {
-      const hatTerms = HAT_TERMS.includes(tw.term);
-      badge.innerHTML = `<span style="background:var(--navy);color:var(--gold2);font-size:11px;font-weight:700;padding:2px 10px;border-radius:20px;letter-spacing:0.3px">Term ${tw.term} · Week ${tw.week}</span>`
-        + (hatTerms ? `<span style="background:#fef3c7;color:#92400e;font-size:11px;font-weight:600;padding:2px 10px;border-radius:20px">🧢 Hats on</span>` : '');
+      const hats = HAT_TERMS.includes(tw.term);
+      if (!tw.comingUp) {
+        badge.innerHTML = `<span style="background:var(--navy);color:var(--gold2);font-size:11px;font-weight:700;padding:2px 10px;border-radius:20px;letter-spacing:0.3px">Term ${tw.term} · Week ${tw.week}</span>`
+          + (hats ? `<span style="background:#fef3c7;color:#92400e;font-size:11px;font-weight:600;padding:2px 10px;border-radius:20px">🧢 Hats on</span>` : '');
+      } else {
+        badge.innerHTML = `<span style="background:var(--gray2);color:var(--gray3);font-size:11px;padding:2px 10px;border-radius:20px">Coming up · Term ${tw.term} Week ${tw.week}</span>`
+          + (hats ? `<span style="background:#fef3c7;color:#92400e;font-size:11px;font-weight:600;padding:2px 10px;border-radius:20px">🧢 Hats on</span>` : '');
+      }
     } else {
       badge.innerHTML = '<span style="background:var(--gray2);color:var(--gray3);font-size:11px;padding:2px 10px;border-radius:20px">School Holidays</span>';
     }
@@ -3768,7 +3795,6 @@ const firebaseConfig = {
       allTickets = snap.docs.map(d => ({ id: d.id, ...d.data() }));
       renderDashboard();
       renderAllTickets(allTickets);
-      renderHomeTicketSummary();
     } catch(e) {
       console.error(e);
     }

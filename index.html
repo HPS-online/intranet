@@ -1194,7 +1194,46 @@
     .uv-scale-labels { display: flex; justify-content: space-between; font-size: 9px; color: rgba(255,255,255,0.35); }
     .uv-footer { margin-top: 10px; font-size: 10px; color: rgba(255,255,255,0.3); text-align: right; }
 
-    /* ── Planner ── */
+    /* ── Planner term/year views ── */
+    .term-week-block { background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow); margin-bottom: 16px; overflow: hidden; }
+    .term-week-head { background: linear-gradient(135deg, var(--navy3) 0%, var(--navy) 100%); color: var(--white); padding: 10px 16px; display: flex; justify-content: space-between; align-items: center; }
+    .term-week-head .tw-label { font-size: 13px; font-weight: 700; }
+    .term-week-head .tw-dates { font-size: 11px; color: rgba(255,255,255,0.55); }
+    .term-week-head.hat-week { border-left: 4px solid var(--gold); }
+    .term-event-row { display: flex; align-items: flex-start; gap: 10px; padding: 7px 16px; border-bottom: 1px solid var(--gray1); font-size: 12.5px; }
+    .term-event-row:last-child { border-bottom: none; }
+    .term-event-day  { font-size: 11px; font-weight: 700; color: var(--subtext); width: 30px; flex-shrink: 0; padding-top: 1px; }
+    .term-event-pill { display: inline-block; width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-top: 4px; }
+    .term-event-text { flex: 1; color: var(--navy); font-weight: 500; }
+    .term-event-who  { font-size: 11px; color: var(--subtext); margin-left: 6px; }
+    .term-empty { padding: 12px 16px; font-size: 12px; color: var(--subtext); font-style: italic; }
+    .year-term-block { margin-bottom: 28px; }
+    .year-term-head { background: linear-gradient(135deg, var(--navy3) 0%, var(--navy) 100%); color: var(--white); padding: 12px 18px; border-radius: var(--radius) var(--radius) 0 0; border-bottom: 3px solid var(--gold); display: flex; justify-content: space-between; align-items: center; }
+    .year-term-head h3 { font-size: 14px; font-weight: 800; margin: 0; text-transform: uppercase; letter-spacing: 0.5px; }
+    .year-term-head .yt-dates { font-size: 11px; color: rgba(255,255,255,0.55); }
+    .year-table { width: 100%; border-collapse: collapse; font-size: 11.5px; }
+    .year-table th { background: var(--gray1); color: var(--navy); padding: 6px 10px; text-align: left; font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 700; border: 1px solid var(--gray2); white-space: nowrap; }
+    .year-table td { padding: 6px 10px; border: 1px solid var(--gray2); vertical-align: top; line-height: 1.5; }
+    .year-table tr:nth-child(even) td { background: #fafbfc; }
+    .year-table td.week-col { font-weight: 700; color: var(--navy); white-space: nowrap; font-size: 11px; width: 80px; }
+    .year-table td.dates-col { color: var(--subtext); white-space: nowrap; font-size: 10px; width: 100px; }
+    .year-event-chip { display: inline-block; margin: 1px 2px; padding: 1px 6px; border-radius: 4px; font-size: 10px; font-weight: 600; }
+
+    /* ── Print styles ── */
+    .print-planner-header { display: none; }
+    @media print {
+      .no-print, #topbar, .nav-btn, .btn, #pp-week .activity-log,
+      #planner-nav-controls, [id^="ptab-"], .planner-add-btn { display: none !important; }
+      .print-planner-header { display: flex !important; align-items: center; gap: 16px; margin-bottom: 20px; padding-bottom: 14px; border-bottom: 3px solid #f5ac1c; }
+      .print-school-name { font-family: 'Montserrat', sans-serif; font-size: 18px; font-weight: 800; color: #242b63; text-transform: uppercase; letter-spacing: 1px; }
+      .print-doc-title { font-size: 13px; color: #6B7280; margin-top: 2px; }
+      .view { display: block !important; }
+      #view-planner { display: block !important; }
+      body { background: white; }
+      .term-week-block, .year-term-block { break-inside: avoid; }
+      .year-table { page-break-inside: auto; }
+      .year-table tr { page-break-inside: avoid; }
+    }
     .planner-grid { display: grid; grid-template-columns: 1fr 340px; gap: 20px; }
     @media (max-width: 900px) { .planner-grid { grid-template-columns: 1fr; } }
     .planner-week { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-bottom: 20px; }
@@ -1848,12 +1887,21 @@
 
     <!-- ── PLANNER VIEW ── -->
     <div id="view-planner" class="view">
+
+      <!-- Print header (hidden on screen, shown on print) -->
+      <div class="print-planner-header">
+        <div class="print-logo-block">
+          <div class="print-school-name">HIGHBURY PRIMARY SCHOOL</div>
+          <div class="print-doc-title" id="print-doc-title">School Planner 2026</div>
+        </div>
+      </div>
+
       <div class="page-header" style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px">
         <div>
           <h2>School Planner</h2>
           <p id="planner-week-label">Week of —</p>
         </div>
-        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center" id="planner-nav-controls">
           <button class="btn btn-outline btn-sm" onclick="plannerChangeWeek(-1)">← Prev Week</button>
           <button class="btn btn-outline btn-sm" onclick="plannerGoToday()">This Week</button>
           <button class="btn btn-outline btn-sm" onclick="plannerChangeWeek(1)">Next Week →</button>
@@ -1861,30 +1909,54 @@
         </div>
       </div>
 
-      <!-- Week columns -->
-      <div class="planner-week" id="planner-week-grid">
-        <!-- rendered by JS -->
+      <!-- View tabs -->
+      <div style="display:flex;gap:6px;margin-bottom:20px;border-bottom:2px solid var(--gray2);padding-bottom:0">
+        <button id="ptab-week"  class="nav-btn active" style="border-radius:6px 6px 0 0;border-bottom:2px solid var(--navy);margin-bottom:-2px" onclick="plannerShowTab('week')">📅 Week</button>
+        <button id="ptab-term"  class="nav-btn" style="border-radius:6px 6px 0 0" onclick="plannerShowTab('term')">📆 Term</button>
+        <button id="ptab-year"  class="nav-btn" style="border-radius:6px 6px 0 0" onclick="plannerShowTab('year')">📋 Year</button>
+        <div style="flex:1"></div>
+        <button class="btn btn-outline btn-sm no-print" onclick="window.print()" style="margin-bottom:4px">🖨 Print</button>
       </div>
 
-      <!-- Category legend -->
-      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px">
-        <span style="font-size:11px;font-weight:700;color:var(--subtext);text-transform:uppercase;letter-spacing:0.5px;align-self:center">Category:</span>
-        <span class="planner-event pe-cat-all" style="padding:3px 10px;border-radius:20px;font-size:11px">Whole School</span>
-        <span class="planner-event pe-cat-yr3" style="padding:3px 10px;border-radius:20px;font-size:11px">Year 3</span>
-        <span class="planner-event pe-cat-yr4" style="padding:3px 10px;border-radius:20px;font-size:11px">Year 4</span>
-        <span class="planner-event pe-cat-yr5" style="padding:3px 10px;border-radius:20px;font-size:11px">Year 5</span>
-        <span class="planner-event pe-cat-yr6" style="padding:3px 10px;border-radius:20px;font-size:11px">Year 6</span>
-        <span class="planner-event pe-cat-staff" style="padding:3px 10px;border-radius:20px;font-size:11px">Staff</span>
-        <span class="planner-event pe-cat-other" style="padding:3px 10px;border-radius:20px;font-size:11px">Other</span>
-      </div>
-
-      <!-- Activity log -->
-      <div class="activity-log">
-        <div class="activity-log-header">📝 Recent Changes</div>
-        <div id="planner-activity-log">
-          <div class="activity-item"><div class="activity-dot"></div><div class="activity-text" style="color:var(--subtext)">No recent activity.</div></div>
+      <!-- ── WEEK TAB ── -->
+      <div id="pp-week">
+        <div class="planner-week" id="planner-week-grid"></div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px" id="planner-legend">
+          <span style="font-size:11px;font-weight:700;color:var(--subtext);text-transform:uppercase;letter-spacing:0.5px;align-self:center">Category:</span>
+          <span class="planner-event pe-cat-all"   style="padding:3px 10px;border-radius:20px;font-size:11px">Whole School</span>
+          <span class="planner-event pe-cat-yr3"   style="padding:3px 10px;border-radius:20px;font-size:11px">Year 3</span>
+          <span class="planner-event pe-cat-yr4"   style="padding:3px 10px;border-radius:20px;font-size:11px">Year 4</span>
+          <span class="planner-event pe-cat-yr5"   style="padding:3px 10px;border-radius:20px;font-size:11px">Year 5</span>
+          <span class="planner-event pe-cat-yr6"   style="padding:3px 10px;border-radius:20px;font-size:11px">Year 6</span>
+          <span class="planner-event pe-cat-staff" style="padding:3px 10px;border-radius:20px;font-size:11px">Staff</span>
+          <span class="planner-event pe-cat-other" style="padding:3px 10px;border-radius:20px;font-size:11px">Other</span>
+        </div>
+        <div class="activity-log no-print">
+          <div class="activity-log-header">📝 Recent Changes</div>
+          <div id="planner-activity-log">
+            <div class="activity-item"><div class="activity-dot"></div><div class="activity-text" style="color:var(--subtext)">No recent activity.</div></div>
+          </div>
         </div>
       </div>
+
+      <!-- ── TERM TAB ── -->
+      <div id="pp-term" style="display:none">
+        <!-- Term selector -->
+        <div class="no-print" style="display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;align-items:center">
+          <span style="font-size:13px;font-weight:600;color:var(--navy)">View term:</span>
+          <button class="btn btn-outline btn-sm" id="tsel-1" onclick="plannerLoadTerm(1)">Term 1</button>
+          <button class="btn btn-outline btn-sm" id="tsel-2" onclick="plannerLoadTerm(2)">Term 2</button>
+          <button class="btn btn-outline btn-sm" id="tsel-3" onclick="plannerLoadTerm(3)">Term 3</button>
+          <button class="btn btn-outline btn-sm" id="tsel-4" onclick="plannerLoadTerm(4)">Term 4</button>
+        </div>
+        <div id="planner-term-grid"></div>
+      </div>
+
+      <!-- ── YEAR TAB ── -->
+      <div id="pp-year" style="display:none">
+        <div id="planner-year-grid"></div>
+      </div>
+
     </div>
 
     <!-- ── NAPLAN DATA VIEW ── -->
@@ -3500,6 +3572,165 @@ const firebaseConfig = {
     return map[cat] || 'Other';
   }
 
+  function catColor(cat) {
+    const map = { all:'#3730a3', yr3:'#065f46', yr4:'#92400e', yr5:'#991b1b', yr6:'#5b21b6', staff:'#9d174d', other:'#374151' };
+    return map[cat] || '#374151';
+  }
+  function catBg(cat) {
+    const map = { all:'#e0e7ff', yr3:'#d1fae5', yr4:'#fef3c7', yr5:'#fee2e2', yr6:'#ede9fe', staff:'#fce7f3', other:'#f3f4f6' };
+    return map[cat] || '#f3f4f6';
+  }
+
+  let _currentPlannerTab = 'week';
+  let _currentTerm = 1;
+
+  function plannerShowTab(tab) {
+    _currentPlannerTab = tab;
+    ['week','term','year'].forEach(t => {
+      document.getElementById('pp-' + t).style.display = t === tab ? '' : 'none';
+      const btn = document.getElementById('ptab-' + t);
+      if (btn) {
+        btn.classList.toggle('active', t === tab);
+        btn.style.borderBottom = t === tab ? '2px solid var(--navy)' : '';
+        btn.style.marginBottom = t === tab ? '-2px' : '';
+      }
+    });
+    const navCtrl = document.getElementById('planner-nav-controls');
+    if (navCtrl) navCtrl.style.display = tab === 'week' ? '' : 'none';
+    if (tab === 'term') {
+      // Auto-select current term
+      const todayKey = plannerDateKey(new Date());
+      let activeTerm = 1;
+      for (const tw of TERM_WEEKS_2026) { if (todayKey >= tw.mon && todayKey <= tw.fri) { activeTerm = tw.term; break; } }
+      // If between terms, find next
+      if (!TERM_WEEKS_2026.some(tw => todayKey >= tw.mon && todayKey <= tw.fri)) {
+        for (const tw of TERM_WEEKS_2026) { if (tw.mon > todayKey) { activeTerm = tw.term; break; } }
+      }
+      plannerLoadTerm(activeTerm);
+    }
+    if (tab === 'year') plannerLoadYear();
+    // Update print title
+    const titles = { week: 'Week View', term: `Term ${_currentTerm} 2026`, year: 'Year Planner 2026' };
+    const el = document.getElementById('print-doc-title');
+    if (el) el.textContent = 'School Planner 2026 — ' + (titles[tab] || '');
+  }
+  window.plannerShowTab = plannerShowTab;
+
+  async function plannerLoadTerm(termNum) {
+    _currentTerm = termNum;
+    // Highlight active term button
+    [1,2,3,4].forEach(t => {
+      const btn = document.getElementById('tsel-' + t);
+      if (btn) { btn.classList.toggle('active', t === termNum); btn.style.background = t === termNum ? 'var(--navy)' : ''; btn.style.color = t === termNum ? 'white' : ''; }
+    });
+    const grid = document.getElementById('planner-term-grid');
+    grid.innerHTML = '<div class="db-empty">Loading…</div>';
+    const weeks = TERM_WEEKS_2026.filter(tw => tw.term === termNum);
+    if (!weeks.length) { grid.innerHTML = '<div class="db-empty">No weeks found.</div>'; return; }
+    const firstMon = weeks[0].mon;
+    const lastFri  = weeks[weeks.length-1].fri;
+    const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    const dayNames = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+    try {
+      const { collection, getDocs, query, where, orderBy } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js");
+      const { getFirestore } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js");
+      const { getApp } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js");
+      const db2 = getFirestore(getApp());
+      const q = query(collection(db2,'planner_events'), where('date','>=',firstMon), where('date','<=',lastFri), orderBy('date'), orderBy('time'));
+      const snap = await getDocs(q);
+      // Group by date
+      const byDate = {};
+      snap.docs.forEach(d => { const e = {id:d.id,...d.data()}; if (!byDate[e.date]) byDate[e.date]=[]; byDate[e.date].push(e); });
+
+      let html = `<div style="font-size:13px;font-weight:700;color:var(--navy);margin-bottom:16px;text-transform:uppercase;letter-spacing:0.5px">Term ${termNum} — ${weeks.length} Weeks · ${formatDateShort(firstMon, months)} to ${formatDateShort(lastFri, months)}</div>`;
+      weeks.forEach(tw => {
+        const isHat = HAT_TERMS.includes(tw.term);
+        html += `<div class="term-week-block">
+          <div class="term-week-head ${isHat?'hat-week':''}">
+            <span class="tw-label">Week ${tw.week}</span>
+            <span class="tw-dates">${formatDateShort(tw.mon,months)} – ${formatDateShort(tw.fri,months)}${isHat?' 🧢':''}</span>
+          </div>`;
+        // Mon-Fri
+        let hasEvents = false;
+        for (let i=0; i<5; i++) {
+          const d = new Date(tw.mon + 'T00:00:00');
+          d.setDate(d.getDate() + i);
+          const dk = plannerDateKey(d);
+          const evs = byDate[dk] || [];
+          evs.forEach(e => {
+            hasEvents = true;
+            html += `<div class="term-event-row" onclick="openPlannerModal('${dk}',{id:'${e.id}',title:'${escHtml(e.title)}',date:'${e.date}',time:'${e.time||''}',category:'${e.category||'all'}',who:'${escHtml(e.who||'')}',notes:'${escHtml(e.notes||'')}'})" style="cursor:pointer">
+              <div class="term-event-day">${dayNames[d.getDay()]}</div>
+              <div class="term-event-pill" style="background:${catColor(e.category)}"></div>
+              <div class="term-event-text">${e.time?'<span style="font-size:10px;color:var(--subtext);margin-right:4px">'+e.time+'</span>':''}${escHtml(e.title)}<span class="term-event-who">${e.who?'· '+escHtml(e.who):''}</span></div>
+            </div>`;
+          });
+        }
+        if (!hasEvents) html += `<div class="term-empty">No events scheduled</div>`;
+        html += `</div>`;
+      });
+      grid.innerHTML = html;
+      const el = document.getElementById('print-doc-title');
+      if (el) el.textContent = `School Planner 2026 — Term ${termNum}`;
+    } catch(e) { grid.innerHTML = '<div class="db-empty">Could not load events: ' + e.message + '</div>'; }
+  }
+  window.plannerLoadTerm = plannerLoadTerm;
+
+  function formatDateShort(dateStr, months) {
+    const d = new Date(dateStr + 'T00:00:00');
+    return d.getDate() + ' ' + months[d.getMonth()];
+  }
+
+  async function plannerLoadYear() {
+    const grid = document.getElementById('planner-year-grid');
+    grid.innerHTML = '<div class="db-empty">Loading…</div>';
+    const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    const dayNames = ['','Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+    try {
+      const { collection, getDocs, query, where, orderBy } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js");
+      const { getFirestore } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js");
+      const { getApp } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js");
+      const db2 = getFirestore(getApp());
+      const q = query(collection(db2,'planner_events'), where('date','>=','2026-01-01'), where('date','<=','2026-12-31'), orderBy('date'), orderBy('time'));
+      const snap = await getDocs(q);
+      const byDate = {};
+      snap.docs.forEach(d => { const e={id:d.id,...d.data()}; if(!byDate[e.date])byDate[e.date]=[]; byDate[e.date].push(e); });
+
+      let html = '';
+      [1,2,3,4].forEach(termNum => {
+        const weeks = TERM_WEEKS_2026.filter(tw => tw.term === termNum);
+        const firstMon = weeks[0].mon, lastFri = weeks[weeks.length-1].fri;
+        const isHat = HAT_TERMS.includes(termNum);
+        html += `<div class="year-term-block">
+          <div class="year-term-head">
+            <h3>Term ${termNum}${isHat?' 🧢':''}</h3>
+            <span class="yt-dates">${formatDateShort(firstMon,months)} – ${formatDateShort(lastFri,months)} 2026 · ${weeks.length} weeks</span>
+          </div>
+          <table class="year-table">
+            <tr><th>Week</th><th>Dates</th><th>Events</th></tr>`;
+        weeks.forEach(tw => {
+          // collect all events Mon-Fri
+          const evs = [];
+          for (let i=0; i<5; i++) {
+            const d = new Date(tw.mon+'T00:00:00'); d.setDate(d.getDate()+i);
+            const dk = plannerDateKey(d);
+            (byDate[dk]||[]).forEach(e => evs.push({...e, dayName:['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][d.getDay()]}));
+          }
+          const chips = evs.map(e =>
+            `<span class="year-event-chip" style="background:${catBg(e.category)};color:${catColor(e.category)}">${e.dayName} — ${escHtml(e.title)}</span>`
+          ).join(' ');
+          html += `<tr>
+            <td class="week-col">Week ${tw.week}</td>
+            <td class="dates-col">${formatDateShort(tw.mon,months)} – ${formatDateShort(tw.fri,months)}</td>
+            <td>${chips || '<span style="color:var(--subtext);font-size:11px;font-style:italic">—</span>'}</td>
+          </tr>`;
+        });
+        html += `</table></div>`;
+      });
+      grid.innerHTML = html;
+    } catch(e) { grid.innerHTML = '<div class="db-empty">Could not load: ' + e.message + '</div>'; }
+  }
+
   function openPlannerModal(dateStr, event) {
     document.getElementById('pe-id').value    = event?.id    || '';
     document.getElementById('pe-title').value = event?.title || '';
@@ -4743,6 +4974,8 @@ const firebaseConfig = {
   function ticketsShowTab(t)    { if (window.ticketsShowTab)    window.ticketsShowTab(t); }
   function dbInfoAddItem()      { if (window.dbInfoAddItem)     window.dbInfoAddItem(); }
   function dbInfoDeleteItem(i)  { if (window.dbInfoDeleteItem)  window.dbInfoDeleteItem(i); }
+  function plannerShowTab(t)    { if (window.plannerShowTab)    window.plannerShowTab(t); }
+  function plannerLoadTerm(t)   { if (window.plannerLoadTerm)   window.plannerLoadTerm(t); }
   // ══════════════════════════════════════
   // TIMETABLES
   // ══════════════════════════════════════

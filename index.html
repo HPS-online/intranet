@@ -1915,7 +1915,7 @@
         <button id="ptab-term"  class="nav-btn" style="border-radius:6px 6px 0 0" onclick="plannerShowTab('term')">📆 Term</button>
         <button id="ptab-year"  class="nav-btn" style="border-radius:6px 6px 0 0" onclick="plannerShowTab('year')">📋 Year</button>
         <div style="flex:1"></div>
-        <button class="btn btn-outline btn-sm no-print" onclick="window.print()" style="margin-bottom:4px">🖨 Print</button>
+        <button class="btn btn-outline btn-sm no-print" onclick="printPlanner()" style="margin-bottom:4px">🖨 Print / PDF</button>
       </div>
 
       <!-- ── WEEK TAB ── -->
@@ -4976,6 +4976,7 @@ const firebaseConfig = {
   function dbInfoDeleteItem(i)  { if (window.dbInfoDeleteItem)  window.dbInfoDeleteItem(i); }
   function plannerShowTab(t)    { if (window.plannerShowTab)    window.plannerShowTab(t); }
   function plannerLoadTerm(t)   { if (window.plannerLoadTerm)   window.plannerLoadTerm(t); }
+  function printPlanner()       { if (window.printPlanner)      window.printPlanner(); }
   // ══════════════════════════════════════
   // TIMETABLES
   // ══════════════════════════════════════
@@ -5055,25 +5056,115 @@ const firebaseConfig = {
     }
   }
 
-  function printTimetable(type) {
-    const printWin = window.open('', '_blank');
-    const css = `body{font-family:Arial,sans-serif;font-size:8px;margin:10mm}h2{font-size:13px;margin-bottom:4px;color:#1a2e52}p{font-size:9px;color:#666;margin-bottom:8px}table{width:100%;border-collapse:collapse;table-layout:fixed}th{background:#1a2e52;color:#fff;padding:3px 2px;text-align:center;font-size:7px;text-transform:uppercase}.day-header{background:#2d4a7a}td{padding:3px 2px;border:1px solid #ddd;text-align:center;font-size:7.5px;vertical-align:middle;word-break:break-word}.lesson-label{background:#f5f5f5;font-weight:bold;font-size:7px;text-align:left;padding:3px 4px}.nit{color:#aaa;font-style:italic}.recess{background:#f5f5f5;color:#888}.area-name{font-weight:bold;text-align:left}.period-h{margin-top:10px;margin-bottom:3px;font-size:10px;font-weight:bold;color:#1a2e52}.period-t{font-size:8px;color:#888;margin-left:8px}@page{size:A4 landscape;margin:10mm}`;
-    let body = '';
-    if (type === 'specialist') {
-      const tbl = document.getElementById('spec-table');
-      if (tbl) body = '<h2>Specialist Timetable &#8212; Term 2, 2026</h2><p>Highbury Primary School</p>' + tbl.outerHTML;
-    } else {
-      body = '<h2>Yard Duty Roster &#8212; Term 2, 2026</h2><p>Highbury Primary School</p>';
-      const labels = ['Before School (8:20&#8211;8:40)','Recess (10:30&#8211;11:00)','Lunch (12:50&#8211;1:20)','After School (3:00&#8211;3:20)'];
-      document.querySelectorAll('.duty-table').forEach((tbl, i) => {
-        body += '<div class="period-h">' + (labels[i]||'') + '</div>';
-        let h = tbl.outerHTML.replace(/<span[^>]*class="duty-cell[^"]*"[^>]*>(.*?)<\/span>/g,'$1');
-        body += h;
-      });
+  function printPlanner() {
+    const tab = _currentPlannerTab;
+    const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+    // Get the content to print
+    let contentEl = null;
+    let title = 'School Planner 2026';
+    if (tab === 'week') {
+      contentEl = document.getElementById('pp-week');
+      const lbl = document.getElementById('planner-week-label');
+      title = 'School Planner 2026 — ' + (lbl ? lbl.textContent : 'Week View');
+    } else if (tab === 'term') {
+      contentEl = document.getElementById('planner-term-grid');
+      title = `School Planner 2026 — Term ${_currentTerm}`;
+    } else if (tab === 'year') {
+      contentEl = document.getElementById('planner-year-grid');
+      title = 'School Planner 2026 — Full Year';
     }
-    printWin.document.write('<html><head><title>Highbury Timetable</title><style>' + css + '</style></head><body>' + body + '</body></html>');
-    printWin.document.close();
-    setTimeout(() => { printWin.print(); }, 500);
+
+    if (!contentEl) return;
+
+    const css = `
+      @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap');
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+      body { font-family: 'Montserrat', Arial, sans-serif; font-size: 11px; color: #1a1a2e; background: white; padding: 12mm 14mm; }
+      .print-header { display: flex; align-items: center; gap: 16px; margin-bottom: 18px; padding-bottom: 12px; border-bottom: 3px solid #f5ac1c; }
+      .print-school { font-size: 18px; font-weight: 800; color: #242b63; text-transform: uppercase; letter-spacing: 1px; }
+      .print-title  { font-size: 12px; color: #6B7280; margin-top: 3px; }
+      .print-badge  { background: #242b63; color: #f5ac1c; font-size: 10px; font-weight: 700; padding: 3px 10px; border-radius: 20px; margin-left: auto; }
+
+      /* Week tab */
+      .planner-week { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
+      .planner-day-col { border: 1px solid #e2e6ef; border-radius: 8px; overflow: hidden; }
+      .planner-day-head { background: #242b63; color: white; padding: 7px 10px; }
+      .planner-day-head.today { border-bottom: 2px solid #f5ac1c; }
+      .pd-name { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+      .pd-date { font-size: 9px; color: rgba(255,255,255,0.6); margin-top: 2px; }
+      .planner-day-body { padding: 6px; min-height: 60px; }
+      .planner-event { padding: 4px 6px; border-radius: 5px; margin-bottom: 4px; font-size: 9.5px; line-height: 1.4; }
+      .pe-time { font-size: 8px; font-weight: 600; opacity: 0.75; display: block; }
+      .pe-title { font-weight: 600; display: block; }
+      .pe-who   { font-size: 8px; opacity: 0.7; display: block; }
+      .pe-cat-all    { background: #e0e7ff; color: #3730a3; }
+      .pe-cat-yr3    { background: #d1fae5; color: #065f46; }
+      .pe-cat-yr4    { background: #fef3c7; color: #92400e; }
+      .pe-cat-yr5    { background: #fee2e2; color: #991b1b; }
+      .pe-cat-yr6    { background: #ede9fe; color: #5b21b6; }
+      .pe-cat-staff  { background: #fce7f3; color: #9d174d; }
+      .pe-cat-other  { background: #f3f4f6; color: #374151; }
+      .planner-add-btn { display: none; }
+
+      /* Term tab */
+      .term-week-block { border: 1px solid #e2e6ef; border-radius: 8px; margin-bottom: 10px; overflow: hidden; break-inside: avoid; }
+      .term-week-head { background: #242b63; color: white; padding: 8px 14px; display: flex; justify-content: space-between; align-items: center; }
+      .term-week-head.hat-week { border-left: 4px solid #f5ac1c; }
+      .tw-label { font-size: 11px; font-weight: 700; }
+      .tw-dates { font-size: 10px; color: rgba(255,255,255,0.6); }
+      .term-event-row { display: flex; align-items: flex-start; gap: 8px; padding: 5px 14px; border-bottom: 1px solid #f0f1f3; font-size: 10.5px; }
+      .term-event-row:last-child { border-bottom: none; }
+      .term-event-day  { font-size: 9px; font-weight: 700; color: #9CA3AF; width: 28px; flex-shrink: 0; padding-top: 1px; }
+      .term-event-pill { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; margin-top: 3px; }
+      .term-event-text { flex: 1; color: #0B1D3A; font-weight: 500; }
+      .term-event-who  { font-size: 9px; color: #9CA3AF; margin-left: 4px; }
+      .term-empty { padding: 8px 14px; font-size: 10px; color: #9CA3AF; font-style: italic; }
+
+      /* Year tab */
+      .year-term-block { margin-bottom: 20px; break-inside: avoid; }
+      .year-term-head { background: #242b63; color: white; padding: 10px 14px; border-radius: 6px 6px 0 0; border-bottom: 3px solid #f5ac1c; display: flex; justify-content: space-between; align-items: center; }
+      .year-term-head h3 { font-size: 12px; font-weight: 800; margin: 0; text-transform: uppercase; letter-spacing: 0.5px; }
+      .yt-dates { font-size: 10px; color: rgba(255,255,255,0.55); }
+      .year-table { width: 100%; border-collapse: collapse; font-size: 9.5px; }
+      .year-table th { background: #f3f4f6; color: #242b63; padding: 5px 8px; text-align: left; font-size: 8.5px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 700; border: 1px solid #e2e6ef; }
+      .year-table td { padding: 5px 8px; border: 1px solid #e2e6ef; vertical-align: top; line-height: 1.5; }
+      .year-table tr:nth-child(even) td { background: #fafbfc; }
+      .week-col  { font-weight: 700; color: #242b63; white-space: nowrap; font-size: 9px; width: 60px; }
+      .dates-col { color: #9CA3AF; white-space: nowrap; font-size: 8.5px; width: 90px; }
+      .year-event-chip { display: inline-block; margin: 1px 2px; padding: 1px 5px; border-radius: 3px; font-size: 8.5px; font-weight: 600; }
+
+      @page { size: A4 portrait; margin: 10mm; }
+      @page:first { margin-top: 8mm; }
+    `;
+
+    // Clone content and remove interactive elements
+    const clone = contentEl.cloneNode(true);
+    clone.querySelectorAll('.planner-add-btn, .no-print, button').forEach(el => el.remove());
+    // Remove activity log from week view
+    clone.querySelectorAll('.activity-log').forEach(el => el.remove());
+
+    const win = window.open('', '_blank');
+    win.document.write(`<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>${title}</title>
+  <style>${css}</style>
+</head>
+<body>
+  <div class="print-header">
+    <div>
+      <div class="print-school">Highbury Primary School</div>
+      <div class="print-title">${title}</div>
+    </div>
+    <div class="print-badge">2026</div>
+  </div>
+  ${clone.innerHTML}
+</body>
+</html>`);
+    win.document.close();
+    setTimeout(() => { win.print(); }, 600);
   }
 </script>
 

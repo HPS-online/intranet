@@ -336,11 +336,12 @@
     .topbar {
       background: linear-gradient(90deg, var(--navy3) 0%, var(--navy) 100%);
       color: var(--white);
-      padding: 0 32px;
+      padding: 0 20px;
       height: 64px;
       display: flex;
       align-items: center;
       justify-content: space-between;
+      gap: 8px;
       position: sticky;
       top: 0;
       z-index: 100;
@@ -351,7 +352,8 @@
     .topbar-left {
       display: flex;
       align-items: center;
-      gap: 20px;
+      gap: 12px;
+      flex-shrink: 0;
     }
 
     .topbar-logo {
@@ -397,13 +399,14 @@
 
     .topbar-nav {
       display: flex;
-      gap: 4px;
+      gap: 2px;
+      flex-wrap: nowrap;
     }
 
     .nav-btn {
-      padding: 7px 16px;
+      padding: 6px 11px;
       border-radius: 7px;
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 500;
       cursor: pointer;
       border: none;
@@ -411,7 +414,8 @@
       color: rgba(255,255,255,0.6);
       transition: all 0.2s;
       font-family: inherit;
-      letter-spacing: 0.2px;
+      letter-spacing: 0.1px;
+      white-space: nowrap;
     }
 
     .nav-btn:hover { background: rgba(255,255,255,0.1); color: var(--white); }
@@ -913,6 +917,33 @@
 
     .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 
+    .form-label {
+      display: block;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--subtext);
+      margin-bottom: 5px;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 9px 12px;
+      border: 1.5px solid var(--gray2);
+      border-radius: 7px;
+      font-size: 13px;
+      font-family: inherit;
+      color: var(--text);
+      background: var(--white);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .form-input:focus { border-color: var(--gold); }
+
+    textarea.form-input { resize: vertical; min-height: 100px; line-height: 1.6; }
+
     .photo-upload-area {
       border: 2px dashed var(--gray2);
       border-radius: 10px;
@@ -1410,14 +1441,14 @@
       </div>
       <div class="topbar-divider"></div>
       <nav class="topbar-nav">
-        <button class="nav-btn active" onclick="showView('home')">🏠 Home</button>
-        <button class="nav-btn" onclick="showView('daybook')">📋 Daybook</button>
-        <button class="nav-btn" onclick="showView('planner')">📅 Planner</button>
-        <button class="nav-btn" onclick="showView('timetables')">🗓 Timetables</button>
-        <button class="nav-btn" onclick="showView('tickets')">🎫 Lodge a Ticket</button>
-        <button class="nav-btn" onclick="showView('naplan')">📊 NAPLAN Data</button>
-        <button class="nav-btn" onclick="showView('meetings')">📝 Meetings</button>
-        <button class="nav-btn admin-only" id="nav-admin" onclick="showView('admin')" style="display:none;color:#f5ac1c;border:1px solid rgba(245,172,28,0.35)">⚙ Admin</button>
+        <button class="nav-btn active" onclick="showView('home')">Home</button>
+        <button class="nav-btn" onclick="showView('daybook')">Daybook</button>
+        <button class="nav-btn" onclick="showView('planner')">Planner</button>
+        <button class="nav-btn" onclick="showView('timetables')">Timetables</button>
+        <button class="nav-btn" onclick="showView('tickets')">Lodge a Ticket</button>
+        <button class="nav-btn" onclick="showView('naplan')">NAPLAN Data</button>
+        <button class="nav-btn" onclick="showView('meetings')">Meetings</button>
+        <button class="nav-btn admin-only" id="nav-admin" onclick="showView('admin')" style="display:none;color:#f5ac1c;border:1px solid rgba(245,172,28,0.35)">Admin</button>
       </nav>
     </div>
     <div class="topbar-right">
@@ -2847,7 +2878,7 @@
         <div style="padding:24px;display:flex;flex-direction:column;gap:18px">
 
           <!-- Row 1: Type + Date + Time -->
-          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px">
+          <div style="display:grid;grid-template-columns:1.4fr 1fr 0.8fr;gap:14px">
             <div>
               <label class="form-label">Meeting Type *</label>
               <select id="me-type" class="form-input">

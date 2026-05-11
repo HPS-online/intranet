@@ -658,8 +658,8 @@
       display: none;
       position: fixed;
       inset: 0;
-      background: rgba(26,39,68,0.5);
-      z-index: 200;
+      background: rgba(10,15,40,0.72);
+      z-index: 500;
       align-items: center;
       justify-content: center;
       padding: 20px;
@@ -943,6 +943,109 @@
     .form-input:focus { border-color: var(--gold); }
 
     textarea.form-input { resize: vertical; min-height: 100px; line-height: 1.6; }
+
+    /* ── STAFF AUTOCOMPLETE ── */
+    .staff-ac-list {
+      position: absolute;
+      top: 100%;
+      left: 0; right: 0;
+      background: var(--white);
+      border: 1.5px solid var(--gray2);
+      border-top: none;
+      border-radius: 0 0 7px 7px;
+      max-height: 180px;
+      overflow-y: auto;
+      z-index: 600;
+      box-shadow: 0 4px 16px rgba(36,43,99,0.12);
+    }
+
+    .staff-ac-item {
+      padding: 9px 14px;
+      font-size: 13px;
+      cursor: pointer;
+      color: var(--text);
+      transition: background 0.1s;
+    }
+
+    .staff-ac-item:hover { background: var(--gold-light); color: var(--navy); }
+
+    .apology-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: var(--navy);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 3px 10px 3px 10px;
+      border-radius: 20px;
+    }
+
+    .apology-chip button {
+      background: none;
+      border: none;
+      color: rgba(255,255,255,0.7);
+      cursor: pointer;
+      font-size: 13px;
+      line-height: 1;
+      padding: 0;
+    }
+
+    .apology-chip button:hover { color: #fff; }
+
+    .member-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: var(--gold-light);
+      color: var(--navy);
+      font-size: 12px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 20px;
+      border: 1px solid var(--gold);
+    }
+
+    .member-chip button {
+      background: none;
+      border: none;
+      color: var(--navy);
+      cursor: pointer;
+      font-size: 13px;
+      opacity: 0.5;
+      padding: 0;
+    }
+
+    .member-chip button:hover { opacity: 1; }
+
+    /* ── MEETING TABS ── */
+    .meeting-tab {
+      padding: 8px 16px;
+      border-radius: 7px 7px 0 0;
+      border: 1.5px solid var(--gray2);
+      border-bottom: none;
+      background: var(--gray1);
+      color: var(--subtext);
+      font-size: 13px;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      transition: all 0.15s;
+      margin-bottom: -2px;
+    }
+
+    .meeting-tab:hover {
+      background: var(--white);
+      color: var(--navy);
+    }
+
+    .meeting-tab.active {
+      background: var(--white);
+      color: var(--navy);
+      border-color: var(--gray2);
+      border-bottom: 2px solid var(--white);
+      box-shadow: 0 -2px 0 var(--navy) inset;
+    }
 
     .photo-upload-area {
       border: 2px dashed var(--gray2);
@@ -2755,21 +2858,15 @@
           <h2>Meeting Minutes</h2>
           <p>Record and browse minutes for all school meetings.</p>
         </div>
-        <button class="btn btn-gold" onclick="meetingsOpenNew()">+ New Meeting Record</button>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <button class="btn btn-outline" onclick="meetingsOpenConfigure()" style="color:var(--navy);border-color:var(--navy);font-size:13px">⚙ Configure Committees</button>
+          <button class="btn btn-gold" onclick="meetingsOpenNew()">+ New Meeting Record</button>
+        </div>
       </div>
 
-      <!-- Meeting type filter tabs -->
-      <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:20px">
-        <button id="mtab-all" class="nav-btn active" style="border-radius:6px 6px 0 0;border-bottom:2px solid var(--navy);margin-bottom:-2px" onclick="meetingsSetType('all')">All</button>
-        <button id="mtab-Staff Meeting" class="nav-btn" style="border-radius:6px 6px 0 0" onclick="meetingsSetType('Staff Meeting')">Staff Meeting</button>
-        <button id="mtab-PAC" class="nav-btn" style="border-radius:6px 6px 0 0" onclick="meetingsSetType('PAC')">PAC</button>
-        <button id="mtab-Maths" class="nav-btn" style="border-radius:6px 6px 0 0" onclick="meetingsSetType('Maths')">Maths</button>
-        <button id="mtab-Wellbeing" class="nav-btn" style="border-radius:6px 6px 0 0" onclick="meetingsSetType('Wellbeing')">Wellbeing</button>
-        <button id="mtab-Culture Crew" class="nav-btn" style="border-radius:6px 6px 0 0" onclick="meetingsSetType('Culture Crew')">Culture Crew</button>
-        <button id="mtab-English" class="nav-btn" style="border-radius:6px 6px 0 0" onclick="meetingsSetType('English')">English</button>
-        <button id="mtab-Social" class="nav-btn" style="border-radius:6px 6px 0 0" onclick="meetingsSetType('Social')">Social</button>
-        <button id="mtab-WHS" class="nav-btn" style="border-radius:6px 6px 0 0" onclick="meetingsSetType('WHS')">WHS</button>
-        <button id="mtab-Garden" class="nav-btn" style="border-radius:6px 6px 0 0" onclick="meetingsSetType('Garden')">Garden</button>
+      <!-- Meeting type filter tabs — rendered dynamically -->
+      <div id="meetings-tab-bar" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:20px;border-bottom:2px solid var(--gray2);padding-bottom:0">
+        <button id="mtab-all" class="meeting-tab active" onclick="meetingsSetType('all')">All</button>
       </div>
 
       <!-- Meetings list -->
@@ -2789,7 +2886,8 @@
             <div id="md-title" style="font-size:18px;font-weight:800"></div>
             <div id="md-meta" style="font-size:12px;opacity:0.7;margin-top:3px"></div>
           </div>
-          <div style="display:flex;gap:8px;flex-shrink:0">
+          <div style="display:flex;gap:8px;flex-shrink:0;flex-wrap:wrap;justify-content:flex-end">
+            <button id="md-email-btn" class="btn btn-sm" onclick="meetingsEmailSummary()" style="background:#059669;color:#fff;font-size:12px;display:none">✉ Email Summary</button>
             <button id="md-edit-btn" class="btn btn-gold btn-sm" onclick="meetingsEditCurrent()" style="font-size:12px">✏ Edit</button>
             <button class="btn btn-outline btn-sm" onclick="closeMeetingDetail()" style="color:#fff;border-color:rgba(255,255,255,0.35);font-size:12px">✕ Close</button>
           </div>
@@ -2880,19 +2978,9 @@
           <!-- Row 1: Type + Date + Time -->
           <div style="display:grid;grid-template-columns:1.4fr 1fr 0.8fr;gap:14px">
             <div>
-              <label class="form-label">Meeting Type *</label>
-              <select id="me-type" class="form-input">
-                <option value="">Select…</option>
-                <option>Staff Meeting</option>
-                <option>PAC</option>
-                <option>Maths</option>
-                <option>Wellbeing</option>
-                <option>Culture Crew</option>
-                <option>English</option>
-                <option>Social</option>
-                <option>WHS</option>
-                <option>Garden</option>
-              </select>
+              <label class="form-label">Meeting Type * <span style="font-weight:400;text-transform:none;font-size:10px;color:var(--subtext)">(type to add new)</span></label>
+              <input type="text" id="me-type" class="form-input" list="me-type-list" placeholder="Select or type new…" autocomplete="off">
+              <datalist id="me-type-list"></datalist>
             </div>
             <div>
               <label class="form-label">Date *</label>
@@ -2906,20 +2994,25 @@
 
           <!-- Row 2: Chair + Minute-taker -->
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-            <div>
+            <div style="position:relative">
               <label class="form-label">Chair / Facilitator</label>
-              <input type="text" id="me-chair" class="form-input" placeholder="Name…">
+              <input type="text" id="me-chair" class="form-input" placeholder="Name…" autocomplete="off" oninput="staffTypeahead(this,'me-chair-ac')">
+              <div id="me-chair-ac" class="staff-ac-list" style="display:none"></div>
             </div>
-            <div>
+            <div style="position:relative">
               <label class="form-label">Minute-taker</label>
-              <input type="text" id="me-minutes-taker" class="form-input" placeholder="Name…">
+              <input type="text" id="me-minutes-taker" class="form-input" placeholder="Name…" autocomplete="off" oninput="staffTypeahead(this,'me-minutes-taker-ac')">
+              <div id="me-minutes-taker-ac" class="staff-ac-list" style="display:none"></div>
             </div>
           </div>
 
           <!-- Apologies -->
-          <div>
-            <label class="form-label">Apologies (comma-separated names)</label>
-            <input type="text" id="me-apologies" class="form-input" placeholder="e.g. Sara, Ben, Jacki…">
+          <div style="position:relative">
+            <label class="form-label">Apologies <span style="font-weight:400;text-transform:none;font-size:10px;color:var(--subtext)">(type a name and select, repeat for multiple)</span></label>
+            <div id="me-apologies-chips" style="display:flex;flex-wrap:wrap;gap:5px;min-height:36px;padding:6px 10px;border:1.5px solid var(--gray2);border-radius:7px;background:var(--white);cursor:text" onclick="document.getElementById('me-apologies-input').focus()"></div>
+            <input type="text" id="me-apologies-input" class="form-input" placeholder="Type name to add…" autocomplete="off" oninput="staffTypeahead(this,'me-apologies-ac')" style="margin-top:6px">
+            <div id="me-apologies-ac" class="staff-ac-list" style="display:none"></div>
+            <input type="hidden" id="me-apologies">
           </div>
 
           <!-- Minutes body -->
@@ -3017,6 +3110,67 @@
       </div>
     </div>
     <!-- ── END AI SUMMARY POPUP ── -->
+
+    <!-- ── CONFIGURE COMMITTEES MODAL ── -->
+    <div id="meeting-configure-modal" class="modal-overlay" style="display:none" onclick="if(event.target===this)closeMeetingConfigure()">
+      <div class="modal-box" style="max-width:680px;width:95%;max-height:90vh;overflow-y:auto;padding:0">
+        <div style="background:var(--navy);color:#fff;padding:20px 24px;border-radius:var(--radius) var(--radius) 0 0;display:flex;justify-content:space-between;align-items:center">
+          <div>
+            <div style="font-size:18px;font-weight:800">⚙ Configure Committees</div>
+            <div style="font-size:12px;opacity:0.7;margin-top:2px">Manage meeting types and set committee member email lists</div>
+          </div>
+          <button class="btn btn-outline btn-sm" onclick="closeMeetingConfigure()" style="color:#fff;border-color:rgba(255,255,255,0.35)">✕ Close</button>
+        </div>
+        <div style="padding:24px;display:flex;flex-direction:column;gap:24px">
+
+          <!-- Add new meeting type -->
+          <div style="background:var(--gray1);border-radius:10px;padding:16px">
+            <div style="font-size:13px;font-weight:700;color:var(--navy);margin-bottom:10px">➕ Add New Meeting Type</div>
+            <div style="display:flex;gap:8px">
+              <input type="text" id="cfg-new-type" class="form-input" placeholder="e.g. Leadership Team, Year Level Meeting…" style="flex:1">
+              <button class="btn btn-gold" onclick="cfgAddMeetingType()" style="white-space:nowrap">Add Type</button>
+            </div>
+            <div id="cfg-type-error" style="display:none;color:var(--red);font-size:12px;margin-top:6px"></div>
+          </div>
+
+          <!-- Committee member config -->
+          <div>
+            <div style="font-size:13px;font-weight:700;color:var(--navy);margin-bottom:12px">👥 Committee Members & Email Lists</div>
+            <div style="margin-bottom:10px">
+              <label class="form-label">Select Meeting Type to Configure</label>
+              <select id="cfg-select-type" class="form-input" onchange="cfgLoadMembers()">
+                <option value="">Choose a meeting type…</option>
+              </select>
+            </div>
+            <div id="cfg-members-panel" style="display:none">
+              <div style="font-size:12px;color:var(--subtext);margin-bottom:8px">Members listed here will receive the email summary when triggered from a meeting record.</div>
+              <!-- Current members chips -->
+              <div id="cfg-members-list" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px;min-height:32px"></div>
+              <!-- Add member typeahead -->
+              <div style="position:relative;display:flex;gap:8px">
+                <div style="flex:1;position:relative">
+                  <input type="text" id="cfg-member-input" class="form-input" placeholder="Type staff name to add…" autocomplete="off" oninput="staffTypeahead(this,'cfg-member-ac')">
+                  <div id="cfg-member-ac" class="staff-ac-list" style="display:none"></div>
+                </div>
+                <button class="btn btn-sm" style="background:var(--navy);color:#fff;white-space:nowrap" onclick="cfgAddMember()">+ Add</button>
+              </div>
+              <div style="margin-top:12px;display:flex;justify-content:flex-end">
+                <button class="btn btn-gold btn-sm" onclick="cfgSaveMembers()">💾 Save Members</button>
+              </div>
+              <div id="cfg-save-status" style="display:none;font-size:12px;color:#059669;text-align:right;margin-top:6px">✓ Saved</div>
+            </div>
+          </div>
+
+          <!-- Existing types list -->
+          <div>
+            <div style="font-size:13px;font-weight:700;color:var(--navy);margin-bottom:10px">📋 All Meeting Types</div>
+            <div id="cfg-types-list" style="display:flex;flex-direction:column;gap:6px"></div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+    <!-- ── END CONFIGURE COMMITTEES MODAL ── -->
 
     <!-- ── ADMIN VIEW ── -->
     <div id="view-admin" class="view">
@@ -3291,9 +3445,9 @@ const firebaseConfig = {
   // ══════════════════════════════════════
   // 📧 EMAILJS CONFIG — REPLACE THESE
   // ══════════════════════════════════════
-  const EMAILJS_SERVICE_ID  = "YOUR_EMAILJS_SERVICE_ID";
-  const EMAILJS_TEMPLATE_ID = "YOUR_EMAILJS_TEMPLATE_ID";
-  const EMAILJS_PUBLIC_KEY  = "YOUR_EMAILJS_PUBLIC_KEY";
+  const EMAILJS_SERVICE_ID  = "service_eg3m9ya";
+  const EMAILJS_TEMPLATE_ID = "template_ost1b3l";
+  const EMAILJS_PUBLIC_KEY  = "kxXi_jW2l1rXS8VFZ";
 
   // ══════════════════════════════════════
   // 🔐 BOOTSTRAP — first admin email
@@ -3432,22 +3586,35 @@ const firebaseConfig = {
   window.renderHomeView     = renderHomeView;
 
   // Meetings
-  window.meetingsInit           = meetingsInit;
-  window.meetingsSetType        = meetingsSetType;
-  window.meetingsOpenNew        = meetingsOpenNew;
-  window.meetingsEditCurrent    = meetingsEditCurrent;
-  window.meetingsSave           = meetingsSave;
-  window.meetingsAddAgendaRow   = meetingsAddAgendaRow;
-  window.meetingsAddActionRow   = meetingsAddActionRow;
-  window.closeMeetingDetail     = closeMeetingDetail;
-  window.closeMeetingEdit       = closeMeetingEdit;
-  window.openMeetingDetail      = openMeetingDetail;
-  window.meetingsDeleteAttach   = meetingsDeleteAttach;
-  window.meetingsAiSummarise    = meetingsAiSummarise;
-  window.meetingsAiTopPoints    = meetingsAiTopPoints;
+  window.meetingsInit              = meetingsInit;
+  window.meetingsSetType           = meetingsSetType;
+  window.meetingsOpenNew           = meetingsOpenNew;
+  window.meetingsEditCurrent       = meetingsEditCurrent;
+  window.meetingsSave              = meetingsSave;
+  window.meetingsAddAgendaRow      = meetingsAddAgendaRow;
+  window.meetingsAddActionRow      = meetingsAddActionRow;
+  window.closeMeetingDetail        = closeMeetingDetail;
+  window.closeMeetingEdit          = closeMeetingEdit;
+  window.openMeetingDetail         = openMeetingDetail;
+  window.meetingsDeleteAttach      = meetingsDeleteAttach;
+  window.meetingsAiSummarise       = meetingsAiSummarise;
+  window.meetingsAiTopPoints       = meetingsAiTopPoints;
   window.meetingsAiTopPointsDetail = meetingsAiTopPointsDetail;
-  window.meetingsApplyAiSummary = meetingsApplyAiSummary;
-  window.closeMeetingAiModal    = closeMeetingAiModal;
+  window.meetingsApplyAiSummary    = meetingsApplyAiSummary;
+  window.closeMeetingAiModal       = closeMeetingAiModal;
+  window.meetingsEmailSummary      = meetingsEmailSummary;
+  window.meetingsOpenConfigure     = meetingsOpenConfigure;
+  window.closeMeetingConfigure     = closeMeetingConfigure;
+  window.cfgAddMeetingType         = cfgAddMeetingType;
+  window.cfgDeleteMeetingType      = cfgDeleteMeetingType;
+  window.cfgLoadMembers            = cfgLoadMembers;
+  window.cfgAddMember              = cfgAddMember;
+  window.cfgRemoveMember           = cfgRemoveMember;
+  window.cfgSaveMembers            = cfgSaveMembers;
+  window.staffTypeahead            = staffTypeahead;
+  window.staffTypeaheadSelect      = staffTypeaheadSelect;
+  window.removeApologyChip         = removeApologyChip;
+  window.renderApologyChips        = renderApologyChips;
 
   // ══════════════════════════════════════
   // DOM EVENT LISTENERS
@@ -5333,20 +5500,98 @@ const firebaseConfig = {
   }
 
   // ══════════════════════════════════════════════════════
-  // MEETINGS MODULE
   // ══════════════════════════════════════════════════════
-  const MEETING_TYPES = ['Staff Meeting','PAC','Maths','Wellbeing','Culture Crew','English','Social','WHS','Garden'];
+  // MEETINGS MODULE — v2 (custom types, committee config, typeahead, email)
+  // ══════════════════════════════════════════════════════
+  const DEFAULT_MEETING_TYPES = ['Staff Meeting','PAC','Maths','Wellbeing','Culture Crew','English','Social','WHS','Garden'];
   const PRIORITY_COLOURS = { Low:'#3b82f6', Med:'#f59e0b', High:'#e74c3c' };
 
-  let _meetingsCurrentType = 'all';
-  let _meetingsAllDocs     = [];
-  let _meetingsCurrentId   = null;
-  let _meetingsIsNew       = false;
+  let _meetingsCurrentType  = 'all';
+  let _meetingsAllDocs      = [];
+  let _meetingsCurrentId    = null;
+  let _meetingsIsNew        = false;
+  let _allMeetingTypes      = [];   // loaded from Firestore + defaults
+  let _allStaffList         = [];   // [{name, email}] from allowed_users
+  let _apologyChips         = [];   // array of names in apologies chip field
+  let _cfgCurrentMembers    = [];   // [{name, email}] for committee being configured
+  let _cfgCurrentType       = '';
 
-  // ── Load & render list ──────────────────────────────
+  // ── Load staff list for typeahead ──────────────────────
+  async function meetingsLoadStaff() {
+    if (_allStaffList.length) return;
+    try {
+      const snap = await getDocs(collection(db, 'allowed_users'));
+      _allStaffList = snap.docs.map(d => ({ name: d.data().name || d.data().email, email: d.data().email }))
+        .sort((a,b) => a.name.localeCompare(b.name));
+    } catch(e) { console.warn('Could not load staff list', e); }
+  }
+
+  // ── Load meeting types from Firestore (+ defaults) ─────
+  async function meetingsLoadTypes() {
+    try {
+      const snap = await getDocs(collection(db, 'meeting_types'));
+      const custom = snap.docs.map(d => d.data().name).filter(Boolean);
+      const merged = [...DEFAULT_MEETING_TYPES];
+      custom.forEach(t => { if (!merged.includes(t)) merged.push(t); });
+      _allMeetingTypes = merged.sort((a,b) => {
+        // Keep defaults in order, custom types at end
+        const ai = DEFAULT_MEETING_TYPES.indexOf(a), bi = DEFAULT_MEETING_TYPES.indexOf(b);
+        if (ai >= 0 && bi >= 0) return ai - bi;
+        if (ai >= 0) return -1;
+        if (bi >= 0) return 1;
+        return a.localeCompare(b);
+      });
+    } catch(e) {
+      _allMeetingTypes = [...DEFAULT_MEETING_TYPES];
+    }
+  }
+
+  // ── Render dynamic tab bar ─────────────────────────────
+  function meetingsRenderTabBar() {
+    const bar = document.getElementById('meetings-tab-bar');
+    bar.innerHTML = '<button id="mtab-all" class="meeting-tab' + (_meetingsCurrentType==='all' ? ' active' : '') + '" onclick="meetingsSetType(\'all\')">All</button>';
+    _allMeetingTypes.forEach(t => {
+      const active = _meetingsCurrentType === t ? ' active' : '';
+      bar.innerHTML += `<button id="mtab-${esc(t)}" class="meeting-tab${active}" onclick="meetingsSetType('${esc(t)}')">${esc(t)}</button>`;
+    });
+  }
+
+  // ── Populate datalist for meeting type combo ───────────
+  function meetingsPopulateDatalist() {
+    const dl = document.getElementById('me-type-list');
+    if (!dl) return;
+    dl.innerHTML = _allMeetingTypes.map(t => `<option value="${esc(t)}">`).join('');
+  }
+
+  // ── Populate Configure modal type selects ─────────────
+  function cfgPopulateTypeSelect() {
+    const sel = document.getElementById('cfg-select-type');
+    sel.innerHTML = '<option value="">Choose a meeting type…</option>';
+    _allMeetingTypes.forEach(t => {
+      sel.innerHTML += `<option value="${esc(t)}">${esc(t)}</option>`;
+    });
+    cfgRenderTypesList();
+  }
+
+  function cfgRenderTypesList() {
+    const el = document.getElementById('cfg-types-list');
+    el.innerHTML = '';
+    _allMeetingTypes.forEach(t => {
+      const isDefault = DEFAULT_MEETING_TYPES.includes(t);
+      el.innerHTML += `<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:var(--gray1);border-radius:7px;font-size:13px">
+        <span style="font-weight:600;color:var(--navy)">${esc(t)}</span>
+        ${isDefault ? '<span style="font-size:11px;color:var(--subtext)">Default</span>' :
+          `<button onclick="cfgDeleteMeetingType('${esc(t)}')" style="background:none;border:none;color:var(--red);cursor:pointer;font-size:12px;font-weight:600">✕ Remove</button>`}
+      </div>`;
+    });
+  }
+
+  // ── Init ────────────────────────────────────────────────
   async function meetingsInit() {
     const listEl = document.getElementById('meetings-list');
     listEl.innerHTML = '<div style="color:var(--subtext);padding:32px;text-align:center">Loading meetings…</div>';
+    await Promise.all([meetingsLoadTypes(), meetingsLoadStaff()]);
+    meetingsRenderTabBar();
     try {
       const snap = await getDocs(
         query(collection(db, 'meetings'), orderBy('date','desc'), orderBy('createdAt','desc'))
@@ -5360,13 +5605,9 @@ const firebaseConfig = {
 
   function meetingsSetType(type) {
     _meetingsCurrentType = type;
-    document.querySelectorAll('[id^="mtab-"]').forEach(b => {
-      b.classList.remove('active');
-      b.style.borderBottom = '';
-      b.style.marginBottom = '';
-    });
+    document.querySelectorAll('.meeting-tab').forEach(b => b.classList.remove('active'));
     const active = document.getElementById('mtab-' + type);
-    if (active) { active.classList.add('active'); active.style.borderBottom='2px solid var(--navy)'; active.style.marginBottom='-2px'; }
+    if (active) active.classList.add('active');
     meetingsRenderList();
   }
 
@@ -5378,51 +5619,46 @@ const firebaseConfig = {
       listEl.innerHTML = '<div style="color:var(--subtext);padding:32px;text-align:center">No meeting records yet for this category. Click <strong>+ New Meeting Record</strong> to add one.</div>';
       return;
     }
-
-    // Group by month
     const groups = {};
     docs.forEach(d => {
       const mo = d.date ? d.date.substring(0,7) : 'Unknown';
       if (!groups[mo]) groups[mo] = [];
       groups[mo].push(d);
     });
-
     let html = '';
     Object.keys(groups).sort((a,b)=>b.localeCompare(a)).forEach(mo => {
       const label = mo === 'Unknown' ? 'Unknown Date' : (() => { const [y,m] = mo.split('-'); return new Date(y,m-1,1).toLocaleString('en-AU',{month:'long',year:'numeric'}); })();
       html += `<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--subtext);padding:8px 0 4px">${label}</div>`;
       groups[mo].forEach(d => {
-        const dateStr  = d.date ? new Date(d.date+'T00:00:00').toLocaleDateString('en-AU',{weekday:'short',day:'numeric',month:'short',year:'numeric'}) : '—';
-        const timeStr  = d.time ? ' · ' + d.time : '';
-        const actions  = (d.actionItems||[]).filter(a=>!a.done).length;
-        const actionBadge = actions > 0 ? `<span style="background:#e74c3c;color:#fff;font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;margin-left:8px">${actions} action${actions>1?'s':''} pending</span>` : '';
-        html += `
-          <div onclick="openMeetingDetail('${d.id}')" style="background:var(--white);border:1px solid var(--gray2);border-radius:var(--radius);padding:14px 18px;cursor:pointer;transition:box-shadow 0.15s;display:flex;justify-content:space-between;align-items:center;gap:12px" onmouseover="this.style.boxShadow='var(--shadow)'" onmouseout="this.style.boxShadow=''">
-            <div>
-              <div style="font-weight:700;font-size:15px;color:var(--navy);margin-bottom:2px">${esc(d.meetingType)}${actionBadge}</div>
-              <div style="font-size:12px;color:var(--subtext)">${dateStr}${timeStr}${d.chair ? ' · Chair: '+esc(d.chair) : ''}${d.minutesTaker ? ' · Minutes: '+esc(d.minutesTaker) : ''}</div>
-            </div>
-            <div style="flex-shrink:0;color:var(--subtext);font-size:18px">›</div>
-          </div>`;
+        const dateStr = d.date ? new Date(d.date+'T00:00:00').toLocaleDateString('en-AU',{weekday:'short',day:'numeric',month:'short',year:'numeric'}) : '—';
+        const timeStr = d.time ? ' · ' + d.time : '';
+        const pending = (d.actionItems||[]).filter(a=>!a.done).length;
+        const badge   = pending > 0 ? `<span style="background:#e74c3c;color:#fff;font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;margin-left:8px">${pending} action${pending>1?'s':''} pending</span>` : '';
+        html += `<div onclick="openMeetingDetail('${d.id}')" style="background:var(--white);border:1px solid var(--gray2);border-radius:var(--radius);padding:14px 18px;cursor:pointer;transition:box-shadow 0.15s;display:flex;justify-content:space-between;align-items:center;gap:12px" onmouseover="this.style.boxShadow='var(--shadow)'" onmouseout="this.style.boxShadow=''">
+          <div>
+            <div style="font-weight:700;font-size:15px;color:var(--navy);margin-bottom:2px">${esc(d.meetingType)}${badge}</div>
+            <div style="font-size:12px;color:var(--subtext)">${dateStr}${timeStr}${d.chair ? ' · Chair: '+esc(d.chair) : ''}${d.minutesTaker ? ' · Minutes: '+esc(d.minutesTaker) : ''}</div>
+          </div>
+          <div style="flex-shrink:0;color:var(--subtext);font-size:18px">›</div>
+        </div>`;
       });
     });
     listEl.innerHTML = html;
   }
 
-  // ── Detail modal ────────────────────────────────────
-  function openMeetingDetail(id) {
+  // ── Detail modal ────────────────────────────────────────
+  async function openMeetingDetail(id) {
     const d = _meetingsAllDocs.find(x => x.id === id);
     if (!d) return;
     _meetingsCurrentId = id;
-
     const dateStr = d.date ? new Date(d.date+'T00:00:00').toLocaleDateString('en-AU',{weekday:'long',day:'numeric',month:'long',year:'numeric'}) : '—';
-    document.getElementById('md-type-badge').textContent   = d.meetingType || '';
-    document.getElementById('md-title').textContent        = d.meetingType || 'Meeting';
-    document.getElementById('md-meta').textContent         = dateStr + (d.time ? ' at ' + d.time : '');
-    document.getElementById('md-chair').textContent        = d.chair || '—';
-    document.getElementById('md-minutes-taker').textContent= d.minutesTaker || '—';
-    document.getElementById('md-apologies').textContent    = d.apologies || 'None recorded';
-    document.getElementById('md-body').textContent         = d.body || '';
+    document.getElementById('md-type-badge').textContent    = d.meetingType || '';
+    document.getElementById('md-title').textContent         = d.meetingType || 'Meeting';
+    document.getElementById('md-meta').textContent          = dateStr + (d.time ? ' at ' + d.time : '');
+    document.getElementById('md-chair').textContent         = d.chair || '—';
+    document.getElementById('md-minutes-taker').textContent = d.minutesTaker || '—';
+    document.getElementById('md-apologies').textContent     = d.apologies || 'None recorded';
+    document.getElementById('md-body').textContent          = d.body || '';
 
     // Agenda
     const agTbody = document.getElementById('md-agenda-body');
@@ -5458,53 +5694,68 @@ const firebaseConfig = {
     (d.attachments||[]).forEach(att => {
       const isImg = /\.(png|jpe?g|gif|webp)$/i.test(att.name||'');
       attEl.innerHTML += isImg
-        ? `<a href="${att.url}" target="_blank" style="display:block"><img src="${att.url}" alt="${esc(att.name)}" style="height:80px;border-radius:6px;border:1px solid var(--gray2);object-fit:cover"></a>`
+        ? `<a href="${att.url}" target="_blank"><img src="${att.url}" alt="${esc(att.name)}" style="height:80px;border-radius:6px;border:1px solid var(--gray2);object-fit:cover"></a>`
         : `<a href="${att.url}" target="_blank" style="display:inline-flex;align-items:center;gap:6px;background:var(--gray1);border:1px solid var(--gray2);border-radius:6px;padding:6px 12px;font-size:12px;font-weight:600;color:var(--navy);text-decoration:none">📄 ${esc(att.name)}</a>`;
     });
     if (!(d.attachments||[]).length) attEl.innerHTML = '<span style="color:var(--subtext);font-size:13px">No attachments.</span>';
+
+    // Show/hide email button — only show if meeting type is NOT Staff Meeting
+    const emailBtn = document.getElementById('md-email-btn');
+    const isStaffMeeting = (d.meetingType || '') === 'Staff Meeting';
+    emailBtn.style.display = isStaffMeeting ? 'none' : '';
 
     document.getElementById('meeting-detail-modal').style.display = 'flex';
   }
 
   function closeMeetingDetail() { document.getElementById('meeting-detail-modal').style.display = 'none'; }
 
-  // ── Edit / Create modal ─────────────────────────────
-  function meetingsOpenNew() {
+  // ── Edit / Create modal ─────────────────────────────────
+  async function meetingsOpenNew() {
     _meetingsIsNew     = true;
     _meetingsCurrentId = null;
-    document.getElementById('me-modal-title').textContent = 'New Meeting Record';
-    document.getElementById('me-type').value         = '';
-    document.getElementById('me-date').value         = new Date().toISOString().slice(0,10);
-    document.getElementById('me-time').value         = '';
-    document.getElementById('me-chair').value        = '';
-    document.getElementById('me-minutes-taker').value= '';
-    document.getElementById('me-apologies').value    = '';
-    document.getElementById('me-body').value         = '';
-    document.getElementById('me-attachments').value  = '';
+    await Promise.all([meetingsLoadTypes(), meetingsLoadStaff()]);
+    document.getElementById('me-modal-title').textContent  = 'New Meeting Record';
+    document.getElementById('me-type').value               = '';
+    document.getElementById('me-date').value               = new Date().toISOString().slice(0,10);
+    document.getElementById('me-time').value               = '';
+    document.getElementById('me-chair').value              = '';
+    document.getElementById('me-minutes-taker').value      = '';
+    document.getElementById('me-apologies').value          = '';
+    document.getElementById('me-body').value               = '';
+    document.getElementById('me-attachments').value        = '';
     document.getElementById('me-existing-attachments').innerHTML = '';
-    document.getElementById('me-error').style.display = 'none';
-    document.getElementById('me-agenda-body').innerHTML   = '';
-    document.getElementById('me-actions-body').innerHTML  = '';
+    document.getElementById('me-error').style.display      = 'none';
+    document.getElementById('me-agenda-body').innerHTML    = '';
+    document.getElementById('me-actions-body').innerHTML   = '';
+    _apologyChips = [];
+    renderApologyChips();
+    meetingsPopulateDatalist();
     meetingsAddAgendaRow();
     meetingsAddActionRow();
     closeMeetingDetail();
     document.getElementById('meeting-edit-modal').style.display = 'flex';
   }
 
-  function meetingsEditCurrent() {
+  async function meetingsEditCurrent() {
     const d = _meetingsAllDocs.find(x => x.id === _meetingsCurrentId);
     if (!d) return;
     _meetingsIsNew = false;
-    document.getElementById('me-modal-title').textContent = 'Edit Meeting Record';
-    document.getElementById('me-type').value          = d.meetingType || '';
-    document.getElementById('me-date').value          = d.date || '';
-    document.getElementById('me-time').value          = d.time || '';
-    document.getElementById('me-chair').value         = d.chair || '';
-    document.getElementById('me-minutes-taker').value = d.minutesTaker || '';
-    document.getElementById('me-apologies').value     = d.apologies || '';
-    document.getElementById('me-body').value          = d.body || '';
-    document.getElementById('me-attachments').value   = '';
-    document.getElementById('me-error').style.display = 'none';
+    await Promise.all([meetingsLoadTypes(), meetingsLoadStaff()]);
+    document.getElementById('me-modal-title').textContent  = 'Edit Meeting Record';
+    document.getElementById('me-type').value               = d.meetingType || '';
+    document.getElementById('me-date').value               = d.date || '';
+    document.getElementById('me-time').value               = d.time || '';
+    document.getElementById('me-chair').value              = d.chair || '';
+    document.getElementById('me-minutes-taker').value      = d.minutesTaker || '';
+    document.getElementById('me-apologies').value          = d.apologies || '';
+    document.getElementById('me-body').value               = d.body || '';
+    document.getElementById('me-attachments').value        = '';
+    document.getElementById('me-error').style.display      = 'none';
+    meetingsPopulateDatalist();
+
+    // Apology chips
+    _apologyChips = (d.apologies || '').split(',').map(s=>s.trim()).filter(Boolean);
+    renderApologyChips();
 
     // Existing attachments
     const exEl = document.getElementById('me-existing-attachments');
@@ -5515,14 +5766,12 @@ const firebaseConfig = {
     });
 
     // Agenda rows
-    const agTbody = document.getElementById('me-agenda-body');
-    agTbody.innerHTML = '';
+    document.getElementById('me-agenda-body').innerHTML = '';
     (d.agendaItems||[]).forEach(a => meetingsAddAgendaRow(a));
     if (!(d.agendaItems||[]).length) meetingsAddAgendaRow();
 
     // Action rows
-    const acTbody = document.getElementById('me-actions-body');
-    acTbody.innerHTML = '';
+    document.getElementById('me-actions-body').innerHTML = '';
     (d.actionItems||[]).forEach(a => meetingsAddActionRow(a));
     if (!(d.actionItems||[]).length) meetingsAddActionRow();
 
@@ -5534,12 +5783,62 @@ const firebaseConfig = {
     const d = _meetingsAllDocs.find(x => x.id === _meetingsCurrentId);
     if (!d || !d.attachments) return;
     d.attachments.splice(idx, 1);
-    meetingsEditCurrent(); // re-render edit modal
+    meetingsEditCurrent();
   }
 
   function closeMeetingEdit() { document.getElementById('meeting-edit-modal').style.display = 'none'; }
 
-  // ── Dynamic table rows ──────────────────────────────
+  // ── Apology chips ───────────────────────────────────────
+  function renderApologyChips() {
+    const container = document.getElementById('me-apologies-chips');
+    container.innerHTML = _apologyChips.map((name,i) =>
+      `<span class="apology-chip">${esc(name)}<button onclick="removeApologyChip(${i})">✕</button></span>`
+    ).join('');
+    document.getElementById('me-apologies').value = _apologyChips.join(', ');
+  }
+
+  function removeApologyChip(i) {
+    _apologyChips.splice(i,1);
+    renderApologyChips();
+  }
+
+  // ── Staff typeahead ─────────────────────────────────────
+  function staffTypeahead(input, dropdownId) {
+    const val = input.value.trim().toLowerCase();
+    const dd  = document.getElementById(dropdownId);
+    if (!val || val.length < 1) { dd.style.display = 'none'; return; }
+    const matches = _allStaffList.filter(s => s.name.toLowerCase().includes(val)).slice(0,8);
+    if (!matches.length) { dd.style.display = 'none'; return; }
+    dd.innerHTML = matches.map(s =>
+      `<div class="staff-ac-item" onmousedown="staffTypeaheadSelect('${dropdownId}','${esc(s.name)}','${esc(s.email)}')">${esc(s.name)}<span style="color:var(--subtext);font-size:11px;margin-left:6px">${esc(s.email)}</span></div>`
+    ).join('');
+    dd.style.display = '';
+  }
+
+  function staffTypeaheadSelect(dropdownId, name, email) {
+    const dd = document.getElementById(dropdownId);
+    dd.style.display = 'none';
+    // Apologies chip field
+    if (dropdownId === 'me-apologies-ac') {
+      if (!_apologyChips.includes(name)) _apologyChips.push(name);
+      renderApologyChips();
+      document.getElementById('me-apologies-input').value = '';
+      return;
+    }
+    // Configure committee member
+    if (dropdownId === 'cfg-member-ac') {
+      document.getElementById('cfg-member-input').value = name;
+      document.getElementById('cfg-member-input').dataset.email = email;
+      return;
+    }
+    // Single-name fields: chair, minute-taker
+    const fieldMap = { 'me-chair-ac': 'me-chair', 'me-minutes-taker-ac': 'me-minutes-taker' };
+    if (fieldMap[dropdownId]) {
+      document.getElementById(fieldMap[dropdownId]).value = name;
+    }
+  }
+
+  // ── Dynamic table rows ──────────────────────────────────
   function meetingsAddAgendaRow(a) {
     a = a || {};
     const tbody = document.getElementById('me-agenda-body');
@@ -5574,16 +5873,25 @@ const firebaseConfig = {
     tbody.appendChild(tr);
   }
 
-  // ── Save ────────────────────────────────────────────
+  // ── Save meeting ────────────────────────────────────────
   async function meetingsSave() {
-    const errEl  = document.getElementById('me-error');
+    const errEl   = document.getElementById('me-error');
     const saveBtn = document.getElementById('me-save-btn');
     errEl.style.display = 'none';
 
-    const meetingType  = document.getElementById('me-type').value.trim();
-    const date         = document.getElementById('me-date').value.trim();
-    if (!meetingType) { errEl.textContent = 'Please select a Meeting Type.'; errEl.style.display=''; return; }
+    const meetingType = document.getElementById('me-type').value.trim();
+    const date        = document.getElementById('me-date').value.trim();
+    if (!meetingType) { errEl.textContent = 'Please select or enter a Meeting Type.'; errEl.style.display=''; return; }
     if (!date)        { errEl.textContent = 'Please select a Date.'; errEl.style.display=''; return; }
+
+    // Save new type to Firestore if it's not already known
+    if (!_allMeetingTypes.includes(meetingType)) {
+      try {
+        await addDoc(collection(db, 'meeting_types'), { name: meetingType, createdAt: new Date().toISOString(), createdBy: currentUser ? currentUser.email : 'unknown' });
+        _allMeetingTypes.push(meetingType);
+        meetingsRenderTabBar();
+      } catch(e) { console.warn('Could not save new meeting type', e); }
+    }
 
     const agendaItems = Array.from(document.querySelectorAll('.me-agenda-row')).map(tr => {
       const inputs = tr.querySelectorAll('input,select');
@@ -5595,28 +5903,19 @@ const firebaseConfig = {
       return { action: inputs[0].value.trim(), owner: inputs[1].value.trim(), due: inputs[2].value.trim(), done: false };
     }).filter(a => a.action);
 
-    // Existing attachments (from edit mode)
     let attachments = [];
     if (!_meetingsIsNew && _meetingsCurrentId) {
       const existing = _meetingsAllDocs.find(x => x.id === _meetingsCurrentId);
       attachments = existing ? [...(existing.attachments||[])] : [];
     }
 
-    // Upload new files via Firebase Storage (base64 workaround via Firestore for simplicity)
     const fileInput = document.getElementById('me-attachments');
-    const newFiles  = fileInput.files;
-    if (newFiles.length) {
+    if (fileInput.files.length) {
       saveBtn.textContent = 'Uploading…';
-      saveBtn.disabled = true;
-      for (const file of newFiles) {
+      saveBtn.disabled    = true;
+      for (const file of fileInput.files) {
         try {
-          const base64 = await new Promise((res, rej) => {
-            const r = new FileReader();
-            r.onload = () => res(r.result);
-            r.onerror = () => rej(new Error('Read failed'));
-            r.readAsDataURL(file);
-          });
-          // Store in Firestore as data-url (for small files). For production consider Firebase Storage.
+          const base64 = await new Promise((res,rej) => { const r=new FileReader(); r.onload=()=>res(r.result); r.onerror=()=>rej(new Error('Read failed')); r.readAsDataURL(file); });
           attachments.push({ name: file.name, url: base64, type: file.type });
         } catch(e) { console.error('File read error', e); }
       }
@@ -5662,11 +5961,192 @@ const firebaseConfig = {
     }
   }
 
+  // ── Configure Committees ────────────────────────────────
+  async function meetingsOpenConfigure() {
+    await Promise.all([meetingsLoadTypes(), meetingsLoadStaff()]);
+    cfgPopulateTypeSelect();
+    document.getElementById('cfg-new-type').value = '';
+    document.getElementById('cfg-type-error').style.display = 'none';
+    document.getElementById('cfg-members-panel').style.display = 'none';
+    _cfgCurrentMembers = [];
+    _cfgCurrentType    = '';
+    document.getElementById('meeting-configure-modal').style.display = 'flex';
+  }
+
+  function closeMeetingConfigure() { document.getElementById('meeting-configure-modal').style.display = 'none'; }
+
+  async function cfgAddMeetingType() {
+    const name = document.getElementById('cfg-new-type').value.trim();
+    const errEl = document.getElementById('cfg-type-error');
+    errEl.style.display = 'none';
+    if (!name) { errEl.textContent = 'Please enter a name.'; errEl.style.display=''; return; }
+    if (_allMeetingTypes.map(t=>t.toLowerCase()).includes(name.toLowerCase())) {
+      errEl.textContent = 'That meeting type already exists.'; errEl.style.display=''; return;
+    }
+    try {
+      await addDoc(collection(db, 'meeting_types'), { name, createdAt: new Date().toISOString(), createdBy: currentUser ? currentUser.email : 'unknown' });
+      _allMeetingTypes.push(name);
+      document.getElementById('cfg-new-type').value = '';
+      cfgPopulateTypeSelect();
+      meetingsRenderTabBar();
+      meetingsPopulateDatalist();
+    } catch(e) { errEl.textContent = 'Error saving: ' + e.message; errEl.style.display=''; }
+  }
+
+  async function cfgDeleteMeetingType(name) {
+    if (!confirm(`Remove meeting type "${name}"? Existing meeting records won't be affected.`)) return;
+    try {
+      const snap = await getDocs(query(collection(db, 'meeting_types'), where('name','==',name)));
+      for (const d of snap.docs) await deleteDoc(doc(db, 'meeting_types', d.id));
+      _allMeetingTypes = _allMeetingTypes.filter(t => t !== name);
+      cfgPopulateTypeSelect();
+      meetingsRenderTabBar();
+      meetingsPopulateDatalist();
+    } catch(e) { alert('Error removing: ' + e.message); }
+  }
+
+  async function cfgLoadMembers() {
+    const type = document.getElementById('cfg-select-type').value;
+    _cfgCurrentType = type;
+    const panel = document.getElementById('cfg-members-panel');
+    if (!type) { panel.style.display = 'none'; return; }
+    panel.style.display = '';
+    document.getElementById('cfg-save-status').style.display = 'none';
+    try {
+      const snap = await getDocs(query(collection(db, 'committee_members'), where('meetingType','==',type)));
+      _cfgCurrentMembers = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    } catch(e) { _cfgCurrentMembers = []; }
+    cfgRenderMembers();
+  }
+
+  function cfgRenderMembers() {
+    const el = document.getElementById('cfg-members-list');
+    el.innerHTML = _cfgCurrentMembers.length
+      ? _cfgCurrentMembers.map((m,i) =>
+          `<span class="member-chip">${esc(m.name)} <span style="font-weight:400;opacity:0.7">(${esc(m.email)})</span><button onclick="cfgRemoveMember(${i})">✕</button></span>`
+        ).join('')
+      : '<span style="color:var(--subtext);font-size:13px">No members configured yet.</span>';
+  }
+
+  function cfgRemoveMember(i) {
+    _cfgCurrentMembers.splice(i,1);
+    cfgRenderMembers();
+  }
+
+  function cfgAddMember() {
+    const input = document.getElementById('cfg-member-input');
+    const name  = input.value.trim();
+    const email = input.dataset.email || '';
+    if (!name) return;
+    // Try to match to known staff for email
+    const staffMatch = _allStaffList.find(s => s.name.toLowerCase() === name.toLowerCase());
+    const finalEmail = staffMatch ? staffMatch.email : email;
+    if (!finalEmail) { alert('Please select a staff member from the suggestions so their email is captured.'); return; }
+    if (_cfgCurrentMembers.find(m => m.email === finalEmail)) { input.value=''; return; } // already added
+    _cfgCurrentMembers.push({ name: staffMatch ? staffMatch.name : name, email: finalEmail });
+    cfgRenderMembers();
+    input.value = '';
+    input.dataset.email = '';
+  }
+
+  async function cfgSaveMembers() {
+    if (!_cfgCurrentType) return;
+    const statusEl = document.getElementById('cfg-save-status');
+    statusEl.style.display = 'none';
+    try {
+      // Delete existing records for this type, then re-add
+      const existing = await getDocs(query(collection(db, 'committee_members'), where('meetingType','==',_cfgCurrentType)));
+      for (const d of existing.docs) await deleteDoc(doc(db, 'committee_members', d.id));
+      for (const m of _cfgCurrentMembers) {
+        await addDoc(collection(db, 'committee_members'), { meetingType: _cfgCurrentType, name: m.name, email: m.email });
+      }
+      statusEl.textContent = '✓ Saved';
+      statusEl.style.display = '';
+      setTimeout(() => { statusEl.style.display = 'none'; }, 3000);
+    } catch(e) { alert('Error saving members: ' + e.message); }
+  }
+
+  // ── Email summary ────────────────────────────────────────
+  async function meetingsEmailSummary() {
+    const d = _meetingsAllDocs.find(x => x.id === _meetingsCurrentId);
+    if (!d) return;
+    const btn = document.getElementById('md-email-btn');
+    btn.textContent = '⏳ Loading…';
+    btn.disabled    = true;
+    try {
+      // Get committee members
+      const snap = await getDocs(query(collection(db, 'committee_members'), where('meetingType','==',d.meetingType)));
+      const members = snap.docs.map(doc => doc.data());
+      if (!members.length) {
+        alert(`No committee members configured for "${d.meetingType}".\n\nUse ⚙ Configure Committees to add members and their email addresses.`);
+        btn.textContent = '✉ Email Summary';
+        btn.disabled    = false;
+        return;
+      }
+      const toEmails  = members.map(m => m.email).join(', ');
+      const dateStr   = d.date ? new Date(d.date+'T00:00:00').toLocaleDateString('en-AU',{weekday:'long',day:'numeric',month:'long',year:'numeric'}) : '—';
+
+      // Build plain-text agenda
+      let agendaText = '';
+      (d.agendaItems||[]).forEach((a,i) => {
+        agendaText += `${i+1}. ${a.item}${a.proposer?' ('+a.proposer+')':''}${a.priority?' ['+a.priority+']':''}\n`;
+        if (a.notes) agendaText += `   Notes: ${a.notes}\n`;
+      });
+
+      // Build plain-text actions
+      let actionsText = '';
+      (d.actionItems||[]).forEach((a,i) => {
+        actionsText += `${i+1}. ${a.action} — Owner: ${a.owner||'TBC'}${a.due?' | Due: '+a.due:''}\n`;
+      });
+
+      const subject = `${d.meetingType} Meeting Minutes — ${dateStr}`;
+      const body    = [
+        `MEETING MINUTES — ${(d.meetingType||'').toUpperCase()}`,
+        `Date: ${dateStr}${d.time ? ' at '+d.time : ''}`,
+        `Chair: ${d.chair||'—'}   |   Minute-taker: ${d.minutesTaker||'—'}`,
+        d.apologies ? `Apologies: ${d.apologies}` : '',
+        '',
+        '── MEETING NOTES ──',
+        d.body || '(no notes recorded)',
+        agendaText ? '\n── AGENDA ITEMS ──\n' + agendaText : '',
+        actionsText ? '\n── ACTION ITEMS ──\n' + actionsText : '',
+        '',
+        '──────────────────────────────',
+        'Highbury Primary School — Staff Intranet',
+      ].filter(l => l !== undefined).join('\n');
+
+      if (typeof emailjs === 'undefined') {
+        alert('EmailJS not loaded. Check your internet connection.');
+        btn.textContent = '✉ Email Summary';
+        btn.disabled    = false;
+        return;
+      }
+
+      btn.textContent = '⏳ Sending…';
+      await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+        to_email:    toEmails,
+        to_name:     `${d.meetingType} Committee`,
+        subject:     subject,
+        message:     body,
+        from_name:   'Highbury Primary Intranet',
+        reply_to:    currentUser ? currentUser.email : '',
+      }, EMAILJS_PUBLIC_KEY);
+
+      btn.textContent = '✅ Sent!';
+      setTimeout(() => { btn.textContent = '✉ Email Summary'; btn.disabled = false; }, 3000);
+    } catch(e) {
+      alert('Email failed: ' + e.message + '\n\nCheck that your EmailJS template has a "to_email" field mapped to {{to_email}}.');
+      btn.textContent = '✉ Email Summary';
+      btn.disabled    = false;
+    }
+  }
+
+  // ── Shared helper ───────────────────────────────────────
   function esc(str) {
     return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
   }
 
-  // ── AI Meeting Helpers ──────────────────────────────
+  // ── AI helpers ──────────────────────────────────────────
   let _aiPendingSummary = '';
 
   async function _meetingsCallAI(systemPrompt, userContent) {
@@ -5685,7 +6165,6 @@ const firebaseConfig = {
     return (data.content || []).map(b => b.text || '').join('').trim();
   }
 
-  // ✨ Clean Up Notes — rewrites raw text in-place, offers to apply
   async function meetingsAiSummarise() {
     const raw = document.getElementById('me-body').value.trim();
     if (!raw) { alert('Please add some notes first before using Clean Up.'); return; }
@@ -5702,13 +6181,9 @@ const firebaseConfig = {
       document.getElementById('ai-modal-content').textContent = result;
       document.getElementById('ai-modal-apply-wrap').style.display = '';
       document.getElementById('meeting-ai-modal').style.display = 'flex';
-    } catch(e) {
-      statusEl.style.display = 'none';
-      alert('AI error: ' + e.message);
-    }
+    } catch(e) { statusEl.style.display = 'none'; alert('AI error: ' + e.message); }
   }
 
-  // 📋 Top 3 Points (from edit modal)
   async function meetingsAiTopPoints() {
     const raw = document.getElementById('me-body').value.trim();
     if (!raw) { alert('Please add some notes first.'); return; }
@@ -5725,13 +6200,9 @@ const firebaseConfig = {
       document.getElementById('ai-modal-content').textContent = result;
       document.getElementById('ai-modal-apply-wrap').style.display = 'none';
       document.getElementById('meeting-ai-modal').style.display = 'flex';
-    } catch(e) {
-      statusEl.style.display = 'none';
-      alert('AI error: ' + e.message);
-    }
+    } catch(e) { statusEl.style.display = 'none'; alert('AI error: ' + e.message); }
   }
 
-  // 📋 Top 3 Points (from detail/read-only modal)
   async function meetingsAiTopPointsDetail() {
     const raw = document.getElementById('md-body').textContent.trim();
     if (!raw) { alert('No meeting notes to summarise.'); return; }
@@ -5746,16 +6217,11 @@ const firebaseConfig = {
       );
       _aiPendingSummary = '';
       document.getElementById('ai-modal-content').textContent = result;
-    } catch(e) {
-      document.getElementById('ai-modal-content').textContent = 'AI error: ' + e.message;
-    }
+    } catch(e) { document.getElementById('ai-modal-content').textContent = 'AI error: ' + e.message; }
   }
 
   function meetingsApplyAiSummary() {
-    if (_aiPendingSummary) {
-      document.getElementById('me-body').value = _aiPendingSummary;
-      _aiPendingSummary = '';
-    }
+    if (_aiPendingSummary) { document.getElementById('me-body').value = _aiPendingSummary; _aiPendingSummary = ''; }
     closeMeetingAiModal();
   }
 
@@ -5763,7 +6229,7 @@ const firebaseConfig = {
     document.getElementById('meeting-ai-modal').style.display = 'none';
     _aiPendingSummary = '';
   }
-  // ── END AI Meeting Helpers ──────────────────────────
+  // ── END MEETINGS MODULE ──────────────────────────────────
 </script>
 
 <!-- Login bridge — plain script so onclick always works regardless of module loading -->
@@ -5801,12 +6267,25 @@ const firebaseConfig = {
   function closeMeetingDetail()     { if (window.closeMeetingDetail)     window.closeMeetingDetail(); }
   function closeMeetingEdit()       { if (window.closeMeetingEdit)       window.closeMeetingEdit(); }
   function openMeetingDetail(id)    { if (window.openMeetingDetail)      window.openMeetingDetail(id); }
-  function meetingsDeleteAttach(i)  { if (window.meetingsDeleteAttach)   window.meetingsDeleteAttach(i); }
-  function meetingsAiSummarise()    { if (window.meetingsAiSummarise)    window.meetingsAiSummarise(); }
-  function meetingsAiTopPoints()    { if (window.meetingsAiTopPoints)    window.meetingsAiTopPoints(); }
-  function meetingsAiTopPointsDetail() { if (window.meetingsAiTopPointsDetail) window.meetingsAiTopPointsDetail(); }
-  function meetingsApplyAiSummary() { if (window.meetingsApplyAiSummary) window.meetingsApplyAiSummary(); }
-  function closeMeetingAiModal()    { if (window.closeMeetingAiModal)    window.closeMeetingAiModal(); }
+  function meetingsDeleteAttach(i)        { if (window.meetingsDeleteAttach)        window.meetingsDeleteAttach(i); }
+  function meetingsAiSummarise()          { if (window.meetingsAiSummarise)         window.meetingsAiSummarise(); }
+  function meetingsAiTopPoints()          { if (window.meetingsAiTopPoints)         window.meetingsAiTopPoints(); }
+  function meetingsAiTopPointsDetail()    { if (window.meetingsAiTopPointsDetail)   window.meetingsAiTopPointsDetail(); }
+  function meetingsApplyAiSummary()       { if (window.meetingsApplyAiSummary)      window.meetingsApplyAiSummary(); }
+  function closeMeetingAiModal()          { if (window.closeMeetingAiModal)         window.closeMeetingAiModal(); }
+  function meetingsEmailSummary()         { if (window.meetingsEmailSummary)        window.meetingsEmailSummary(); }
+  function meetingsOpenConfigure()        { if (window.meetingsOpenConfigure)       window.meetingsOpenConfigure(); }
+  function closeMeetingConfigure()        { if (window.closeMeetingConfigure)       window.closeMeetingConfigure(); }
+  function cfgAddMeetingType()            { if (window.cfgAddMeetingType)           window.cfgAddMeetingType(); }
+  function cfgDeleteMeetingType(n)        { if (window.cfgDeleteMeetingType)        window.cfgDeleteMeetingType(n); }
+  function cfgLoadMembers()               { if (window.cfgLoadMembers)              window.cfgLoadMembers(); }
+  function cfgAddMember()                 { if (window.cfgAddMember)               window.cfgAddMember(); }
+  function cfgRemoveMember(i)             { if (window.cfgRemoveMember)             window.cfgRemoveMember(i); }
+  function cfgSaveMembers()               { if (window.cfgSaveMembers)              window.cfgSaveMembers(); }
+  function staffTypeahead(el,id)          { if (window.staffTypeahead)              window.staffTypeahead(el,id); }
+  function staffTypeaheadSelect(d,n,e)    { if (window.staffTypeaheadSelect)        window.staffTypeaheadSelect(d,n,e); }
+  function removeApologyChip(i)           { if (window.removeApologyChip)           window.removeApologyChip(i); }
+  function renderApologyChips()           { if (window.renderApologyChips)          window.renderApologyChips(); }
   function printTimetable(type) {
     const printWin = window.open('', '_blank');
     const css = `body{font-family:Arial,sans-serif;font-size:8px;margin:10mm}h2{font-size:13px;margin-bottom:4px;color:#1a2e52}p{font-size:9px;color:#666;margin-bottom:8px}table{width:100%;border-collapse:collapse;table-layout:fixed}th{background:#1a2e52;color:#fff;padding:3px 2px;text-align:center;font-size:7px;text-transform:uppercase}.day-header{background:#2d4a7a}td{padding:3px 2px;border:1px solid #ddd;text-align:center;font-size:7.5px;vertical-align:middle;word-break:break-word}.lesson-label{background:#f5f5f5;font-weight:bold;font-size:7px;text-align:left;padding:3px 4px}.nit{color:#aaa;font-style:italic}.recess{background:#f5f5f5;color:#888}.area-name{font-weight:bold;text-align:left}.period-h{margin-top:10px;margin-bottom:3px;font-size:10px;font-weight:bold;color:#1a2e52}.period-t{font-size:8px;color:#888;margin-left:8px}@page{size:A4 landscape;margin:10mm}`;

@@ -1058,9 +1058,20 @@
       transition: box-shadow 0.15s, transform 0.15s;
       text-decoration: none;
       color: var(--navy);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
     }
     .quick-tile:hover { box-shadow: 0 4px 16px rgba(36,43,99,0.12); transform: translateY(-2px); }
-    .quick-tile .tile-icon { font-size: 26px; margin-bottom: 8px; }
+    .quick-tile .tile-icon {
+      font-size: 26px;
+      margin-bottom: 8px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
     .quick-tile .tile-label { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--navy); }
 
     .home-grid {
@@ -1444,22 +1455,22 @@
           <div class="tile-icon">🎫</div>
           <div class="tile-label">Lodge a Ticket</div>
         </div>
-        <div class="quick-tile" onclick="window.open('https://www.education.sa.gov.au','_blank')">
-          <div class="tile-icon" style="background:#00787a;color:#fff;font-family:'Montserrat',sans-serif;font-weight:800;font-size:16px;width:40px;height:40px;border-radius:6px;display:flex;align-items:center;justify-content:center;margin-bottom:8px;">EDi</div>
+        <div class="quick-tile" onclick="window.open('https://www.edi.sa.edu.au','_blank')">
+          <div class="tile-icon" style="background:#00787a;color:#fff;font-family:'Montserrat',sans-serif;font-weight:800;font-size:16px;width:40px;height:40px;border-radius:6px;display:flex;align-items:center;justify-content:center;">EDi</div>
           <div class="tile-label">EDi</div>
         </div>
         <div class="quick-tile" onclick="window.open('https://app.seesaw.me/','_blank')">
-          <div class="tile-icon" style="background:#6c3be8;color:#fff;font-family:'Montserrat',sans-serif;font-weight:800;font-size:13px;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin-bottom:8px;">S</div>
+          <div class="tile-icon" style="background:#6c3be8;color:#fff;font-family:'Montserrat',sans-serif;font-weight:800;font-size:13px;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;">S</div>
           <div class="tile-label">Seesaw</div>
         </div>
         <div class="quick-tile" onclick="window.open('https://www.edpass.sa.edu.au','_blank')">
-          <div class="tile-icon" style="display:flex;align-items:center;justify-content:center;margin-bottom:8px;font-size:22px;">
+          <div class="tile-icon" style="display:flex;align-items:center;justify-content:center;font-size:22px;">
             <span style="font-family:'Montserrat',sans-serif;font-weight:800;color:#1a3a5c;font-size:15px;letter-spacing:-0.5px;">Ed<span style="color:#4caf50;">Pass</span></span>
           </div>
           <div class="tile-label">EdPass</div>
         </div>
         <div class="quick-tile" onclick="window.open('https://www.eduportal.sa.edu.au/EIK/hub/','_blank')">
-          <div class="tile-icon" style="background:#b2d8d8;color:#2a6e6e;font-family:'Montserrat',sans-serif;font-weight:800;font-size:16px;width:40px;height:40px;border-radius:6px;display:flex;align-items:center;justify-content:center;margin-bottom:8px;">EIK</div>
+          <div class="tile-icon" style="background:#b2d8d8;color:#2a6e6e;font-family:'Montserrat',sans-serif;font-weight:800;font-size:16px;width:40px;height:40px;border-radius:6px;display:flex;align-items:center;justify-content:center;">EIK</div>
           <div class="tile-label">EIK</div>
         </div>
         <div class="quick-tile" onclick="window.open('https://form.jotform.com/230297613966869','_blank')">
@@ -1486,18 +1497,41 @@
               <div class="uv-widget-title">☀️ UV Index — Adelaide</div>
               <div class="uv-widget-loc" id="uv-updated"></div>
             </div>
-            <div class="uv-main">
-              <div class="uv-index" id="uv-index">—</div>
-              <div class="uv-right">
-                <div class="uv-category" id="uv-category" style="color:var(--gold)">Loading…</div>
-                <div class="uv-advice" id="uv-advice"></div>
-                <div id="uv-hat-notice" style="display:none;margin-top:6px;background:rgba(245,172,28,0.18);border:1px solid rgba(245,172,28,0.4);border-radius:6px;padding:5px 10px;font-size:11px;font-weight:700;color:var(--gold2)">🧢 Hat rule in effect — students must wear hats outdoors</div>
-                <div class="uv-bar-track">
+            <!-- Two panels side by side -->
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+              <!-- Live UV -->
+              <div>
+                <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:rgba(255,255,255,0.4);margin-bottom:8px;">Live Reading</div>
+                <div class="uv-main">
+                  <div class="uv-index" id="uv-index">—</div>
+                  <div class="uv-right">
+                    <div class="uv-category" id="uv-category" style="color:var(--gold)">Loading…</div>
+                    <div class="uv-advice" id="uv-advice"></div>
+                  </div>
+                </div>
+                <div class="uv-bar-track" style="margin-top:10px;">
                   <div class="uv-bar-fill" id="uv-bar" style="width:0%"></div>
                 </div>
                 <div class="uv-scale-labels"><span>0</span><span>3</span><span>6</span><span>8</span><span>11+</span></div>
               </div>
+              <!-- Daily Max UV -->
+              <div style="border-left:1px solid rgba(255,255,255,0.1);padding-left:14px;">
+                <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:rgba(255,255,255,0.4);margin-bottom:8px;">Today's Max</div>
+                <div class="uv-main">
+                  <div class="uv-index" id="uv-max-index">—</div>
+                  <div class="uv-right">
+                    <div class="uv-category" id="uv-max-category" style="color:var(--gold)">Loading…</div>
+                    <div class="uv-advice" id="uv-max-advice"></div>
+                  </div>
+                </div>
+                <div class="uv-bar-track" style="margin-top:10px;">
+                  <div class="uv-bar-fill" id="uv-max-bar" style="width:0%"></div>
+                </div>
+                <div class="uv-scale-labels"><span>0</span><span>3</span><span>6</span><span>8</span><span>11+</span></div>
+              </div>
             </div>
+            <!-- Hat notice spans full width -->
+            <div id="uv-hat-notice" style="display:none;margin-top:12px;background:rgba(245,172,28,0.18);border:1px solid rgba(245,172,28,0.4);border-radius:6px;padding:5px 10px;font-size:11px;font-weight:700;color:var(--gold2)">🧢 Hat rule in effect — predicted max UV ≥ 3, students must wear hats outdoors</div>
             <div class="uv-footer" id="uv-footer">Open-Meteo · Adelaide</div>
           </div>
 
@@ -3403,39 +3437,60 @@ const firebaseConfig = {
   // ── UV Index ──
   async function loadUVIndex() {
     try {
-      const url = 'https://api.open-meteo.com/v1/forecast?latitude=-34.9285&longitude=138.6007&hourly=uv_index&timezone=Australia%2FAdelaide&forecast_days=1';
+      const url = 'https://api.open-meteo.com/v1/forecast?latitude=-34.9285&longitude=138.6007&hourly=uv_index&daily=uv_index_max&timezone=Australia%2FAdelaide&forecast_days=1';
       const resp = await fetch(url);
       const json = await resp.json();
       const now = new Date();
       const hour = now.getHours();
       const uvValues = json.hourly?.uv_index || [];
       const currentUV = uvValues[hour] ?? Math.max(...uvValues.filter(v => v !== null && v !== undefined));
-      renderUVWidget(currentUV, now);
+      const maxUV = json.daily?.uv_index_max?.[0] ?? Math.max(...uvValues.filter(v => v !== null && v !== undefined));
+      renderUVWidget(currentUV, maxUV, now);
     } catch(e) {
       const cat = document.getElementById('uv-category');
       if (cat) { cat.textContent = 'Unavailable'; cat.style.color = 'rgba(255,255,255,0.5)'; }
+      const maxCat = document.getElementById('uv-max-category');
+      if (maxCat) { maxCat.textContent = 'Unavailable'; maxCat.style.color = 'rgba(255,255,255,0.5)'; }
     }
   }
 
-  function renderUVWidget(uv, now) {
+  function uvMeta(uv) {
+    if      (uv < 3)  return { cat: 'Low',       color: '#4caf50', advice: 'No sun protection needed.' };
+    else if (uv < 6)  return { cat: 'Moderate',  color: '#f5ac1c', advice: 'SPF 30+ sunscreen, hat and sunglasses recommended.' };
+    else if (uv < 8)  return { cat: 'High',       color: '#e67e22', advice: 'Protection essential — SPF 50+, hat, shade 10am–3pm.' };
+    else if (uv < 11) return { cat: 'Very High',  color: '#e74c3c', advice: 'Extra protection needed. Minimise outdoor time at peak hours.' };
+    else              return { cat: 'Extreme',    color: '#9b59b6', advice: 'Stay indoors during midday. Full protection if outside.' };
+  }
+
+  function renderUVWidget(uv, maxUV, now) {
+    // Live reading
     const rounded = Math.round(uv * 10) / 10;
     document.getElementById('uv-index').textContent = isNaN(rounded) ? '—' : rounded;
-    let cat, advice, color;
-    if      (uv < 3)  { cat = 'Low';       color = '#4caf50'; advice = 'No sun protection needed.'; }
-    else if (uv < 6)  { cat = 'Moderate';  color = '#f5ac1c'; advice = 'SPF 30+ sunscreen, hat and sunglasses recommended.'; }
-    else if (uv < 8)  { cat = 'High';      color = '#e67e22'; advice = 'Protection essential — SPF 50+, hat, shade between 10am–3pm.'; }
-    else if (uv < 11) { cat = 'Very High'; color = '#e74c3c'; advice = 'Extra protection needed. Minimise outdoor time at peak hours.'; }
-    else              { cat = 'Extreme';   color = '#9b59b6'; advice = 'Stay indoors during midday. Full protection required if outside.'; }
+    const { cat, color, advice } = uvMeta(uv);
     const catEl = document.getElementById('uv-category');
     catEl.textContent = cat; catEl.style.color = color;
     document.getElementById('uv-advice').textContent = advice;
-    // Hat notice: UV ≥ 3
-    const hatEl = document.getElementById('uv-hat-notice');
-    if (hatEl) hatEl.style.display = uv >= 3 ? '' : 'none';
     const pct = Math.min(uv / 13 * 100, 100);
     const bar = document.getElementById('uv-bar');
     bar.style.width = pct + '%';
     bar.style.background = 'linear-gradient(90deg, #4caf50, #f5ac1c, #e67e22, #e74c3c, #9b59b6)';
+
+    // Daily max
+    const maxRounded = Math.round(maxUV * 10) / 10;
+    document.getElementById('uv-max-index').textContent = isNaN(maxRounded) ? '—' : maxRounded;
+    const { cat: maxCat, color: maxColor, advice: maxAdvice } = uvMeta(maxUV);
+    const maxCatEl = document.getElementById('uv-max-category');
+    maxCatEl.textContent = maxCat; maxCatEl.style.color = maxColor;
+    document.getElementById('uv-max-advice').textContent = maxAdvice;
+    const maxPct = Math.min(maxUV / 13 * 100, 100);
+    const maxBar = document.getElementById('uv-max-bar');
+    maxBar.style.width = maxPct + '%';
+    maxBar.style.background = 'linear-gradient(90deg, #4caf50, #f5ac1c, #e67e22, #e74c3c, #9b59b6)';
+
+    // Hat notice driven by daily max
+    const hatEl = document.getElementById('uv-hat-notice');
+    if (hatEl) hatEl.style.display = maxUV >= 3 ? '' : 'none';
+
     const h = now.getHours(), m = String(now.getMinutes()).padStart(2,'0');
     const ampm = h >= 12 ? 'pm' : 'am';
     document.getElementById('uv-updated').textContent = `${h%12||12}:${m}${ampm}`;

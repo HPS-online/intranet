@@ -1001,6 +1001,36 @@
 
     .apology-chip button:hover { color: #fff; }
 
+    .attendee-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #fff;
+      color: var(--navy);
+      font-size: 12px;
+      font-weight: 600;
+      padding: 4px 8px 4px 12px;
+      border-radius: 20px;
+      border: 1.5px solid var(--gray2);
+      transition: border-color 0.15s;
+    }
+
+    .attendee-chip:hover { border-color: var(--navy); }
+
+    .attendee-chip button {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--subtext);
+      font-size: 14px;
+      line-height: 1;
+      padding: 0;
+      display: flex;
+      align-items: center;
+    }
+
+    .attendee-chip button:hover { color: var(--red); }
+
     .member-chip {
       display: inline-flex;
       align-items: center;
@@ -2917,6 +2947,10 @@
             <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--subtext);margin-bottom:4px">Apologies</div>
             <div id="md-apologies" style="color:var(--subtext)"></div>
           </div>
+          <div style="margin-bottom:20px" id="md-additional-wrap">
+            <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--subtext);margin-bottom:4px">Additional Attendees</div>
+            <div id="md-additional-attendees" style="color:var(--subtext)"></div>
+          </div>
 
           <!-- Minutes body -->
           <div style="margin-bottom:20px">
@@ -3021,6 +3055,20 @@
             <input type="text" id="me-apologies-input" class="form-input" placeholder="Type name to add…" autocomplete="off" oninput="staffTypeahead(this,'me-apologies-ac')" style="margin-top:6px">
             <div id="me-apologies-ac" class="staff-ac-list" style="display:none"></div>
             <input type="hidden" id="me-apologies">
+          </div>
+
+          <!-- Attendees (auto-populated from committee config) -->
+          <div>
+            <label class="form-label">Attendees <span style="font-weight:400;text-transform:none;font-size:10px;color:var(--subtext)">(auto-populated from committee — click ✕ to mark as apology)</span></label>
+            <div id="me-attendees-chips" style="display:flex;flex-wrap:wrap;gap:6px;min-height:40px;padding:8px 10px;border:1.5px solid var(--gray2);border-radius:7px;background:var(--gray1)">
+              <span style="color:var(--subtext);font-size:13px;font-style:italic" id="me-attendees-empty">Select a meeting type to load attendees…</span>
+            </div>
+          </div>
+
+          <!-- Additional Attendees -->
+          <div>
+            <label class="form-label">Additional Attendees <span style="font-weight:400;text-transform:none;font-size:10px;color:var(--subtext)">(guests or casuals not on the committee list)</span></label>
+            <input type="text" id="me-additional-attendees" class="form-input" placeholder="e.g. Sarah from DECD, Parent rep…">
           </div>
 
           <!-- Minutes body -->
@@ -3624,6 +3672,9 @@ const firebaseConfig = {
   window.staffTypeaheadSelect      = staffTypeaheadSelect;
   window.removeApologyChip         = removeApologyChip;
   window.renderApologyChips        = renderApologyChips;
+  window.renderAttendeeChips       = renderAttendeeChips;
+  window.markAttendeeAsApology     = markAttendeeAsApology;
+  window.meetingsLoadAttendees     = meetingsLoadAttendees;
 
   // ══════════════════════════════════════
   // DOM EVENT LISTENERS
@@ -5522,6 +5573,7 @@ const firebaseConfig = {
   let _allMeetingTypes      = [];   // loaded from Firestore + defaults
   let _allStaffList         = [];   // [{name, email}] from allowed_users
   let _apologyChips         = [];   // array of names in apologies chip field
+  let _attendeeChips        = [];   // [{name, email}] auto-populated from committee
   let _cfgCurrentMembers    = [];   // [{name, email}] for committee being configured
   let _cfgCurrentType       = '';
 
@@ -5667,6 +5719,10 @@ const firebaseConfig = {
     document.getElementById('md-chair').textContent         = d.chair || '—';
     document.getElementById('md-minutes-taker').textContent = d.minutesTaker || '—';
     document.getElementById('md-apologies').textContent     = d.apologies || 'None recorded';
+    const addEl = document.getElementById('md-additional-attendees');
+    const addWrap = document.getElementById('md-additional-wrap');
+    if (d.additionalAttendees) { addEl.textContent = d.additionalAttendees; addWrap.style.display = ''; }
+    else { addWrap.style.display = 'none'; }
     document.getElementById('md-body').textContent          = d.body || '';
 
     // Agenda
@@ -5738,7 +5794,16 @@ const firebaseConfig = {
     document.getElementById('me-actions-body').innerHTML   = '';
     _apologyChips = [];
     renderApologyChips();
+    _attendeeChips = [];
+    const attendeeContainer = document.getElementById('me-attendees-chips');
+    if (attendeeContainer) attendeeContainer.innerHTML = '<span style="color:var(--subtext);font-size:13px;font-style:italic" id="me-attendees-empty">Select a meeting type to load attendees…</span>';
+    document.getElementById('me-additional-attendees').value = '';
     meetingsPopulateDatalist();
+    // Auto-load attendees when type is selected
+    const typeInput = document.getElementById('me-type');
+    typeInput.oninput = null;
+    typeInput.oninput = () => meetingsLoadAttendees(typeInput.value.trim());
+    typeInput.onchange = () => meetingsLoadAttendees(typeInput.value.trim());
     meetingsAddAgendaRow();
     meetingsAddActionRow();
     closeMeetingDetail();
@@ -5760,11 +5825,21 @@ const firebaseConfig = {
     document.getElementById('me-body').value               = d.body || '';
     document.getElementById('me-attachments').value        = '';
     document.getElementById('me-error').style.display      = 'none';
+    document.getElementById('me-additional-attendees').value = d.additionalAttendees || '';
     meetingsPopulateDatalist();
 
     // Apology chips
     _apologyChips = (d.apologies || '').split(',').map(s=>s.trim()).filter(Boolean);
     renderApologyChips();
+
+    // Load attendees for this meeting type, excluding anyone already in apologies
+    await meetingsLoadAttendees(d.meetingType || '');
+    _attendeeChips = _attendeeChips.filter(m => !_apologyChips.includes(m.name));
+    renderAttendeeChips();
+    // Wire type change
+    const typeInput = document.getElementById('me-type');
+    typeInput.oninput = () => meetingsLoadAttendees(typeInput.value.trim());
+    typeInput.onchange = () => meetingsLoadAttendees(typeInput.value.trim());
 
     // Existing attachments
     const exEl = document.getElementById('me-existing-attachments');
@@ -5809,6 +5884,51 @@ const firebaseConfig = {
   function removeApologyChip(i) {
     _apologyChips.splice(i,1);
     renderApologyChips();
+  }
+
+  // ── Attendee chips ──────────────────────────────────────
+  function renderAttendeeChips() {
+    const container = document.getElementById('me-attendees-chips');
+    const emptyMsg  = document.getElementById('me-attendees-empty');
+    if (!_attendeeChips.length) {
+      container.innerHTML = '<span style="color:var(--subtext);font-size:13px;font-style:italic" id="me-attendees-empty">No committee members configured for this meeting type. Use ⚙ Configure Committees to add members.</span>';
+      return;
+    }
+    if (emptyMsg) emptyMsg.style.display = 'none';
+    container.innerHTML = _attendeeChips.map((m,i) =>
+      `<span class="attendee-chip">${esc(m.name)}<button onclick="markAttendeeAsApology(${i})" title="Mark as apology">✕</button></span>`
+    ).join('');
+  }
+
+  function markAttendeeAsApology(i) {
+    const member = _attendeeChips[i];
+    if (!member) return;
+    // Add to apologies if not already there
+    if (!_apologyChips.includes(member.name)) {
+      _apologyChips.push(member.name);
+      renderApologyChips();
+    }
+    // Remove from attendees
+    _attendeeChips.splice(i, 1);
+    renderAttendeeChips();
+  }
+
+  async function meetingsLoadAttendees(meetingType) {
+    const container = document.getElementById('me-attendees-chips');
+    if (!meetingType) {
+      _attendeeChips = [];
+      container.innerHTML = '<span style="color:var(--subtext);font-size:13px;font-style:italic" id="me-attendees-empty">Select a meeting type to load attendees…</span>';
+      return;
+    }
+    container.innerHTML = '<span style="color:var(--subtext);font-size:13px;font-style:italic">Loading…</span>';
+    try {
+      const snap = await getDocs(query(collection(db, 'committee_members'), where('meetingType','==',meetingType)));
+      _attendeeChips = snap.docs.map(d => ({ name: d.data().name, email: d.data().email }));
+      renderAttendeeChips();
+    } catch(e) {
+      _attendeeChips = [];
+      container.innerHTML = '<span style="color:var(--subtext);font-size:13px;font-style:italic">Could not load members.</span>';
+    }
   }
 
   // ── Staff typeahead ─────────────────────────────────────
@@ -5936,7 +6056,8 @@ const firebaseConfig = {
       time:         document.getElementById('me-time').value.trim(),
       chair:        document.getElementById('me-chair').value.trim(),
       minutesTaker: document.getElementById('me-minutes-taker').value.trim(),
-      apologies:    document.getElementById('me-apologies').value.trim(),
+      apologies:            document.getElementById('me-apologies').value.trim(),
+      additionalAttendees:  document.getElementById('me-additional-attendees').value.trim(),
       body:         document.getElementById('me-body').value.trim(),
       agendaItems,
       actionItems,
@@ -6306,6 +6427,8 @@ const firebaseConfig = {
   function staffTypeaheadSelect(d,n,e)    { if (window.staffTypeaheadSelect)        window.staffTypeaheadSelect(d,n,e); }
   function removeApologyChip(i)           { if (window.removeApologyChip)           window.removeApologyChip(i); }
   function renderApologyChips()           { if (window.renderApologyChips)          window.renderApologyChips(); }
+  function markAttendeeAsApology(i)       { if (window.markAttendeeAsApology)       window.markAttendeeAsApology(i); }
+  function meetingsLoadAttendees(t)       { if (window.meetingsLoadAttendees)       window.meetingsLoadAttendees(t); }
   function printTimetable(type) {
     const printWin = window.open('', '_blank');
     const css = `body{font-family:Arial,sans-serif;font-size:8px;margin:10mm}h2{font-size:13px;margin-bottom:4px;color:#1a2e52}p{font-size:9px;color:#666;margin-bottom:8px}table{width:100%;border-collapse:collapse;table-layout:fixed}th{background:#1a2e52;color:#fff;padding:3px 2px;text-align:center;font-size:7px;text-transform:uppercase}.day-header{background:#2d4a7a}td{padding:3px 2px;border:1px solid #ddd;text-align:center;font-size:7.5px;vertical-align:middle;word-break:break-word}.lesson-label{background:#f5f5f5;font-weight:bold;font-size:7px;text-align:left;padding:3px 4px}.nit{color:#aaa;font-style:italic}.recess{background:#f5f5f5;color:#888}.area-name{font-weight:bold;text-align:left}.period-h{margin-top:10px;margin-bottom:3px;font-size:10px;font-weight:bold;color:#1a2e52}.period-t{font-size:8px;color:#888;margin-left:8px}@page{size:A4 landscape;margin:10mm}`;

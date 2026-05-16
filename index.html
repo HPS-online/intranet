@@ -1559,6 +1559,34 @@
     .toast.show { transform: translateY(0); opacity: 1; }
     .toast.success { background: #065f46; }
     .toast.error   { background: var(--red); }
+
+    /* ── TRT BUTTON on login ── */
+    .trt-login-btn {
+      display: block; width: 100%; margin-top: 20px;
+      padding: 13px 16px; border-radius: 10px;
+      background: rgba(245,172,28,0.12); border: 1.5px solid rgba(245,172,28,0.5);
+      color: var(--navy); font-family: inherit; font-size: 13px;
+      font-weight: 700; cursor: pointer; text-align: center; transition: all .2s;
+    }
+    .trt-login-btn:hover { background: rgba(245,172,28,0.22); border-color: var(--gold); }
+    .trt-login-btn .trt-label { font-size: 11px; font-weight: 500; color: var(--subtext); display: block; margin-top: 2px; }
+
+    /* ── TRT VIEW ── */
+    #view-trt { padding: 0; }
+    .trt-topbar {
+      background: var(--navy); color: var(--white);
+      padding: 14px 28px; display: flex; align-items: center;
+      justify-content: space-between; gap: 12px;
+      border-bottom: 3px solid var(--gold);
+    }
+    .trt-topbar-title { font-size: 16px; font-weight: 800; letter-spacing: 0.3px; }
+    .trt-topbar-sub   { font-size: 11px; color: rgba(255,255,255,0.6); margin-top: 2px; }
+    .trt-exit-btn { background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.25); color: #fff; padding: 6px 14px; border-radius: 6px; font-size: 12px; font-family: inherit; cursor: pointer; font-weight: 600; }
+    .trt-exit-btn:hover { background: rgba(255,255,255,0.22); }
+    .trt-body { padding: 24px 28px; max-width: 900px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; }
+    .trt-card { background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; }
+    .trt-card-header { background: var(--navy); color: var(--white); padding: 12px 18px; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 2px solid var(--gold); }
+    .trt-card-body   { padding: 16px 18px; }
   </style>
 </head>
 <body>
@@ -1605,6 +1633,12 @@
         <p style="font-size:12px;text-align:center;color:var(--subtext)">
           Forgot password? <a href="#" id="reset-link" onclick="doReset()" style="color:var(--navy)">Send reset link</a>
         </p>
+        <div style="margin-top:20px;border-top:1px solid var(--gray2);padding-top:18px">
+          <button class="trt-login-btn" onclick="trtEnter()">
+            Relieving today? — Enter here
+            <span class="trt-label">View today&apos;s daybook &amp; timetable — no login needed</span>
+          </button>
+        </div>
       </div>
 
       <!-- REGISTER — removed; accounts are admin-managed only -->
@@ -1637,7 +1671,7 @@
         <button class="nav-btn" onclick="showView('tickets')">Lodge a Ticket</button>
         <button class="nav-btn" onclick="showView('naplan')">NAPLAN Data</button>
         <button class="nav-btn" onclick="showView('meetings')">Meetings</button>
-        <button class="nav-btn" onclick="showView('suggest')">💡 Suggest an Edit</button>
+        <button class="nav-btn" onclick="showView('suggest')">Suggest an Edit</button>
         <button class="nav-btn admin-only" id="nav-admin" onclick="showView('admin')" style="display:none;color:#f5ac1c;border:1px solid rgba(245,172,28,0.35)">Admin</button>
       </nav>
     </div>
@@ -3322,11 +3356,12 @@
               <th>Email</th>
               <th>Role</th>
               <th>Added</th>
+              <th>Last Login</th>
               <th>Actions</th>
             </tr>
           </thead>
           <tbody id="admin-user-list">
-            <tr><td colspan="5"><div class="spinner"></div></td></tr>
+            <tr><td colspan="6"><div class="spinner"></div></td></tr>
           </tbody>
         </table>
       </div>
@@ -3345,7 +3380,7 @@
     <div id="view-suggest" class="view">
       <div class="page-header" style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px">
         <div>
-          <h2>💡 Suggest an Edit</h2>
+          <h2>Suggest an Edit</h2>
           <p>Have an idea or spot something that needs updating? Submit a suggestion below. Admins will review and respond.</p>
         </div>
       </div>
@@ -3370,7 +3405,7 @@
             <textarea id="sug-text" class="form-input" rows="4" style="resize:vertical" placeholder="Describe your suggestion, what you think is incorrect, or what would improve the intranet…"></textarea>
           </div>
           <div>
-            <button class="btn btn-gold" onclick="suggestSubmit()">💡 Submit Suggestion</button>
+            <button class="btn btn-gold" onclick="suggestSubmit()">Submit Suggestion</button>
             <span id="sug-submit-status" style="font-size:13px;color:var(--subtext);margin-left:12px"></span>
           </div>
         </div>
@@ -3391,6 +3426,75 @@
       </div>
     </div>
     <!-- ── END SUGGEST AN EDIT VIEW ── -->
+
+    <!-- ── TRT VIEW ── -->
+    <div id="view-trt" class="view">
+      <div class="trt-topbar">
+        <div>
+          <div class="trt-topbar-title">📋 Relieving Teacher — Today&apos;s Daybook</div>
+          <div class="trt-topbar-sub" id="trt-date-label">Loading…</div>
+        </div>
+        <button class="trt-exit-btn" onclick="trtExit()">← Back to Login</button>
+      </div>
+      <div class="trt-body">
+
+        <!-- Term/Week + UV row -->
+        <div style="display:flex;gap:14px;flex-wrap:wrap;align-items:stretch">
+          <div class="trt-card" style="flex:1;min-width:180px">
+            <div class="trt-card-header">📅 School Week</div>
+            <div class="trt-card-body" id="trt-term-badge" style="font-size:15px;font-weight:700;color:var(--navy)">—</div>
+          </div>
+          <div class="trt-card" style="flex:1;min-width:180px">
+            <div class="trt-card-header">☀️ UV Index</div>
+            <div class="trt-card-body" id="trt-uv">Loading…</div>
+          </div>
+        </div>
+
+        <!-- Absences & Duties -->
+        <div class="trt-card">
+          <div class="trt-card-header">👤 Staff Absences &amp; Duties</div>
+          <div class="trt-card-body" style="padding:0">
+            <div class="daybook-table-wrap">
+              <table class="daybook-table">
+                <thead>
+                  <tr>
+                    <th style="width:20%">Absent</th>
+                    <th style="width:20%">Reliever</th>
+                    <th style="width:28%">Duty</th>
+                    <th>NIT Coverage</th>
+                  </tr>
+                </thead>
+                <tbody id="trt-absence-rows">
+                  <tr><td colspan="4"><div class="spinner"></div></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Daily Information -->
+        <div class="trt-card">
+          <div class="trt-card-header">📌 Daily Information</div>
+          <div class="trt-card-body" id="trt-info-items">Loading…</div>
+        </div>
+
+        <!-- Attachments -->
+        <div class="trt-card" id="trt-attach-card" style="display:none">
+          <div class="trt-card-header">📎 Attachments</div>
+          <div class="trt-card-body">
+            <div class="db-attach-list" id="trt-attach-list"></div>
+          </div>
+        </div>
+
+        <!-- Yard Duty Timetable -->
+        <div class="trt-card">
+          <div class="trt-card-header">🏃 Yard Duty Roster</div>
+          <div class="trt-card-body" id="trt-yard-duty">Loading…</div>
+        </div>
+
+      </div>
+    </div>
+    <!-- ── END TRT VIEW ── -->
 
   </div><!-- /main -->
 </div><!-- /app-screen -->
@@ -3850,6 +3954,13 @@ const firebaseConfig = {
       console.log('LOGIN SUCCESS — role:', allowed.role);
       currentUser    = user;
       currentIsAdmin = allowed.role === 'admin';
+
+      // Record last login time
+      try {
+        await updateDoc(doc(db, 'allowed_users', user.email.toLowerCase()), {
+          lastLogin: serverTimestamp()
+        });
+      } catch(e) { /* non-fatal */ }
 
       document.getElementById('auth-screen').style.display = 'none';
       document.getElementById('app-screen').style.display  = 'block';
@@ -5367,7 +5478,7 @@ const firebaseConfig = {
   // ══════════════════════════════════════
   async function loadAdminUsers() {
     const tbody = document.getElementById('admin-user-list');
-    tbody.innerHTML = `<tr><td colspan="5"><div class="spinner"></div></td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="6"><div class="spinner"></div></td></tr>`;
     try {
       const snap = await getDocs(collection(db, 'allowed_users'));
       const users = [];
@@ -5375,7 +5486,7 @@ const firebaseConfig = {
       users.sort((a,b) => (a.name||'').localeCompare(b.name||''));
 
       if (!users.length) {
-        tbody.innerHTML = `<tr><td colspan="5"><div class="empty-state"><p>No users yet.</p></div></td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state"><p>No users yet.</p></div></td></tr>`;
         return;
       }
 
@@ -5385,14 +5496,25 @@ const firebaseConfig = {
         const roleBadge = u.role === 'admin'
           ? `<span class="badge badge-cat-it" style="background:#dbeafe;color:#1e40af">Admin</span>`
           : `<span class="badge" style="background:var(--gray1);color:var(--subtext)">Staff</span>`;
+        // Last login
+        let lastLoginStr = '';
+        if (u.lastLogin?.toDate) {
+          const d = u.lastLogin.toDate();
+          lastLoginStr = d.toLocaleString('en-AU',{day:'numeric',month:'short',year:'numeric',hour:'numeric',minute:'2-digit'});
+        }
+        const lastLoginCell = lastLoginStr
+          ? `<span style="font-size:12px;color:var(--subtext)">${lastLoginStr}</span>`
+          : `<span style="font-size:11px;font-weight:600;color:#b45309;background:#fef3c7;padding:2px 8px;border-radius:20px">Never logged in</span>`;
         return `
           <tr>
             <td>${escHtml(u.name || '—')}</td>
             <td style="font-size:12px;color:var(--subtext)">${escHtml(u.email)}</td>
             <td>${roleBadge}</td>
             <td style="font-size:12px;color:var(--subtext)">${addedStr}</td>
-            <td style="display:flex;gap:8px;flex-wrap:wrap">
+            <td>${lastLoginCell}</td>
+            <td style="display:flex;gap:6px;flex-wrap:wrap">
               ${!isMe ? `
+                <button class="btn btn-sm" style="background:#0ea5e9;color:#fff;font-size:11px" onclick="resendInvite('${escHtml(u.email)}','${escHtml(u.name||u.email)}')" title="Resend password setup email">📧 Resend</button>
                 <button class="btn btn-sm btn-outline" onclick="toggleAdminRole('${u.email}','${u.role}')">
                   ${u.role === 'admin' ? 'Make Staff' : 'Make Admin'}
                 </button>
@@ -5403,9 +5525,20 @@ const firebaseConfig = {
       }).join('');
     } catch(e) {
       console.error(e);
-      tbody.innerHTML = `<tr><td colspan="5" style="color:var(--red);padding:16px">Error loading users.</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="6" style="color:var(--red);padding:16px">Error loading users.</td></tr>`;
     }
   }
+
+  async function resendInvite(email, name) {
+    if (!confirm(`Resend password setup email to ${name} (${email})?`)) return;
+    try {
+      await sendPasswordResetEmail(auth, email);
+      showToast(`Password setup email sent to ${name}.`, 'success');
+    } catch(e) {
+      showToast('Error sending email: ' + e.message, 'error');
+    }
+  }
+  window.resendInvite = resendInvite;
 
   function openAddUserModal() {
     document.getElementById('add-name').value  = '';
@@ -6736,6 +6869,155 @@ const firebaseConfig = {
   window.suggestSaveComment = suggestSaveComment;
   window.suggestToggleDone  = suggestToggleDone;
   window.suggestDelete      = suggestDelete;
+
+  // ══════════════════════════════════════
+  // TRT (RELIEVING TEACHER) MODULE
+  // ══════════════════════════════════════
+  function trtEnter() {
+    // Hide auth screen, show app screen in TRT mode
+    document.getElementById('auth-screen').style.display = 'none';
+    document.getElementById('app-screen').style.display  = 'block';
+    // Hide topbar nav — TRT doesn't need it
+    const topbar = document.getElementById('topbar');
+    if (topbar) topbar.style.display = 'none';
+    // Show TRT view
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    document.getElementById('view-trt').classList.add('active');
+    trtLoad();
+  }
+
+  function trtExit() {
+    // Return to login screen
+    document.getElementById('auth-screen').style.display = 'flex';
+    document.getElementById('app-screen').style.display  = 'none';
+    const topbar = document.getElementById('topbar');
+    if (topbar) topbar.style.display = '';
+  }
+
+  async function trtLoad() {
+    // Date setup — today, skip to Friday if weekend
+    const now = new Date();
+    const dow = now.getDay();
+    let displayDate = new Date(now);
+    if (dow === 0) displayDate.setDate(displayDate.getDate() + 1); // Sunday → Monday
+    if (dow === 6) displayDate.setDate(displayDate.getDate() - 1); // Saturday → Friday
+
+    const key = displayDate.toISOString().slice(0,10); // YYYY-MM-DD
+    const friendly = displayDate.toLocaleDateString('en-AU',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+    document.getElementById('trt-date-label').textContent = friendly;
+
+    // Term/week badge
+    const tw = termWeekLabel(key);
+    const termEl = document.getElementById('trt-term-badge');
+    if (tw && !tw.comingUp) {
+      const hats = HAT_TERMS.includes(tw.term);
+      termEl.innerHTML = `Term ${tw.term} &nbsp;·&nbsp; Week ${tw.week}`
+        + (hats ? `<div style="margin-top:6px;font-size:12px;font-weight:600;color:#92400e;background:#fef3c7;display:inline-block;padding:2px 10px;border-radius:20px">🧢 Hats on</div>` : '');
+    } else if (tw) {
+      termEl.innerHTML = `<span style="color:var(--subtext);font-size:13px">Coming up · Term ${tw.term} Week ${tw.week}</span>`;
+    } else {
+      termEl.innerHTML = `<span style="color:var(--subtext);font-size:13px">School Holidays</span>`;
+    }
+
+    // UV Index
+    trtLoadUV();
+
+    // Firestore — today's daybook
+    try {
+      const snap = await getDoc(doc(db, 'daybook', key));
+      const data = snap.exists() ? snap.data() : {};
+
+      // Absences
+      const absRows = document.getElementById('trt-absence-rows');
+      const rows = data.rows || [];
+      if (rows.length === 0) {
+        absRows.innerHTML = `<tr><td colspan="4" style="text-align:center;color:var(--gray3);font-size:13px;padding:20px">No absences recorded for today.</td></tr>`;
+      } else {
+        absRows.innerHTML = rows.map(r => `<tr>
+          <td>${escHtml(r.absent||'—')}</td>
+          <td>${escHtml(r.reliever||'—')}</td>
+          <td>${escHtml(r.duty||'—')}</td>
+          <td>${escHtml(r.nit||'—')}</td>
+        </tr>`).join('');
+      }
+
+      // Daily info
+      const infoEl = document.getElementById('trt-info-items');
+      const items = data.infoItems || [];
+      if (items.length === 0) {
+        infoEl.innerHTML = `<div style="color:var(--subtext);font-size:13px">No daily information added yet.</div>`;
+      } else {
+        infoEl.innerHTML = `<ul class="db-dotpoint-list">${items.map(i => `<li>${escHtml(i)}</li>`).join('')}</ul>`;
+      }
+
+      // Attachments
+      const attachments = data.attachments || [];
+      const attachCard = document.getElementById('trt-attach-card');
+      const attachList = document.getElementById('trt-attach-list');
+      if (attachments.length > 0) {
+        attachCard.style.display = '';
+        attachList.innerHTML = attachments.map(a => {
+          const icon = a.type === 'pdf' ? '📄' : a.type === 'url' ? '🔗' : '🖼️';
+          const label = escHtml(a.label || a.name || 'Attachment');
+          return `<a class="db-attach-chip" href="${escHtml(a.url)}" target="_blank" rel="noopener">
+            <span class="attach-icon">${icon}</span>
+            <span class="attach-label">${label}</span>
+          </a>`;
+        }).join('');
+      } else {
+        attachCard.style.display = 'none';
+      }
+    } catch(e) {
+      document.getElementById('trt-absence-rows').innerHTML = `<tr><td colspan="4" style="color:var(--red);padding:16px">Error loading daybook.</td></tr>`;
+    }
+
+    // Yard duty — reuse the existing rendered table if available
+    trtLoadYardDuty();
+  }
+
+  async function trtLoadUV() {
+    const uvEl = document.getElementById('trt-uv');
+    try {
+      const resp = await fetch('https://api.open-meteo.com/v1/forecast?latitude=-34.8&longitude=138.6&daily=uv_index_max&timezone=Australia%2FAdelaide&forecast_days=1');
+      const json = await resp.json();
+      const uv = json.daily?.uv_index_max?.[0];
+      if (uv === undefined) { uvEl.textContent = 'Unavailable'; return; }
+      let colour = '#059669'; let label = 'Low';
+      if (uv >= 11) { colour = '#7c3aed'; label = 'Extreme'; }
+      else if (uv >= 8) { colour = '#dc2626'; label = 'Very High'; }
+      else if (uv >= 6) { colour = '#ea580c'; label = 'High'; }
+      else if (uv >= 3) { colour = '#d97706'; label = 'Moderate'; }
+      uvEl.innerHTML = `<span style="font-size:22px;font-weight:800;color:${colour}">${uv}</span>
+        <span style="font-size:13px;font-weight:600;color:${colour};margin-left:6px">${label}</span>`
+        + (uv >= 3 ? `<div style="margin-top:6px;font-size:12px;font-weight:600;color:#92400e;background:#fef3c7;padding:2px 10px;border-radius:20px;display:inline-block">🧢 Hats required</div>` : '');
+    } catch(e) { uvEl.textContent = 'UV data unavailable'; }
+  }
+
+  function trtLoadYardDuty() {
+    const el = document.getElementById('trt-yard-duty');
+    // Try to clone the rendered yard duty tables from the timetable view
+    const srcTables = document.querySelectorAll('.duty-table');
+    if (srcTables.length > 0) {
+      const labels = ['Before School (8:20–8:40)', 'Recess (10:30–11:00)', 'Lunch (12:50–1:20)', 'After School (3:00–3:20)'];
+      el.innerHTML = '';
+      srcTables.forEach((tbl, i) => {
+        const wrap = document.createElement('div');
+        wrap.style.cssText = 'margin-bottom:16px';
+        const head = document.createElement('div');
+        head.style.cssText = 'font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--subtext);margin-bottom:6px';
+        head.textContent = labels[i] || '';
+        wrap.appendChild(head);
+        wrap.appendChild(tbl.cloneNode(true));
+        el.appendChild(wrap);
+      });
+    } else {
+      // Timetable not loaded yet — show a note
+      el.innerHTML = `<div style="color:var(--subtext);font-size:13px">Yard duty roster loads after staff sign in. <br>Ask a staff member or check the noticeboard.</div>`;
+    }
+  }
+
+  window.trtEnter = trtEnter;
+  window.trtExit  = trtExit;
 </script>
 
 <!-- Login bridge — plain script so onclick always works regardless of module loading -->
@@ -6800,6 +7082,8 @@ const firebaseConfig = {
   function suggestSaveComment(id)         { if (window.suggestSaveComment)          window.suggestSaveComment(id); }
   function suggestToggleDone(id, done)    { if (window.suggestToggleDone)           window.suggestToggleDone(id, done); }
   function suggestDelete(id)              { if (window.suggestDelete)               window.suggestDelete(id); }
+  function trtEnter()                     { if (window.trtEnter)                    window.trtEnter(); }
+  function trtExit()                      { if (window.trtExit)                     window.trtExit(); }
   function dbAttachSetMode(m)             { if (window.dbAttachSetMode)             window.dbAttachSetMode(m); }
   function dbAttachAddUrl()               { if (window.dbAttachAddUrl)              window.dbAttachAddUrl(); }
   function dbAttachDelete(i)              { if (window.dbAttachDelete)              window.dbAttachDelete(i); }

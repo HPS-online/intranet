@@ -6874,24 +6874,31 @@ const firebaseConfig = {
   // TRT (RELIEVING TEACHER) MODULE
   // ══════════════════════════════════════
   function trtEnter() {
-    // Hide auth screen, show app screen in TRT mode
+    // Hide auth screen, show app screen
     document.getElementById('auth-screen').style.display = 'none';
     document.getElementById('app-screen').style.display  = 'block';
-    // Hide topbar nav — TRT doesn't need it
-    const topbar = document.getElementById('topbar');
+    // Hide topbar — TRT doesn't need nav
+    const topbar = document.querySelector('.topbar');
     if (topbar) topbar.style.display = 'none';
-    // Show TRT view
+    // Show only the TRT view
     document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
     document.getElementById('view-trt').classList.add('active');
     trtLoad();
   }
 
   function trtExit() {
-    // Return to login screen
-    document.getElementById('auth-screen').style.display = 'flex';
-    document.getElementById('app-screen').style.display  = 'none';
-    const topbar = document.getElementById('topbar');
+    // Restore topbar
+    const topbar = document.querySelector('.topbar');
     if (topbar) topbar.style.display = '';
+    // If already logged in as staff, go back to home — don't show login screen
+    if (currentUser) {
+      document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+      showView('home');
+    } else {
+      // Not logged in — return to login screen
+      document.getElementById('auth-screen').style.display = 'flex';
+      document.getElementById('app-screen').style.display  = 'none';
+    }
   }
 
   async function trtLoad() {

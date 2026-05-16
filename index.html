@@ -1480,6 +1480,54 @@
 
     .db-empty { text-align: center; color: var(--gray3); font-size: 13px; padding: 30px 0; }
 
+    /* ── DAYBOOK ATTACHMENTS ── */
+    .db-attach-section { margin-top: 20px; }
+    .db-attach-section h3 { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--navy); margin-bottom: 10px; }
+    .db-attach-list { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 14px; }
+    .db-attach-chip {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--gray1); border: 1px solid var(--gray2); border-radius: 8px;
+      padding: 7px 12px; font-size: 13px; font-weight: 500; color: var(--navy);
+      text-decoration: none; cursor: pointer; max-width: 320px;
+    }
+    .db-attach-chip:hover { background: var(--gray2); }
+    .db-attach-chip .attach-icon { font-size: 18px; flex-shrink: 0; }
+    .db-attach-chip .attach-label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .db-attach-chip .attach-del { margin-left: 4px; color: var(--red); font-size: 14px; background: none; border: none; cursor: pointer; padding: 0 2px; flex-shrink: 0; display: none; }
+    .daybook-view-mode .db-attach-chip .attach-del { display: none !important; }
+    .db-attach-add-row { display: flex; gap: 8px; align-items: flex-start; flex-wrap: wrap; }
+    .db-attach-type-btns { display: flex; gap: 6px; }
+    .db-attach-type-btn { padding: 7px 14px; border: 1.5px solid var(--gray2); border-radius: 7px; background: var(--white); font-size: 13px; font-family: inherit; cursor: pointer; font-weight: 600; color: var(--subtext); transition: all .15s; }
+    .db-attach-type-btn.active { border-color: var(--navy); background: var(--navy); color: var(--white); }
+    .db-attach-upload-label { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; background: var(--navy); color: #fff; border-radius: 7px; font-size: 13px; font-weight: 600; cursor: pointer; }
+    .db-attach-upload-label:hover { background: var(--navy2); }
+    .db-attach-upload-progress { font-size: 12px; color: var(--subtext); align-self: center; }
+
+    /* ── SUGGEST AN EDIT ── */
+    .suggest-form-card { background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow); padding: 24px; margin-bottom: 28px; }
+    .suggest-form-card h3 { font-size: 14px; font-weight: 700; color: var(--navy); margin-bottom: 16px; }
+    .suggest-list { display: flex; flex-direction: column; gap: 14px; }
+    .suggest-item {
+      background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow);
+      border-left: 4px solid var(--gray2); overflow: hidden; transition: border-color .2s;
+    }
+    .suggest-item.si-open   { border-left-color: var(--gold); }
+    .suggest-item.si-done   { border-left-color: var(--green); }
+    .suggest-item-header { padding: 16px 18px 10px; display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+    .suggest-item-body   { padding: 0 18px 16px; }
+    .suggest-meta { font-size: 11px; color: var(--subtext); margin-top: 2px; }
+    .suggest-text { font-size: 14px; font-weight: 600; color: var(--navy); line-height: 1.5; }
+    .suggest-badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; flex-shrink: 0; }
+    .si-badge-open { background: #fef3d0; color: #b45309; }
+    .si-badge-done { background: #d1fae5; color: #065f46; }
+    .suggest-comment-box { background: var(--gray1); border-radius: 8px; padding: 12px 14px; margin-top: 10px; }
+    .suggest-comment-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px; color: var(--subtext); margin-bottom: 6px; }
+    .suggest-comment-text { font-size: 13px; color: var(--text); white-space: pre-wrap; line-height: 1.6; }
+    .suggest-admin-area { border-top: 1px solid var(--gray2); padding: 14px 18px; display: flex; gap: 10px; align-items: flex-start; flex-wrap: wrap; background: #f8f9fc; }
+    .suggest-admin-area textarea { flex: 1; min-width: 200px; padding: 8px 12px; border: 1.5px solid var(--gray2); border-radius: 7px; font-family: inherit; font-size: 13px; resize: vertical; min-height: 56px; }
+    .suggest-admin-area textarea:focus { outline: none; border-color: var(--navy); }
+    .suggest-empty { text-align: center; color: var(--gray3); font-size: 14px; padding: 48px 20px; }
+
     .spinner {
       border: 3px solid var(--gray2);
       border-top-color: var(--navy);
@@ -1589,6 +1637,7 @@
         <button class="nav-btn" onclick="showView('tickets')">Lodge a Ticket</button>
         <button class="nav-btn" onclick="showView('naplan')">NAPLAN Data</button>
         <button class="nav-btn" onclick="showView('meetings')">Meetings</button>
+        <button class="nav-btn" onclick="showView('suggest')">💡 Suggest an Edit</button>
         <button class="nav-btn admin-only" id="nav-admin" onclick="showView('admin')" style="display:none;color:#f5ac1c;border:1px solid rgba(245,172,28,0.35)">Admin</button>
       </nav>
     </div>
@@ -1776,6 +1825,33 @@
               onkeydown="if(event.key==='Enter'){dbInfoAddItem();event.preventDefault()}"
               onfocus="this.style.borderColor='var(--navy)'" onblur="this.style.borderColor='var(--gray2)'">
             <button class="btn btn-primary btn-sm" onclick="dbInfoAddItem()">+ Add</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── DAYBOOK ATTACHMENTS ── -->
+      <div class="daybook-info-section db-attach-section" id="db-attach-section">
+        <h3>📎 Attachments</h3>
+        <p style="font-size:12px;color:var(--subtext);margin-bottom:14px;margin-top:-6px">Attach PDFs, images, or URL links to today&apos;s daybook entry.</p>
+        <div class="db-attach-list" id="db-attach-list">
+          <div class="db-empty" style="padding:8px 0">No attachments yet.</div>
+        </div>
+        <div id="db-attach-add-wrap" style="display:none">
+          <div class="db-attach-type-btns" style="margin-bottom:12px">
+            <button class="db-attach-type-btn active" onclick="dbAttachSetMode('file')" id="db-atype-file">📁 Upload File</button>
+            <button class="db-attach-type-btn" onclick="dbAttachSetMode('url')" id="db-atype-url">🔗 Add URL Link</button>
+          </div>
+          <div id="db-attach-file-row" class="db-attach-add-row">
+            <label class="db-attach-upload-label">
+              📎 Choose PDF or Image
+              <input type="file" id="db-attach-file-input" accept="image/*,.pdf" style="display:none" onchange="dbAttachFileSelected(this)">
+            </label>
+            <span class="db-attach-upload-progress" id="db-attach-progress"></span>
+          </div>
+          <div id="db-attach-url-row" class="db-attach-add-row" style="display:none">
+            <input type="text" id="db-attach-url-input" placeholder="https://…" style="flex:1;min-width:200px;padding:8px 12px;border:1.5px solid var(--gray2);border-radius:7px;font-family:inherit;font-size:13px;outline:none" onfocus="this.style.borderColor='var(--navy)'" onblur="this.style.borderColor='var(--gray2)'">
+            <input type="text" id="db-attach-url-label" placeholder="Link label (optional)" style="width:200px;padding:8px 12px;border:1.5px solid var(--gray2);border-radius:7px;font-family:inherit;font-size:13px;outline:none" onfocus="this.style.borderColor='var(--navy)'" onblur="this.style.borderColor='var(--gray2)'">
+            <button class="btn btn-primary btn-sm" onclick="dbAttachAddUrl()">+ Add Link</button>
           </div>
         </div>
       </div>
@@ -3263,6 +3339,59 @@
       </div>
     </div>
 
+    </div>
+
+    <!-- ── SUGGEST AN EDIT VIEW ── -->
+    <div id="view-suggest" class="view">
+      <div class="page-header" style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px">
+        <div>
+          <h2>💡 Suggest an Edit</h2>
+          <p>Have an idea or spot something that needs updating? Submit a suggestion below. Admins will review and respond.</p>
+        </div>
+      </div>
+
+      <!-- Submission form (all staff) -->
+      <div class="suggest-form-card">
+        <h3>Submit a Suggestion</h3>
+        <div style="display:flex;flex-direction:column;gap:14px">
+          <div>
+            <label class="form-label">Category</label>
+            <select id="sug-category" class="form-input" style="max-width:320px">
+              <option value="Daybook">Daybook</option>
+              <option value="Timetables">Timetables</option>
+              <option value="Planner / Calendar">Planner / Calendar</option>
+              <option value="NAPLAN Data">NAPLAN Data</option>
+              <option value="Meetings">Meetings</option>
+              <option value="General / Other">General / Other</option>
+            </select>
+          </div>
+          <div>
+            <label class="form-label">Your suggestion *</label>
+            <textarea id="sug-text" class="form-input" rows="4" style="resize:vertical" placeholder="Describe your suggestion, what you think is incorrect, or what would improve the intranet…"></textarea>
+          </div>
+          <div>
+            <button class="btn btn-gold" onclick="suggestSubmit()">💡 Submit Suggestion</button>
+            <span id="sug-submit-status" style="font-size:13px;color:var(--subtext);margin-left:12px"></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Filters -->
+      <div style="display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;align-items:center">
+        <span style="font-size:13px;font-weight:600;color:var(--navy)">Filter:</span>
+        <button class="db-attach-type-btn active" id="sugf-all"  onclick="suggestFilter('all')">All</button>
+        <button class="db-attach-type-btn" id="sugf-open" onclick="suggestFilter('open')">⏳ Open</button>
+        <button class="db-attach-type-btn" id="sugf-done" onclick="suggestFilter('done')">✅ Completed</button>
+        <span id="sug-count" style="font-size:12px;color:var(--subtext);margin-left:8px"></span>
+      </div>
+
+      <!-- Suggestions list -->
+      <div id="suggest-list" class="suggest-list">
+        <div class="spinner"></div>
+      </div>
+    </div>
+    <!-- ── END SUGGEST AN EDIT VIEW ── -->
+
   </div><!-- /main -->
 </div><!-- /app-screen -->
 
@@ -3483,7 +3612,8 @@
     getStorage,
     ref,
     uploadBytes,
-    getDownloadURL
+    getDownloadURL,
+    deleteObject
   } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
 
   // ══════════════════════════════════════
@@ -3839,6 +3969,7 @@ const firebaseConfig = {
         (view === 'tickets'    && t.includes('ticket')) ||
         (view === 'naplan'     && t.includes('naplan')) ||
         (view === 'meetings'   && t.includes('meeting')) ||
+        (view === 'suggest'    && t.includes('suggest')) ||
         (view === 'admin'      && t.includes('admin'))
       ) b.classList.add('active');
     });
@@ -3846,6 +3977,7 @@ const firebaseConfig = {
     if (view === 'admin')    loadAdminUsers();
     if (view === 'naplan' && !_npInited) { _npInited = true; npInitDashboard(); }
     if (view === 'meetings') meetingsInit();
+    if (view === 'suggest')  suggestInit();
     if (view === 'planner')  plannerLoad();
     if (view === 'daybook') {
       daybookCurrentDate = new Date();
@@ -4517,6 +4649,7 @@ const firebaseConfig = {
     dbInfoRenderView(daybookCurrentData.infoItems || []);
     document.getElementById('db-info-view').style.display = '';
     document.getElementById('db-info-edit').style.display = 'none';
+    dbAttachRenderList(false);
   }
 
   function daybookRenderRows(rows, editing) {
@@ -4571,6 +4704,7 @@ const firebaseConfig = {
     document.getElementById('db-info-view').style.display = daybookIsEditing ? 'none' : '';
     document.getElementById('db-info-edit').style.display = daybookIsEditing ? '' : 'none';
     if (daybookIsEditing) dbInfoRenderEdit(daybookCurrentData.infoItems || []);
+    dbAttachRenderList(daybookIsEditing);
   }
 
   function daybookCancelEdit() { daybookLoad(); }
@@ -4628,6 +4762,92 @@ const firebaseConfig = {
     daybookCurrentData.infoItems.splice(i, 1);
     dbInfoRenderEdit(daybookCurrentData.infoItems);
   }
+
+  // ══════════════════════════════════════
+  // DAYBOOK ATTACHMENTS
+  // ══════════════════════════════════════
+  let _dbAttachMode = 'file'; // 'file' | 'url'
+
+  function dbAttachSetMode(mode) {
+    _dbAttachMode = mode;
+    document.getElementById('db-atype-file').classList.toggle('active', mode === 'file');
+    document.getElementById('db-atype-url').classList.toggle('active', mode === 'url');
+    document.getElementById('db-attach-file-row').style.display = mode === 'file' ? '' : 'none';
+    document.getElementById('db-attach-url-row').style.display  = mode === 'url'  ? '' : 'none';
+  }
+
+  function dbAttachRenderList(editing) {
+    const list = document.getElementById('db-attach-list');
+    const attachments = daybookCurrentData.attachments || [];
+    if (attachments.length === 0) {
+      list.innerHTML = '<div class="db-empty" style="padding:8px 0">No attachments yet.</div>';
+    } else {
+      list.innerHTML = attachments.map((a, i) => {
+        const icon = a.type === 'pdf' ? '📄' : a.type === 'url' ? '🔗' : '🖼️';
+        const label = escHtml(a.label || a.name || 'Attachment');
+        const delBtn = editing
+          ? `<button class="attach-del" style="display:inline-block" onclick="dbAttachDelete(${i})" title="Remove">✕</button>`
+          : '';
+        return `<a class="db-attach-chip" href="${escHtml(a.url)}" target="_blank" rel="noopener">
+          <span class="attach-icon">${icon}</span>
+          <span class="attach-label" title="${label}">${label}</span>
+          ${delBtn}
+        </a>`;
+      }).join('');
+    }
+    // Show/hide the add area
+    document.getElementById('db-attach-add-wrap').style.display = editing ? '' : 'none';
+  }
+
+  async function dbAttachFileSelected(input) {
+    const file = input.files[0];
+    if (!file) return;
+    const progEl = document.getElementById('db-attach-progress');
+    progEl.textContent = 'Uploading…';
+    const key = daybookDateKey(daybookCurrentDate);
+    const storageRef = ref(storage, `daybook-attachments/${key}/${Date.now()}_${file.name}`);
+    try {
+      await uploadBytes(storageRef, file);
+      const url = await getDownloadURL(storageRef);
+      if (!daybookCurrentData.attachments) daybookCurrentData.attachments = [];
+      const type = file.type === 'application/pdf' ? 'pdf' : 'image';
+      daybookCurrentData.attachments.push({ type, name: file.name, label: file.name, url, storagePath: storageRef.fullPath });
+      progEl.textContent = '✓ Uploaded';
+      input.value = '';
+      dbAttachRenderList(true);
+      setTimeout(() => { progEl.textContent = ''; }, 2500);
+    } catch(e) {
+      progEl.textContent = 'Upload failed: ' + e.message;
+    }
+  }
+
+  function dbAttachAddUrl() {
+    const urlInput   = document.getElementById('db-attach-url-input');
+    const labelInput = document.getElementById('db-attach-url-label');
+    const url = urlInput.value.trim();
+    if (!url) { showToast('Please enter a URL.', 'error'); return; }
+    if (!daybookCurrentData.attachments) daybookCurrentData.attachments = [];
+    daybookCurrentData.attachments.push({ type: 'url', label: labelInput.value.trim() || url, url });
+    urlInput.value = '';
+    labelInput.value = '';
+    dbAttachRenderList(true);
+  }
+
+  async function dbAttachDelete(i) {
+    const att = (daybookCurrentData.attachments || [])[i];
+    if (!att) return;
+    // If it was uploaded to storage, delete it there too
+    if (att.storagePath) {
+      try { await deleteObject(ref(storage, att.storagePath)); } catch(e) { /* ignore — may already be gone */ }
+    }
+    daybookCurrentData.attachments.splice(i, 1);
+    dbAttachRenderList(true);
+  }
+
+  window.dbAttachSetMode     = dbAttachSetMode;
+  window.dbAttachFileSelected = dbAttachFileSelected;
+  window.dbAttachAddUrl      = dbAttachAddUrl;
+  window.dbAttachDelete      = dbAttachDelete;
 
   // ══════════════════════════════════════
   // LOAD TICKETS
@@ -6371,6 +6591,151 @@ const firebaseConfig = {
     _aiPendingSummary = '';
   }
   // ── END MEETINGS MODULE ──────────────────────────────────
+
+  // ══════════════════════════════════════
+  // SUGGEST AN EDIT MODULE
+  // ══════════════════════════════════════
+  let _suggestFilter = 'all';
+  let _allSuggestions = [];
+
+  async function suggestInit() {
+    const listEl = document.getElementById('suggest-list');
+    listEl.innerHTML = '<div class="spinner"></div>';
+    try {
+      const q = query(collection(db, 'suggestions'), orderBy('createdAt', 'desc'));
+      const snap = await getDocs(q);
+      _allSuggestions = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      suggestRenderList();
+    } catch(e) {
+      listEl.innerHTML = '<div class="suggest-empty">Could not load suggestions.</div>';
+    }
+  }
+
+  function suggestFilter(f) {
+    _suggestFilter = f;
+    ['all','open','done'].forEach(k => {
+      document.getElementById('sugf-' + k).classList.toggle('active', k === f);
+    });
+    suggestRenderList();
+  }
+
+  function suggestRenderList() {
+    const listEl = document.getElementById('suggest-list');
+    const countEl = document.getElementById('sug-count');
+    let items = _allSuggestions;
+    if (_suggestFilter === 'open') items = items.filter(s => !s.completed);
+    if (_suggestFilter === 'done') items = items.filter(s =>  s.completed);
+    countEl.textContent = items.length + ' suggestion' + (items.length !== 1 ? 's' : '');
+    if (items.length === 0) {
+      listEl.innerHTML = '<div class="suggest-empty">No suggestions found.</div>';
+      return;
+    }
+    listEl.innerHTML = items.map(s => {
+      const when = s.createdAt?.toDate ? s.createdAt.toDate().toLocaleString('en-AU',{day:'numeric',month:'short',year:'numeric',hour:'numeric',minute:'2-digit'}) : '—';
+      const badge = s.completed
+        ? '<span class="suggest-badge si-badge-done">✅ Completed</span>'
+        : '<span class="suggest-badge si-badge-open">⏳ Open</span>';
+      const commentBox = s.adminComment
+        ? `<div class="suggest-comment-box">
+            <div class="suggest-comment-label">Admin Comment</div>
+            <div class="suggest-comment-text">${escHtml(s.adminComment)}</div>
+           </div>`
+        : '';
+      const adminArea = currentIsAdmin ? `
+        <div class="suggest-admin-area" id="sug-admin-${escHtml(s.id)}">
+          <textarea placeholder="Add or update admin comment…" id="sug-comment-${escHtml(s.id)}">${escHtml(s.adminComment || '')}</textarea>
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <button class="btn btn-primary btn-sm" onclick="suggestSaveComment('${escHtml(s.id)}')">💾 Save Comment</button>
+            ${s.completed
+              ? `<button class="btn btn-outline btn-sm" onclick="suggestToggleDone('${escHtml(s.id)}',false)" style="font-size:12px">↩ Reopen</button>`
+              : `<button class="btn btn-sm" onclick="suggestToggleDone('${escHtml(s.id)}',true)" style="background:var(--green);color:#fff;font-size:12px">✅ Mark Complete</button>`
+            }
+            <button class="btn btn-outline btn-sm" onclick="suggestDelete('${escHtml(s.id)}')" style="color:var(--red);border-color:var(--red);font-size:12px">🗑 Delete</button>
+          </div>
+        </div>` : '';
+      return `<div class="suggest-item ${s.completed ? 'si-done' : 'si-open'}" id="sug-item-${escHtml(s.id)}">
+        <div class="suggest-item-header">
+          <div>
+            <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.4px;color:var(--subtext);margin-bottom:4px">${escHtml(s.category || 'General')}</div>
+            <div class="suggest-text">${escHtml(s.text || '')}</div>
+            <div class="suggest-meta">Submitted by ${escHtml(s.by || 'Unknown')} · ${when}</div>
+          </div>
+          <div>${badge}</div>
+        </div>
+        <div class="suggest-item-body">
+          ${commentBox}
+        </div>
+        ${adminArea}
+      </div>`;
+    }).join('');
+  }
+
+  async function suggestSubmit() {
+    const textEl   = document.getElementById('sug-text');
+    const catEl    = document.getElementById('sug-category');
+    const statusEl = document.getElementById('sug-submit-status');
+    const text = textEl.value.trim();
+    if (!text) { showToast('Please enter your suggestion before submitting.', 'error'); return; }
+    statusEl.textContent = 'Submitting…';
+    try {
+      const docRef = await addDoc(collection(db, 'suggestions'), {
+        text,
+        category: catEl.value,
+        by: currentUser.displayName || currentUser.email,
+        byEmail: currentUser.email,
+        createdAt: serverTimestamp(),
+        completed: false,
+        adminComment: ''
+      });
+      textEl.value = '';
+      statusEl.textContent = '';
+      showToast('Suggestion submitted — thanks!', 'success');
+      // Reload list
+      await suggestInit();
+    } catch(e) {
+      statusEl.textContent = 'Error: ' + e.message;
+    }
+  }
+
+  async function suggestSaveComment(id) {
+    if (!currentIsAdmin) return;
+    const commentEl = document.getElementById('sug-comment-' + id);
+    if (!commentEl) return;
+    try {
+      await updateDoc(doc(db, 'suggestions', id), { adminComment: commentEl.value.trim() });
+      showToast('Comment saved.', 'success');
+      await suggestInit();
+    } catch(e) { showToast('Error: ' + e.message, 'error'); }
+  }
+
+  async function suggestToggleDone(id, done) {
+    if (!currentIsAdmin) return;
+    try {
+      const commentEl = document.getElementById('sug-comment-' + id);
+      const updates = { completed: done };
+      if (commentEl) updates.adminComment = commentEl.value.trim();
+      await updateDoc(doc(db, 'suggestions', id), updates);
+      showToast(done ? 'Marked as complete.' : 'Reopened.', 'success');
+      await suggestInit();
+    } catch(e) { showToast('Error: ' + e.message, 'error'); }
+  }
+
+  async function suggestDelete(id) {
+    if (!currentIsAdmin) return;
+    if (!confirm('Delete this suggestion? This cannot be undone.')) return;
+    try {
+      await deleteDoc(doc(db, 'suggestions', id));
+      showToast('Suggestion deleted.', 'success');
+      await suggestInit();
+    } catch(e) { showToast('Error: ' + e.message, 'error'); }
+  }
+
+  window.suggestInit        = suggestInit;
+  window.suggestFilter      = suggestFilter;
+  window.suggestSubmit      = suggestSubmit;
+  window.suggestSaveComment = suggestSaveComment;
+  window.suggestToggleDone  = suggestToggleDone;
+  window.suggestDelete      = suggestDelete;
 </script>
 
 <!-- Login bridge — plain script so onclick always works regardless of module loading -->
@@ -6429,6 +6794,15 @@ const firebaseConfig = {
   function renderApologyChips()           { if (window.renderApologyChips)          window.renderApologyChips(); }
   function markAttendeeAsApology(i)       { if (window.markAttendeeAsApology)       window.markAttendeeAsApology(i); }
   function meetingsLoadAttendees(t)       { if (window.meetingsLoadAttendees)       window.meetingsLoadAttendees(t); }
+  function suggestInit()                  { if (window.suggestInit)                 window.suggestInit(); }
+  function suggestFilter(f)               { if (window.suggestFilter)               window.suggestFilter(f); }
+  function suggestSubmit()                { if (window.suggestSubmit)               window.suggestSubmit(); }
+  function suggestSaveComment(id)         { if (window.suggestSaveComment)          window.suggestSaveComment(id); }
+  function suggestToggleDone(id, done)    { if (window.suggestToggleDone)           window.suggestToggleDone(id, done); }
+  function suggestDelete(id)              { if (window.suggestDelete)               window.suggestDelete(id); }
+  function dbAttachSetMode(m)             { if (window.dbAttachSetMode)             window.dbAttachSetMode(m); }
+  function dbAttachAddUrl()               { if (window.dbAttachAddUrl)              window.dbAttachAddUrl(); }
+  function dbAttachDelete(i)              { if (window.dbAttachDelete)              window.dbAttachDelete(i); }
   function printTimetable(type) {
     const printWin = window.open('', '_blank');
     const css = `body{font-family:Arial,sans-serif;font-size:8px;margin:10mm}h2{font-size:13px;margin-bottom:4px;color:#1a2e52}p{font-size:9px;color:#666;margin-bottom:8px}table{width:100%;border-collapse:collapse;table-layout:fixed}th{background:#1a2e52;color:#fff;padding:3px 2px;text-align:center;font-size:7px;text-transform:uppercase}.day-header{background:#2d4a7a}td{padding:3px 2px;border:1px solid #ddd;text-align:center;font-size:7.5px;vertical-align:middle;word-break:break-word}.lesson-label{background:#f5f5f5;font-weight:bold;font-size:7px;text-align:left;padding:3px 4px}.nit{color:#aaa;font-style:italic}.recess{background:#f5f5f5;color:#888}.area-name{font-weight:bold;text-align:left}.period-h{margin-top:10px;margin-bottom:3px;font-size:10px;font-weight:bold;color:#1a2e52}.period-t{font-size:8px;color:#888;margin-left:8px}@page{size:A4 landscape;margin:10mm}`;

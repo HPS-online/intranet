@@ -4048,6 +4048,7 @@ const firebaseConfig = {
   window.plannerChangeWeek  = plannerChangeWeek;
   window.plannerGoToday     = plannerGoToday;
   window.ttShowPane         = ttShowPane;
+  window._ttShowPaneModule  = ttShowPane;
   window.highlightDuties    = highlightDuties;
   window.highlightSpec      = highlightSpec;
   window.printTimetable     = printTimetable;
@@ -7750,7 +7751,7 @@ const firebaseConfig = {
   // ══════════════════════════════════════
   // TIMETABLES
   // ══════════════════════════════════════
-  function ttShowPane(pane)            { if (window.ttShowPane)          window.ttShowPane(pane); }
+  function ttShowPane(pane)            { if (window._ttShowPaneModule)    window._ttShowPaneModule(pane); }
   function ttOpenAddSite()             { if (window.ttOpenAddSite)       window.ttOpenAddSite(); }
   function ttCloseAddSite()            { if (window.ttCloseAddSite)      window.ttCloseAddSite(); }
   function ttSelectType(t)             { if (window.ttSelectType)        window.ttSelectType(t); }

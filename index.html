@@ -1171,6 +1171,51 @@
     .tt-pane { display: none; }
     .tt-pane.active { display: block; }
 
+    /* ── TIMETABLE MANAGER ── */
+    .tt-mgr-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:12px; }
+    .tt-card-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(320px,1fr)); gap:18px; }
+    .tt-mgr-card { background:var(--white); border-radius:var(--radius); box-shadow:var(--shadow); overflow:hidden; display:flex; flex-direction:column; }
+    .tt-mgr-card-head { background:var(--navy); color:var(--white); padding:12px 16px; display:flex; justify-content:space-between; align-items:flex-start; gap:8px; }
+    .tt-mgr-card-title { font-size:14px; font-weight:700; }
+    .tt-mgr-card-meta  { font-size:11px; color:rgba(255,255,255,0.6); margin-top:2px; }
+    .tt-mgr-card-body  { padding:14px 16px; flex:1; }
+    .tt-mgr-card-foot  { padding:10px 16px; border-top:1px solid var(--gray2); display:flex; gap:8px; flex-wrap:wrap; align-items:center; background:var(--gray1); }
+    .tt-cat-badge { display:inline-block; padding:2px 9px; border-radius:20px; font-size:11px; font-weight:700; background:var(--gold-light); color:var(--gold-dark); }
+    .tt-type-badge { display:inline-block; padding:2px 9px; border-radius:20px; font-size:10px; font-weight:600; }
+    .tt-type-pdf   { background:#dbeafe; color:#1e40af; }
+    .tt-type-table { background:#d1fae5; color:#065f46; }
+
+    /* Inline table display */
+    .tt-inline-table { width:100%; border-collapse:collapse; font-size:13px; margin-top:4px; }
+    .tt-inline-table th { background:var(--navy); color:var(--white); padding:8px 10px; text-align:left; font-size:12px; font-weight:600; }
+    .tt-inline-table td { padding:8px 10px; border-bottom:1px solid var(--gray2); vertical-align:top; }
+    .tt-inline-table tr:last-child td { border-bottom:none; }
+    .tt-inline-table tr:hover td { background:#f8f8fc; }
+    .tt-inline-edit input { width:100%; border:1px solid var(--gray2); border-radius:4px; padding:4px 6px; font-family:inherit; font-size:13px; }
+    .tt-inline-edit input:focus { outline:none; border-color:var(--navy); }
+
+    /* Individual timetable cards */
+    .tt-person-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:16px; }
+    .tt-person-card { background:var(--white); border-radius:var(--radius); box-shadow:var(--shadow); padding:18px; display:flex; flex-direction:column; gap:10px; border-left:4px solid var(--gold); }
+    .tt-person-name { font-size:15px; font-weight:700; color:var(--navy); }
+    .tt-person-role { font-size:12px; color:var(--subtext); }
+    .tt-person-updated { font-size:11px; color:var(--gray3); }
+    .tt-no-pdf { font-size:12px; color:var(--subtext); font-style:italic; }
+
+    /* Add timetable modal steps */
+    .tt-type-choice { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin:16px 0; }
+    .tt-type-option { border:2px solid var(--gray2); border-radius:10px; padding:20px 16px; cursor:pointer; text-align:center; transition:all .15s; }
+    .tt-type-option:hover { border-color:var(--navy); background:var(--gray1); }
+    .tt-type-option.selected { border-color:var(--navy); background:#eef0fb; }
+    .tt-type-option .tt-opt-icon { font-size:28px; margin-bottom:8px; }
+    .tt-type-option .tt-opt-label { font-size:13px; font-weight:700; color:var(--navy); }
+    .tt-type-option .tt-opt-desc  { font-size:11px; color:var(--subtext); margin-top:4px; }
+    .tt-col-tag { display:inline-flex; align-items:center; gap:4px; background:var(--gray1); border:1px solid var(--gray2); border-radius:6px; padding:3px 8px; font-size:12px; font-weight:600; }
+    .tt-col-tag button { background:none; border:none; cursor:pointer; color:var(--red); font-size:13px; padding:0; line-height:1; }
+    .tt-order-btns { display:flex; flex-direction:column; gap:2px; }
+    .tt-order-btn { background:none; border:1px solid var(--gray2); border-radius:4px; padding:1px 5px; cursor:pointer; font-size:10px; color:var(--subtext); }
+    .tt-order-btn:hover { background:var(--gray2); }
+
     .tt-highlight-bar { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 20px; background: var(--white); border: 1px solid var(--gray2); border-radius: 10px; padding: 14px 18px; }
     .tt-highlight-bar label { font-size: 13px; font-weight: 600; color: var(--navy); white-space: nowrap; }
     .tt-highlight-bar select { border: 1px solid var(--gray2); border-radius: 6px; padding: 6px 10px; font-size: 13px; font-family: inherit; color: var(--navy); }
@@ -1907,6 +1952,8 @@
       <div class="tt-tabs">
         <button class="tt-tab active" onclick="ttShowPane('yard-duty')">🏃 Yard Duty</button>
         <button class="tt-tab" onclick="ttShowPane('specialist')">📚 Specialist Timetable</button>
+        <button class="tt-tab" onclick="ttShowPane('site')">📋 Site Timetables</button>
+        <button class="tt-tab" onclick="ttShowPane('individual')">👤 Individual Timetables</button>
       </div>
 
       <!-- YARD DUTY PANE -->
@@ -2118,6 +2165,136 @@
     </div>
 
     <!-- ── LODGE A TICKET VIEW ── -->
+    <div id="tt-site" class="tt-pane">
+      <div class="tt-mgr-header">
+        <div>
+          <div style="font-size:13px;color:var(--subtext)">Upload and manage site-wide timetables as PDFs or editable tables.</div>
+        </div>
+        <button class="btn btn-gold" id="tt-add-site-btn" onclick="ttOpenAddSite()" style="display:none">+ Add Timetable</button>
+      </div>
+      <div id="tt-site-list" class="tt-card-grid">
+        <div class="spinner"></div>
+      </div>
+    </div>
+
+    <!-- ── INDIVIDUAL TIMETABLES PANE ── -->
+    <div id="tt-individual" class="tt-pane">
+      <div class="tt-mgr-header">
+        <div>
+          <div style="font-size:13px;color:var(--subtext)">Individual SSO and staff timetables — upload a PDF per person.</div>
+        </div>
+        <button class="btn btn-gold" id="tt-add-person-btn" onclick="ttOpenAddPerson()" style="display:none">+ Add Person</button>
+      </div>
+      <div id="tt-individual-list" class="tt-person-grid">
+        <div class="spinner"></div>
+      </div>
+    </div>
+
+    <!-- ── ADD SITE TIMETABLE MODAL ── -->
+    <div id="tt-add-site-modal" class="modal-overlay" style="display:none" onclick="if(event.target===this)ttCloseAddSite()">
+      <div class="modal-box" style="max-width:600px;width:95%;max-height:92vh;overflow-y:auto;padding:0">
+        <div style="background:var(--navy);color:#fff;padding:18px 24px;border-radius:var(--radius) var(--radius) 0 0;display:flex;justify-content:space-between;align-items:center">
+          <div style="font-size:16px;font-weight:800" id="tt-modal-title">Add Site Timetable</div>
+          <button class="btn btn-outline btn-sm" onclick="ttCloseAddSite()" style="color:#fff;border-color:rgba(255,255,255,0.35)">✕</button>
+        </div>
+        <div style="padding:24px;display:flex;flex-direction:column;gap:16px">
+
+          <!-- Step 1: Name + Category -->
+          <div>
+            <label class="form-label">Timetable Name *</label>
+            <input type="text" id="tt-s-name" class="form-input" placeholder="e.g. Library Borrowing, Bin Roster…">
+          </div>
+          <div>
+            <label class="form-label">Category <span style="font-weight:400;font-size:11px;color:var(--subtext)">(optional label shown on card)</span></label>
+            <input type="text" id="tt-s-cat" class="form-input" placeholder="e.g. Facilities, Therapy, Duty…" list="tt-cat-list">
+            <datalist id="tt-cat-list">
+              <option value="Duty"><option value="Therapy"><option value="Facilities"><option value="Library"><option value="Intervention"><option value="General">
+            </datalist>
+          </div>
+
+          <!-- Step 2: Type -->
+          <div>
+            <label class="form-label">Timetable Type *</label>
+            <div class="tt-type-choice">
+              <div class="tt-type-option selected" id="tt-opt-pdf" onclick="ttSelectType('pdf')">
+                <div class="tt-opt-icon">📄</div>
+                <div class="tt-opt-label">Upload PDF</div>
+                <div class="tt-opt-desc">Upload a PDF — staff click to view in browser</div>
+              </div>
+              <div class="tt-type-option" id="tt-opt-table" onclick="ttSelectType('table')">
+                <div class="tt-opt-icon">📊</div>
+                <div class="tt-opt-label">Simple Table</div>
+                <div class="tt-opt-desc">Build a grid directly — editable, no file needed</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- PDF upload area -->
+          <div id="tt-s-pdf-area">
+            <label class="form-label">Upload PDF *</label>
+            <label class="db-attach-upload-label" style="display:inline-flex">
+              📎 Choose PDF
+              <input type="file" id="tt-s-pdf-input" accept=".pdf" style="display:none" onchange="ttPdfSelected(this)">
+            </label>
+            <div id="tt-s-pdf-name" style="font-size:12px;color:var(--subtext);margin-top:6px"></div>
+          </div>
+
+          <!-- Table builder area -->
+          <div id="tt-s-table-area" style="display:none">
+            <label class="form-label">Define Columns *</label>
+            <div style="display:flex;gap:8px;margin-bottom:8px;flex-wrap:wrap" id="tt-col-chips"></div>
+            <div style="display:flex;gap:8px">
+              <input type="text" id="tt-col-input" class="form-input" placeholder="Column name…" style="flex:1" onkeydown="if(event.key==='Enter'){ttAddCol();event.preventDefault()}">
+              <button class="btn btn-primary btn-sm" onclick="ttAddCol()">+ Add</button>
+            </div>
+            <div style="margin-top:6px;font-size:11px;color:var(--subtext)">Tip: first column is usually a label (e.g. "Week", "Time"). You can add rows after saving.</div>
+          </div>
+
+          <div id="tt-s-error" style="display:none;color:var(--red);font-size:13px"></div>
+          <div id="tt-s-progress" style="display:none;font-size:13px;color:var(--subtext)">Saving…</div>
+
+          <div style="display:flex;gap:10px">
+            <button class="btn btn-gold" onclick="ttSaveSite()">Save Timetable</button>
+            <button class="btn btn-outline" onclick="ttCloseAddSite()">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── ADD PERSON MODAL ── -->
+    <div id="tt-add-person-modal" class="modal-overlay" style="display:none" onclick="if(event.target===this)ttCloseAddPerson()">
+      <div class="modal-box" style="max-width:480px;width:95%;padding:0">
+        <div style="background:var(--navy);color:#fff;padding:18px 24px;border-radius:var(--radius) var(--radius) 0 0;display:flex;justify-content:space-between;align-items:center">
+          <div style="font-size:16px;font-weight:800" id="tt-person-modal-title">Add Individual Timetable</div>
+          <button class="btn btn-outline btn-sm" onclick="ttCloseAddPerson()" style="color:#fff;border-color:rgba(255,255,255,0.35)">✕</button>
+        </div>
+        <div style="padding:24px;display:flex;flex-direction:column;gap:14px">
+          <input type="hidden" id="tt-p-id">
+          <div>
+            <label class="form-label">Name *</label>
+            <input type="text" id="tt-p-name" class="form-input" placeholder="e.g. Chantelle Devine">
+          </div>
+          <div>
+            <label class="form-label">Role / Description</label>
+            <input type="text" id="tt-p-role" class="form-input" placeholder="e.g. SSO — Disability Unit">
+          </div>
+          <div>
+            <label class="form-label" id="tt-p-pdf-label">Upload PDF *</label>
+            <label class="db-attach-upload-label" style="display:inline-flex">
+              📎 Choose PDF
+              <input type="file" id="tt-p-pdf-input" accept=".pdf" style="display:none" onchange="ttPersonPdfSelected(this)">
+            </label>
+            <div id="tt-p-pdf-name" style="font-size:12px;color:var(--subtext);margin-top:6px"></div>
+          </div>
+          <div id="tt-p-error" style="display:none;color:var(--red);font-size:13px"></div>
+          <div id="tt-p-progress" style="display:none;font-size:13px;color:var(--subtext)">Saving…</div>
+          <div style="display:flex;gap:10px">
+            <button class="btn btn-gold" onclick="ttSavePerson()">Save</button>
+            <button class="btn btn-outline" onclick="ttCloseAddPerson()">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </div>
     <div id="view-tickets" class="view">
       <div class="page-header" style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px">
         <div>
@@ -3874,6 +4051,462 @@ const firebaseConfig = {
   window.highlightDuties    = highlightDuties;
   window.highlightSpec      = highlightSpec;
   window.printTimetable     = printTimetable;
+
+  // ── TIMETABLE MANAGER exposures ──
+  window.ttOpenAddSite      = ttOpenAddSite;
+  window.ttCloseAddSite     = ttCloseAddSite;
+  window.ttSelectType       = ttSelectType;
+  window.ttPdfSelected      = ttPdfSelected;
+  window.ttAddCol           = ttAddCol;
+  window.ttRemoveCol        = ttRemoveCol;
+  window.ttSaveSite         = ttSaveSite;
+  window.ttDeleteSite       = ttDeleteSite;
+  window.ttReplacePdf       = ttReplacePdf;
+  window.ttMoveUp           = ttMoveUp;
+  window.ttMoveDown         = ttMoveDown;
+  window.ttEditTable        = ttEditTable;
+  window.ttSaveTable        = ttSaveTable;
+  window.ttCancelEditTable  = ttCancelEditTable;
+  window.ttAddRow           = ttAddRow;
+  window.ttDeleteRow        = ttDeleteRow;
+  window.ttOpenAddPerson    = ttOpenAddPerson;
+  window.ttCloseAddPerson   = ttCloseAddPerson;
+  window.ttPersonPdfSelected= ttPersonPdfSelected;
+  window.ttSavePerson       = ttSavePerson;
+  window.ttDeletePerson     = ttDeletePerson;
+  window.ttReplacePersonPdf = ttReplacePersonPdf;
+  window.ttEditPerson       = ttEditPerson;
+
+  // ══════════════════════════════════════
+  // TIMETABLE MANAGER MODULE
+  // ══════════════════════════════════════
+  let _ttSiteData       = [];   // loaded site timetables
+  let _ttIndividualData = [];   // loaded individual timetables
+  let _ttSelectedType   = 'pdf';
+  let _ttCols           = [];
+  let _ttEditingId      = null; // site timetable being edited (table rows)
+  let _ttSiteFile       = null;
+  let _ttPersonFile     = null;
+  let _ttEditPersonId   = null;
+
+  // ── SITE TIMETABLES ──────────────────
+
+  async function ttLoadSite() {
+    const el = document.getElementById('tt-site-list');
+    el.innerHTML = '<div class="spinner"></div>';
+    try {
+      const snap = await getDocs(query(collection(db,'timetables_site'), orderBy('order','asc')));
+      _ttSiteData = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      ttRenderSite();
+    } catch(e) {
+      el.innerHTML = `<div style="color:var(--red);padding:20px">Error loading timetables: ${e.message}</div>`;
+    }
+  }
+
+  function ttRenderSite() {
+    const el = document.getElementById('tt-site-list');
+    if (_ttSiteData.length === 0) {
+      el.innerHTML = `<div style="color:var(--subtext);font-size:14px;padding:32px;text-align:center;grid-column:1/-1">No site timetables added yet.${currentIsAdmin ? ' Click <strong>+ Add Timetable</strong> to get started.' : ''}</div>`;
+      return;
+    }
+    el.innerHTML = _ttSiteData.map((t,idx) => {
+      const catBadge = t.category ? `<span class="tt-cat-badge">${escHtml(t.category)}</span>` : '';
+      const typeBadge = t.type === 'pdf'
+        ? `<span class="tt-type-badge tt-type-pdf">PDF</span>`
+        : `<span class="tt-type-badge tt-type-table">Table</span>`;
+      const updStr = t.updatedAt?.toDate ? t.updatedAt.toDate().toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'}) : '';
+
+      const adminFoot = currentIsAdmin ? `
+        <button class="btn btn-sm btn-outline" style="font-size:11px" onclick="ttDeleteSite('${t.id}','${escHtml(t.name)}')">🗑 Delete</button>
+        ${t.type==='pdf' ? `<label class="btn btn-sm btn-outline" style="font-size:11px;cursor:pointer">🔄 Replace PDF<input type="file" accept=".pdf" style="display:none" onchange="ttReplacePdf('${t.id}',this)"></label>` : ''}
+        ${t.type==='table' && _ttEditingId !== t.id ? `<button class="btn btn-sm btn-outline" style="font-size:11px" onclick="ttEditTable('${t.id}')">✏ Edit Rows</button>` : ''}
+        ${t.type==='table' && _ttEditingId === t.id ? `<button class="btn btn-sm btn-primary" style="font-size:11px" onclick="ttSaveTable('${t.id}')">💾 Save</button><button class="btn btn-sm btn-outline" style="font-size:11px" onclick="ttCancelEditTable()">Cancel</button>` : ''}
+        <div style="margin-left:auto;display:flex;gap:4px">
+          <button class="tt-order-btn" onclick="ttMoveUp(${idx})" ${idx===0?'disabled':''}>▲</button>
+          <button class="tt-order-btn" onclick="ttMoveDown(${idx})" ${idx===_ttSiteData.length-1?'disabled':''}>▼</button>
+        </div>` : '';
+
+      let bodyContent = '';
+      if (t.type === 'pdf') {
+        bodyContent = t.pdfUrl
+          ? `<a href="${escHtml(t.pdfUrl)}" target="_blank" rel="noopener" class="btn btn-primary btn-sm" style="font-size:12px">📄 View PDF</a>`
+          : `<span class="tt-no-pdf">No PDF uploaded yet.</span>`;
+      } else {
+        // Render table inline
+        const editing = _ttEditingId === t.id;
+        const cols = t.columns || [];
+        const rows = t.rows || [];
+        if (cols.length === 0) {
+          bodyContent = `<span class="tt-no-pdf">No columns defined.</span>`;
+        } else {
+          bodyContent = `<div style="overflow-x:auto"><table class="tt-inline-table ${editing?'tt-inline-edit':''}">
+            <thead><tr>${cols.map(c=>`<th>${escHtml(c)}</th>`).join('')}${editing?'<th style="width:36px"></th>':''}</tr></thead>
+            <tbody id="tt-tbody-${t.id}">
+              ${rows.length===0 && !editing ? `<tr><td colspan="${cols.length}" style="color:var(--subtext);font-style:italic;text-align:center">No rows yet — click Edit Rows to add.</td></tr>` : ''}
+              ${rows.map((row,ri) => `<tr>${cols.map((_,ci)=>`<td>${editing?`<input value="${escHtml(row[ci]||'')}" oninput="ttCellInput('${t.id}',${ri},${ci},this.value)">`:escHtml(row[ci]||'')}</td>`).join('')}${editing?`<td><button onclick="ttDeleteRow('${t.id}',${ri})" style="background:none;border:none;color:var(--red);cursor:pointer;font-size:15px" title="Remove row">✕</button></td>`:''}</tr>`).join('')}
+            </tbody>
+          </table></div>`;
+          if (editing) {
+            bodyContent += `<button class="btn btn-sm" style="margin-top:8px;background:var(--navy);color:#fff;font-size:12px" onclick="ttAddRow('${t.id}')">+ Add Row</button>`;
+          }
+        }
+      }
+
+      return `<div class="tt-mgr-card" id="tt-site-card-${t.id}">
+        <div class="tt-mgr-card-head">
+          <div>
+            <div class="tt-mgr-card-title">${escHtml(t.name)}</div>
+            <div class="tt-mgr-card-meta">${catBadge} ${typeBadge} ${updStr ? '· Updated '+updStr : ''}</div>
+          </div>
+        </div>
+        <div class="tt-mgr-card-body">${bodyContent}</div>
+        ${currentIsAdmin ? `<div class="tt-mgr-card-foot">${adminFoot}</div>` : ''}
+      </div>`;
+    }).join('');
+  }
+
+  function ttOpenAddSite() {
+    _ttCols = [];
+    _ttSiteFile = null;
+    _ttSelectedType = 'pdf';
+    document.getElementById('tt-s-name').value = '';
+    document.getElementById('tt-s-cat').value  = '';
+    document.getElementById('tt-s-pdf-input').value = '';
+    document.getElementById('tt-s-pdf-name').textContent = '';
+    document.getElementById('tt-s-error').style.display = 'none';
+    document.getElementById('tt-s-progress').style.display = 'none';
+    document.getElementById('tt-modal-title').textContent = 'Add Site Timetable';
+    ttSelectType('pdf');
+    ttRenderColChips();
+    document.getElementById('tt-add-site-modal').style.display = 'flex';
+  }
+
+  function ttCloseAddSite() {
+    document.getElementById('tt-add-site-modal').style.display = 'none';
+  }
+
+  function ttSelectType(type) {
+    _ttSelectedType = type;
+    document.getElementById('tt-opt-pdf').classList.toggle('selected', type==='pdf');
+    document.getElementById('tt-opt-table').classList.toggle('selected', type==='table');
+    document.getElementById('tt-s-pdf-area').style.display   = type==='pdf'   ? '' : 'none';
+    document.getElementById('tt-s-table-area').style.display = type==='table' ? '' : 'none';
+  }
+
+  function ttPdfSelected(input) {
+    _ttSiteFile = input.files[0] || null;
+    document.getElementById('tt-s-pdf-name').textContent = _ttSiteFile ? '✓ ' + _ttSiteFile.name : '';
+  }
+
+  function ttAddCol() {
+    const inp = document.getElementById('tt-col-input');
+    const val = inp.value.trim();
+    if (!val) return;
+    _ttCols.push(val);
+    inp.value = '';
+    ttRenderColChips();
+  }
+
+  function ttRemoveCol(i) {
+    _ttCols.splice(i, 1);
+    ttRenderColChips();
+  }
+
+  function ttRenderColChips() {
+    const el = document.getElementById('tt-col-chips');
+    if (!el) return;
+    el.innerHTML = _ttCols.map((c,i) =>
+      `<span class="tt-col-tag">${escHtml(c)}<button onclick="ttRemoveCol(${i})" title="Remove">✕</button></span>`
+    ).join('') || `<span style="font-size:12px;color:var(--subtext)">No columns yet — add one below.</span>`;
+  }
+
+  async function ttSaveSite() {
+    const name = document.getElementById('tt-s-name').value.trim();
+    const cat  = document.getElementById('tt-s-cat').value.trim();
+    const errEl  = document.getElementById('tt-s-error');
+    const progEl = document.getElementById('tt-s-progress');
+    errEl.style.display = 'none';
+
+    if (!name) { errEl.textContent = 'Please enter a timetable name.'; errEl.style.display=''; return; }
+    if (_ttSelectedType === 'pdf' && !_ttSiteFile) { errEl.textContent = 'Please choose a PDF to upload.'; errEl.style.display=''; return; }
+    if (_ttSelectedType === 'table' && _ttCols.length === 0) { errEl.textContent = 'Please add at least one column.'; errEl.style.display=''; return; }
+
+    progEl.style.display = '';
+    try {
+      let pdfUrl = '', storagePath = '';
+      if (_ttSelectedType === 'pdf') {
+        const sRef = ref(storage, `timetables/site/${Date.now()}_${_ttSiteFile.name}`);
+        await uploadBytes(sRef, _ttSiteFile);
+        pdfUrl = await getDownloadURL(sRef);
+        storagePath = sRef.fullPath;
+      }
+      const order = _ttSiteData.length;
+      await addDoc(collection(db,'timetables_site'), {
+        name, category: cat, type: _ttSelectedType,
+        pdfUrl, storagePath,
+        columns: _ttSelectedType==='table' ? _ttCols : [],
+        rows: [],
+        order,
+        createdBy: currentUser.email,
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp()
+      });
+      ttCloseAddSite();
+      showToast('Timetable added!', 'success');
+      await ttLoadSite();
+    } catch(e) {
+      errEl.textContent = 'Error: ' + e.message;
+      errEl.style.display = '';
+    }
+    progEl.style.display = 'none';
+  }
+
+  async function ttDeleteSite(id, name) {
+    if (!confirm(`Delete "${name}"? This cannot be undone.`)) return;
+    try {
+      const t = _ttSiteData.find(x => x.id === id);
+      if (t?.storagePath) {
+        try { await deleteObject(ref(storage, t.storagePath)); } catch(e) {}
+      }
+      await deleteDoc(doc(db,'timetables_site',id));
+      showToast('Timetable deleted.', 'success');
+      await ttLoadSite();
+    } catch(e) { showToast('Error: ' + e.message, 'error'); }
+  }
+
+  async function ttReplacePdf(id, input) {
+    const file = input.files[0];
+    if (!file) return;
+    try {
+      const t = _ttSiteData.find(x => x.id === id);
+      if (t?.storagePath) { try { await deleteObject(ref(storage, t.storagePath)); } catch(e) {} }
+      const sRef = ref(storage, `timetables/site/${Date.now()}_${file.name}`);
+      await uploadBytes(sRef, file);
+      const url = await getDownloadURL(sRef);
+      await updateDoc(doc(db,'timetables_site',id), { pdfUrl: url, storagePath: sRef.fullPath, updatedAt: serverTimestamp() });
+      showToast('PDF replaced!', 'success');
+      await ttLoadSite();
+    } catch(e) { showToast('Error replacing PDF: ' + e.message, 'error'); }
+  }
+
+  async function ttMoveUp(idx) {
+    if (idx === 0) return;
+    await ttSwapOrder(idx, idx-1);
+  }
+
+  async function ttMoveDown(idx) {
+    if (idx >= _ttSiteData.length-1) return;
+    await ttSwapOrder(idx, idx+1);
+  }
+
+  async function ttSwapOrder(a, b) {
+    try {
+      const da = _ttSiteData[a], db2 = _ttSiteData[b];
+      await updateDoc(doc(db,'timetables_site',da.id), { order: b });
+      await updateDoc(doc(db,'timetables_site',db2.id), { order: a });
+      await ttLoadSite();
+    } catch(e) { showToast('Error reordering.', 'error'); }
+  }
+
+  // Table row editing
+  function ttEditTable(id) {
+    _ttEditingId = id;
+    ttRenderSite();
+  }
+
+  function ttCancelEditTable() {
+    _ttEditingId = null;
+    ttRenderSite();
+  }
+
+  function ttCellInput(id, ri, ci, val) {
+    const t = _ttSiteData.find(x => x.id === id);
+    if (!t) return;
+    if (!t.rows[ri]) t.rows[ri] = [];
+    t.rows[ri][ci] = val;
+  }
+
+  function ttAddRow(id) {
+    const t = _ttSiteData.find(x => x.id === id);
+    if (!t) return;
+    const empty = new Array(t.columns.length).fill('');
+    t.rows.push(empty);
+    ttRenderSite();
+  }
+
+  function ttDeleteRow(id, ri) {
+    const t = _ttSiteData.find(x => x.id === id);
+    if (!t) return;
+    t.rows.splice(ri, 1);
+    ttRenderSite();
+  }
+
+  async function ttSaveTable(id) {
+    const t = _ttSiteData.find(x => x.id === id);
+    if (!t) return;
+    try {
+      await updateDoc(doc(db,'timetables_site',id), { rows: t.rows, updatedAt: serverTimestamp() });
+      _ttEditingId = null;
+      showToast('Table saved!', 'success');
+      await ttLoadSite();
+    } catch(e) { showToast('Error saving table: ' + e.message, 'error'); }
+  }
+
+  // ── INDIVIDUAL TIMETABLES ──────────────────
+
+  async function ttLoadIndividual() {
+    const el = document.getElementById('tt-individual-list');
+    el.innerHTML = '<div class="spinner"></div>';
+    try {
+      const snap = await getDocs(query(collection(db,'timetables_individual'), orderBy('name','asc')));
+      _ttIndividualData = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      ttRenderIndividual();
+    } catch(e) {
+      el.innerHTML = `<div style="color:var(--red);padding:20px">Error: ${e.message}</div>`;
+    }
+  }
+
+  function ttRenderIndividual() {
+    const el = document.getElementById('tt-individual-list');
+    if (_ttIndividualData.length === 0) {
+      el.innerHTML = `<div style="color:var(--subtext);font-size:14px;padding:32px;text-align:center;grid-column:1/-1">No individual timetables added yet.${currentIsAdmin?' Click <strong>+ Add Person</strong> to get started.':''}</div>`;
+      return;
+    }
+    el.innerHTML = _ttIndividualData.map(p => {
+      const updStr = p.updatedAt?.toDate ? 'Updated ' + p.updatedAt.toDate().toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'}) : '';
+      const adminBtns = currentIsAdmin ? `
+        <button class="btn btn-sm btn-outline" style="font-size:11px;width:100%" onclick="ttEditPerson('${p.id}')">✏ Edit Details</button>
+        <label class="btn btn-sm btn-outline" style="font-size:11px;width:100%;cursor:pointer;text-align:center">🔄 Replace PDF<input type="file" accept=".pdf" style="display:none" onchange="ttReplacePersonPdf('${p.id}',this)"></label>
+        <button class="btn btn-sm btn-outline" style="font-size:11px;width:100%;color:var(--red);border-color:var(--red)" onclick="ttDeletePerson('${p.id}','${escHtml(p.name)}')">🗑 Delete</button>` : '';
+      return `<div class="tt-person-card">
+        <div>
+          <div class="tt-person-name">${escHtml(p.name)}</div>
+          <div class="tt-person-role">${escHtml(p.role||'')}</div>
+        </div>
+        ${p.pdfUrl
+          ? `<a href="${escHtml(p.pdfUrl)}" target="_blank" rel="noopener" class="btn btn-primary btn-sm" style="font-size:12px;text-align:center">📄 View Timetable</a>`
+          : `<span class="tt-no-pdf">No PDF uploaded yet.</span>`}
+        <div class="tt-person-updated">${updStr}</div>
+        ${currentIsAdmin ? `<div style="display:flex;flex-direction:column;gap:6px;border-top:1px solid var(--gray2);padding-top:10px;margin-top:2px">${adminBtns}</div>` : ''}
+      </div>`;
+    }).join('');
+  }
+
+  function ttOpenAddPerson() {
+    _ttPersonFile = null;
+    _ttEditPersonId = null;
+    document.getElementById('tt-p-id').value = '';
+    document.getElementById('tt-p-name').value = '';
+    document.getElementById('tt-p-role').value = '';
+    document.getElementById('tt-p-pdf-input').value = '';
+    document.getElementById('tt-p-pdf-name').textContent = '';
+    document.getElementById('tt-p-error').style.display = 'none';
+    document.getElementById('tt-p-progress').style.display = 'none';
+    document.getElementById('tt-person-modal-title').textContent = 'Add Individual Timetable';
+    document.getElementById('tt-p-pdf-label').textContent = 'Upload PDF *';
+    document.getElementById('tt-add-person-modal').style.display = 'flex';
+  }
+
+  function ttEditPerson(id) {
+    const p = _ttIndividualData.find(x => x.id === id);
+    if (!p) return;
+    _ttEditPersonId = id;
+    _ttPersonFile = null;
+    document.getElementById('tt-p-id').value = id;
+    document.getElementById('tt-p-name').value = p.name || '';
+    document.getElementById('tt-p-role').value = p.role || '';
+    document.getElementById('tt-p-pdf-input').value = '';
+    document.getElementById('tt-p-pdf-name').textContent = p.pdfUrl ? '(existing PDF kept if no new file chosen)' : '';
+    document.getElementById('tt-p-error').style.display = 'none';
+    document.getElementById('tt-p-progress').style.display = 'none';
+    document.getElementById('tt-person-modal-title').textContent = 'Edit ' + (p.name || 'Person');
+    document.getElementById('tt-p-pdf-label').textContent = 'Replace PDF (optional)';
+    document.getElementById('tt-add-person-modal').style.display = 'flex';
+  }
+
+  function ttCloseAddPerson() {
+    document.getElementById('tt-add-person-modal').style.display = 'none';
+    _ttEditPersonId = null;
+  }
+
+  function ttPersonPdfSelected(input) {
+    _ttPersonFile = input.files[0] || null;
+    document.getElementById('tt-p-pdf-name').textContent = _ttPersonFile ? '✓ ' + _ttPersonFile.name : '';
+  }
+
+  async function ttSavePerson() {
+    const name   = document.getElementById('tt-p-name').value.trim();
+    const role   = document.getElementById('tt-p-role').value.trim();
+    const errEl  = document.getElementById('tt-p-error');
+    const progEl = document.getElementById('tt-p-progress');
+    errEl.style.display = 'none';
+
+    if (!name) { errEl.textContent = 'Please enter a name.'; errEl.style.display=''; return; }
+    const isNew = !_ttEditPersonId;
+    if (isNew && !_ttPersonFile) { errEl.textContent = 'Please choose a PDF.'; errEl.style.display=''; return; }
+
+    progEl.style.display = '';
+    try {
+      let pdfUrl = '', storagePath = '';
+      if (_ttPersonFile) {
+        // Delete old if replacing
+        if (_ttEditPersonId) {
+          const old = _ttIndividualData.find(x => x.id === _ttEditPersonId);
+          if (old?.storagePath) { try { await deleteObject(ref(storage, old.storagePath)); } catch(e) {} }
+        }
+        const sRef = ref(storage, `timetables/individual/${Date.now()}_${_ttPersonFile.name}`);
+        await uploadBytes(sRef, _ttPersonFile);
+        pdfUrl = await getDownloadURL(sRef);
+        storagePath = sRef.fullPath;
+      }
+
+      if (isNew) {
+        await addDoc(collection(db,'timetables_individual'), {
+          name, role, pdfUrl, storagePath,
+          createdBy: currentUser.email,
+          createdAt: serverTimestamp(),
+          updatedAt: serverTimestamp()
+        });
+      } else {
+        const updates = { name, role, updatedAt: serverTimestamp() };
+        if (_ttPersonFile) { updates.pdfUrl = pdfUrl; updates.storagePath = storagePath; }
+        await updateDoc(doc(db,'timetables_individual',_ttEditPersonId), updates);
+      }
+      ttCloseAddPerson();
+      showToast(isNew ? 'Person added!' : 'Updated!', 'success');
+      await ttLoadIndividual();
+    } catch(e) {
+      errEl.textContent = 'Error: ' + e.message;
+      errEl.style.display = '';
+    }
+    progEl.style.display = 'none';
+  }
+
+  async function ttDeletePerson(id, name) {
+    if (!confirm(`Delete timetable for "${name}"?`)) return;
+    try {
+      const p = _ttIndividualData.find(x => x.id === id);
+      if (p?.storagePath) { try { await deleteObject(ref(storage, p.storagePath)); } catch(e) {} }
+      await deleteDoc(doc(db,'timetables_individual',id));
+      showToast('Deleted.', 'success');
+      await ttLoadIndividual();
+    } catch(e) { showToast('Error: ' + e.message, 'error'); }
+  }
+
+  async function ttReplacePersonPdf(id, input) {
+    const file = input.files[0];
+    if (!file) return;
+    try {
+      const p = _ttIndividualData.find(x => x.id === id);
+      if (p?.storagePath) { try { await deleteObject(ref(storage, p.storagePath)); } catch(e) {} }
+      const sRef = ref(storage, `timetables/individual/${Date.now()}_${file.name}`);
+      await uploadBytes(sRef, file);
+      const url = await getDownloadURL(sRef);
+      await updateDoc(doc(db,'timetables_individual',id), { pdfUrl: url, storagePath: sRef.fullPath, updatedAt: serverTimestamp() });
+      showToast('PDF replaced!', 'success');
+      await ttLoadIndividual();
+    } catch(e) { showToast('Error: ' + e.message, 'error'); }
+  }
   window.renderHomeView     = renderHomeView;
 
   // Meetings
@@ -7117,15 +7750,31 @@ const firebaseConfig = {
   // ══════════════════════════════════════
   // TIMETABLES
   // ══════════════════════════════════════
-  function ttShowPane(pane) {
-    document.querySelectorAll('.tt-pane').forEach(p => p.classList.remove('active'));
-    document.querySelectorAll('.tt-tab').forEach(t => t.classList.remove('active'));
-    document.getElementById('tt-' + pane).classList.add('active');
-    document.querySelectorAll('.tt-tab').forEach(t => {
-      if (t.textContent.toLowerCase().includes(pane === 'yard-duty' ? 'yard' : 'spec')) t.classList.add('active');
-    });
-    if (pane === 'specialist') tagSpecCols();
-  }
+  function ttShowPane(pane)            { if (window.ttShowPane)          window.ttShowPane(pane); }
+  function ttOpenAddSite()             { if (window.ttOpenAddSite)       window.ttOpenAddSite(); }
+  function ttCloseAddSite()            { if (window.ttCloseAddSite)      window.ttCloseAddSite(); }
+  function ttSelectType(t)             { if (window.ttSelectType)        window.ttSelectType(t); }
+  function ttPdfSelected(el)           { if (window.ttPdfSelected)       window.ttPdfSelected(el); }
+  function ttAddCol()                  { if (window.ttAddCol)            window.ttAddCol(); }
+  function ttRemoveCol(i)              { if (window.ttRemoveCol)         window.ttRemoveCol(i); }
+  function ttSaveSite()                { if (window.ttSaveSite)          window.ttSaveSite(); }
+  function ttDeleteSite(id,n)          { if (window.ttDeleteSite)        window.ttDeleteSite(id,n); }
+  function ttReplacePdf(id,el)         { if (window.ttReplacePdf)        window.ttReplacePdf(id,el); }
+  function ttMoveUp(i)                 { if (window.ttMoveUp)            window.ttMoveUp(i); }
+  function ttMoveDown(i)               { if (window.ttMoveDown)          window.ttMoveDown(i); }
+  function ttEditTable(id)             { if (window.ttEditTable)         window.ttEditTable(id); }
+  function ttSaveTable(id)             { if (window.ttSaveTable)         window.ttSaveTable(id); }
+  function ttCancelEditTable()         { if (window.ttCancelEditTable)   window.ttCancelEditTable(); }
+  function ttAddRow(id)                { if (window.ttAddRow)            window.ttAddRow(id); }
+  function ttDeleteRow(id,ri)          { if (window.ttDeleteRow)         window.ttDeleteRow(id,ri); }
+  function ttCellInput(id,ri,ci,v)     { if (window.ttCellInput)         window.ttCellInput(id,ri,ci,v); }
+  function ttOpenAddPerson()           { if (window.ttOpenAddPerson)     window.ttOpenAddPerson(); }
+  function ttCloseAddPerson()          { if (window.ttCloseAddPerson)    window.ttCloseAddPerson(); }
+  function ttPersonPdfSelected(el)     { if (window.ttPersonPdfSelected) window.ttPersonPdfSelected(el); }
+  function ttSavePerson()              { if (window.ttSavePerson)        window.ttSavePerson(); }
+  function ttDeletePerson(id,n)        { if (window.ttDeletePerson)      window.ttDeletePerson(id,n); }
+  function ttReplacePersonPdf(id,el)   { if (window.ttReplacePersonPdf)  window.ttReplacePersonPdf(id,el); }
+  function ttEditPerson(id)            { if (window.ttEditPerson)        window.ttEditPerson(id); }
 
   // Tag each spec table data cell with its subject column key
   function tagSpecCols() {

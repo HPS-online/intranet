@@ -4047,7 +4047,26 @@ const firebaseConfig = {
   window.dbInfoDeleteItem   = dbInfoDeleteItem;
   window.plannerChangeWeek  = plannerChangeWeek;
   window.plannerGoToday     = plannerGoToday;
-  window._ttShowPaneModule  = ttShowPane;
+  window._ttShowPaneModule  = function(pane) {
+    document.querySelectorAll('.tt-pane').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tt-tab').forEach(t => t.classList.remove('active'));
+    const paneEl = document.getElementById('tt-' + pane);
+    if (paneEl) paneEl.classList.add('active');
+    document.querySelectorAll('.tt-tab').forEach(t => {
+      const txt = t.textContent.toLowerCase();
+      if (pane === 'yard-duty'   && txt.includes('yard'))       t.classList.add('active');
+      if (pane === 'specialist'  && txt.includes('spec'))       t.classList.add('active');
+      if (pane === 'site'        && txt.includes('site'))       t.classList.add('active');
+      if (pane === 'individual'  && txt.includes('individual')) t.classList.add('active');
+    });
+    if (pane === 'specialist') tagSpecCols();
+    if (pane === 'site')       ttLoadSite();
+    if (pane === 'individual') ttLoadIndividual();
+    const addSiteBtn   = document.getElementById('tt-add-site-btn');
+    const addPersonBtn = document.getElementById('tt-add-person-btn');
+    if (addSiteBtn)   addSiteBtn.style.display   = (pane === 'site'       && currentIsAdmin) ? '' : 'none';
+    if (addPersonBtn) addPersonBtn.style.display  = (pane === 'individual' && currentIsAdmin) ? '' : 'none';
+  };
   window.highlightDuties    = highlightDuties;
   window.highlightSpec      = highlightSpec;
   window.printTimetable     = printTimetable;

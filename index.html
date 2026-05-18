@@ -1716,6 +1716,7 @@
         <button class="nav-btn" onclick="showView('tickets')">Lodge a Ticket</button>
         <button class="nav-btn" onclick="showView('naplan')">NAPLAN Data</button>
         <button class="nav-btn" onclick="showView('meetings')">Meetings</button>
+        <button class="nav-btn" onclick="showView('documents')">Documents</button>
         <button class="nav-btn" onclick="showView('suggest')">Suggest an Edit</button>
         <button class="nav-btn admin-only" id="nav-admin" onclick="showView('admin')" style="display:none;color:#f5ac1c;border:1px solid rgba(245,172,28,0.35)">Admin</button>
       </nav>
@@ -3525,6 +3526,105 @@
     </div>
 
     <!-- ── SUGGEST AN EDIT VIEW ── -->
+    <!-- ── DOCUMENTS VIEW ── -->
+    <div id="view-documents" class="view">
+      <div class="page-header" style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px">
+        <div>
+          <h2>Document Library</h2>
+          <p>Shared school documents, templates, and resources.</p>
+        </div>
+        <div id="doc-admin-controls" style="display:none;gap:10px;flex-wrap:wrap">
+          <button class="btn btn-gold" onclick="docOpenUpload()">+ Upload Document</button>
+          <button class="btn btn-outline" onclick="docOpenManageCategories()" style="color:var(--navy);border-color:var(--navy);font-size:13px">⚙ Categories</button>
+        </div>
+      </div>
+
+      <!-- Search + filter bar -->
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:20px">
+        <input id="doc-search" class="form-input" type="text" placeholder="🔍 Search documents…" style="max-width:280px;padding:8px 12px;font-size:13px" oninput="docRender()"/>
+        <div id="doc-cat-tabs" style="display:flex;gap:6px;flex-wrap:wrap"></div>
+      </div>
+
+      <!-- Document grid -->
+      <div id="doc-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px">
+        <div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--subtext)"><div class="spinner"></div></div>
+      </div>
+    </div>
+    <!-- ── END DOCUMENTS VIEW ── -->
+
+    <!-- Upload Document Modal -->
+    <div id="doc-upload-modal" class="modal-overlay" style="display:none" onclick="if(event.target===this)closeModal('doc-upload-modal')">
+      <div class="modal-box" style="max-width:520px;width:95%">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+          <h3>Upload Document</h3>
+          <button class="btn btn-outline btn-sm" onclick="closeModal('doc-upload-modal')">✕</button>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:14px">
+          <div>
+            <label class="form-label">Document Title *</label>
+            <input id="doc-upload-title" class="form-input" type="text" placeholder="e.g. Highbury Letterhead 2026"/>
+          </div>
+          <div>
+            <label class="form-label">Category *</label>
+            <select id="doc-upload-cat" class="form-input"></select>
+          </div>
+          <div>
+            <label class="form-label">Description (optional)</label>
+            <input id="doc-upload-desc" class="form-input" type="text" placeholder="Brief description of this document"/>
+          </div>
+          <div>
+            <label class="form-label">File *</label>
+            <input id="doc-upload-file" class="form-input" type="file" accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.png,.jpg,.jpeg,.gif" style="padding:6px"/>
+            <div style="font-size:11px;color:var(--subtext);margin-top:4px">PDF, Word, Excel, PowerPoint, or image files accepted.</div>
+          </div>
+          <div id="doc-upload-progress" style="display:none">
+            <div style="height:6px;background:var(--gray2);border-radius:3px;overflow:hidden">
+              <div id="doc-upload-bar" style="height:100%;background:var(--navy);width:0%;transition:width 0.3s"></div>
+            </div>
+            <div id="doc-upload-label" style="font-size:12px;color:var(--subtext);margin-top:4px">Uploading…</div>
+          </div>
+          <div id="doc-upload-error" class="form-error" style="display:none"></div>
+          <div style="display:flex;gap:8px;justify-content:flex-end">
+            <button class="btn btn-outline" onclick="closeModal('doc-upload-modal')">Cancel</button>
+            <button id="doc-upload-btn" class="btn btn-gold" onclick="docUpload()">Upload</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Manage Categories Modal -->
+    <div id="doc-cat-modal" class="modal-overlay" style="display:none" onclick="if(event.target===this)closeModal('doc-cat-modal')">
+      <div class="modal-box" style="max-width:420px;width:95%">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+          <h3>Manage Categories</h3>
+          <button class="btn btn-outline btn-sm" onclick="closeModal('doc-cat-modal')">✕</button>
+        </div>
+        <div id="doc-cat-list" style="margin-bottom:16px;display:flex;flex-direction:column;gap:8px"></div>
+        <div style="display:flex;gap:8px">
+          <input id="doc-new-cat-input" class="form-input" type="text" placeholder="New category name…" style="flex:1"/>
+          <button class="btn btn-gold" onclick="docAddCategory()">Add</button>
+        </div>
+        <div id="doc-cat-error" class="form-error" style="display:none;margin-top:8px"></div>
+      </div>
+    </div>
+
+    <!-- Document Preview Modal -->
+    <div id="doc-preview-modal" class="modal-overlay" style="display:none" onclick="if(event.target===this)closeModal('doc-preview-modal')">
+      <div class="modal-box" style="max-width:860px;width:95%;max-height:92vh;overflow:hidden;padding:0">
+        <div style="background:var(--navy);color:#fff;padding:16px 20px;display:flex;justify-content:space-between;align-items:center;gap:12px;border-radius:var(--radius) var(--radius) 0 0">
+          <div>
+            <div id="doc-preview-title" style="font-weight:800;font-size:16px"></div>
+            <div id="doc-preview-meta" style="font-size:11px;opacity:0.65;margin-top:2px"></div>
+          </div>
+          <div style="display:flex;gap:8px;flex-shrink:0">
+            <a id="doc-preview-download" class="btn btn-gold btn-sm" download target="_blank" style="text-decoration:none">⬇ Download</a>
+            <button class="btn btn-outline btn-sm" onclick="closeModal('doc-preview-modal')" style="color:#fff;border-color:rgba(255,255,255,0.35)">✕ Close</button>
+          </div>
+        </div>
+        <div id="doc-preview-body" style="height:calc(92vh - 70px);overflow:auto;background:#f0f0f0;display:flex;align-items:center;justify-content:center"></div>
+      </div>
+    </div>
+
     <div id="view-suggest" class="view">
       <div class="page-header" style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px">
         <div>
@@ -4703,6 +4803,7 @@ const firebaseConfig = {
         (view === 'tickets'    && t.includes('ticket')) ||
         (view === 'naplan'     && t.includes('naplan')) ||
         (view === 'meetings'   && t.includes('meeting')) ||
+        (view === 'documents'  && t.includes('document')) ||
         (view === 'suggest'    && t.includes('suggest')) ||
         (view === 'admin'      && t.includes('admin'))
       ) b.classList.add('active');
@@ -4711,6 +4812,7 @@ const firebaseConfig = {
     if (view === 'admin')    loadAdminUsers();
     if (view === 'naplan' && !_npInited) { _npInited = true; npInitDashboard(); }
     if (view === 'meetings') meetingsInit();
+    if (view === 'documents') docInit();
     if (view === 'suggest')  suggestInit();
     if (view === 'planner')  plannerLoad();
     if (view === 'daybook') {
@@ -6153,12 +6255,26 @@ const firebaseConfig = {
   }
 
   async function resendInvite(email, name) {
-    if (!confirm(`Resend password setup email to ${name} (${email})?`)) return;
+    if (!confirm(`Send invitation email to ${name} (${email})?\n\nThey will receive a link to the intranet with instructions to set up their password.`)) return;
     try {
-      await sendPasswordResetEmail(auth, email);
-      showToast(`Password setup email sent to ${name}.`, 'success');
+      // Use EmailJS to send a custom invite — Firebase sendPasswordResetEmail only works
+      // if the account already exists in Firebase Auth. New staff won't have one yet,
+      // so we send a manual invite via EmailJS directing them to use Forgot Password.
+      if (typeof emailjs === 'undefined') {
+        showToast('EmailJS not loaded — check your internet connection.', 'error');
+        return;
+      }
+      await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+        to_name:    name,
+        to_email:   email,
+        from_name:  'Highbury Primary School',
+        subject:    'Welcome to the Highbury Primary Staff Intranet',
+        message:    `Hi ${name},\n\nYou have been added to the Highbury Primary School Staff Intranet.\n\nTo get started:\n1. Visit https://hps-online.github.io\n2. Click "Forgot Password?" and enter your school email address (${email})\n3. Check your email for a password reset link from Firebase\n4. Set your password and log in\n\nIf you have any trouble, please contact Daniel Botten or Nouman Haider.\n\nWelcome aboard!`
+      }, EMAILJS_PUBLIC_KEY);
+      showToast(`Invitation sent to ${name}.`, 'success');
     } catch(e) {
-      showToast('Error sending email: ' + e.message, 'error');
+      console.error('Invite email error:', e);
+      showToast('Failed to send invite: ' + (e.text || e.message || 'Unknown error'), 'error');
     }
   }
   window.resendInvite = resendInvite;
@@ -6208,12 +6324,25 @@ const firebaseConfig = {
         addedAt: serverTimestamp()
       });
 
-      // Send password reset so they can set their own password
-      await sendPasswordResetEmail(auth, email);
+      // Send custom EmailJS invite — Firebase sendPasswordResetEmail silently fails
+      // for accounts that don't yet exist in Firebase Auth. Direct them to Forgot Password.
+      try {
+        if (typeof emailjs !== 'undefined') {
+          await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+            to_name:    name,
+            to_email:   email,
+            from_name:  'Highbury Primary School',
+            subject:    'Welcome to the Highbury Primary Staff Intranet',
+            message:    `Hi ${name},\n\nYou have been added to the Highbury Primary School Staff Intranet.\n\nTo get started:\n1. Visit https://hps-online.github.io\n2. Click "Forgot Password?" and enter your school email address (${email})\n3. Check your email for a password reset link from Firebase\n4. Set your password and log in\n\nIf you have any trouble, please contact Daniel Botten or Nouman Haider.\n\nWelcome aboard!`
+          }, EMAILJS_PUBLIC_KEY);
+        }
+      } catch(emailErr) {
+        console.warn('Invite email failed (user still added):', emailErr);
+      }
 
       showEl('add-user-success');
       document.getElementById('add-user-success').textContent =
-        `✅ ${name} added. A password setup email has been sent to ${email}.`;
+        `✅ ${name} added and invitation email sent to ${email}.`;
 
       // Refresh dropdowns and user list
       populateStaffDropdowns();
@@ -7500,6 +7629,308 @@ const firebaseConfig = {
   window.suggestDelete      = suggestDelete;
 
   // ══════════════════════════════════════
+  // DOCUMENT LIBRARY MODULE
+  // ══════════════════════════════════════
+  const DOC_DEFAULT_CATS = ['Letterheads & Templates', 'Policies & Procedures'];
+  let _docInited = false;
+  let _docAllDocs = [];
+  let _docCategories = [];
+  let _docActiveCat = 'all';
+
+  async function docInit() {
+    // Show admin controls if admin
+    const adminCtrl = document.getElementById('doc-admin-controls');
+    if (adminCtrl) adminCtrl.style.display = currentIsAdmin ? 'flex' : 'none';
+    await docLoadCategories();
+    await docLoadDocs();
+    _docInited = true;
+  }
+
+  async function docLoadCategories() {
+    try {
+      const snap = await getDocs(collection(db, 'doc_categories'));
+      if (snap.empty) {
+        // Seed defaults
+        for (const name of DOC_DEFAULT_CATS) {
+          await setDoc(doc(db, 'doc_categories', name), { name, createdAt: serverTimestamp() });
+        }
+        _docCategories = DOC_DEFAULT_CATS.slice();
+      } else {
+        _docCategories = [];
+        snap.forEach(d => _docCategories.push(d.data().name));
+        _docCategories.sort();
+      }
+    } catch(e) {
+      console.error('docLoadCategories:', e);
+      _docCategories = DOC_DEFAULT_CATS.slice();
+    }
+    docRenderCatTabs();
+    docPopulateCatSelect();
+  }
+
+  function docRenderCatTabs() {
+    const bar = document.getElementById('doc-cat-tabs');
+    if (!bar) return;
+    const cats = ['all', ..._docCategories];
+    bar.innerHTML = cats.map(c => {
+      const isAll = c === 'all';
+      const label = isAll ? 'All' : c;
+      const active = _docActiveCat === c;
+      return `<button class="db-attach-type-btn${active ? ' active' : ''}" onclick="docSetCat('${escHtml(c)}')">${escHtml(label)}</button>`;
+    }).join('');
+  }
+
+  function docPopulateCatSelect() {
+    const sel = document.getElementById('doc-upload-cat');
+    if (!sel) return;
+    sel.innerHTML = _docCategories.map(c => `<option value="${escHtml(c)}">${escHtml(c)}</option>`).join('');
+  }
+
+  async function docLoadDocs() {
+    const grid = document.getElementById('doc-grid');
+    if (grid) grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px"><div class="spinner"></div></div>';
+    try {
+      const snap = await getDocs(query(collection(db, 'documents'), orderBy('uploadedAt', 'desc')));
+      _docAllDocs = [];
+      snap.forEach(d => _docAllDocs.push({ id: d.id, ...d.data() }));
+    } catch(e) {
+      console.error('docLoadDocs:', e);
+      _docAllDocs = [];
+    }
+    docRender();
+  }
+
+  function docRender() {
+    const grid = document.getElementById('doc-grid');
+    if (!grid) return;
+    const search = (document.getElementById('doc-search')?.value || '').toLowerCase().trim();
+    let docs = _docAllDocs;
+    if (_docActiveCat !== 'all') docs = docs.filter(d => d.category === _docActiveCat);
+    if (search) docs = docs.filter(d =>
+      (d.title||'').toLowerCase().includes(search) ||
+      (d.description||'').toLowerCase().includes(search) ||
+      (d.category||'').toLowerCase().includes(search)
+    );
+
+    if (!docs.length) {
+      grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:48px;color:var(--subtext)">
+        <div style="font-size:40px;margin-bottom:12px">📂</div>
+        <div style="font-weight:600">${search || _docActiveCat !== 'all' ? 'No documents match your search.' : 'No documents uploaded yet.'}</div>
+        ${currentIsAdmin && !search ? '<div style="margin-top:8px;font-size:13px">Use <strong>Upload Document</strong> to add the first one.</div>' : ''}
+      </div>`;
+      return;
+    }
+
+    grid.innerHTML = docs.map(d => {
+      const ext = (d.fileName || '').split('.').pop().toLowerCase();
+      const icon = ext === 'pdf' ? '📄' : ['doc','docx'].includes(ext) ? '📝' : ['xls','xlsx'].includes(ext) ? '📊' : ['ppt','pptx'].includes(ext) ? '📑' : ['png','jpg','jpeg','gif'].includes(ext) ? '🖼' : '📁';
+      const uploadedStr = d.uploadedAt?.toDate ? formatDate(d.uploadedAt.toDate()) : '';
+      const canDelete = currentIsAdmin;
+      return `<div style="background:#fff;border-radius:var(--radius);padding:18px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:10px;border:1px solid var(--gray2)">
+        <div style="display:flex;align-items:flex-start;gap:12px">
+          <div style="font-size:32px;line-height:1;flex-shrink:0">${icon}</div>
+          <div style="flex:1;min-width:0">
+            <div style="font-weight:700;font-size:14px;line-height:1.3;word-break:break-word">${escHtml(d.title)}</div>
+            <div style="margin-top:3px"><span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;background:var(--gold-light);color:var(--gold-dark);padding:2px 7px;border-radius:20px">${escHtml(d.category||'')}</span></div>
+            ${d.description ? `<div style="font-size:12px;color:var(--subtext);margin-top:5px">${escHtml(d.description)}</div>` : ''}
+          </div>
+        </div>
+        ${uploadedStr ? `<div style="font-size:11px;color:var(--subtext)">Uploaded ${uploadedStr}${d.uploadedBy ? ' · ' + escHtml(d.uploadedBy) : ''}</div>` : ''}
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:auto">
+          <button class="btn btn-sm btn-gold" style="font-size:12px" onclick="docPreview('${d.id}')">👁 Preview</button>
+          <a class="btn btn-sm btn-outline" style="font-size:12px;text-decoration:none;color:var(--navy)" href="${escHtml(d.url)}" download="${escHtml(d.fileName||d.title)}" target="_blank">⬇ Download</a>
+          ${canDelete ? `<button class="btn btn-sm btn-danger" style="font-size:11px;margin-left:auto" onclick="docDelete('${d.id}','${escHtml(d.storagePath||'')}','${escHtml(d.title)}')">🗑</button>` : ''}
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  function docSetCat(cat) {
+    _docActiveCat = cat;
+    docRenderCatTabs();
+    docRender();
+  }
+
+  function docOpenUpload() {
+    document.getElementById('doc-upload-title').value = '';
+    document.getElementById('doc-upload-desc').value  = '';
+    document.getElementById('doc-upload-file').value  = '';
+    hideEl('doc-upload-error');
+    hideEl('doc-upload-progress');
+    document.getElementById('doc-upload-btn').disabled = false;
+    docPopulateCatSelect();
+    openModal('doc-upload-modal');
+  }
+
+  async function docUpload() {
+    const title    = document.getElementById('doc-upload-title').value.trim();
+    const category = document.getElementById('doc-upload-cat').value;
+    const desc     = document.getElementById('doc-upload-desc').value.trim();
+    const fileInput = document.getElementById('doc-upload-file');
+    const file     = fileInput.files[0];
+
+    hideEl('doc-upload-error');
+    if (!title)    { showEl('doc-upload-error'); document.getElementById('doc-upload-error').textContent = 'Please enter a title.'; return; }
+    if (!file)     { showEl('doc-upload-error'); document.getElementById('doc-upload-error').textContent = 'Please choose a file.'; return; }
+    if (file.size > 20 * 1024 * 1024) { showEl('doc-upload-error'); document.getElementById('doc-upload-error').textContent = 'File must be under 20 MB.'; return; }
+
+    const btn = document.getElementById('doc-upload-btn');
+    btn.disabled = true;
+    showEl('doc-upload-progress');
+    document.getElementById('doc-upload-bar').style.width = '10%';
+    document.getElementById('doc-upload-label').textContent = 'Uploading…';
+
+    try {
+      const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+      const storagePath = `documents/${Date.now()}_${safeName}`;
+      const sRef = ref(storage, storagePath);
+      document.getElementById('doc-upload-bar').style.width = '40%';
+      await uploadBytes(sRef, file);
+      document.getElementById('doc-upload-bar').style.width = '70%';
+      const url = await getDownloadURL(sRef);
+      document.getElementById('doc-upload-bar').style.width = '90%';
+
+      await addDoc(collection(db, 'documents'), {
+        title, category, description: desc,
+        fileName: file.name,
+        storagePath, url,
+        uploadedBy: currentUser.displayName || currentUser.email,
+        uploadedAt: serverTimestamp()
+      });
+
+      document.getElementById('doc-upload-bar').style.width = '100%';
+      document.getElementById('doc-upload-label').textContent = 'Done!';
+      await new Promise(r => setTimeout(r, 400));
+
+      closeModal('doc-upload-modal');
+      showToast(`"${title}" uploaded successfully.`, 'success');
+      await docLoadDocs();
+    } catch(e) {
+      console.error('docUpload:', e);
+      hideEl('doc-upload-progress');
+      showEl('doc-upload-error');
+      document.getElementById('doc-upload-error').textContent = 'Upload failed: ' + e.message;
+      btn.disabled = false;
+    }
+  }
+
+  function docPreview(id) {
+    const d = _docAllDocs.find(x => x.id === id);
+    if (!d) return;
+    const ext = (d.fileName || '').split('.').pop().toLowerCase();
+    document.getElementById('doc-preview-title').textContent = d.title;
+    const uploadedStr = d.uploadedAt?.toDate ? formatDate(d.uploadedAt.toDate()) : '';
+    document.getElementById('doc-preview-meta').textContent = [d.category, uploadedStr ? 'Uploaded ' + uploadedStr : ''].filter(Boolean).join(' · ');
+    const dl = document.getElementById('doc-preview-download');
+    dl.href = d.url;
+    dl.download = d.fileName || d.title;
+    const body = document.getElementById('doc-preview-body');
+    if (ext === 'pdf') {
+      body.innerHTML = `<iframe src="${escHtml(d.url)}" style="width:100%;height:100%;border:none"></iframe>`;
+    } else if (['png','jpg','jpeg','gif','webp'].includes(ext)) {
+      body.innerHTML = `<img src="${escHtml(d.url)}" style="max-width:100%;max-height:100%;object-fit:contain;padding:20px"/>`;
+    } else {
+      body.innerHTML = `<div style="text-align:center;padding:40px;color:var(--subtext)">
+        <div style="font-size:56px;margin-bottom:16px">📄</div>
+        <div style="font-weight:700;font-size:16px;margin-bottom:8px">${escHtml(d.title)}</div>
+        <div style="font-size:13px;margin-bottom:20px">This file type cannot be previewed in the browser.</div>
+        <a class="btn btn-gold" href="${escHtml(d.url)}" download="${escHtml(d.fileName||d.title)}" target="_blank" style="text-decoration:none">⬇ Download to view</a>
+      </div>`;
+    }
+    openModal('doc-preview-modal');
+  }
+
+  async function docDelete(id, storagePath, title) {
+    if (!confirm(`Delete "${title}"?\n\nThis will permanently remove the file and cannot be undone.`)) return;
+    try {
+      await deleteDoc(doc(db, 'documents', id));
+      if (storagePath) {
+        try { await deleteObject(ref(storage, storagePath)); } catch(e) { console.warn('Storage delete failed (file may already be gone):', e); }
+      }
+      showToast(`"${title}" deleted.`, 'success');
+      _docAllDocs = _docAllDocs.filter(d => d.id !== id);
+      docRender();
+    } catch(e) {
+      console.error('docDelete:', e);
+      showToast('Delete failed: ' + e.message, 'error');
+    }
+  }
+
+  function docOpenManageCategories() {
+    docRenderCatListModal();
+    hideEl('doc-cat-error');
+    document.getElementById('doc-new-cat-input').value = '';
+    openModal('doc-cat-modal');
+  }
+
+  function docRenderCatListModal() {
+    const list = document.getElementById('doc-cat-list');
+    if (!list) return;
+    if (!_docCategories.length) {
+      list.innerHTML = '<div style="color:var(--subtext);font-size:13px">No categories yet.</div>';
+      return;
+    }
+    list.innerHTML = _docCategories.map(c => `
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:var(--gray1);border-radius:8px">
+        <span style="font-size:13px;font-weight:600">${escHtml(c)}</span>
+        <button class="btn btn-sm btn-danger" style="font-size:11px" onclick="docRemoveCategory('${escHtml(c)}')">Remove</button>
+      </div>`).join('');
+  }
+
+  async function docAddCategory() {
+    const input = document.getElementById('doc-new-cat-input');
+    const name = input.value.trim();
+    hideEl('doc-cat-error');
+    if (!name) { showEl('doc-cat-error'); document.getElementById('doc-cat-error').textContent = 'Enter a category name.'; return; }
+    if (_docCategories.map(c => c.toLowerCase()).includes(name.toLowerCase())) {
+      showEl('doc-cat-error'); document.getElementById('doc-cat-error').textContent = 'That category already exists.'; return;
+    }
+    try {
+      await setDoc(doc(db, 'doc_categories', name), { name, createdAt: serverTimestamp() });
+      _docCategories.push(name);
+      _docCategories.sort();
+      input.value = '';
+      docRenderCatListModal();
+      docRenderCatTabs();
+      docPopulateCatSelect();
+      showToast(`Category "${name}" added.`, 'success');
+    } catch(e) {
+      showEl('doc-cat-error'); document.getElementById('doc-cat-error').textContent = 'Error: ' + e.message;
+    }
+  }
+
+  async function docRemoveCategory(name) {
+    const inUse = _docAllDocs.some(d => d.category === name);
+    if (inUse) {
+      alert(`Cannot remove "${name}" — it has documents assigned to it. Re-assign or delete those documents first.`);
+      return;
+    }
+    if (!confirm(`Remove category "${name}"?`)) return;
+    try {
+      await deleteDoc(doc(db, 'doc_categories', name));
+      _docCategories = _docCategories.filter(c => c !== name);
+      if (_docActiveCat === name) _docActiveCat = 'all';
+      docRenderCatListModal();
+      docRenderCatTabs();
+      docPopulateCatSelect();
+      showToast(`Category "${name}" removed.`, 'success');
+    } catch(e) {
+      showToast('Error removing category: ' + e.message, 'error');
+    }
+  }
+
+  window.docInit               = docInit;
+  window.docRender             = docRender;
+  window.docSetCat             = docSetCat;
+  window.docOpenUpload         = docOpenUpload;
+  window.docUpload             = docUpload;
+  window.docPreview            = docPreview;
+  window.docDelete             = docDelete;
+  window.docOpenManageCategories = docOpenManageCategories;
+  window.docAddCategory        = docAddCategory;
+  window.docRemoveCategory     = docRemoveCategory;
+
+  // ══════════════════════════════════════
   // TRT (RELIEVING TEACHER) MODULE
   // ══════════════════════════════════════
   function trtEnter() {
@@ -7718,6 +8149,16 @@ const firebaseConfig = {
   function suggestSaveComment(id)         { if (window.suggestSaveComment)          window.suggestSaveComment(id); }
   function suggestToggleDone(id, done)    { if (window.suggestToggleDone)           window.suggestToggleDone(id, done); }
   function suggestDelete(id)              { if (window.suggestDelete)               window.suggestDelete(id); }
+  function docInit()                      { if (window.docInit)                     window.docInit(); }
+  function docRender()                    { if (window.docRender)                   window.docRender(); }
+  function docSetCat(c)                   { if (window.docSetCat)                   window.docSetCat(c); }
+  function docOpenUpload()                { if (window.docOpenUpload)               window.docOpenUpload(); }
+  function docUpload()                    { if (window.docUpload)                   window.docUpload(); }
+  function docPreview(id)                 { if (window.docPreview)                  window.docPreview(id); }
+  function docDelete(id,p,t)              { if (window.docDelete)                   window.docDelete(id,p,t); }
+  function docOpenManageCategories()      { if (window.docOpenManageCategories)     window.docOpenManageCategories(); }
+  function docAddCategory()               { if (window.docAddCategory)              window.docAddCategory(); }
+  function docRemoveCategory(n)           { if (window.docRemoveCategory)           window.docRemoveCategory(n); }
   function trtEnter()                     { if (window.trtEnter)                    window.trtEnter(); }
   function trtExit()                      { if (window.trtExit)                     window.trtExit(); }
   function dbAttachSetMode(m)             { if (window.dbAttachSetMode)             window.dbAttachSetMode(m); }

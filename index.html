@@ -4731,7 +4731,7 @@ const firebaseConfig = {
   // ══════════════════════════════════════
   // DOM EVENT LISTENERS
   // ══════════════════════════════════════
-  if (!KIOSK_MODE) {
+  if (!window.KIOSK_MODE) {
     document.getElementById('sign-in-btn').addEventListener('click', doLogin);
     document.getElementById('reset-link').addEventListener('click', (e) => { e.preventDefault(); doReset(); });
     document.getElementById('sign-out-btn').addEventListener('click', doLogout);
@@ -4754,10 +4754,10 @@ const firebaseConfig = {
   // ══════════════════════════════════════
   // KIOSK MODE
   // ══════════════════════════════════════
-  const KIOSK_MODE = new URLSearchParams(window.location.search).get('kiosk') === 'true';
+  window.KIOSK_MODE = new URLSearchParams(window.location.search).get('kiosk') === 'true';
 
   async function kioskInit() {
-    if (!KIOSK_MODE) return;
+    if (!window.KIOSK_MODE) return;
 
     // Hide auth + app screens, show kiosk
     document.getElementById('auth-screen').style.display = 'none';
@@ -4946,10 +4946,10 @@ const firebaseConfig = {
   }
 
   // Trigger kiosk before auth check
-  if (KIOSK_MODE) kioskInit();
+  if (window.KIOSK_MODE) kioskInit();
 
   onAuthStateChanged(auth, async user => {
-    if (KIOSK_MODE) return; // kiosk bypasses auth entirely
+    if (window.KIOSK_MODE) return; // kiosk bypasses auth entirely
     console.log('AUTH STATE CHANGED — user:', user ? user.email : 'null');
     if (user) {
       // 1. Must be a school email
@@ -5046,45 +5046,10 @@ const firebaseConfig = {
   // Track whether we're in first-time setup mode
   window.window._loginSetupMode = false;
 
-  // Detect on email blur/enter whether this is a first-time user
+  // checkEmailForSetup — only called when Enter pressed in email field with no password
   async function checkEmailForSetup() {
-    const email = document.getElementById('login-email').value.trim().toLowerCase();
-    if (!email || !email.endsWith('@schools.sa.edu.au')) return;
-    hideEl('login-error');
-    document.getElementById('login-checking').style.display = 'flex';
-    try {
-      // Check if Firebase Auth account exists for this email
-      const methods = await fetchSignInMethodsForEmail(auth, email);
-      document.getElementById('login-checking').style.display = 'none';
-      if (methods.length === 0) {
-        // No Firebase account — check allowlist
-        const allowed = await isUserAllowed(email);
-        if (allowed) {
-          // In allowlist but no account — show setup fields
-          window._loginSetupMode = true;
-          document.getElementById('login-setup-welcome').textContent = 
-            'Welcome, ' + (allowed.name || email.split('@')[0]) + '!';
-          document.getElementById('login-pass-group').style.display  = 'none';
-          document.getElementById('login-setup-group').style.display = 'block';
-          document.getElementById('login-reset-link').style.display  = 'none';
-          document.getElementById('sign-in-btn').textContent = 'Create Account & Sign In';
-          document.getElementById('login-newpass').focus();
-        } else {
-          showAuthError('login-error', 'This email has not been approved. Please contact your administrator.');
-        }
-      } else {
-        // Account exists — normal password flow
-        window._loginSetupMode = false;
-        document.getElementById('login-pass-group').style.display  = 'block';
-        document.getElementById('login-setup-group').style.display = 'none';
-        document.getElementById('login-reset-link').style.display  = '';
-        document.getElementById('sign-in-btn').textContent = 'Sign In';
-        document.getElementById('login-password').focus();
-      }
-    } catch(e) {
-      document.getElementById('login-checking').style.display = 'none';
-      // On error just fall through to normal login
-    }
+    // Just focus the password field — detection now happens in doLogin
+    document.getElementById('login-password').focus();
   }
 
   async function doLogin() {
@@ -5104,23 +5069,36 @@ const firebaseConfig = {
       try {
         document.getElementById('sign-in-btn').disabled = true;
         await createUserWithEmailAndPassword(auth, email, pass);
-        // onAuthStateChanged will handle the rest (allowlist check, login)
+        // onAuthStateChanged handles the rest
       } catch(e) {
         document.getElementById('sign-in-btn').disabled = false;
         showAuthError('login-error', friendlyAuthError(e.code));
       }
     } else {
-      // Normal login
+      // Normal login — attempt sign in
       const pass = document.getElementById('login-password').value;
-      if (!pass) {
-        // No password entered yet — trigger email check first
-        await checkEmailForSetup();
-        return;
-      }
+      if (!pass) { showAuthError('login-error','Please enter your password.'); return; }
       try {
         await signInWithEmailAndPassword(auth, email, pass);
       } catch(e) {
-        showAuthError('login-error', friendlyAuthError(e.code));
+        // If user not found, check allowlist and offer account creation
+        if (e.code === 'auth/user-not-found' || e.code === 'auth/invalid-credential') {
+          const allowed = await isUserAllowed(email);
+          if (allowed) {
+            window._loginSetupMode = true;
+            document.getElementById('login-setup-welcome').textContent =
+              'Welcome, ' + (allowed.name || email.split('@')[0]) + '!';
+            document.getElementById('login-pass-group').style.display  = 'none';
+            document.getElementById('login-setup-group').style.display = 'block';
+            document.getElementById('login-reset-link').style.display  = 'none';
+            document.getElementById('sign-in-btn').textContent = 'Create Account & Sign In';
+            document.getElementById('login-newpass').focus();
+          } else {
+            showAuthError('login-error', 'This email has not been approved. Please contact your administrator.');
+          }
+        } else {
+          showAuthError('login-error', friendlyAuthError(e.code));
+        }
       }
     }
   }

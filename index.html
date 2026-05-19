@@ -1731,19 +1731,48 @@
       <div class="auth-form-subtitle">Use your <strong>@schools.sa.edu.au</strong> email address</div>
 
       <div id="login-form" class="auth-form">
+
+        <!-- Email field — always shown -->
         <div class="form-group">
           <label>School Email</label>
           <input type="email" id="login-email" placeholder="name@schools.sa.edu.au" />
         </div>
-        <div class="form-group">
+
+        <!-- NORMAL LOGIN: password field -->
+        <div class="form-group" id="login-pass-group">
           <label>Password</label>
           <input type="password" id="login-password" placeholder="Your password" />
         </div>
+
+        <!-- FIRST-TIME SETUP: shown instead of normal password when no account exists -->
+        <div id="login-setup-group" style="display:none">
+          <div style="background:linear-gradient(135deg,#f0f4ff,#e8f0fe);border:1px solid #c7d7f9;border-radius:10px;padding:14px 16px;margin-bottom:16px">
+            <div id="login-setup-welcome" style="font-size:14px;font-weight:700;color:#242b63;margin-bottom:4px"></div>
+            <div style="font-size:12px;color:#5a6a8a">First time here? Create your password below to get started.</div>
+          </div>
+          <div class="form-group">
+            <label>Choose a Password</label>
+            <input type="password" id="login-newpass" placeholder="At least 8 characters" />
+          </div>
+          <div class="form-group">
+            <label>Confirm Password</label>
+            <input type="password" id="login-confirmpass" placeholder="Repeat your password" />
+          </div>
+        </div>
+
         <div id="login-error" style="display:none" class="error-msg"></div>
+
+        <!-- Checking state -->
+        <div id="login-checking" style="display:none;text-align:center;padding:8px;font-size:13px;color:var(--subtext)">
+          <div class="spinner" style="display:inline-block;margin-right:6px"></div> Checking your account…
+        </div>
+
         <button class="btn btn-primary" id="sign-in-btn" onclick="doLogin()">Sign In</button>
-        <p style="font-size:12px;text-align:center;color:var(--subtext)">
-          Forgot password? <a href="#" id="reset-link" onclick="doReset()" style="color:var(--navy)">Send reset link</a>
+
+        <p id="login-reset-link" style="font-size:12px;text-align:center;color:var(--subtext)">
+          Forgot password? <a href="#" onclick="doReset()" style="color:var(--navy)">Send reset link</a>
         </p>
+
         <div style="margin-top:20px;border-top:1px solid var(--gray2);padding-top:18px">
           <button class="trt-login-btn" onclick="trtEnter()">
             Relieving today? — Enter here
@@ -4002,6 +4031,8 @@
   import {
     getAuth,
     signInWithEmailAndPassword,
+    createUserWithEmailAndPassword,
+    fetchSignInMethodsForEmail,
     signOut,
     sendPasswordResetEmail,
     onAuthStateChanged
@@ -4148,6 +4179,7 @@ const firebaseConfig = {
   // Expose to window for onclick handlers
   window.switchAuthTab      = switchAuthTab;
   window.doLogin            = doLogin;
+  window.checkEmailForSetup  = checkEmailForSetup;
   window._doLoginModule     = doLogin;
   window._doLogoutModule    = doLogout;
   window._doResetModule     = doReset;
@@ -4703,7 +4735,10 @@ const firebaseConfig = {
   document.getElementById('reset-link').addEventListener('click', (e) => { e.preventDefault(); doReset(); });
   document.getElementById('sign-out-btn').addEventListener('click', doLogout);
   document.getElementById('login-password').addEventListener('keydown', (e) => { if (e.key === 'Enter') doLogin(); });
-  document.getElementById('login-email').addEventListener('keydown', (e) => { if (e.key === 'Enter') doLogin(); });
+  document.getElementById('login-newpass').addEventListener('keydown', (e) => { if (e.key === 'Enter') doLogin(); });
+  document.getElementById('login-confirmpass').addEventListener('keydown', (e) => { if (e.key === 'Enter') doLogin(); });
+  document.getElementById('login-email').addEventListener('keydown', (e) => { if (e.key === 'Enter') checkEmailForSetup(); });
+  document.getElementById('login-email').addEventListener('blur', () => checkEmailForSetup());
 
   // ══════════════════════════════════════
   // AUTH STATE
@@ -5004,16 +5039,89 @@ const firebaseConfig = {
     document.getElementById('register-form').style.display = tab === 'register' ? 'flex' : 'none';
   }
 
-  async function doLogin() {
-    const email = document.getElementById('login-email').value.trim();
-    const pass  = document.getElementById('login-password').value;
+  // Track whether we're in first-time setup mode
+  let _loginSetupMode = false;
+
+  // Detect on email blur/enter whether this is a first-time user
+  async function checkEmailForSetup() {
+    const email = document.getElementById('login-email').value.trim().toLowerCase();
+    if (!email || !email.endsWith('@schools.sa.edu.au')) return;
     hideEl('login-error');
-    if (!email || !pass) { showAuthError('login-error','Please enter your email and password.'); return; }
-    if (!email.endsWith('@schools.sa.edu.au')) { showAuthError('login-error','Please use your @schools.sa.edu.au email.'); return; }
+    showEl('login-checking');
+    document.getElementById('login-checking').style.display = 'flex';
+    document.getElementById('sign-in-btn').disabled = true;
     try {
-      await signInWithEmailAndPassword(auth, email, pass);
+      // Check if Firebase Auth account exists for this email
+      const methods = await fetchSignInMethodsForEmail(auth, email);
+      document.getElementById('sign-in-btn').disabled = false;
+      hideEl('login-checking');
+      if (methods.length === 0) {
+        // No Firebase account — check allowlist
+        const allowed = await isUserAllowed(email);
+        if (allowed) {
+          // In allowlist but no account — show setup fields
+          _loginSetupMode = true;
+          document.getElementById('login-setup-welcome').textContent = 
+            'Welcome, ' + (allowed.name || email.split('@')[0]) + '!';
+          document.getElementById('login-pass-group').style.display  = 'none';
+          document.getElementById('login-setup-group').style.display = 'block';
+          document.getElementById('login-reset-link').style.display  = 'none';
+          document.getElementById('sign-in-btn').textContent = 'Create Account & Sign In';
+          document.getElementById('login-newpass').focus();
+        } else {
+          showAuthError('login-error', 'This email has not been approved. Please contact your administrator.');
+        }
+      } else {
+        // Account exists — normal password flow
+        _loginSetupMode = false;
+        document.getElementById('login-pass-group').style.display  = 'block';
+        document.getElementById('login-setup-group').style.display = 'none';
+        document.getElementById('login-reset-link').style.display  = '';
+        document.getElementById('sign-in-btn').textContent = 'Sign In';
+        document.getElementById('login-password').focus();
+      }
     } catch(e) {
-      showAuthError('login-error', friendlyAuthError(e.code));
+      document.getElementById('sign-in-btn').disabled = false;
+      hideEl('login-checking');
+      // On error just fall through to normal login
+    }
+  }
+
+  async function doLogin() {
+    const email = document.getElementById('login-email').value.trim().toLowerCase();
+    hideEl('login-error');
+
+    if (!email) { showAuthError('login-error','Please enter your email address.'); return; }
+    if (!email.endsWith('@schools.sa.edu.au')) { showAuthError('login-error','Please use your @schools.sa.edu.au email.'); return; }
+
+    if (_loginSetupMode) {
+      // First-time account creation
+      const pass    = document.getElementById('login-newpass').value;
+      const confirm = document.getElementById('login-confirmpass').value;
+      if (!pass)            { showAuthError('login-error','Please choose a password.'); return; }
+      if (pass.length < 8)  { showAuthError('login-error','Password must be at least 8 characters.'); return; }
+      if (pass !== confirm) { showAuthError('login-error','Passwords do not match.'); return; }
+      try {
+        document.getElementById('sign-in-btn').disabled = true;
+        await createUserWithEmailAndPassword(auth, email, pass);
+        // onAuthStateChanged will handle the rest (allowlist check, login)
+      } catch(e) {
+        document.getElementById('sign-in-btn').disabled = false;
+        showAuthError('login-error', friendlyAuthError(e.code));
+      }
+    } else {
+      // Normal login
+      const pass = document.getElementById('login-password').value;
+      if (!pass) {
+        // No password entered yet — trigger email check first
+        await checkEmailForSetup();
+        return;
+      }
+      try {
+        await signInWithEmailAndPassword(auth, email, pass);
+      } catch(e) {
+        showAuthError('login-error', friendlyAuthError(e.code));
+      }
     }
   }
 
@@ -8394,6 +8502,7 @@ const firebaseConfig = {
   }
   function doLogout() { if (window._doLogoutModule) window._doLogoutModule(); }
   function doReset()  { if (window._doResetModule)  window._doResetModule(); }
+  function checkEmailForSetup() { if (window.checkEmailForSetup) window.checkEmailForSetup(); }
   function npShowPanel(id, btn) { if (window._npShowPanelModule) window._npShowPanelModule(id, btn); }
   function plannerChangeWeek(n) { if (window.plannerChangeWeek) window.plannerChangeWeek(n); }
   function plannerGoToday()     { if (window.plannerGoToday)    window.plannerGoToday(); }

@@ -1640,6 +1640,84 @@
 <!-- ════════════════════════════════════════
      AUTH SCREEN
 ════════════════════════════════════════ -->
+<!-- ══════════════════════════════════════ -->
+<!-- KIOSK DISPLAY SCREEN (?kiosk=true)   -->
+<!-- ══════════════════════════════════════ -->
+<div id="kiosk-screen" style="display:none;position:fixed;inset:0;background:#0f1535;font-family:'Montserrat',sans-serif;color:#fff;overflow:hidden;z-index:9999">
+
+  <!-- Header bar -->
+  <div style="background:linear-gradient(90deg,#1a2057 0%,#242b63 100%);border-bottom:3px solid #f5ac1c;padding:0 32px;height:64px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0">
+    <div style="display:flex;align-items:center;gap:16px">
+      <div>
+        <div style="font-size:10px;font-weight:700;letter-spacing:2px;color:#f5ac1c;text-transform:uppercase">Highbury Primary School</div>
+        <div style="font-size:18px;font-weight:800;letter-spacing:0.5px">Daily Organisation</div>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:24px">
+      <div id="k-termweek" style="background:rgba(245,172,28,0.15);border:1px solid rgba(245,172,28,0.4);border-radius:20px;padding:4px 14px;font-size:13px;font-weight:700;color:#f5ac1c"></div>
+      <div id="k-date" style="font-size:15px;font-weight:700;color:rgba(255,255,255,0.85)"></div>
+      <div id="k-time" style="font-size:22px;font-weight:800;color:#fff;min-width:70px;text-align:right"></div>
+    </div>
+  </div>
+
+  <!-- Main content: 3 columns -->
+  <div style="display:grid;grid-template-columns:220px 1fr 280px;gap:0;height:calc(100vh - 64px)">
+
+    <!-- LEFT: UV + Hat + Info notices -->
+    <div style="background:#161d45;border-right:1px solid rgba(255,255,255,0.08);padding:24px 20px;display:flex;flex-direction:column;gap:20px;overflow:hidden">
+
+      <!-- UV Index -->
+      <div>
+        <div style="font-size:9px;font-weight:700;letter-spacing:2px;color:rgba(255,255,255,0.4);text-transform:uppercase;margin-bottom:8px">UV Index</div>
+        <div style="display:flex;align-items:flex-end;gap:8px">
+          <div id="k-uv-number" style="font-size:52px;font-weight:800;line-height:1;color:#f5ac1c">—</div>
+          <div style="padding-bottom:8px">
+            <div id="k-uv-label" style="font-size:13px;font-weight:700;color:rgba(255,255,255,0.7)">Loading…</div>
+          </div>
+        </div>
+        <div id="k-hat-rule" style="margin-top:8px;padding:8px 12px;border-radius:8px;font-size:12px;font-weight:700;display:none"></div>
+      </div>
+
+      <div style="border-top:1px solid rgba(255,255,255,0.08)"></div>
+
+      <!-- Daily notices -->
+      <div style="flex:1;overflow:hidden">
+        <div style="font-size:9px;font-weight:700;letter-spacing:2px;color:rgba(255,255,255,0.4);text-transform:uppercase;margin-bottom:12px">Notices</div>
+        <div id="k-notices" style="display:flex;flex-direction:column;gap:8px;overflow:hidden"></div>
+      </div>
+
+    </div>
+
+    <!-- CENTRE: Staff absences -->
+    <div style="padding:24px 28px;display:flex;flex-direction:column;overflow:hidden">
+      <div style="font-size:9px;font-weight:700;letter-spacing:2px;color:rgba(255,255,255,0.4);text-transform:uppercase;margin-bottom:16px">Staff Absences & Duties</div>
+
+      <!-- Column headers -->
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px;margin-bottom:8px;padding:0 4px">
+        <div style="font-size:10px;font-weight:700;color:#f5ac1c;text-transform:uppercase;letter-spacing:1px">Absent</div>
+        <div style="font-size:10px;font-weight:700;color:#f5ac1c;text-transform:uppercase;letter-spacing:1px">Reliever</div>
+        <div style="font-size:10px;font-weight:700;color:#f5ac1c;text-transform:uppercase;letter-spacing:1px">Duty</div>
+        <div style="font-size:10px;font-weight:700;color:#f5ac1c;text-transform:uppercase;letter-spacing:1px">NIT Coverage</div>
+      </div>
+
+      <!-- Scrolling rows container -->
+      <div style="flex:1;overflow:hidden;position:relative">
+        <div id="k-absences-track" style="display:flex;flex-direction:column;gap:6px;position:absolute;width:100%;transition:transform 0.8s ease">
+          <div style="color:rgba(255,255,255,0.3);font-size:13px;padding:20px 0">Loading…</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: This week's events -->
+    <div style="background:#161d45;border-left:1px solid rgba(255,255,255,0.08);padding:24px 20px;display:flex;flex-direction:column;overflow:hidden">
+      <div style="font-size:9px;font-weight:700;letter-spacing:2px;color:rgba(255,255,255,0.4);text-transform:uppercase;margin-bottom:16px">This Week</div>
+      <div id="k-events" style="display:flex;flex-direction:column;gap:10px;overflow:hidden;flex:1"></div>
+    </div>
+
+  </div>
+</div>
+<!-- END KIOSK SCREEN -->
+
 <div id="auth-screen">
 
   <!-- LEFT — branding panel -->
@@ -4646,7 +4724,215 @@ const firebaseConfig = {
   // ══════════════════════════════════════
   // AUTH STATE — allowlist check
   // ══════════════════════════════════════
+
+  // ══════════════════════════════════════
+  // KIOSK MODE
+  // ══════════════════════════════════════
+  const KIOSK_MODE = new URLSearchParams(window.location.search).get('kiosk') === 'true';
+
+  async function kioskInit() {
+    if (!KIOSK_MODE) return;
+
+    // Hide auth + app screens, show kiosk
+    document.getElementById('auth-screen').style.display = 'none';
+    document.getElementById('app-screen').style.display  = 'none';
+    document.getElementById('kiosk-screen').style.display = 'block';
+
+    kioskClock();
+    setInterval(kioskClock, 30000);
+
+    await kioskLoad();
+    setInterval(kioskLoad, 5 * 60 * 1000); // refresh every 5 min
+  }
+
+  function kioskClock() {
+    const now  = new Date();
+    const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+    const mons = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    const dateStr = `${days[now.getDay()]} ${now.getDate()} ${mons[now.getMonth()]} ${now.getFullYear()}`;
+    const timeStr = now.toLocaleTimeString('en-AU', { hour:'2-digit', minute:'2-digit', hour12:false });
+    const ymd = now.toISOString().slice(0,10);
+
+    document.getElementById('k-date').textContent = dateStr;
+    document.getElementById('k-time').textContent = timeStr;
+
+    const tw = termWeekLabel(ymd);
+    document.getElementById('k-termweek').textContent = tw ? tw.label : '';
+  }
+
+  async function kioskLoad() {
+    const now = new Date();
+    const ymd = now.toISOString().slice(0,10);
+    await Promise.all([
+      kioskLoadDaybook(ymd),
+      kioskLoadUV(),
+      kioskLoadEvents(ymd),
+    ]);
+  }
+
+  async function kioskLoadDaybook(ymd) {
+    try {
+      const snap = await getDoc(doc(db, 'daybook', ymd));
+      const data = snap.exists() ? snap.data() : {};
+
+      // Absences
+      const rows = data.rows || [];
+      const track = document.getElementById('k-absences-track');
+      const filled = rows.filter(r => r.absent && r.absent.trim());
+      if (!filled.length) {
+        track.innerHTML = '<div style="color:rgba(255,255,255,0.3);font-size:14px;padding:20px 0">No absences recorded for today.</div>';
+      } else {
+        track.innerHTML = filled.map(r => `
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px;background:rgba(255,255,255,0.05);border-radius:8px;padding:10px 12px;border-left:3px solid rgba(245,172,28,0.4)">
+            <div style="font-size:14px;font-weight:700;color:#fff">${escHtml(r.absent||'')}</div>
+            <div style="font-size:13px;color:rgba(255,255,255,0.7)">${escHtml(r.reliever||'—')}</div>
+            <div style="font-size:13px;color:rgba(255,255,255,0.7)">${escHtml(r.duty||'—')}</div>
+            <div style="font-size:13px;color:rgba(255,255,255,0.7)">${escHtml(r.nit||'—')}</div>
+          </div>`).join('');
+
+        // Auto-scroll if rows overflow
+        kioskAutoScroll(track, filled.length);
+      }
+
+      // Notices
+      const items = data.items || [];
+      const noticesEl = document.getElementById('k-notices');
+      if (!items.length) {
+        noticesEl.innerHTML = '<div style="color:rgba(255,255,255,0.3);font-size:12px">No notices today.</div>';
+      } else {
+        noticesEl.innerHTML = items.map(item => `
+          <div style="display:flex;gap:8px;align-items:flex-start">
+            <div style="color:#f5ac1c;font-size:16px;margin-top:-1px;flex-shrink:0">·</div>
+            <div style="font-size:12px;color:rgba(255,255,255,0.85);line-height:1.4">${escHtml(item.text||item)}</div>
+          </div>`).join('');
+      }
+    } catch(e) {
+      console.error('kioskLoadDaybook:', e);
+    }
+  }
+
+  let _kioskScrollInterval = null;
+  function kioskAutoScroll(track, rowCount) {
+    if (_kioskScrollInterval) clearInterval(_kioskScrollInterval);
+    // Only scroll if more than 6 rows
+    if (rowCount <= 6) { track.style.transform = 'translateY(0)'; return; }
+    const rowH = 52; // approx row height + gap
+    const visible = 6;
+    let current = 0;
+    const max = rowCount - visible;
+    _kioskScrollInterval = setInterval(() => {
+      current = current >= max ? 0 : current + 1;
+      track.style.transform = `translateY(-${current * rowH}px)`;
+    }, 3000);
+  }
+
+  async function kioskLoadUV() {
+    try {
+      const resp = await fetch('https://api.open-meteo.com/v1/forecast?latitude=-34.9285&longitude=138.6007&daily=uv_index_max&timezone=Australia%2FAdelaide&forecast_days=1');
+      const data = await resp.json();
+      const uv = Math.round(data?.daily?.uv_index_max?.[0] ?? 0);
+      document.getElementById('k-uv-number').textContent = uv;
+
+      let label = 'Low', color = '#4ade80';
+      if (uv >= 11)      { label = 'Extreme'; color = '#a855f7'; }
+      else if (uv >= 8)  { label = 'Very High'; color = '#ef4444'; }
+      else if (uv >= 6)  { label = 'High'; color = '#f97316'; }
+      else if (uv >= 3)  { label = 'Moderate'; color = '#facc15'; }
+      document.getElementById('k-uv-label').textContent = label;
+      document.getElementById('k-uv-number').style.color = color;
+
+      const hatEl = document.getElementById('k-hat-rule');
+      if (uv >= 3) {
+        hatEl.style.display = 'block';
+        hatEl.style.background = 'rgba(245,172,28,0.15)';
+        hatEl.style.border = '1px solid rgba(245,172,28,0.4)';
+        hatEl.style.color = '#f5ac1c';
+        hatEl.textContent = '🧢 Hat rule in effect';
+      } else {
+        hatEl.style.display = 'none';
+      }
+    } catch(e) {
+      document.getElementById('k-uv-label').textContent = 'Unavailable';
+    }
+  }
+
+  async function kioskLoadEvents(ymd) {
+    try {
+      // Get end of current week (Friday)
+      const today = new Date(ymd);
+      const dow = today.getDay(); // 0=Sun, 1=Mon...
+      const daysUntilFri = dow <= 5 ? 5 - dow : 0;
+      const fri = new Date(today);
+      fri.setDate(today.getDate() + daysUntilFri);
+      const fridayStr = fri.toISOString().slice(0,10);
+
+      const snap = await getDocs(query(
+        collection(db, 'planner_events'),
+        where('date', '>=', ymd),
+        where('date', '<=', fridayStr),
+        orderBy('date', 'asc')
+      ));
+
+      const eventsEl = document.getElementById('k-events');
+      if (snap.empty) {
+        eventsEl.innerHTML = '<div style="color:rgba(255,255,255,0.3);font-size:13px">No events this week.</div>';
+        return;
+      }
+
+      const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+      const mons = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+      const items = [];
+      snap.forEach(d => items.push(d.data()));
+
+      // Group by date
+      const grouped = {};
+      items.forEach(ev => {
+        if (!grouped[ev.date]) grouped[ev.date] = [];
+        grouped[ev.date].push(ev);
+      });
+
+      const catColors = {
+        'Staff Only':      '#6366f1',
+        'Whole School':    '#f5ac1c',
+        'Reception':       '#34d399',
+        'Year 1':          '#60a5fa',
+        'Year 2':          '#f472b6',
+        'Year 3':          '#fb923c',
+        'Year 4':          '#a78bfa',
+        'Year 5':          '#4ade80',
+        'Year 6':          '#38bdf8',
+        'Disability Unit': '#e879f9',
+        'Special Classes': '#fbbf24',
+      };
+
+      eventsEl.innerHTML = Object.entries(grouped).map(([date, evs]) => {
+        const d = new Date(date + 'T00:00:00');
+        const isToday = date === ymd;
+        const dayLabel = isToday ? 'Today' : `${days[d.getDay()]} ${d.getDate()} ${mons[d.getMonth()]}`;
+        return `
+          <div>
+            <div style="font-size:10px;font-weight:700;color:${isToday ? '#f5ac1c' : 'rgba(255,255,255,0.45)'};text-transform:uppercase;letter-spacing:1px;margin-bottom:5px">${dayLabel}</div>
+            ${evs.map(ev => {
+              const col = catColors[ev.category] || '#94a3b8';
+              return `<div style="background:rgba(255,255,255,0.05);border-radius:6px;padding:7px 10px;border-left:3px solid ${col};margin-bottom:4px">
+                <div style="font-size:12px;font-weight:700;color:#fff;line-height:1.3">${escHtml(ev.title||ev.name||'')}</div>
+                ${ev.audience ? `<div style="font-size:10px;color:rgba(255,255,255,0.45);margin-top:2px">${escHtml(Array.isArray(ev.audience) ? ev.audience.join(', ') : ev.audience)}</div>` : ''}
+              </div>`;
+            }).join('')}
+          </div>`;
+      }).join('');
+    } catch(e) {
+      console.error('kioskLoadEvents:', e);
+      document.getElementById('k-events').innerHTML = '<div style="color:rgba(255,255,255,0.3);font-size:13px">Unable to load events.</div>';
+    }
+  }
+
+  // Trigger kiosk before auth check
+  if (KIOSK_MODE) kioskInit();
+
   onAuthStateChanged(auth, async user => {
+    if (KIOSK_MODE) return; // kiosk bypasses auth entirely
     console.log('AUTH STATE CHANGED — user:', user ? user.email : 'null');
     if (user) {
       // 1. Must be a school email

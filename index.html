@@ -1661,28 +1661,28 @@
   </div>
 
   <!-- Main content: 3 columns -->
-  <div style="display:grid;grid-template-columns:220px 1fr 280px;gap:0;height:calc(100vh - 64px)">
+  <div style="display:grid;grid-template-columns:260px 1fr 320px;gap:0;height:calc(100vh - 64px)">
 
     <!-- LEFT: UV + Hat + Info notices -->
     <div style="background:#161d45;border-right:1px solid rgba(255,255,255,0.08);padding:24px 20px;display:flex;flex-direction:column;gap:20px;overflow:hidden">
 
       <!-- UV Index -->
       <div>
-        <div style="font-size:9px;font-weight:700;letter-spacing:2px;color:rgba(255,255,255,0.4);text-transform:uppercase;margin-bottom:8px">UV Index</div>
+        <div style="font-size:11px;font-weight:700;letter-spacing:2px;color:rgba(255,255,255,0.4);text-transform:uppercase;margin-bottom:8px">UV Index</div>
         <div style="display:flex;align-items:flex-end;gap:8px">
-          <div id="k-uv-number" style="font-size:52px;font-weight:800;line-height:1;color:#f5ac1c">—</div>
+          <div id="k-uv-number" style="font-size:72px;font-weight:800;line-height:1;color:#f5ac1c">—</div>
           <div style="padding-bottom:8px">
-            <div id="k-uv-label" style="font-size:13px;font-weight:700;color:rgba(255,255,255,0.7)">Loading…</div>
+            <div id="k-uv-label" style="font-size:18px;font-weight:700;color:rgba(255,255,255,0.7)">Loading…</div>
           </div>
         </div>
-        <div id="k-hat-rule" style="margin-top:8px;padding:8px 12px;border-radius:8px;font-size:12px;font-weight:700;display:none"></div>
+        <div id="k-hat-rule" style="margin-top:8px;padding:8px 12px;border-radius:8px;font-size:16px;font-weight:700;display:none"></div>
       </div>
 
       <div style="border-top:1px solid rgba(255,255,255,0.08)"></div>
 
       <!-- Daily notices -->
       <div style="flex:1;overflow:hidden">
-        <div style="font-size:9px;font-weight:700;letter-spacing:2px;color:rgba(255,255,255,0.4);text-transform:uppercase;margin-bottom:12px">Notices</div>
+        <div style="font-size:11px;font-weight:700;letter-spacing:2px;color:rgba(255,255,255,0.4);text-transform:uppercase;margin-bottom:12px">Notices</div>
         <div id="k-notices" style="display:flex;flex-direction:column;gap:8px;overflow:hidden"></div>
       </div>
 
@@ -1690,14 +1690,14 @@
 
     <!-- CENTRE: Staff absences -->
     <div style="padding:24px 28px;display:flex;flex-direction:column;overflow:hidden">
-      <div style="font-size:9px;font-weight:700;letter-spacing:2px;color:rgba(255,255,255,0.4);text-transform:uppercase;margin-bottom:16px">Staff Absences & Duties</div>
+      <div style="font-size:11px;font-weight:700;letter-spacing:2px;color:rgba(255,255,255,0.4);text-transform:uppercase;margin-bottom:16px">Staff Absences & Duties</div>
 
       <!-- Column headers -->
       <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px;margin-bottom:8px;padding:0 4px">
-        <div style="font-size:10px;font-weight:700;color:#f5ac1c;text-transform:uppercase;letter-spacing:1px">Absent</div>
-        <div style="font-size:10px;font-weight:700;color:#f5ac1c;text-transform:uppercase;letter-spacing:1px">Reliever</div>
-        <div style="font-size:10px;font-weight:700;color:#f5ac1c;text-transform:uppercase;letter-spacing:1px">Duty</div>
-        <div style="font-size:10px;font-weight:700;color:#f5ac1c;text-transform:uppercase;letter-spacing:1px">NIT Coverage</div>
+        <div style="font-size:13px;font-weight:700;color:#f5ac1c;text-transform:uppercase;letter-spacing:1px">Absent</div>
+        <div style="font-size:13px;font-weight:700;color:#f5ac1c;text-transform:uppercase;letter-spacing:1px">Reliever</div>
+        <div style="font-size:13px;font-weight:700;color:#f5ac1c;text-transform:uppercase;letter-spacing:1px">Duty</div>
+        <div style="font-size:13px;font-weight:700;color:#f5ac1c;text-transform:uppercase;letter-spacing:1px">NIT Coverage</div>
       </div>
 
       <!-- Scrolling rows container -->
@@ -1710,7 +1710,7 @@
 
     <!-- RIGHT: This week's events -->
     <div style="background:#161d45;border-left:1px solid rgba(255,255,255,0.08);padding:24px 20px;display:flex;flex-direction:column;overflow:hidden">
-      <div style="font-size:9px;font-weight:700;letter-spacing:2px;color:rgba(255,255,255,0.4);text-transform:uppercase;margin-bottom:16px">This Week</div>
+      <div style="font-size:11px;font-weight:700;letter-spacing:2px;color:rgba(255,255,255,0.4);text-transform:uppercase;margin-bottom:16px">This Week</div>
       <div id="k-events" style="display:flex;flex-direction:column;gap:10px;overflow:hidden;flex:1"></div>
     </div>
 
@@ -4780,14 +4780,14 @@ const firebaseConfig = {
       const track = document.getElementById('k-absences-track');
       const filled = rows.filter(r => r.absent && r.absent.trim());
       if (!filled.length) {
-        track.innerHTML = '<div style="color:rgba(255,255,255,0.3);font-size:14px;padding:20px 0">No absences recorded for today.</div>';
+        track.innerHTML = '<div style="color:rgba(255,255,255,0.3);font-size:18px;padding:20px 0">No absences recorded for today.</div>';
       } else {
         track.innerHTML = filled.map(r => `
-          <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px;background:rgba(255,255,255,0.05);border-radius:8px;padding:10px 12px;border-left:3px solid rgba(245,172,28,0.4)">
-            <div style="font-size:14px;font-weight:700;color:#fff">${escHtml(r.absent||'')}</div>
-            <div style="font-size:13px;color:rgba(255,255,255,0.7)">${escHtml(r.reliever||'—')}</div>
-            <div style="font-size:13px;color:rgba(255,255,255,0.7)">${escHtml(r.duty||'—')}</div>
-            <div style="font-size:13px;color:rgba(255,255,255,0.7)">${escHtml(r.nit||'—')}</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:12px;background:rgba(255,255,255,0.05);border-radius:10px;padding:14px 16px;border-left:4px solid rgba(245,172,28,0.5)">
+            <div style="font-size:18px;font-weight:700;color:#fff">${escHtml(r.absent||'')}</div>
+            <div style="font-size:16px;color:rgba(255,255,255,0.75)">${escHtml(r.reliever||'—')}</div>
+            <div style="font-size:16px;color:rgba(255,255,255,0.75)">${escHtml(r.duty||'—')}</div>
+            <div style="font-size:16px;color:rgba(255,255,255,0.75)">${escHtml(r.nit||'—')}</div>
           </div>`).join('');
 
         // Auto-scroll if rows overflow
@@ -4795,15 +4795,15 @@ const firebaseConfig = {
       }
 
       // Notices
-      const items = data.items || [];
+      const items = data.infoItems || data.items || [];
       const noticesEl = document.getElementById('k-notices');
       if (!items.length) {
         noticesEl.innerHTML = '<div style="color:rgba(255,255,255,0.3);font-size:12px">No notices today.</div>';
       } else {
         noticesEl.innerHTML = items.map(item => `
-          <div style="display:flex;gap:8px;align-items:flex-start">
-            <div style="color:#f5ac1c;font-size:16px;margin-top:-1px;flex-shrink:0">·</div>
-            <div style="font-size:12px;color:rgba(255,255,255,0.85);line-height:1.4">${escHtml(item.text||item)}</div>
+          <div style="display:flex;gap:10px;align-items:flex-start">
+            <div style="color:#f5ac1c;font-size:20px;margin-top:-2px;flex-shrink:0;line-height:1">·</div>
+            <div style="font-size:15px;color:rgba(255,255,255,0.9);line-height:1.4;font-weight:500">${escHtml(typeof item === 'string' ? item : (item.text||''))}</div>
           </div>`).join('');
       }
     } catch(e) {
@@ -4816,7 +4816,7 @@ const firebaseConfig = {
     if (_kioskScrollInterval) clearInterval(_kioskScrollInterval);
     // Only scroll if more than 6 rows
     if (rowCount <= 6) { track.style.transform = 'translateY(0)'; return; }
-    const rowH = 52; // approx row height + gap
+    const rowH = 62; // approx row height + gap (updated for larger font)
     const visible = 6;
     let current = 0;
     const max = rowCount - visible;
@@ -4869,8 +4869,7 @@ const firebaseConfig = {
       const snap = await getDocs(query(
         collection(db, 'planner_events'),
         where('date', '>=', ymd),
-        where('date', '<=', fridayStr),
-        orderBy('date', 'asc')
+        where('date', '<=', fridayStr)
       ));
 
       const eventsEl = document.getElementById('k-events');
@@ -4884,6 +4883,7 @@ const firebaseConfig = {
 
       const items = [];
       snap.forEach(d => items.push(d.data()));
+      items.sort((a,b) => (a.date > b.date ? 1 : a.date < b.date ? -1 : 0));
 
       // Group by date
       const grouped = {};
@@ -4911,13 +4911,13 @@ const firebaseConfig = {
         const isToday = date === ymd;
         const dayLabel = isToday ? 'Today' : `${days[d.getDay()]} ${d.getDate()} ${mons[d.getMonth()]}`;
         return `
-          <div>
-            <div style="font-size:10px;font-weight:700;color:${isToday ? '#f5ac1c' : 'rgba(255,255,255,0.45)'};text-transform:uppercase;letter-spacing:1px;margin-bottom:5px">${dayLabel}</div>
+          <div style="margin-bottom:8px">
+            <div style="font-size:12px;font-weight:700;color:${isToday ? '#f5ac1c' : 'rgba(255,255,255,0.45)'};text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">${dayLabel}</div>
             ${evs.map(ev => {
               const col = catColors[ev.category] || '#94a3b8';
-              return `<div style="background:rgba(255,255,255,0.05);border-radius:6px;padding:7px 10px;border-left:3px solid ${col};margin-bottom:4px">
-                <div style="font-size:12px;font-weight:700;color:#fff;line-height:1.3">${escHtml(ev.title||ev.name||'')}</div>
-                ${ev.audience ? `<div style="font-size:10px;color:rgba(255,255,255,0.45);margin-top:2px">${escHtml(Array.isArray(ev.audience) ? ev.audience.join(', ') : ev.audience)}</div>` : ''}
+              return `<div style="background:rgba(255,255,255,0.05);border-radius:8px;padding:10px 12px;border-left:4px solid ${col};margin-bottom:5px">
+                <div style="font-size:15px;font-weight:700;color:#fff;line-height:1.3">${escHtml(ev.title||ev.name||'')}</div>
+                ${ev.audience ? `<div style="font-size:12px;color:rgba(255,255,255,0.5);margin-top:3px">${escHtml(Array.isArray(ev.audience) ? ev.audience.join(', ') : ev.audience)}</div>` : ''}
               </div>`;
             }).join('')}
           </div>`;

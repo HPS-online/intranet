@@ -673,6 +673,7 @@
       background: #ffffff;
       border-radius: 12px;
       box-shadow: 0 24px 60px rgba(0,0,0,0.5);
+      padding: 28px;
     }
 
     .modal {
@@ -6266,7 +6267,7 @@ const firebaseConfig = {
         to_email:   email,
         from_name:  'Highbury Primary School',
         subject:    'Welcome to the Highbury Primary Staff Intranet',
-        message:    `Hi ${name},\n\nYou have been added to the Highbury Primary School Staff Intranet.\n\nTo get started:\n1. Visit https://hps-online.github.io\n2. Click "Forgot Password?" and enter your school email address (${email})\n3. Check your email for a password reset link from Firebase\n4. Set your password and log in\n\nIf you have any trouble, please contact Daniel Botten or Nouman Haider.\n\nWelcome aboard!`
+        message:    `Hi ${name},\n\nYou have been added to the Highbury Primary School Staff Intranet.\n\nTo get started:\n1. Visit https://hps-online.github.io/intranet/\n2. Click "Forgot Password?" and enter your school email address (${email})\n3. Check your email for a password reset link from Firebase\n4. Set your password and log in\n\nIf you have any trouble, please contact Daniel Botten or Nouman Haider.\n\nWelcome aboard!`
       }, EMAILJS_PUBLIC_KEY);
       showToast(`Invitation sent to ${name}.`, 'success');
     } catch(e) {
@@ -6330,7 +6331,7 @@ const firebaseConfig = {
             to_email:   email,
             from_name:  'Highbury Primary School',
             subject:    'Welcome to the Highbury Primary Staff Intranet',
-            message:    `Hi ${name},\n\nYou have been added to the Highbury Primary School Staff Intranet.\n\nTo get started:\n1. Visit https://hps-online.github.io\n2. Click "Forgot Password?" and enter your school email address (${email})\n3. Check your email for a password reset link from Firebase\n4. Set your password and log in\n\nIf you have any trouble, please contact Daniel Botten or Nouman Haider.\n\nWelcome aboard!`
+            message:    `Hi ${name},\n\nYou have been added to the Highbury Primary School Staff Intranet.\n\nTo get started:\n1. Visit https://hps-online.github.io/intranet/\n2. Click "Forgot Password?" and enter your school email address (${email})\n3. Check your email for a password reset link from Firebase\n4. Set your password and log in\n\nIf you have any trouble, please contact Daniel Botten or Nouman Haider.\n\nWelcome aboard!`
           }, EMAILJS_PUBLIC_KEY);
         }
       } catch(emailErr) {
@@ -7770,6 +7771,13 @@ const firebaseConfig = {
     if (!title)    { showEl('doc-upload-error'); document.getElementById('doc-upload-error').textContent = 'Please enter a title.'; return; }
     if (!file)     { showEl('doc-upload-error'); document.getElementById('doc-upload-error').textContent = 'Please choose a file.'; return; }
     if (file.size > 20 * 1024 * 1024) { showEl('doc-upload-error'); document.getElementById('doc-upload-error').textContent = 'File must be under 20 MB.'; return; }
+
+    // Verify auth is active before hitting Storage
+    if (!currentUser) {
+      showEl('doc-upload-error');
+      document.getElementById('doc-upload-error').textContent = 'You must be signed in to upload. Please refresh and try again.';
+      return;
+    }
 
     const btn = document.getElementById('doc-upload-btn');
     btn.disabled = true;

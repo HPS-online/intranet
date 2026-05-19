@@ -8621,8 +8621,7 @@ const firebaseConfig = {
     const raw  = document.getElementById('bday-bulk-input').value.trim();
     const msg  = document.getElementById('bday-import-msg');
     if (!raw) return;
-    const lines = raw.split('
-').filter(l => l.trim());
+    const lines = raw.split('\n').filter(l => l.trim());
     let ok = 0, fail = 0;
     for (const line of lines) {
       const parts = line.split(',').map(p => p.trim());

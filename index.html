@@ -1226,11 +1226,13 @@
     .duty-period-header { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
     .duty-period-header h3 { font-size: 14px; font-weight: 700; color: var(--navy); text-transform: uppercase; letter-spacing: 0.5px; }
     .duty-period-header .duty-time { font-size: 12px; color: var(--gray3); background: var(--gray1); padding: 3px 10px; border-radius: 10px; }
-    .duty-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .duty-table { width: 100%; border-collapse: collapse; font-size: 13px; table-layout: fixed; }
+    .duty-table col.area-col { width: 30%; }
+    .duty-table col.day-col  { width: 14%; }
     .duty-table th { background: var(--navy); color: var(--white); padding: 8px 12px; text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; }
-    .duty-table td { padding: 8px 12px; border-bottom: 1px solid var(--gray2); }
     .duty-table tr:last-child td { border-bottom: none; }
-    .duty-table td.area-name { font-weight: 500; color: var(--navy); }
+    .duty-table td.area-name { font-weight: 500; color: var(--navy); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .duty-table td { padding: 8px 12px; border-bottom: 1px solid var(--gray2); overflow: hidden; text-overflow: ellipsis; }
     .duty-cell { border-radius: 4px; padding: 2px 6px; display: inline-block; }
     .duty-cell.highlighted { background: var(--gold2); color: var(--navy); font-weight: 700; border-radius: 4px; padding: 2px 8px; }
 
@@ -2103,6 +2105,7 @@
             </div>
             <div class="home-card"><div class="daybook-table-wrap">
             <table class="duty-table">
+              <colgroup><col class="area-col"><col class="day-col"><col class="day-col"><col class="day-col"><col class="day-col"><col class="day-col"></colgroup>
               <thead><tr><th>Area</th><th>Monday</th><th>Tuesday</th><th>Wednesday</th><th>Thursday</th><th>Friday</th></tr></thead>
               <tbody>
                 <tr><td class="area-name">Kangaroo Building</td><td><span class="duty-cell" data-name="Keely">Keely</span></td><td><span class="duty-cell" data-name="Sara">Sara</span></td><td><span class="duty-cell" data-name="Keely">Keely</span></td><td><span class="duty-cell" data-name="Belinda">Belinda</span></td><td><span class="duty-cell" data-name="Daniel">Daniel</span></td></tr>
@@ -2121,6 +2124,7 @@
             </div>
             <div class="home-card"><div class="daybook-table-wrap">
             <table class="duty-table">
+              <colgroup><col class="area-col"><col class="day-col"><col class="day-col"><col class="day-col"><col class="day-col"><col class="day-col"></colgroup>
               <thead><tr><th>Area</th><th>Monday</th><th>Tuesday</th><th>Wednesday</th><th>Thursday</th><th>Friday</th></tr></thead>
               <tbody>
                 <tr><td class="area-name">Kangaroo Building</td><td><span class="duty-cell" data-name="Melissa">Melissa</span></td><td><span class="duty-cell" data-name="Daniel">Daniel</span></td><td><span class="duty-cell" data-name="Gabby">Gabby</span></td><td><span class="duty-cell" data-name="Melissa">Melissa</span></td><td><span class="duty-cell" data-name="Gabby">Gabby</span></td></tr>
@@ -2143,6 +2147,7 @@
             </div>
             <div class="home-card"><div class="daybook-table-wrap">
             <table class="duty-table">
+              <colgroup><col class="area-col"><col class="day-col"><col class="day-col"><col class="day-col"><col class="day-col"><col class="day-col"></colgroup>
               <thead><tr><th>Area</th><th>Monday</th><th>Tuesday</th><th>Wednesday</th><th>Thursday</th><th>Friday</th></tr></thead>
               <tbody>
                 <tr><td class="area-name">North Oval</td><td><span class="duty-cell" data-name="Callie">Callie</span></td><td><span class="duty-cell" data-name="Sam">Sam</span></td><td><span class="duty-cell" data-name="Nicole">Nicole</span></td><td><span class="duty-cell" data-name="Mike">Mike</span></td><td><span class="duty-cell" data-name="Sam">Sam</span></td></tr>
@@ -2164,6 +2169,7 @@
             </div>
             <div class="home-card"><div class="daybook-table-wrap">
             <table class="duty-table">
+              <colgroup><col class="area-col"><col class="day-col"><col class="day-col"><col class="day-col"><col class="day-col"><col class="day-col"></colgroup>
               <thead><tr><th>Area</th><th>Monday</th><th>Tuesday</th><th>Wednesday</th><th>Thursday</th><th>Friday</th></tr></thead>
               <tbody>
                 <tr><td class="area-name">Lorikeet Building</td><td><span class="duty-cell" data-name="Belinda">Belinda</span></td><td><span class="duty-cell" data-name="Kristel">Kristel</span></td><td><span class="duty-cell" data-name="Katy">Katy</span></td><td><span class="duty-cell" data-name="Sara">Sara</span></td><td><span class="duty-cell" data-name="Belinda">Belinda</span></td></tr>
@@ -8689,7 +8695,7 @@ const firebaseConfig = {
     if (dow === 0) displayDate.setDate(displayDate.getDate() + 1); // Sunday → Monday
     if (dow === 6) displayDate.setDate(displayDate.getDate() - 1); // Saturday → Friday
 
-    const key = displayDate.toISOString().slice(0,10); // YYYY-MM-DD
+    const key = `${displayDate.getFullYear()}-${String(displayDate.getMonth()+1).padStart(2,'0')}-${String(displayDate.getDate()).padStart(2,'0')}`; // YYYY-MM-DD local time
     const friendly = displayDate.toLocaleDateString('en-AU',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
     document.getElementById('trt-date-label').textContent = friendly;
 

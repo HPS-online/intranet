@@ -5044,7 +5044,7 @@ const firebaseConfig = {
   }
 
   // Track whether we're in first-time setup mode
-  let _loginSetupMode = false;
+  window.window._loginSetupMode = false;
 
   // Detect on email blur/enter whether this is a first-time user
   async function checkEmailForSetup() {
@@ -5061,7 +5061,7 @@ const firebaseConfig = {
         const allowed = await isUserAllowed(email);
         if (allowed) {
           // In allowlist but no account — show setup fields
-          _loginSetupMode = true;
+          window._loginSetupMode = true;
           document.getElementById('login-setup-welcome').textContent = 
             'Welcome, ' + (allowed.name || email.split('@')[0]) + '!';
           document.getElementById('login-pass-group').style.display  = 'none';
@@ -5074,7 +5074,7 @@ const firebaseConfig = {
         }
       } else {
         // Account exists — normal password flow
-        _loginSetupMode = false;
+        window._loginSetupMode = false;
         document.getElementById('login-pass-group').style.display  = 'block';
         document.getElementById('login-setup-group').style.display = 'none';
         document.getElementById('login-reset-link').style.display  = '';
@@ -5094,7 +5094,7 @@ const firebaseConfig = {
     if (!email) { showAuthError('login-error','Please enter your email address.'); return; }
     if (!email.endsWith('@schools.sa.edu.au')) { showAuthError('login-error','Please use your @schools.sa.edu.au email.'); return; }
 
-    if (_loginSetupMode) {
+    if (window._loginSetupMode) {
       // First-time account creation
       const pass    = document.getElementById('login-newpass').value;
       const confirm = document.getElementById('login-confirmpass').value;

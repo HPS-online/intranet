@@ -3380,6 +3380,13 @@
             </div>
           </div>
 
+          <!-- General notes — moved below agenda/actions -->
+          <div>
+            <label class="form-label" style="margin:0">General Notes / Minutes</label>
+            <div style="font-size:11px;color:var(--subtext);margin-bottom:6px;font-weight:500">Use this for anything not captured in the agenda items above — context, discussions, decisions.</div>
+            <textarea id="me-body" class="form-input" rows="4" style="resize:vertical;font-size:13px;line-height:1.6" placeholder="Type your general notes and minutes here…"></textarea>
+          </div>
+
           <!-- Attachments -->
           <div>
             <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--subtext);margin-bottom:6px">Attachments</div>
@@ -3453,12 +3460,6 @@
             <input type="text" id="me-additional-attendees" class="form-input" placeholder="e.g. Sarah from DECD, Parent rep…">
           </div>
 
-          <!-- General notes -->
-          <div>
-            <label class="form-label" style="margin:0">General Notes / Minutes</label>
-            <textarea id="me-body" class="form-input" rows="4" style="resize:vertical" placeholder="Any general notes not captured in the agenda items below…"></textarea>
-          </div>
-
           <!-- Agenda items -->
           <div>
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
@@ -3472,8 +3473,7 @@
                     <th style="padding:7px 8px;text-align:left;font-weight:600;border:1px solid var(--gray2);width:28%">Item</th>
                     <th style="padding:7px 8px;text-align:left;font-weight:600;border:1px solid var(--gray2);width:17%">Proposer</th>
                     <th style="padding:7px 8px;text-align:center;font-weight:600;border:1px solid var(--gray2);width:10%">Mins</th>
-                    <th style="padding:7px 8px;text-align:center;font-weight:600;border:1px solid var(--gray2);width:14%">Priority</th>
-                    <th style="padding:7px 8px;text-align:left;font-weight:600;border:1px solid var(--gray2)">Notes</th>
+                    <th style="padding:7px 8px;text-align:left;font-weight:600;border:1px solid var(--gray2)">Notes / Outcome</th>
                     <th style="padding:7px 8px;text-align:center;font-weight:600;border:1px solid var(--gray2);width:40px"></th>
                   </tr>
                 </thead>
@@ -7465,14 +7465,7 @@ const firebaseConfig = {
       <td style="border:1px solid var(--gray2);padding:4px"><input class="form-input" style="padding:5px 8px;font-size:12px;width:100%" placeholder="Agenda item…" value="${esc(a.item||'')}"></td>
       <td style="border:1px solid var(--gray2);padding:4px"><input class="form-input" style="padding:5px 8px;font-size:12px;width:100%" placeholder="Who?" value="${esc(a.proposer||'')}"></td>
       <td style="border:1px solid var(--gray2);padding:4px"><input class="form-input" style="padding:5px 8px;font-size:12px;width:100%;text-align:center" placeholder="5 min" value="${esc(a.time||'')}"></td>
-      <td style="border:1px solid var(--gray2);padding:4px">
-        <select class="form-input" style="padding:5px 6px;font-size:12px;width:100%">
-          <option value="Low"${(a.priority||'Low')==='Low'?' selected':''}>Low</option>
-          <option value="Med"${a.priority==='Med'?' selected':''}>Med</option>
-          <option value="High"${a.priority==='High'?' selected':''}>High</option>
-        </select>
-      </td>
-      <td style="border:1px solid var(--gray2);padding:4px"><input class="form-input" style="padding:5px 8px;font-size:12px;width:100%" placeholder="Notes / outcome…" value="${esc(a.notes||'')}"></td>
+      <td style="border:1px solid var(--gray2);padding:4px"><textarea class="form-input" style="padding:5px 8px;font-size:12px;width:100%;min-height:80px;resize:vertical;line-height:1.5" placeholder="Notes / outcome…">${esc(a.notes||'')}</textarea></td>
       <td style="border:1px solid var(--gray2);padding:4px;text-align:center"><button onclick="this.closest('tr').remove()" style="background:none;border:none;cursor:pointer;color:var(--red);font-size:16px">✕</button></td>`;
     tbody.appendChild(tr);
   }

@@ -4731,14 +4731,18 @@ const firebaseConfig = {
   // ══════════════════════════════════════
   // DOM EVENT LISTENERS
   // ══════════════════════════════════════
-  document.getElementById('sign-in-btn').addEventListener('click', doLogin);
-  document.getElementById('reset-link').addEventListener('click', (e) => { e.preventDefault(); doReset(); });
-  document.getElementById('sign-out-btn').addEventListener('click', doLogout);
-  document.getElementById('login-password').addEventListener('keydown', (e) => { if (e.key === 'Enter') doLogin(); });
-  document.getElementById('login-newpass').addEventListener('keydown', (e) => { if (e.key === 'Enter') doLogin(); });
-  document.getElementById('login-confirmpass').addEventListener('keydown', (e) => { if (e.key === 'Enter') doLogin(); });
-  document.getElementById('login-email').addEventListener('keydown', (e) => { if (e.key === 'Enter') checkEmailForSetup(); });
-  document.getElementById('login-email').addEventListener('blur', () => checkEmailForSetup());
+  if (!KIOSK_MODE) {
+    document.getElementById('sign-in-btn').addEventListener('click', doLogin);
+    document.getElementById('reset-link').addEventListener('click', (e) => { e.preventDefault(); doReset(); });
+    document.getElementById('sign-out-btn').addEventListener('click', doLogout);
+    document.getElementById('login-password').addEventListener('keydown', (e) => { if (e.key === 'Enter') doLogin(); });
+    document.getElementById('login-newpass').addEventListener('keydown', (e) => { if (e.key === 'Enter') doLogin(); });
+    document.getElementById('login-confirmpass').addEventListener('keydown', (e) => { if (e.key === 'Enter') doLogin(); });
+    document.getElementById('login-email').addEventListener('keydown', (e) => { if (e.key === 'Enter') checkEmailForSetup(); });
+  } else {
+    // Kiosk — only need sign-out
+    document.getElementById('sign-out-btn').addEventListener('click', doLogout);
+  }
 
   // ══════════════════════════════════════
   // AUTH STATE
@@ -5047,14 +5051,11 @@ const firebaseConfig = {
     const email = document.getElementById('login-email').value.trim().toLowerCase();
     if (!email || !email.endsWith('@schools.sa.edu.au')) return;
     hideEl('login-error');
-    showEl('login-checking');
     document.getElementById('login-checking').style.display = 'flex';
-    document.getElementById('sign-in-btn').disabled = true;
     try {
       // Check if Firebase Auth account exists for this email
       const methods = await fetchSignInMethodsForEmail(auth, email);
-      document.getElementById('sign-in-btn').disabled = false;
-      hideEl('login-checking');
+      document.getElementById('login-checking').style.display = 'none';
       if (methods.length === 0) {
         // No Firebase account — check allowlist
         const allowed = await isUserAllowed(email);
@@ -5081,8 +5082,7 @@ const firebaseConfig = {
         document.getElementById('login-password').focus();
       }
     } catch(e) {
-      document.getElementById('sign-in-btn').disabled = false;
-      hideEl('login-checking');
+      document.getElementById('login-checking').style.display = 'none';
       // On error just fall through to normal login
     }
   }

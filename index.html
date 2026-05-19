@@ -4896,7 +4896,7 @@ const firebaseConfig = {
     const mons = ['January','February','March','April','May','June','July','August','September','October','November','December'];
     const dateStr = `${days[now.getDay()]} ${now.getDate()} ${mons[now.getMonth()]} ${now.getFullYear()}`;
     const timeStr = now.toLocaleTimeString('en-AU', { hour:'2-digit', minute:'2-digit', hour12:false });
-    const ymd = now.toISOString().slice(0,10);
+    const ymd = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
 
     document.getElementById('k-date').textContent = dateStr;
     document.getElementById('k-time').textContent = timeStr;
@@ -4907,7 +4907,8 @@ const firebaseConfig = {
 
   async function kioskLoad() {
     const now = new Date();
-    const ymd = now.toISOString().slice(0,10);
+    // Use local date, not UTC — toISOString() returns UTC which is yesterday in Adelaide before 9:30am
+    const ymd = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
     await Promise.all([
       kioskLoadDaybook(ymd),
       kioskLoadUV(),

@@ -5079,8 +5079,11 @@ const firebaseConfig = {
       const pass = document.getElementById('login-password').value;
       if (!pass) { showAuthError('login-error','Please enter your password.'); return; }
       try {
+        console.log('Attempting signIn for:', email);
         await signInWithEmailAndPassword(auth, email, pass);
+        console.log('signIn succeeded');
       } catch(e) {
+        console.log('signIn failed, code:', e.code, 'message:', e.message);
         // Firebase returns invalid-credential for both wrong password AND missing account.
         // Check allowlist to distinguish: if not in allowlist → wrong password or not approved.
         // If in allowlist but Firebase rejects → likely no account yet → show setup.

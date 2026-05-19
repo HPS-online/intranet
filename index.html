@@ -1695,10 +1695,28 @@
 
     </div>
 
-    <!-- RIGHT: This week's events -->
-    <div style="background:#161d45;padding:22px 20px;display:flex;flex-direction:column;overflow:hidden">
+    <!-- RIGHT: This week + birthdays + PBL + crew -->
+    <div style="background:#161d45;padding:22px 20px;display:flex;flex-direction:column;overflow:hidden;gap:0">
       <div style="font-size:11px;font-weight:700;letter-spacing:2px;color:rgba(255,255,255,0.4);text-transform:uppercase;margin-bottom:14px">This Week</div>
-      <div id="k-events" style="display:flex;flex-direction:column;gap:8px;overflow:hidden;flex:1"></div>
+      <div id="k-events" style="display:flex;flex-direction:column;gap:8px;overflow:hidden;flex:1;min-height:0"></div>
+
+      <!-- Birthdays -->
+      <div id="k-birthdays-wrap" style="display:none;margin-top:16px;border-top:1px solid rgba(255,255,255,0.08);padding-top:14px">
+        <div style="font-size:11px;font-weight:700;letter-spacing:2px;color:rgba(255,255,255,0.4);text-transform:uppercase;margin-bottom:10px">🎂 Birthdays</div>
+        <div id="k-birthdays"></div>
+      </div>
+
+      <!-- PBL Focus -->
+      <div id="k-pbl-wrap" style="display:none;margin-top:16px;border-top:1px solid rgba(255,255,255,0.08);padding-top:14px">
+        <div style="font-size:11px;font-weight:700;letter-spacing:2px;color:rgba(255,255,255,0.4);text-transform:uppercase;margin-bottom:8px">PBL Focus</div>
+        <div id="k-pbl" style="font-size:14px;font-weight:600;color:#f5ac1c;line-height:1.4"></div>
+      </div>
+
+      <!-- Clean Crew -->
+      <div id="k-crew-wrap" style="display:none;margin-top:16px;border-top:1px solid rgba(255,255,255,0.08);padding-top:14px">
+        <div style="font-size:11px;font-weight:700;letter-spacing:2px;color:rgba(255,255,255,0.4);text-transform:uppercase;margin-bottom:8px">🧹 Clean-Up Crew</div>
+        <div id="k-crew" style="font-size:14px;font-weight:600;color:rgba(255,255,255,0.85);line-height:1.4"></div>
+      </div>
     </div>
 
   </div>
@@ -3612,9 +3630,55 @@
 
       <div style="margin-top:28px;background:var(--gray1);border-radius:var(--radius);padding:18px 20px;font-size:13px;color:var(--subtext);line-height:1.7">
         <strong style="color:var(--navy)">How accounts work:</strong><br>
-        When you add a staff member here, they receive a password reset email from Firebase and can set their own password.
+        When you add a staff member here, they receive an invitation email. They visit the site, enter their email and any password, then set up their account.
         Only accounts listed here can sign in — anyone else is automatically rejected, even if they have an <code>@schools.sa.edu.au</code> address.<br><br>
         <strong style="color:var(--navy)">Admin accounts</strong> can access this portal and add/remove users. Regular staff can only submit and view tickets.
+      </div>
+
+      <!-- ── KIOSK CONFIGURATOR ── -->
+      <div style="margin-top:36px">
+        <h3 style="font-family:'Montserrat',sans-serif;font-size:16px;font-weight:800;color:var(--navy);text-transform:uppercase;letter-spacing:0.3px;margin-bottom:4px">📺 Kiosk Display Settings</h3>
+        <p style="font-size:13px;color:var(--subtext);margin-bottom:20px">These values appear on the staffroom kiosk screen at <code>?kiosk=true</code>.</p>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px">
+          <div>
+            <label class="form-label">PBL Focus / Term Theme</label>
+            <input type="text" id="kiosk-pbl" class="form-input" placeholder="e.g. Term 2 — Calm Bodies, Quiet Voices"/>
+            <div style="font-size:11px;color:var(--subtext);margin-top:4px">Displays on the kiosk below This Week.</div>
+          </div>
+          <div>
+            <label class="form-label">Weekly Clean-Up Crew</label>
+            <input type="text" id="kiosk-crew" class="form-input" placeholder="e.g. Week 4 — Room 3 &amp; Room 7"/>
+            <div style="font-size:11px;color:var(--subtext);margin-top:4px">Update each week. Displays on the kiosk.</div>
+          </div>
+        </div>
+        <button class="btn btn-gold" onclick="kioskConfigSave()" style="margin-bottom:28px">💾 Save Kiosk Settings</button>
+        <div id="kiosk-config-msg" style="display:none;font-size:13px;font-weight:600;color:var(--green);margin-left:12px"></div>
+      </div>
+
+      <!-- ── BIRTHDAY MANAGER ── -->
+      <div style="margin-top:8px;border-top:1px solid var(--gray2);padding-top:28px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+          <div>
+            <h3 style="font-family:'Montserrat',sans-serif;font-size:16px;font-weight:800;color:var(--navy);text-transform:uppercase;letter-spacing:0.3px;margin-bottom:2px">🎂 Staff Birthdays</h3>
+            <p style="font-size:13px;color:var(--subtext)">Birthdays show on the kiosk. Weekend birthdays display on Friday.</p>
+          </div>
+          <button class="btn btn-gold" onclick="bdayOpenAdd()">+ Add Birthday</button>
+        </div>
+
+        <!-- CSV upload hint -->
+        <div style="background:#f0f4ff;border:1px solid #c7d7f9;border-radius:8px;padding:12px 16px;font-size:12px;color:#3a4a7a;margin-bottom:16px">
+          <strong>Bulk upload:</strong> Paste a list below (one per line: <code>Name, Day, Month</code> e.g. <code>Sarah Johnson, 15, 3</code>) then click Import.
+          <div style="display:flex;gap:8px;margin-top:8px">
+            <textarea id="bday-bulk-input" class="form-input" rows="3" style="flex:1;font-size:12px;font-family:monospace" placeholder="Sarah Johnson, 15, 3&#10;Beck Williams, 22, 8&#10;Nouman Haider, 7, 11"></textarea>
+            <button class="btn btn-outline" onclick="bdayBulkImport()" style="align-self:flex-start;font-size:12px;color:var(--navy);border-color:var(--navy)">Import</button>
+          </div>
+          <div id="bday-import-msg" style="display:none;margin-top:6px;font-size:12px;font-weight:600"></div>
+        </div>
+
+        <div id="bday-list" style="display:flex;flex-direction:column;gap:8px">
+          <div style="color:var(--subtext);font-size:13px">Loading birthdays…</div>
+        </div>
       </div>
     </div>
 
@@ -3839,6 +3903,49 @@
   </div><!-- /main -->
 </div><!-- /app-screen -->
 
+<!-- BIRTHDAY ADD MODAL -->
+<div class="modal-overlay" id="bday-add-modal" onclick="if(event.target===this)closeModal('bday-add-modal')">
+  <div class="modal-box" style="max-width:400px;width:95%">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+      <h3 style="font-size:17px;font-weight:800;color:var(--navy)">Add Birthday</h3>
+      <button class="btn btn-outline btn-sm" onclick="closeModal('bday-add-modal')">✕</button>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <div>
+        <label class="form-label">Staff Name *</label>
+        <input id="bday-add-name" class="form-input" type="text" placeholder="e.g. Sarah Johnson"/>
+      </div>
+      <div>
+        <label class="form-label">Birthday (day &amp; month) *</label>
+        <div style="display:flex;gap:8px">
+          <select id="bday-add-day" class="form-input" style="width:90px">
+            <option value="">Day</option>
+            <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option>
+            <option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option>
+            <option value="11">11</option><option value="12">12</option><option value="13">13</option><option value="14">14</option><option value="15">15</option>
+            <option value="16">16</option><option value="17">17</option><option value="18">18</option><option value="19">19</option><option value="20">20</option>
+            <option value="21">21</option><option value="22">22</option><option value="23">23</option><option value="24">24</option><option value="25">25</option>
+            <option value="26">26</option><option value="27">27</option><option value="28">28</option><option value="29">29</option><option value="30">30</option>
+            <option value="31">31</option>
+          </select>
+          <select id="bday-add-month" class="form-input" style="flex:1">
+            <option value="">Month</option>
+            <option value="1">January</option><option value="2">February</option><option value="3">March</option>
+            <option value="4">April</option><option value="5">May</option><option value="6">June</option>
+            <option value="7">July</option><option value="8">August</option><option value="9">September</option>
+            <option value="10">October</option><option value="11">November</option><option value="12">December</option>
+          </select>
+        </div>
+      </div>
+      <div id="bday-add-error" style="display:none;color:var(--red);font-size:12px;font-weight:600"></div>
+      <div style="display:flex;gap:8px;justify-content:flex-end">
+        <button class="btn btn-outline" onclick="closeModal('bday-add-modal')">Cancel</button>
+        <button class="btn btn-gold" onclick="bdaySaveAdd()">Add Birthday</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- ADD USER MODAL -->
 <div class="modal-overlay" id="add-user-modal">
   <div class="modal">
@@ -3865,6 +3972,19 @@
             <option value="staff">Staff (ticket access only)</option>
             <option value="admin">Admin (can manage users)</option>
           </select>
+        </div>
+        <div class="form-group">
+          <label>Birthday <span style="font-weight:400;font-size:11px;color:var(--subtext)">(optional — day &amp; month only, e.g. 15 March)</span></label>
+          <div style="display:flex;gap:8px">
+            <select id="add-bday-day" class="form-input" style="width:80px">
+              <option value="">Day</option>
+              <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option><option value="11">11</option><option value="12">12</option><option value="13">13</option><option value="14">14</option><option value="15">15</option><option value="16">16</option><option value="17">17</option><option value="18">18</option><option value="19">19</option><option value="20">20</option><option value="21">21</option><option value="22">22</option><option value="23">23</option><option value="24">24</option><option value="25">25</option><option value="26">26</option><option value="27">27</option><option value="28">28</option><option value="29">29</option><option value="30">30</option><option value="31">31</option>
+            </select>
+            <select id="add-bday-month" class="form-input" style="flex:1">
+              <option value="">Month</option>
+              <option value="1">January</option><option value="2">February</option><option value="3">March</option><option value="4">April</option><option value="5">May</option><option value="6">June</option><option value="7">July</option><option value="8">August</option><option value="9">September</option><option value="10">October</option><option value="11">November</option><option value="12">December</option>
+            </select>
+          </div>
         </div>
         <div id="add-user-error" style="display:none" class="error-msg"></div>
         <div id="add-user-success" style="display:none" class="success-msg"></div>
@@ -4792,7 +4912,58 @@ const firebaseConfig = {
       kioskLoadDaybook(ymd),
       kioskLoadUV(),
       kioskLoadEvents(ymd),
+      kioskLoadConfig(),
+      kioskLoadBirthdays(ymd),
     ]);
+  }
+
+  async function kioskLoadConfig() {
+    try {
+      const snap = await getDoc(doc(db, 'kiosk_config', 'settings'));
+      if (snap.exists()) {
+        const d = snap.data();
+        const pblWrap  = document.getElementById('k-pbl-wrap');
+        const crewWrap = document.getElementById('k-crew-wrap');
+        const pblEl    = document.getElementById('k-pbl');
+        const crewEl   = document.getElementById('k-crew');
+        if (d.pbl && pblEl)  { pblEl.textContent  = d.pbl;  pblWrap.style.display  = 'block'; }
+        if (d.crew && crewEl){ crewEl.textContent = d.crew; crewWrap.style.display = 'block'; }
+      }
+    } catch(e) { console.warn('kioskLoadConfig:', e); }
+  }
+
+  async function kioskLoadBirthdays(ymd) {
+    try {
+      const today = new Date(ymd + 'T00:00:00');
+      const dow   = today.getDay(); // 0=Sun,6=Sat
+      // Show today's birthdays; if Friday also show Sat+Sun birthdays
+      const checkDays = [{ day: today.getDate(), month: today.getMonth()+1 }];
+      if (dow === 5) { // Friday — also show weekend birthdays
+        const sat = new Date(today); sat.setDate(today.getDate()+1);
+        const sun = new Date(today); sun.setDate(today.getDate()+2);
+        checkDays.push({ day: sat.getDate(), month: sat.getMonth()+1 });
+        checkDays.push({ day: sun.getDate(), month: sun.getMonth()+1 });
+      }
+      const snap = await getDocs(collection(db, 'birthdays'));
+      const allBdays = [];
+      snap.forEach(d => allBdays.push(d.data()));
+
+      const todayBdays   = allBdays.filter(b => b.day === checkDays[0].day && b.month === checkDays[0].month);
+      const weekendBdays = dow === 5 ? allBdays.filter(b =>
+        checkDays.slice(1).some(cd => b.day === cd.day && b.month === cd.month)
+      ) : [];
+
+      const wrap = document.getElementById('k-birthdays-wrap');
+      const el   = document.getElementById('k-birthdays');
+      if (!todayBdays.length && !weekendBdays.length) { wrap.style.display = 'none'; return; }
+
+      wrap.style.display = 'block';
+      const MONTHS = ['','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      el.innerHTML = [
+        ...todayBdays.map(b => `<div style="font-size:15px;font-weight:700;color:#f5ac1c;margin-bottom:4px">🎂 Happy Birthday ${escHtml(b.name)}!</div>`),
+        ...weekendBdays.map(b => `<div style="font-size:13px;font-weight:600;color:rgba(255,255,255,0.7);margin-bottom:4px">🎂 ${escHtml(b.name)} — ${b.day} ${MONTHS[b.month]} (weekend)</div>`)
+      ].join('');
+    } catch(e) { console.warn('kioskLoadBirthdays:', e); }
   }
 
   async function kioskLoadDaybook(ymd) {
@@ -4826,8 +4997,8 @@ const firebaseConfig = {
         noticesEl.innerHTML = '<div style="color:rgba(255,255,255,0.3);font-size:12px">No notices today.</div>';
       } else {
         noticesEl.innerHTML = items.map(item => `
-          <div style="display:flex;gap:8px;align-items:flex-start;background:rgba(255,255,255,0.04);border-radius:8px;padding:10px 12px;border-left:3px solid rgba(245,172,28,0.35)">
-            <div style="font-size:16px;color:rgba(255,255,255,0.85);line-height:1.4;font-weight:500">${escHtml(typeof item === 'string' ? item : (item.text||''))}</div>
+          <div style="display:flex;gap:8px;align-items:flex-start;background:rgba(255,255,255,0.05);border-radius:10px;padding:12px 14px;border-left:3px solid rgba(245,172,28,0.5)">
+            <div style="font-size:15px;color:rgba(255,255,255,0.9);line-height:1.5;font-weight:500">${escHtml(typeof item === 'string' ? item : (item.text||''))}</div>
           </div>`).join('');
       }
     } catch(e) {
@@ -5186,7 +5357,7 @@ const firebaseConfig = {
       ) b.classList.add('active');
     });
     if (view === 'tickets')  { renderDashboard(); renderAllTickets(allTickets); setupReportDropdowns(); }
-    if (view === 'admin')    loadAdminUsers();
+    if (view === 'admin')    { loadAdminUsers(); kioskConfigLoad(); bdayLoad(); }
     if (view === 'naplan' && !_npInited) { _npInited = true; npInitDashboard(); }
     if (view === 'meetings') meetingsInit();
     if (view === 'documents') docInit();
@@ -6695,11 +6866,23 @@ const firebaseConfig = {
       }
 
       // Add to allowlist
-      await setDoc(doc(db, 'allowed_users', email), {
-        email, name, role,
-        addedBy: currentUser.email,
-        addedAt: serverTimestamp()
-      });
+      const bdayDay   = document.getElementById('add-bday-day').value;
+      const bdayMonth = document.getElementById('add-bday-month').value;
+      const userData  = { email, name, role, addedBy: currentUser.email, addedAt: serverTimestamp() };
+      if (bdayDay && bdayMonth) {
+        userData.birthdayDay   = parseInt(bdayDay);
+        userData.birthdayMonth = parseInt(bdayMonth);
+      }
+      await setDoc(doc(db, 'allowed_users', email), userData);
+
+      // Also save to birthdays collection for kiosk
+      if (bdayDay && bdayMonth) {
+        await setDoc(doc(db, 'birthdays', email), {
+          name, email,
+          day:   parseInt(bdayDay),
+          month: parseInt(bdayMonth)
+        });
+      }
 
       // Send custom EmailJS invite — Firebase sendPasswordResetEmail silently fails
       // for accounts that don't yet exist in Firebase Auth. Direct them to Forgot Password.
@@ -8333,6 +8516,141 @@ const firebaseConfig = {
   window.docRemoveCategory     = docRemoveCategory;
 
   // ══════════════════════════════════════
+  // KIOSK CONFIGURATOR + BIRTHDAY MANAGER
+  // ══════════════════════════════════════
+  const MONTHS = ['','January','February','March','April','May','June','July','August','September','October','November','December'];
+
+  // ── Kiosk Config ──
+  async function kioskConfigLoad() {
+    try {
+      const snap = await getDoc(doc(db, 'kiosk_config', 'settings'));
+      if (snap.exists()) {
+        const d = snap.data();
+        const pbl  = document.getElementById('kiosk-pbl');
+        const crew = document.getElementById('kiosk-crew');
+        if (pbl)  pbl.value  = d.pbl  || '';
+        if (crew) crew.value = d.crew || '';
+      }
+    } catch(e) { console.warn('kioskConfigLoad:', e); }
+  }
+
+  async function kioskConfigSave() {
+    const pbl  = document.getElementById('kiosk-pbl').value.trim();
+    const crew = document.getElementById('kiosk-crew').value.trim();
+    const msg  = document.getElementById('kiosk-config-msg');
+    try {
+      await setDoc(doc(db, 'kiosk_config', 'settings'), { pbl, crew, updatedAt: serverTimestamp() });
+      msg.textContent = '✅ Saved!';
+      msg.style.display = 'inline';
+      setTimeout(() => msg.style.display = 'none', 3000);
+    } catch(e) {
+      msg.textContent = '❌ Error: ' + e.message;
+      msg.style.color = 'var(--red)';
+      msg.style.display = 'inline';
+    }
+  }
+
+  // ── Birthday Manager ──
+  let _allBirthdays = [];
+
+  async function bdayLoad() {
+    try {
+      const snap = await getDocs(collection(db, 'birthdays'));
+      _allBirthdays = [];
+      snap.forEach(d => _allBirthdays.push({ id: d.id, ...d.data() }));
+      _allBirthdays.sort((a,b) => a.month !== b.month ? a.month - b.month : a.day - b.day);
+      bdayRenderList();
+    } catch(e) { console.warn('bdayLoad:', e); }
+  }
+
+  function bdayRenderList() {
+    const el = document.getElementById('bday-list');
+    if (!el) return;
+    if (!_allBirthdays.length) {
+      el.innerHTML = '<div style="color:var(--subtext);font-size:13px">No birthdays added yet.</div>';
+      return;
+    }
+    el.innerHTML = _allBirthdays.map(b => `
+      <div style="display:flex;justify-content:space-between;align-items:center;background:var(--gray1);border-radius:8px;padding:10px 14px">
+        <div>
+          <span style="font-weight:700;font-size:14px">🎂 ${escHtml(b.name)}</span>
+          <span style="color:var(--subtext);font-size:12px;margin-left:10px">${b.day} ${MONTHS[b.month]}</span>
+        </div>
+        <button class="btn btn-sm btn-danger" style="font-size:11px" onclick="bdayDelete('${b.id}','${escHtml(b.name)}')">Remove</button>
+      </div>`).join('');
+  }
+
+  function bdayOpenAdd() {
+    document.getElementById('bday-add-name').value = '';
+    document.getElementById('bday-add-day').value  = '';
+    document.getElementById('bday-add-month').value = '';
+    hideEl('bday-add-error');
+    openModal('bday-add-modal');
+  }
+
+  async function bdaySaveAdd() {
+    const name  = document.getElementById('bday-add-name').value.trim();
+    const day   = parseInt(document.getElementById('bday-add-day').value);
+    const month = parseInt(document.getElementById('bday-add-month').value);
+    const errEl = document.getElementById('bday-add-error');
+    hideEl('bday-add-error');
+    if (!name)       { errEl.textContent = 'Please enter a name.'; showEl('bday-add-error'); return; }
+    if (!day||!month){ errEl.textContent = 'Please select a day and month.'; showEl('bday-add-error'); return; }
+    try {
+      const id = name.toLowerCase().replace(/\s+/g,'_') + '_' + Date.now();
+      await setDoc(doc(db, 'birthdays', id), { name, day, month });
+      closeModal('bday-add-modal');
+      showToast(`Birthday added for ${name}.`, 'success');
+      await bdayLoad();
+    } catch(e) {
+      errEl.textContent = 'Error: ' + e.message; showEl('bday-add-error');
+    }
+  }
+
+  async function bdayDelete(id, name) {
+    if (!confirm(`Remove birthday for ${name}?`)) return;
+    try {
+      await deleteDoc(doc(db, 'birthdays', id));
+      showToast(`Birthday removed for ${name}.`, 'success');
+      _allBirthdays = _allBirthdays.filter(b => b.id !== id);
+      bdayRenderList();
+    } catch(e) { showToast('Error: ' + e.message, 'error'); }
+  }
+
+  async function bdayBulkImport() {
+    const raw  = document.getElementById('bday-bulk-input').value.trim();
+    const msg  = document.getElementById('bday-import-msg');
+    if (!raw) return;
+    const lines = raw.split('
+').filter(l => l.trim());
+    let ok = 0, fail = 0;
+    for (const line of lines) {
+      const parts = line.split(',').map(p => p.trim());
+      if (parts.length < 3) { fail++; continue; }
+      const name  = parts[0];
+      const day   = parseInt(parts[1]);
+      const month = parseInt(parts[2]);
+      if (!name || isNaN(day) || isNaN(month) || day < 1 || day > 31 || month < 1 || month > 12) { fail++; continue; }
+      try {
+        const id = name.toLowerCase().replace(/\s+/g,'_') + '_bday';
+        await setDoc(doc(db, 'birthdays', id), { name, day, month });
+        ok++;
+      } catch(e) { fail++; }
+    }
+    msg.textContent = `✅ ${ok} imported${fail ? ', ❌ ' + fail + ' skipped (check format)' : ''}.`;
+    msg.style.color = ok > 0 ? 'green' : 'red';
+    msg.style.display = 'block';
+    document.getElementById('bday-bulk-input').value = '';
+    await bdayLoad();
+  }
+
+  window.kioskConfigSave = kioskConfigSave;
+  window.bdayOpenAdd     = bdayOpenAdd;
+  window.bdaySaveAdd     = bdaySaveAdd;
+  window.bdayDelete      = bdayDelete;
+  window.bdayBulkImport  = bdayBulkImport;
+
+  // ══════════════════════════════════════
   // TRT (RELIEVING TEACHER) MODULE
   // ══════════════════════════════════════
   function trtEnter() {
@@ -8563,6 +8881,11 @@ const firebaseConfig = {
   function docOpenManageCategories()      { if (window.docOpenManageCategories)     window.docOpenManageCategories(); }
   function docAddCategory()               { if (window.docAddCategory)              window.docAddCategory(); }
   function docRemoveCategory(n)           { if (window.docRemoveCategory)           window.docRemoveCategory(n); }
+  function kioskConfigSave()              { if (window.kioskConfigSave)             window.kioskConfigSave(); }
+  function bdayOpenAdd()                  { if (window.bdayOpenAdd)                 window.bdayOpenAdd(); }
+  function bdaySaveAdd()                  { if (window.bdaySaveAdd)                 window.bdaySaveAdd(); }
+  function bdayDelete(id,n)               { if (window.bdayDelete)                  window.bdayDelete(id,n); }
+  function bdayBulkImport()               { if (window.bdayBulkImport)              window.bdayBulkImport(); }
   function trtEnter()                     { if (window.trtEnter)                    window.trtEnter(); }
   function trtExit()                      { if (window.trtExit)                     window.trtExit(); }
   function dbAttachSetMode(m)             { if (window.dbAttachSetMode)             window.dbAttachSetMode(m); }

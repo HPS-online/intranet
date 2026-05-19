@@ -4731,18 +4731,17 @@ const firebaseConfig = {
   // ══════════════════════════════════════
   // DOM EVENT LISTENERS
   // ══════════════════════════════════════
+  // Safely attach event listeners — guard each with null check
+  const _safeOn = (id, ev, fn) => { const el = document.getElementById(id); if (el) el.addEventListener(ev, fn); };
   if (!window.KIOSK_MODE) {
-    document.getElementById('sign-in-btn').addEventListener('click', doLogin);
-    document.getElementById('reset-link').addEventListener('click', (e) => { e.preventDefault(); doReset(); });
-    document.getElementById('sign-out-btn').addEventListener('click', doLogout);
-    document.getElementById('login-password').addEventListener('keydown', (e) => { if (e.key === 'Enter') doLogin(); });
-    document.getElementById('login-newpass').addEventListener('keydown', (e) => { if (e.key === 'Enter') doLogin(); });
-    document.getElementById('login-confirmpass').addEventListener('keydown', (e) => { if (e.key === 'Enter') doLogin(); });
-    document.getElementById('login-email').addEventListener('keydown', (e) => { if (e.key === 'Enter') checkEmailForSetup(); });
-  } else {
-    // Kiosk — only need sign-out
-    document.getElementById('sign-out-btn').addEventListener('click', doLogout);
+    _safeOn('sign-in-btn',      'click',   doLogin);
+    _safeOn('login-reset-link', 'click',   (e) => { e.preventDefault(); doReset(); });
+    _safeOn('login-password',   'keydown', (e) => { if (e.key === 'Enter') doLogin(); });
+    _safeOn('login-newpass',    'keydown', (e) => { if (e.key === 'Enter') doLogin(); });
+    _safeOn('login-confirmpass','keydown', (e) => { if (e.key === 'Enter') doLogin(); });
+    _safeOn('login-email',      'keydown', (e) => { if (e.key === 'Enter') checkEmailForSetup(); });
   }
+  _safeOn('sign-out-btn', 'click', doLogout);
 
   // ══════════════════════════════════════
   // AUTH STATE

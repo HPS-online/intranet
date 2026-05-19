@@ -7736,7 +7736,7 @@ const firebaseConfig = {
         ${uploadedStr ? `<div style="font-size:11px;color:var(--subtext)">Uploaded ${uploadedStr}${d.uploadedBy ? ' · ' + escHtml(d.uploadedBy) : ''}</div>` : ''}
         <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:auto">
           <button class="btn btn-sm btn-gold" style="font-size:12px" onclick="docPreview('${d.id}')">👁 Preview</button>
-          <button class="btn btn-sm btn-outline" style="font-size:12px;color:var(--navy)" onclick="downloadFile('${escHtml(d.url)}','${escHtml(d.fileName||d.title)}')">⬇ Download</button>
+          <button class="btn btn-sm btn-outline" style="font-size:12px;color:var(--navy)" onclick="downloadFile(this.dataset.url,this.dataset.name)" data-url="${escHtml(d.url)}" data-name="${escHtml(d.fileName||d.title)}">⬇ Download</button>
           ${canDelete ? `<button class="btn btn-sm btn-danger" style="font-size:11px;margin-left:auto" onclick="docDelete('${d.id}','${escHtml(d.storagePath||'')}','${escHtml(d.title)}')">🗑</button>` : ''}
         </div>
       </div>`;

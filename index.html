@@ -5081,18 +5081,45 @@ const firebaseConfig = {
       try {
         await signInWithEmailAndPassword(auth, email, pass);
       } catch(e) {
-        // If user not found, check allowlist and offer account creation
+        // Firebase returns invalid-credential for both wrong password AND missing account.
+        // Check allowlist to distinguish: if not in allowlist → wrong password or not approved.
+        // If in allowlist but Firebase rejects → likely no account yet → show setup.
         if (e.code === 'auth/user-not-found' || e.code === 'auth/invalid-credential') {
           const allowed = await isUserAllowed(email);
           if (allowed) {
-            window._loginSetupMode = true;
-            document.getElementById('login-setup-welcome').textContent =
-              'Welcome, ' + (allowed.name || email.split('@')[0]) + '!';
-            document.getElementById('login-pass-group').style.display  = 'none';
-            document.getElementById('login-setup-group').style.display = 'block';
-            document.getElementById('login-reset-link').style.display  = 'none';
-            document.getElementById('sign-in-btn').textContent = 'Create Account & Sign In';
-            document.getElementById('login-newpass').focus();
+            // Check if they actually have a Firebase Auth account by trying a dummy sign-in
+            // If we get invalid-credential AND they're in allowlist, could be wrong password.
+            // Use a secondary check: try createUser — if it fails with email-already-in-use,
+            // they have an account (wrong password). If it succeeds or fails differently, no account.
+            try {
+              // Attempt to create — will throw email-already-in-use if account exists
+              const tempCred = await createUserWithEmailAndPassword(auth, email, 'TEMP_CHECK_' + Date.now());
+              // If we get here, account was just created — delete it and show setup properly
+              await tempCred.user.delete();
+              window._loginSetupMode = true;
+              document.getElementById('login-setup-welcome').textContent =
+                'Welcome, ' + (allowed.name || email.split('@')[0]) + '!';
+              document.getElementById('login-pass-group').style.display  = 'none';
+              document.getElementById('login-setup-group').style.display = 'block';
+              document.getElementById('login-reset-link').style.display  = 'none';
+              document.getElementById('sign-in-btn').textContent = 'Create Account & Sign In';
+              document.getElementById('login-newpass').focus();
+            } catch(createErr) {
+              if (createErr.code === 'auth/email-already-in-use') {
+                // Account exists — wrong password
+                showAuthError('login-error', 'Incorrect password. Try again or use Forgot password.');
+              } else {
+                // Something else — show setup anyway
+                window._loginSetupMode = true;
+                document.getElementById('login-setup-welcome').textContent =
+                  'Welcome, ' + (allowed.name || email.split('@')[0]) + '!';
+                document.getElementById('login-pass-group').style.display  = 'none';
+                document.getElementById('login-setup-group').style.display = 'block';
+                document.getElementById('login-reset-link').style.display  = 'none';
+                document.getElementById('sign-in-btn').textContent = 'Create Account & Sign In';
+                document.getElementById('login-newpass').focus();
+              }
+            }
           } else {
             showAuthError('login-error', 'This email has not been approved. Please contact your administrator.');
           }

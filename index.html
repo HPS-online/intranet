@@ -3464,9 +3464,10 @@ const firebaseConfig = {
   }
 
   async function loadHomeDaybookPreview() {
+    const el = document.getElementById('home-daybook-preview');
+    if (!el) return;
     const dateKey = daybookDateKey(new Date());
     const snap = await getDoc(doc(db, 'daybook', dateKey));
-    const el = document.getElementById('home-daybook-preview');
     if (!snap.exists()) {
       el.innerHTML = '<div class="db-empty">No daybook entry yet for today. <a href="#" onclick="showView(\'daybook\')">Add one →</a></div>';
       return;
@@ -4031,8 +4032,10 @@ const firebaseConfig = {
   }
 
   async function daybookLoad() {
+    const _savebar = document.getElementById('daybook-save-bar');
+    if (!_savebar) return; // daybook view not active
     daybookIsEditing = false;
-    document.getElementById('daybook-save-bar').style.display = 'none';
+    _savebar.style.display = 'none';
     document.getElementById('daybook-add-btn').style.display = 'none';
     document.getElementById('daybook-edit-btn').textContent = '✏️ Edit';
     const label = document.getElementById('daybook-nav-label');

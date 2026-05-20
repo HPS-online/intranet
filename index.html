@@ -1640,78 +1640,6 @@
 <!-- ════════════════════════════════════════
      AUTH SCREEN
 ════════════════════════════════════════ -->
-<!-- ══════════════════════════════════════ -->
-<!-- KIOSK DISPLAY SCREEN (?kiosk=true)   -->
-<!-- ══════════════════════════════════════ -->
-<div id="kiosk-screen" style="display:none;position:fixed;inset:0;background:#0f1535;font-family:'Montserrat',sans-serif;color:#fff;overflow:hidden;z-index:9999">
-
-  <!-- Header bar -->
-  <div style="background:linear-gradient(90deg,#1a2057 0%,#242b63 100%);border-bottom:3px solid #f5ac1c;padding:0 32px;height:68px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0">
-    <div>
-      <div style="font-size:10px;font-weight:700;letter-spacing:2px;color:#f5ac1c;text-transform:uppercase">Highbury Primary School</div>
-      <div style="font-size:20px;font-weight:800;letter-spacing:0.5px">Daily Organisation</div>
-    </div>
-    <div style="display:flex;align-items:center;gap:20px">
-      <div style="display:flex;align-items:center;gap:10px;background:rgba(255,255,255,0.07);border-radius:12px;padding:7px 18px">
-        <div style="font-size:11px;font-weight:700;letter-spacing:1px;color:rgba(255,255,255,0.4);text-transform:uppercase">UV</div>
-        <div id="k-uv-number" style="font-size:26px;font-weight:800;line-height:1;color:#f5ac1c">—</div>
-        <div id="k-uv-label" style="font-size:14px;font-weight:700;color:rgba(255,255,255,0.65)">Loading…</div>
-        <div id="k-hat-rule" style="font-size:13px;font-weight:700;color:#f5ac1c;display:none;padding-left:6px;border-left:1px solid rgba(255,255,255,0.2);margin-left:4px">🧢 Hats on</div>
-      </div>
-      <div style="width:1px;height:32px;background:rgba(255,255,255,0.12)"></div>
-      <div id="k-pbl-header" style="display:none;max-width:320px">
-        <div style="font-size:9px;font-weight:700;letter-spacing:1.5px;color:rgba(255,255,255,0.4);text-transform:uppercase;margin-bottom:2px">PBL Focus</div>
-        <div id="k-pbl-header-text" style="font-size:13px;font-weight:700;color:#f5ac1c;white-space:nowrap;overflow:hidden;text-overflow:ellipsis"></div>
-      </div>
-      <div style="width:1px;height:32px;background:rgba(255,255,255,0.12)"></div>
-      <div id="k-termweek" style="background:rgba(245,172,28,0.15);border:1px solid rgba(245,172,28,0.4);border-radius:20px;padding:5px 16px;font-size:14px;font-weight:700;color:#f5ac1c"></div>
-      <div id="k-date" style="font-size:15px;font-weight:700;color:rgba(255,255,255,0.8)"></div>
-      <div id="k-time" style="font-size:26px;font-weight:800;color:#fff;min-width:80px;text-align:right"></div>
-    </div>
-  </div>
-
-  <!-- Main content -->
-  <div style="display:grid;grid-template-columns:1fr 340px;gap:0;height:calc(100vh - 68px)">
-
-    <!-- CENTRE: absences + notices -->
-    <div style="display:flex;flex-direction:column;overflow:hidden;border-right:1px solid rgba(255,255,255,0.08)">
-      <div style="padding:22px 32px 18px;border-bottom:1px solid rgba(255,255,255,0.08)">
-        <div style="font-size:11px;font-weight:700;letter-spacing:2px;color:rgba(255,255,255,0.4);text-transform:uppercase;margin-bottom:12px">Staff Absences &amp; Duties</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:12px;margin-bottom:10px;padding:0 2px">
-          <div style="font-size:13px;font-weight:700;color:#f5ac1c;text-transform:uppercase;letter-spacing:1px">Absent</div>
-          <div style="font-size:13px;font-weight:700;color:#f5ac1c;text-transform:uppercase;letter-spacing:1px">Reliever</div>
-          <div style="font-size:13px;font-weight:700;color:#f5ac1c;text-transform:uppercase;letter-spacing:1px">Duty</div>
-          <div style="font-size:13px;font-weight:700;color:#f5ac1c;text-transform:uppercase;letter-spacing:1px">NIT Coverage</div>
-        </div>
-        <div style="overflow:hidden;position:relative">
-          <div id="k-absences-track" style="display:flex;flex-direction:column;gap:6px;width:100%;transition:transform 0.8s ease">
-            <div style="color:rgba(255,255,255,0.3);font-size:16px;padding:12px 0">Loading…</div>
-          </div>
-        </div>
-      </div>
-      <div style="flex:1;padding:18px 32px 20px;overflow:hidden;display:flex;flex-direction:column">
-        <div style="font-size:11px;font-weight:700;letter-spacing:2px;color:rgba(255,255,255,0.4);text-transform:uppercase;margin-bottom:12px">Daily Notices</div>
-        <div id="k-notices" style="display:flex;flex-direction:column;gap:8px;overflow:hidden"></div>
-      </div>
-    </div>
-
-    <!-- RIGHT: events + birthdays + crew -->
-    <div style="background:#161d45;padding:22px 20px;display:flex;flex-direction:column;overflow:hidden;gap:0">
-      <div style="font-size:11px;font-weight:700;letter-spacing:2px;color:rgba(255,255,255,0.4);text-transform:uppercase;margin-bottom:14px">Still To Come This Week</div>
-      <div id="k-events" style="display:flex;flex-direction:column;gap:8px;overflow:hidden;flex:1;min-height:0"></div>
-      <div id="k-birthdays-wrap" style="display:none;margin-top:16px;border-top:1px solid rgba(255,255,255,0.08);padding-top:14px">
-        <div style="font-size:11px;font-weight:700;letter-spacing:2px;color:rgba(255,255,255,0.4);text-transform:uppercase;margin-bottom:10px">🎂 Birthdays</div>
-        <div id="k-birthdays"></div>
-      </div>
-      <div id="k-crew-wrap" style="display:none;margin-top:16px;border-top:1px solid rgba(255,255,255,0.08);padding-top:14px">
-        <div style="font-size:11px;font-weight:700;letter-spacing:2px;color:rgba(255,255,255,0.4);text-transform:uppercase;margin-bottom:10px">🧹 Clean-Up Crew</div>
-        <div id="k-crew" style="display:flex;flex-direction:column;gap:6px"></div>
-      </div>
-    </div>
-  </div>
-</div>
-<!-- END KIOSK SCREEN -->
-
 <div id="auth-screen">
 
   <!-- LEFT — branding panel -->
@@ -1787,6 +1715,7 @@
         <button class="nav-btn" onclick="showView('planner')">Planner</button>
         <button class="nav-btn" onclick="showView('timetables')">Timetables</button>
         <button class="nav-btn" onclick="showView('tickets')">Lodge a Ticket</button>
+        <button class="nav-btn" onclick="showView('naplan')">NAPLAN Data</button>
         <button class="nav-btn" onclick="showView('meetings')">Meetings</button>
         <button class="nav-btn" onclick="showView('documents')">Documents</button>
         <button class="nav-btn" onclick="showView('suggest')">Suggest an Edit</button>
@@ -1838,7 +1767,7 @@
           <div class="tile-label">Seesaw</div>
         </div>
         <div class="quick-tile" onclick="window.open('https://www.edpass.sa.edu.au','_blank')">
-          <div class="tile-icon" style="display:flex;align-items:center;justify-content:font-size:22px;">
+          <div class="tile-icon" style="display:flex;align-items:center;justify-content:center;font-size:22px;">
             <span style="font-family:'Montserrat',sans-serif;font-weight:800;color:#1a3a5c;font-size:15px;letter-spacing:-0.5px;">Ed<span style="color:#4caf50;">Pass</span></span>
           </div>
           <div class="tile-label">EdPass</div>
@@ -1871,8 +1800,8 @@
               <div class="uv-widget-title">☀️ UV Index — Adelaide</div>
               <div class="uv-widget-loc" id="uv-updated"></div>
             </div>
-            <!-- Two panels stacked -->
-            <div style="display:grid;grid-template-columns:1fr;gap:10px;">
+            <!-- Two panels side by side -->
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
               <!-- Live UV -->
               <div>
                 <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:rgba(255,255,255,0.4);margin-bottom:8px;">Live Reading</div>
@@ -1888,7 +1817,7 @@
                 <div class="uv-scale-labels"><span>0</span><span>3</span><span>6</span><span>8</span><span>11+</span></div>
               </div>
               <!-- Daily Max UV -->
-              <div style="border-top:1px solid rgba(255,255,255,0.1);padding-top:10px;">
+              <div style="border-left:1px solid rgba(255,255,255,0.1);padding-left:14px;">
                 <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:rgba(255,255,255,0.4);margin-bottom:8px;">Today's Max</div>
                 <div class="uv-main">
                   <div class="uv-index" id="uv-max-index">—</div>
@@ -2528,6 +2457,728 @@
 
     </div>
 
+    <!-- ── NAPLAN DATA VIEW ── -->
+    <div id="view-naplan" class="view">
+      <div class="page-header">
+        <h2>NAPLAN Data</h2>
+        <p>2026 Preliminary Analysis — Year 3 &amp; Year 5 · Internal staff reference</p>
+      </div>
+
+      <!-- Scoped NAPLAN styles -->
+      <style>
+        #naplan-shell {
+          font-family: 'DM Sans', 'Montserrat', sans-serif;
+        }
+        #naplan-shell .np-header {
+          background: linear-gradient(135deg, #0B1D3A 0%, #14294D 60%, #1C3461 100%);
+          color: white;
+          padding: 2rem 2rem 1.75rem;
+          border-radius: 12px;
+          position: relative;
+          overflow: hidden;
+          margin-bottom: 1.25rem;
+        }
+        #naplan-shell .np-header::after {
+          content: '';
+          position: absolute;
+          top: -50%; right: -10%;
+          width: 350px; height: 350px;
+          border-radius: 50%;
+          background: radial-gradient(circle, rgba(212,168,67,0.12) 0%, transparent 70%);
+        }
+        #naplan-shell .np-header h1 {
+          font-size: 1.5rem;
+          font-weight: 800;
+          letter-spacing: -0.02em;
+          margin-bottom: 0.2rem;
+        }
+        #naplan-shell .np-header .np-subtitle { font-size: 0.9rem; opacity: 0.7; }
+        #naplan-shell .np-header .np-badge {
+          display: inline-block;
+          background: rgba(212,168,67,0.2);
+          border: 1px solid rgba(212,168,67,0.4);
+          color: #E8C97A;
+          padding: 0.2rem 0.75rem;
+          border-radius: 20px;
+          font-size: 0.72rem;
+          font-weight: 600;
+          margin-top: 0.6rem;
+          letter-spacing: 0.03em;
+        }
+        #naplan-shell .np-tabs {
+          display: flex;
+          gap: 0.5rem;
+          margin-bottom: 1.25rem;
+          flex-wrap: wrap;
+        }
+        #naplan-shell .np-tab {
+          padding: 0.55rem 1.1rem;
+          border: 2px solid #e2e6ef;
+          border-radius: 8px;
+          background: white;
+          cursor: pointer;
+          font-family: inherit;
+          font-size: 0.82rem;
+          font-weight: 600;
+          color: #5a6480;
+          transition: all 0.2s;
+        }
+        #naplan-shell .np-tab:hover { border-color: #242b63; color: #242b63; }
+        #naplan-shell .np-tab.active { background: #242b63; color: white; border-color: #242b63; }
+        #naplan-shell .np-panel { display: none; }
+        #naplan-shell .np-panel.active { display: block; }
+        #naplan-shell .np-grid { display: grid; gap: 1.1rem; }
+        #naplan-shell .np-grid-2 { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+        #naplan-shell .np-grid-4 { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+        #naplan-shell .np-card {
+          background: white;
+          border-radius: 12px;
+          padding: 1.4rem;
+          box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+          border: 1px solid #f2f4f8;
+          margin-bottom: 1.1rem;
+        }
+        #naplan-shell .np-card-header {
+          font-size: 0.72rem;
+          font-weight: 600;
+          text-transform: uppercase;
+          letter-spacing: 0.06em;
+          color: #9aa3b8;
+          margin-bottom: 0.6rem;
+        }
+        #naplan-shell .np-card h3 {
+          font-size: 1.1rem;
+          font-weight: 700;
+          color: #0B1D3A;
+          margin-bottom: 0.9rem;
+        }
+        #naplan-shell .np-highlight-card {
+          background: linear-gradient(135deg, #0B1D3A 0%, #14294D 100%);
+          color: white;
+          border: none;
+        }
+        #naplan-shell .np-highlight-card .np-card-header { color: #E8C97A; }
+        #naplan-shell .np-highlight-card .np-stat-big { color: #D4A843; }
+        #naplan-shell .np-highlight-card .np-stat-label { color: rgba(255,255,255,0.7); }
+        #naplan-shell .np-stat-big {
+          font-size: 2.6rem;
+          font-weight: 800;
+          line-height: 1;
+        }
+        #naplan-shell .np-stat-label {
+          font-size: 0.78rem;
+          color: #6B7280;
+          margin-top: 0.2rem;
+        }
+        #naplan-shell .np-bar-chart { margin-top: 0.6rem; }
+        #naplan-shell .np-bar-row {
+          display: flex;
+          align-items: center;
+          margin-bottom: 0.55rem;
+          gap: 0.7rem;
+        }
+        #naplan-shell .np-bar-label {
+          width: 90px;
+          font-size: 0.76rem;
+          font-weight: 600;
+          color: #374151;
+          text-align: right;
+          flex-shrink: 0;
+        }
+        #naplan-shell .np-bar-track {
+          flex: 1;
+          height: 26px;
+          background: #F0F1F3;
+          border-radius: 6px;
+          overflow: hidden;
+          display: flex;
+        }
+        #naplan-shell .np-bar-seg {
+          height: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 0.68rem;
+          font-weight: 700;
+          color: white;
+          min-width: 0;
+        }
+        #naplan-shell .np-bar-seg.exc { background: #1A7A42; }
+        #naplan-shell .np-bar-seg.str { background: #2E86C1; }
+        #naplan-shell .np-bar-seg.dev { background: #D4A843; color: #0B1D3A; }
+        #naplan-shell .np-bar-seg.nas { background: #C0392B; }
+        #naplan-shell .np-bar-seg.exm { background: #9CA3AF; }
+        #naplan-shell .np-legend {
+          display: flex;
+          gap: 1rem;
+          margin-bottom: 0.9rem;
+          flex-wrap: wrap;
+        }
+        #naplan-shell .np-legend-item {
+          display: flex;
+          align-items: center;
+          gap: 0.35rem;
+          font-size: 0.7rem;
+          font-weight: 500;
+          color: #6B7280;
+        }
+        #naplan-shell .np-legend-dot {
+          width: 10px; height: 10px;
+          border-radius: 3px;
+        }
+        #naplan-shell .np-section-title {
+          font-size: 1.1rem;
+          font-weight: 700;
+          color: #0B1D3A;
+          margin: 1.5rem 0 0.9rem;
+          padding-bottom: 0.45rem;
+          border-bottom: 2px solid #D4A843;
+        }
+        #naplan-shell .np-table-wrap { overflow-x: auto; }
+        #naplan-shell .np-table {
+          width: 100%;
+          border-collapse: collapse;
+          font-size: 0.76rem;
+        }
+        #naplan-shell .np-table th {
+          background: #0B1D3A;
+          color: white;
+          padding: 0.55rem 0.7rem;
+          text-align: left;
+          font-weight: 600;
+          font-size: 0.7rem;
+          text-transform: uppercase;
+          letter-spacing: 0.04em;
+          white-space: nowrap;
+        }
+        #naplan-shell .np-table td {
+          padding: 0.45rem 0.7rem;
+          border-bottom: 1px solid #F0F1F3;
+        }
+        #naplan-shell .np-table tr:hover td { background: #F8F9FA; }
+        #naplan-shell .np-pill {
+          display: inline-block;
+          padding: 0.13rem 0.45rem;
+          border-radius: 4px;
+          font-size: 0.68rem;
+          font-weight: 700;
+          text-align: center;
+          min-width: 34px;
+        }
+        #naplan-shell .np-pill.exc { background: #D5F0E0; color: #1A7A42; }
+        #naplan-shell .np-pill.str { background: #E8F4FD; color: #2E86C1; }
+        #naplan-shell .np-pill.dev { background: #FFF5DC; color: #8B6914; }
+        #naplan-shell .np-pill.nas { background: #FDECEB; color: #C0392B; }
+        #naplan-shell .np-pill.exm { background: #F0F1F3; color: #6B7280; }
+        #naplan-shell .np-si {
+          padding: 0.65rem;
+          border-radius: 8px;
+          margin-bottom: 0.45rem;
+          border-left: 3px solid;
+        }
+        #naplan-shell .np-si.strength { background: #E8F5EE; border-color: #2D9D5E; }
+        #naplan-shell .np-si.growth   { background: #FFF3E0; border-color: #E0942B; }
+        #naplan-shell .np-si .np-si-title { font-size: 0.78rem; font-weight: 700; color: #0B1D3A; }
+        #naplan-shell .np-si .np-si-detail { font-size: 0.73rem; color: #6B7280; margin-top: 0.12rem; }
+        #naplan-shell .np-si .np-si-stat { font-weight: 700; font-size: 1rem; margin-top: 0.12rem; }
+        #naplan-shell .np-context-box {
+          border-left: 4px solid #D4A843;
+          background: #FFF5DC;
+          border-radius: 8px;
+          padding: 1rem 1.1rem;
+          margin-top: 1.1rem;
+          font-size: 0.78rem;
+          color: #374151;
+          line-height: 1.6;
+        }
+        #naplan-shell .np-arrow-pill {
+          font-weight: 700;
+          padding: 0.1rem 0.35rem;
+          border-radius: 3px;
+          font-size: 0.68rem;
+        }
+        #naplan-shell .np-footer {
+          text-align: center;
+          padding: 1.5rem;
+          color: #9CA3AF;
+          font-size: 0.7rem;
+          margin-top: 0.5rem;
+        }
+      </style>
+
+      <div id="naplan-shell">
+        <!-- Header -->
+        <div class="np-header">
+          <h1>Highbury Primary School</h1>
+          <div class="np-subtitle">2026 NAPLAN Preliminary Data Analysis — Year 3 &amp; Year 5</div>
+          <div class="np-badge">INTERNAL — STAFF REFERENCE</div>
+        </div>
+
+        <!-- Tab bar -->
+        <div class="np-tabs">
+          <button class="np-tab active" onclick="npShowPanel('overview',this)">Overview</button>
+          <button class="np-tab" onclick="npShowPanel('longitudinal',this)">📈 Growth Over Time</button>
+          <button class="np-tab" onclick="npShowPanel('trends',this)">📊 3-Year Trends</button>
+          <button class="np-tab" onclick="npShowPanel('y3',this)">Year 3 Detail</button>
+          <button class="np-tab" onclick="npShowPanel('y5',this)">Year 5 Detail</button>
+          <button class="np-tab" onclick="npShowPanel('strengths',this)">Strengths &amp; Standouts</button>
+          <button class="np-tab" onclick="npShowPanel('growth',this)">Areas for Growth</button>
+          <button class="np-tab" onclick="npShowPanel('students',this)">Student Cross-Domain</button>
+        </div>
+
+        <!-- ===== OVERVIEW ===== -->
+        <div class="np-panel active" id="np-panel-overview">
+          <div class="np-grid np-grid-4" style="margin-bottom:1.1rem">
+            <div class="np-card np-highlight-card">
+              <div class="np-card-header">Year 3 Cohort</div>
+              <div class="np-stat-big">71</div>
+              <div class="np-stat-label">students enrolled<br>53–54 participated per test</div>
+            </div>
+            <div class="np-card np-highlight-card">
+              <div class="np-card-header">Year 5 Cohort</div>
+              <div class="np-stat-big">62</div>
+              <div class="np-stat-label">students enrolled<br>55 participated per test</div>
+            </div>
+            <div class="np-card">
+              <div class="np-card-header">Y5 Strong or Above</div>
+              <div class="np-stat-big" style="color:#2E86C1">74%</div>
+              <div class="np-stat-label">average across 4 domains</div>
+            </div>
+            <div class="np-card">
+              <div class="np-card-header">Y3 Strong or Above</div>
+              <div class="np-stat-big" style="color:#2E86C1">58%</div>
+              <div class="np-stat-label">average across 4 domains</div>
+            </div>
+          </div>
+          <div class="np-card">
+            <h3>Proficiency Band Distribution — All Domains</h3>
+            <div class="np-legend">
+              <div class="np-legend-item"><div class="np-legend-dot" style="background:#1A7A42"></div>Exceeding</div>
+              <div class="np-legend-item"><div class="np-legend-dot" style="background:#2E86C1"></div>Strong</div>
+              <div class="np-legend-item"><div class="np-legend-dot" style="background:#D4A843"></div>Developing</div>
+              <div class="np-legend-item"><div class="np-legend-dot" style="background:#C0392B"></div>Needs Additional Support</div>
+              <div class="np-legend-item"><div class="np-legend-dot" style="background:#9CA3AF"></div>Exempt</div>
+            </div>
+            <div class="np-bar-chart" id="np-overview-bars"></div>
+          </div>
+          <div class="np-grid np-grid-2">
+            <div class="np-card">
+              <h3>Year 3 — % Strong or Above</h3>
+              <div class="np-bar-chart" id="np-y3-strong-bars"></div>
+            </div>
+            <div class="np-card">
+              <h3>Year 5 — % Strong or Above</h3>
+              <div class="np-bar-chart" id="np-y5-strong-bars"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== LONGITUDINAL ===== -->
+        <div class="np-panel" id="np-panel-longitudinal">
+          <div class="np-grid np-grid-4" style="margin-bottom:1.1rem">
+            <div class="np-card np-highlight-card">
+              <div class="np-card-header">Students Tracked</div>
+              <div class="np-stat-big">52</div>
+              <div class="np-stat-label">matched 2024 Y3 → 2026 Y5<br>same students, two years on</div>
+            </div>
+            <div class="np-card np-highlight-card">
+              <div class="np-card-header">Strong+ in All 4 Domains</div>
+              <div class="np-stat-big">51%</div>
+              <div class="np-stat-label">28 of 55 Y5 students in 2026<br>up from a much lower 2024 base</div>
+            </div>
+            <div class="np-card">
+              <div class="np-card-header">Biggest Growth Domain</div>
+              <div class="np-stat-big" style="color:#2D9D5E">+20pp</div>
+              <div class="np-stat-label">Reading: 58% → 78% Strong+</div>
+            </div>
+            <div class="np-card">
+              <div class="np-card-header">Numeracy Stability</div>
+              <div class="np-stat-big" style="color:#2E86C1">96%</div>
+              <div class="np-stat-label">maintained or improved<br>in Numeracy</div>
+            </div>
+          </div>
+          <div class="np-grid np-grid-4" style="margin-bottom:1.1rem">
+            <div class="np-card" style="border-top:4px solid #2D9D5E">
+              <div class="np-card-header">Grammar &amp; Punctuation</div>
+              <div style="display:flex;align-items:baseline;gap:0.5rem;margin:0.4rem 0">
+                <span style="font-size:1.3rem;color:#9CA3AF;font-weight:700">41%</span>
+                <span style="color:#9CA3AF">→</span>
+                <span style="font-size:1.8rem;color:#2D9D5E;font-weight:800">60%</span>
+                <span style="font-size:0.78rem;font-weight:700;color:#2D9D5E;background:#E8F5EE;padding:0.1rem 0.35rem;border-radius:4px">+19pp</span>
+              </div>
+              <div style="font-size:0.72rem;color:#6B7280">17 of 52 students improved · 6 declined</div>
+            </div>
+            <div class="np-card" style="border-top:4px solid #2D9D5E">
+              <div class="np-card-header">Reading</div>
+              <div style="display:flex;align-items:baseline;gap:0.5rem;margin:0.4rem 0">
+                <span style="font-size:1.3rem;color:#9CA3AF;font-weight:700">58%</span>
+                <span style="color:#9CA3AF">→</span>
+                <span style="font-size:1.8rem;color:#2D9D5E;font-weight:800">78%</span>
+                <span style="font-size:0.78rem;font-weight:700;color:#2D9D5E;background:#E8F5EE;padding:0.1rem 0.35rem;border-radius:4px">+20pp</span>
+              </div>
+              <div style="font-size:0.72rem;color:#6B7280">18 of 52 students improved · 5 declined</div>
+            </div>
+            <div class="np-card" style="border-top:4px solid #2E86C1">
+              <div class="np-card-header">Numeracy</div>
+              <div style="display:flex;align-items:baseline;gap:0.5rem;margin:0.4rem 0">
+                <span style="font-size:1.3rem;color:#9CA3AF;font-weight:700">72%</span>
+                <span style="color:#9CA3AF">→</span>
+                <span style="font-size:1.8rem;color:#2E86C1;font-weight:800">80%</span>
+                <span style="font-size:0.78rem;font-weight:700;color:#2E86C1;background:#E8F4FD;padding:0.1rem 0.35rem;border-radius:4px">+8pp</span>
+              </div>
+              <div style="font-size:0.72rem;color:#6B7280">11 of 51 improved · only 2 declined</div>
+            </div>
+            <div class="np-card" style="border-top:4px solid #2D9D5E">
+              <div class="np-card-header">Spelling</div>
+              <div style="display:flex;align-items:baseline;gap:0.5rem;margin:0.4rem 0">
+                <span style="font-size:1.3rem;color:#9CA3AF;font-weight:700">66%</span>
+                <span style="color:#9CA3AF">→</span>
+                <span style="font-size:1.8rem;color:#2D9D5E;font-weight:800">78%</span>
+                <span style="font-size:0.78rem;font-weight:700;color:#2D9D5E;background:#E8F5EE;padding:0.1rem 0.35rem;border-radius:4px">+12pp</span>
+              </div>
+              <div style="font-size:0.72rem;color:#6B7280">9 of 52 improved · 6 declined</div>
+            </div>
+          </div>
+          <div class="np-section-title">Individual Student Trajectories — 2024 Year 3 → 2026 Year 5</div>
+          <div class="np-card">
+            <div style="font-size:0.78rem;color:#6B7280;margin-bottom:0.7rem">
+              Arrow columns show direction of travel:
+              <span style="background:#E8F5EE;color:#1A7A42;font-weight:700;padding:0.1rem 0.35rem;border-radius:3px">⬆⬆</span> improved 2 bands &nbsp;
+              <span style="background:#E8F5EE;color:#1A7A42;font-weight:700;padding:0.1rem 0.35rem;border-radius:3px">⬆</span> improved 1 band &nbsp;
+              <span style="background:#F0F1F3;color:#555;font-weight:700;padding:0.1rem 0.35rem;border-radius:3px">→</span> maintained &nbsp;
+              <span style="background:#FDECEB;color:#C0392B;font-weight:700;padding:0.1rem 0.35rem;border-radius:3px">⬇</span> declined
+            </div>
+            <div class="np-table-wrap">
+              <table class="np-table" id="np-longitudinal-table">
+                <tr>
+                  <th rowspan="2" style="vertical-align:bottom">Student</th>
+                  <th colspan="3">Grammar</th>
+                  <th colspan="3">Reading</th>
+                  <th colspan="3">Numeracy</th>
+                  <th colspan="3">Spelling</th>
+                </tr>
+                <tr>
+                  <th>2024 Y3</th><th>2026 Y5</th><th>▲</th>
+                  <th>2024 Y3</th><th>2026 Y5</th><th>▲</th>
+                  <th>2024 Y3</th><th>2026 Y5</th><th>▲</th>
+                  <th>2024 Y3</th><th>2026 Y5</th><th>▲</th>
+                </tr>
+              </table>
+            </div>
+          </div>
+          <div class="np-grid np-grid-2" style="margin-top:0.9rem">
+            <div class="np-card">
+              <h3>🌟 Notable Growth Stories</h3>
+              <div class="np-si strength"><div class="np-si-title">Ryan Jimmy Mitchell</div><div class="np-si-detail">Grammar NAS→Strong — a two-band jump. Consistent Strong across all other domains.</div></div>
+              <div class="np-si strength"><div class="np-si-title">Jack Edward John Lynch</div><div class="np-si-detail">Grammar NAS→Strong, Reading Developing→Strong.</div></div>
+              <div class="np-si strength"><div class="np-si-title">Charlotte Grace Martyn-Chieng</div><div class="np-si-detail">Grammar DEV→Strong, Reading DEV→Strong, Spelling Strong→Exceeding.</div></div>
+              <div class="np-si strength"><div class="np-si-title">Maxwell Tom Parker</div><div class="np-si-detail">Lifted from Developing to Strong in Grammar, Reading and Numeracy simultaneously.</div></div>
+              <div class="np-si strength"><div class="np-si-title">Dante Tiago Toledo</div><div class="np-si-detail">Started 2024 in NAS for Grammar. Now Developing in Grammar, Strong in Reading and Numeracy.</div></div>
+              <div class="np-si strength"><div class="np-si-title">Vivianna Pirone</div><div class="np-si-detail">Grammar Strong→Exceeding, Reading Strong→Exceeding.</div></div>
+              <div class="np-si strength"><div class="np-si-title">Jessie Luo</div><div class="np-si-detail">Numeracy Strong→Exceeding. Maintained Exceeding in all other domains — outstanding.</div></div>
+              <div class="np-si strength"><div class="np-si-title">Azalia Furina</div><div class="np-si-detail">Was NAS in Grammar and Reading in 2024. Now Developing in both, Strong in Numeracy.</div></div>
+            </div>
+            <div class="np-card">
+              <h3>⚠️ Students to Monitor</h3>
+              <div class="np-si growth"><div class="np-si-title">Mehdeep Singh</div><div class="np-si-detail">Grammar DEV→NAS, Reading Strong→Developing. Two-domain decline — priority review needed.</div></div>
+              <div class="np-si growth"><div class="np-si-title">Jacob Anthony Paradiso</div><div class="np-si-detail">NAS maintained across all four domains 2024–2026. Highest-need student — review support plan.</div></div>
+              <div class="np-si growth"><div class="np-si-title">Nate Justin Wilde</div><div class="np-si-detail">Remained NAS in Grammar, Reading and Spelling across both years.</div></div>
+              <div class="np-si growth"><div class="np-si-title">Rajvir Singh</div><div class="np-si-detail">Grammar DEV→NAS. Reading remained Developing. Ongoing literacy support needed.</div></div>
+              <div class="np-si growth"><div class="np-si-title">Lucas Simile</div><div class="np-si-detail">Grammar DEV→NAS, though Reading improved DEV→Strong.</div></div>
+              <div class="np-si growth"><div class="np-si-title">Hayden Jerebica Emes</div><div class="np-si-detail">Spelling DEV→NAS despite growth in Reading.</div></div>
+              <div class="np-si growth"><div class="np-si-title">Owen Timothy Skilton</div><div class="np-si-detail">Spelling DEV→NAS despite maintaining Strong across other domains.</div></div>
+              <div class="np-si growth"><div class="np-si-title">Sloane Ava Bartholomew</div><div class="np-si-detail">Spelling Strong→Developing. Consistent Developing across all domains — needs cross-curriculum support.</div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== 3-YEAR TRENDS ===== -->
+        <div class="np-panel" id="np-panel-trends">
+          <div class="np-grid np-grid-4" style="margin-bottom:1.1rem">
+            <div class="np-card np-highlight-card">
+              <div class="np-card-header">Y5 Numeracy — Best Trend</div>
+              <div class="np-stat-big" style="color:#D4A843">↑↑↑</div>
+              <div class="np-stat-label">65.5% → 76.4% → 80.0%<br>three consecutive years of growth</div>
+            </div>
+            <div class="np-card np-highlight-card">
+              <div class="np-card-header">Y5 Reading — Sustained</div>
+              <div class="np-stat-big" style="color:#D4A843">78%</div>
+              <div class="np-stat-label">67.8% → 81.0% → 78.2%<br>strong and consistent</div>
+            </div>
+            <div class="np-card">
+              <div class="np-card-header">Y3 Spelling — Most Stable</div>
+              <div class="np-stat-big" style="color:#2E86C1">~65%</div>
+              <div class="np-stat-label">65.6% → 66.7% → 64.2%<br>highly consistent across 3 years</div>
+            </div>
+            <div class="np-card" style="border-top:3px solid #E0942B">
+              <div class="np-card-header">Y5 Grammar — Watch</div>
+              <div class="np-stat-big" style="color:#E0942B">60%</div>
+              <div class="np-stat-label">67.8% → 77.6% → 60.0%<br>2026 dip — cohort effect likely</div>
+            </div>
+          </div>
+          <div class="np-section-title">Year 5 — Strong or Above: 2024 → 2025 → 2026</div>
+          <div class="np-card" style="margin-bottom:1rem">
+            <div class="np-legend">
+              <div class="np-legend-item"><div class="np-legend-dot" style="background:#374151"></div>2024</div>
+              <div class="np-legend-item"><div class="np-legend-dot" style="background:#2E86C1"></div>2025</div>
+              <div class="np-legend-item"><div class="np-legend-dot" style="background:#D4A843"></div>2026</div>
+            </div>
+            <div id="np-y5-trend-bars"></div>
+          </div>
+          <div class="np-section-title">Year 3 — Strong or Above: 2024 → 2025 → 2026</div>
+          <div class="np-card" style="margin-bottom:1rem">
+            <div class="np-legend">
+              <div class="np-legend-item"><div class="np-legend-dot" style="background:#374151"></div>2024</div>
+              <div class="np-legend-item"><div class="np-legend-dot" style="background:#2E86C1"></div>2025</div>
+              <div class="np-legend-item"><div class="np-legend-dot" style="background:#D4A843"></div>2026</div>
+            </div>
+            <div id="np-y3-trend-bars"></div>
+          </div>
+          <div class="np-section-title">Full Band Distribution — Year 5</div>
+          <div class="np-card" style="margin-bottom:1rem">
+            <p style="font-size:0.78rem;color:#6B7280;margin-bottom:0.9rem">Shows whether growth comes from the bottom moving up or the top extending further.</p>
+            <div id="np-y5-full-bars"></div>
+          </div>
+          <div class="np-section-title">Full Band Distribution — Year 3</div>
+          <div class="np-card" style="margin-bottom:1rem">
+            <div id="np-y3-full-bars"></div>
+          </div>
+          <div class="np-section-title">Reading the Trends</div>
+          <div class="np-grid np-grid-2">
+            <div class="np-card">
+              <h3>✅ Consistent Strengths</h3>
+              <div class="np-si strength"><div class="np-si-title">Y5 Numeracy — Consistent Upward Trend</div><div class="np-si-detail">65.5% → 76.4% → 80.0%. The only domain showing unbroken improvement across all three years at Year 5.</div></div>
+              <div class="np-si strength"><div class="np-si-title">Y5 Reading — Sustained High Performance</div><div class="np-si-detail">Has not dropped below 67.8% in three years. 2026 at 78.2% remains very strong.</div></div>
+              <div class="np-si strength"><div class="np-si-title">Y3 Spelling — Rock Solid</div><div class="np-si-detail">64–67% Strong+ across all three years. Most cohort-independent result — suggests consistent delivery.</div></div>
+              <div class="np-si strength"><div class="np-si-title">Y3 Numeracy Recovery</div><div class="np-si-detail">A dip in 2025 (52.4%) has bounced back to 70.4% in 2026 — likely a cohort effect, not systemic.</div></div>
+            </div>
+            <div class="np-card">
+              <h3>⚠️ Leadership Attention Required</h3>
+              <div class="np-si growth"><div class="np-si-title">Y5 Grammar — 2026 Dip</div><div class="np-si-detail">67.8% → 77.6% → 60.0%. Most likely cohort-driven: this group achieved only 41% Strong+ in Grammar as Y3s in 2024.</div></div>
+              <div class="np-si growth"><div class="np-si-title">Y3 Grammar — Variable Across Cohorts</div><div class="np-si-detail">41.0% → 50.8% → 45.3%. No consistent upward trend. Grammar remains the weakest Y3 domain.</div></div>
+              <div class="np-si growth"><div class="np-si-title">Y3 Reading — Plateaued</div><div class="np-si-detail">58.1% → 50.8% → 51.9%. Has not recovered to 2024 level. Worth monitoring.</div></div>
+              <div class="np-si growth"><div class="np-si-title">Y5 Spelling Volatility</div><div class="np-si-detail">74.6% → 65.5% → 78.2%. Large swings suggest cohort-driven variation.</div></div>
+            </div>
+          </div>
+          <div class="np-context-box">
+            <strong style="color:#0B1D3A">📌 Important Context: Cohort vs School Effects</strong><br>
+            Year-on-year variation in NAPLAN results is often driven by <strong>cohort characteristics</strong> rather than changes in teaching quality. The 2026 Y5 Grammar dip is the clearest example: this same cohort achieved only 41% Strong+ in Grammar as Year 3s in 2024 — so the 2026 result (60%) actually represents <em>significant improvement</em> for those students, even though the school-level number appears lower than 2025. Always read trends alongside the longitudinal student data.
+          </div>
+        </div>
+
+        <!-- ===== YEAR 3 DETAIL ===== -->
+        <div class="np-panel" id="np-panel-y3">
+          <div class="np-section-title">Year 3 — Detailed Band Breakdown</div>
+          <div class="np-grid np-grid-2">
+            <div class="np-card">
+              <h3>Grammar &amp; Punctuation</h3>
+              <div class="np-card-header">53 participated · 6 exempt · 9 withdrawn · 3 absent</div>
+              <table class="np-table"><tr><th>Band</th><th>Count</th><th>% Participated</th></tr>
+              <tr><td>Exceeding</td><td>0</td><td>0.0%</td></tr><tr><td>Strong</td><td>24</td><td>45.3%</td></tr>
+              <tr><td>Developing</td><td>18</td><td>34.0%</td></tr><tr><td>Needs Additional Support</td><td>11</td><td>20.8%</td></tr></table>
+            </div>
+            <div class="np-card">
+              <h3>Reading</h3>
+              <div class="np-card-header">54 participated · 6 exempt · 9 withdrawn · 2 absent</div>
+              <table class="np-table"><tr><th>Band</th><th>Count</th><th>% Participated</th></tr>
+              <tr><td>Exceeding</td><td>9</td><td>16.7%</td></tr><tr><td>Strong</td><td>19</td><td>35.2%</td></tr>
+              <tr><td>Developing</td><td>17</td><td>31.5%</td></tr><tr><td>Needs Additional Support</td><td>9</td><td>16.7%</td></tr></table>
+            </div>
+            <div class="np-card">
+              <h3>Numeracy</h3>
+              <div class="np-card-header">54 participated · 6 exempt · 9 withdrawn · 2 absent</div>
+              <table class="np-table"><tr><th>Band</th><th>Count</th><th>% Participated</th></tr>
+              <tr><td>Exceeding</td><td>6</td><td>11.1%</td></tr><tr><td>Strong</td><td>32</td><td>59.3%</td></tr>
+              <tr><td>Developing</td><td>12</td><td>22.2%</td></tr><tr><td>Needs Additional Support</td><td>4</td><td>7.4%</td></tr></table>
+            </div>
+            <div class="np-card">
+              <h3>Spelling</h3>
+              <div class="np-card-header">53 participated · 6 exempt · 9 withdrawn · 3 absent</div>
+              <table class="np-table"><tr><th>Band</th><th>Count</th><th>% Participated</th></tr>
+              <tr><td>Exceeding</td><td>3</td><td>5.7%</td></tr><tr><td>Strong</td><td>31</td><td>58.5%</td></tr>
+              <tr><td>Developing</td><td>12</td><td>22.6%</td></tr><tr><td>Needs Additional Support</td><td>7</td><td>13.2%</td></tr></table>
+            </div>
+          </div>
+          <div class="np-section-title">Year 3 — Numeracy Subdomain Performance</div>
+          <div class="np-card"><table class="np-table">
+            <tr><th>Subdomain</th><th>Items</th><th>Avg % Correct</th><th>Performance</th></tr>
+            <tr><td>Statistics</td><td>37</td><td>63.6%</td><td><span class="np-pill str">Strong</span></td></tr>
+            <tr><td>Space</td><td>21</td><td>57.3%</td><td><span class="np-pill str">Strong</span></td></tr>
+            <tr><td>Number</td><td>111</td><td>52.5%</td><td><span class="np-pill dev">Average</span></td></tr>
+            <tr><td>Algebra</td><td>20</td><td>51.2%</td><td><span class="np-pill dev">Average</span></td></tr>
+            <tr><td>Measurement</td><td>51</td><td>51.0%</td><td><span class="np-pill dev">Average</span></td></tr>
+          </table></div>
+          <div class="np-section-title">Year 3 — Reading Subdomain Performance</div>
+          <div class="np-card"><table class="np-table">
+            <tr><th>Subdomain</th><th>Items</th><th>Avg % Correct</th><th>Performance</th></tr>
+            <tr><td>Literature</td><td>16</td><td>55.7%</td><td><span class="np-pill str">Strong</span></td></tr>
+            <tr><td>Literacy</td><td>194</td><td>51.5%</td><td><span class="np-pill dev">Average</span></td></tr>
+            <tr><td>Language</td><td>50</td><td>48.4%</td><td><span class="np-pill dev">Average</span></td></tr>
+          </table></div>
+        </div>
+
+        <!-- ===== YEAR 5 DETAIL ===== -->
+        <div class="np-panel" id="np-panel-y5">
+          <div class="np-section-title">Year 5 — Detailed Band Breakdown</div>
+          <div class="np-grid np-grid-2">
+            <div class="np-card">
+              <h3>Grammar &amp; Punctuation</h3>
+              <div class="np-card-header">55 participated · 6 exempt · 0 withdrawn · 1 absent</div>
+              <table class="np-table"><tr><th>Band</th><th>Count</th><th>% Participated</th></tr>
+              <tr><td>Exceeding</td><td>8</td><td>14.5%</td></tr><tr><td>Strong</td><td>25</td><td>45.5%</td></tr>
+              <tr><td>Developing</td><td>14</td><td>25.5%</td></tr><tr><td>Needs Additional Support</td><td>8</td><td>14.5%</td></tr></table>
+            </div>
+            <div class="np-card">
+              <h3>Reading</h3>
+              <div class="np-card-header">55 participated · 6 exempt · 0 withdrawn · 1 absent</div>
+              <table class="np-table"><tr><th>Band</th><th>Count</th><th>% Participated</th></tr>
+              <tr><td>Exceeding</td><td>9</td><td>16.4%</td></tr><tr><td>Strong</td><td>34</td><td>61.8%</td></tr>
+              <tr><td>Developing</td><td>9</td><td>16.4%</td></tr><tr><td>Needs Additional Support</td><td>3</td><td>5.5%</td></tr></table>
+            </div>
+            <div class="np-card">
+              <h3>Numeracy</h3>
+              <div class="np-card-header">55 participated · 6 exempt · 0 withdrawn · 1 absent</div>
+              <table class="np-table"><tr><th>Band</th><th>Count</th><th>% Participated</th></tr>
+              <tr><td>Exceeding</td><td>4</td><td>7.3%</td></tr><tr><td>Strong</td><td>40</td><td>72.7%</td></tr>
+              <tr><td>Developing</td><td>8</td><td>14.5%</td></tr><tr><td>Needs Additional Support</td><td>3</td><td>5.5%</td></tr></table>
+            </div>
+            <div class="np-card">
+              <h3>Spelling</h3>
+              <div class="np-card-header">55 participated · 6 exempt · 0 withdrawn · 1 absent</div>
+              <table class="np-table"><tr><th>Band</th><th>Count</th><th>% Participated</th></tr>
+              <tr><td>Exceeding</td><td>11</td><td>20.0%</td></tr><tr><td>Strong</td><td>32</td><td>58.2%</td></tr>
+              <tr><td>Developing</td><td>6</td><td>10.9%</td></tr><tr><td>Needs Additional Support</td><td>6</td><td>10.9%</td></tr></table>
+            </div>
+          </div>
+          <div class="np-section-title">Year 5 — Numeracy Subdomain Performance</div>
+          <div class="np-card"><table class="np-table">
+            <tr><th>Subdomain</th><th>Items</th><th>Avg % Correct</th><th>Performance</th></tr>
+            <tr><td>Probability</td><td>17</td><td>57.7%</td><td><span class="np-pill str">Strong</span></td></tr>
+            <tr><td>Measurement</td><td>61</td><td>57.0%</td><td><span class="np-pill str">Strong</span></td></tr>
+            <tr><td>Statistics</td><td>23</td><td>56.9%</td><td><span class="np-pill str">Strong</span></td></tr>
+            <tr><td>Space</td><td>31</td><td>51.5%</td><td><span class="np-pill dev">Average</span></td></tr>
+            <tr><td>Number</td><td>125</td><td>50.0%</td><td><span class="np-pill dev">Average</span></td></tr>
+            <tr><td>Algebra</td><td>23</td><td>50.0%</td><td><span class="np-pill dev">Average</span></td></tr>
+          </table></div>
+          <div class="np-section-title">Year 5 — Reading Subdomain Performance</div>
+          <div class="np-card"><table class="np-table">
+            <tr><th>Subdomain</th><th>Items</th><th>Avg % Correct</th><th>Performance</th></tr>
+            <tr><td>Literature</td><td>22</td><td>59.0%</td><td><span class="np-pill str">Strong</span></td></tr>
+            <tr><td>Literacy</td><td>185</td><td>55.2%</td><td><span class="np-pill str">Strong</span></td></tr>
+            <tr><td>Language</td><td>53</td><td>53.9%</td><td><span class="np-pill dev">Average</span></td></tr>
+          </table></div>
+        </div>
+
+        <!-- ===== STRENGTHS ===== -->
+        <div class="np-panel" id="np-panel-strengths">
+          <div class="np-section-title">Statistical Standouts — What Our Students Do Well</div>
+          <div class="np-grid np-grid-2">
+            <div class="np-card">
+              <h3>🏆 Perfect Scores on Hard Questions</h3>
+              <p style="font-size:0.78rem;color:#6B7280;margin-bottom:0.9rem">Items rated Exceeding difficulty where every student who attempted scored 100%.</p>
+              <div class="np-si strength"><div class="np-si-title">Y5 Reading — Difficulty 731 (Exceeding)</div><div class="np-si-detail">Evaluates the presence of information in a persuasive text</div><div class="np-si-stat" style="color:#1A7A42">100% correct</div></div>
+              <div class="np-si strength"><div class="np-si-title">Y5 Reading — Difficulty 695 (Exceeding)</div><div class="np-si-detail">Interprets figurative language in an imaginative text</div><div class="np-si-stat" style="color:#1A7A42">100% correct</div></div>
+              <div class="np-si strength"><div class="np-si-title">Y5 Reading — Difficulty 693 (Exceeding)</div><div class="np-si-detail">Compares perspectives across two texts on a similar theme</div><div class="np-si-stat" style="color:#1A7A42">100% correct</div></div>
+              <div class="np-si strength"><div class="np-si-title">Y3 Reading — Difficulty 594 (Exceeding)</div><div class="np-si-detail">Identifies the purpose of a visual feature in an informative text</div><div class="np-si-stat" style="color:#1A7A42">100% correct</div></div>
+              <div class="np-si strength"><div class="np-si-title">Y3 Grammar — Difficulty 543 (Exceeding)</div><div class="np-si-detail">Identifies an adverb group in a sentence</div><div class="np-si-stat" style="color:#1A7A42">100% correct</div></div>
+              <div class="np-si strength"><div class="np-si-title">Y5 Numeracy — Difficulty 593 (Exceeding)</div><div class="np-si-detail">Identifies a number in the thousands that satisfies a given rule</div><div class="np-si-stat" style="color:#1A7A42">100% correct</div></div>
+            </div>
+            <div class="np-card">
+              <h3>📊 Headline Successes</h3>
+              <div class="np-si strength"><div class="np-si-title">Year 5 Numeracy — 80.0% Strong or Above</div><div class="np-si-detail">Our strongest domain result. 40 of 55 students in Strong band, 4 in Exceeding.</div></div>
+              <div class="np-si strength"><div class="np-si-title">Year 5 Reading — 78.2% Strong or Above</div><div class="np-si-detail">34 students in Strong, 9 in Exceeding. Only 3 students (5.5%) need additional support.</div></div>
+              <div class="np-si strength"><div class="np-si-title">Year 5 Spelling — 78.2% Strong or Above</div><div class="np-si-detail">20% of students in Exceeding — the highest Exceeding rate across all tests.</div></div>
+              <div class="np-si strength"><div class="np-si-title">Year 3 Numeracy — 70.4% Strong or Above</div><div class="np-si-detail">Strongest Y3 result. Only 4 students (7.4%) in Needs Additional Support.</div></div>
+              <div class="np-si strength"><div class="np-si-title">Cross-Domain Consistency (Y5)</div><div class="np-si-detail">28 students (51%) achieved Strong or Exceeding in ALL four domains.</div></div>
+              <div class="np-si strength"><div class="np-si-title">Cross-Domain Consistency (Y3)</div><div class="np-si-detail">21 students (39%) achieved Strong or Exceeding in ALL four domains.</div></div>
+            </div>
+          </div>
+          <div class="np-section-title">High-Difficulty Items Where Students Excelled</div>
+          <div class="np-card">
+            <p style="font-size:0.78rem;color:#6B7280;margin-bottom:0.9rem">Items at Exceeding difficulty where our students achieved ≥60% correct.</p>
+            <div class="np-table-wrap"><table class="np-table">
+              <tr><th>Domain</th><th>Year</th><th>Difficulty</th><th>% Correct</th><th>Descriptor</th></tr>
+              <tr><td>Reading</td><td>5</td><td>731</td><td>100%</td><td>Evaluates the presence of information in a persuasive text</td></tr>
+              <tr><td>Reading</td><td>5</td><td>695</td><td>100%</td><td>Interprets figurative language in an imaginative text</td></tr>
+              <tr><td>Reading</td><td>5</td><td>693</td><td>100%</td><td>Compares perspectives across two texts on a similar theme</td></tr>
+              <tr><td>Reading</td><td>3</td><td>665</td><td>67%</td><td>Interprets the meaning of a phrase in an imaginative text</td></tr>
+              <tr><td>Grammar</td><td>5</td><td>680</td><td>75%</td><td>Identifies reported speech in a sentence</td></tr>
+              <tr><td>Grammar</td><td>5</td><td>650</td><td>60%</td><td>Identifies a common noun and pronoun in a sentence</td></tr>
+              <tr><td>Grammar</td><td>5</td><td>624</td><td>86%</td><td>Identifies correct placement of clause commas</td></tr>
+              <tr><td>Grammar</td><td>5</td><td>612</td><td>80%</td><td>Identifies the correct modal adverb to complete a sentence</td></tr>
+              <tr><td>Numeracy</td><td>5</td><td>679</td><td>67%</td><td>Solves a multi-step multiplicative problem</td></tr>
+              <tr><td>Numeracy</td><td>5</td><td>672</td><td>67%</td><td>Identifies line symmetry in context</td></tr>
+              <tr><td>Numeracy</td><td>3</td><td>570</td><td>60%</td><td>Interprets a column graph in context</td></tr>
+              <tr><td>Numeracy</td><td>3</td><td>521</td><td>86%</td><td>Calculates a quantity from a given fractional part</td></tr>
+              <tr><td>Spelling</td><td>5</td><td>579</td><td>70%</td><td>Correctly spells 3-syllable word with /aw/</td></tr>
+              <tr><td>Spelling</td><td>5</td><td>559</td><td>78%</td><td>Correctly spells 3-syllable word ending /al/</td></tr>
+            </table></div>
+          </div>
+        </div>
+
+        <!-- ===== AREAS FOR GROWTH ===== -->
+        <div class="np-panel" id="np-panel-growth">
+          <div class="np-section-title">Areas for Development — Priority Focus</div>
+          <div class="np-grid np-grid-2">
+            <div class="np-card">
+              <h3>Year 3 — Key Focus Areas</h3>
+              <div class="np-si growth"><div class="np-si-title">Grammar: 0% Exceeding</div><div class="np-si-detail">No Year 3 students reached Exceeding. 20.8% in NAS — our highest NAS rate.</div></div>
+              <div class="np-si growth"><div class="np-si-title">Grammar: Pronoun Reference</div><div class="np-si-detail">20% correct on a Developing-level item (diff 335). Students struggle to identify correct pronoun reference.</div></div>
+              <div class="np-si growth"><div class="np-si-title">Grammar: Independent Clauses</div><div class="np-si-detail">20% correct on identifying an independent clause (diff 386). Sentence structure knowledge is thin.</div></div>
+              <div class="np-si growth"><div class="np-si-title">Grammar: Question Marks &amp; Capital Letters</div><div class="np-si-detail">33% correct on sentences requiring question marks. Capital letters for proper nouns also 33%.</div></div>
+              <div class="np-si growth"><div class="np-si-title">Reading: Main Ideas &amp; Purpose</div><div class="np-si-detail">17% correct on identifying main purpose (diff 352) and main idea of an imaginative text (diff 349).</div></div>
+              <div class="np-si growth"><div class="np-si-title">Numeracy: Subtraction &amp; Number Sentences</div><div class="np-si-detail">0% correct on subtraction problem using number sentences (diff 405). Also 0% on expressing duration.</div></div>
+              <div class="np-si growth"><div class="np-si-title">Numeracy: Multiplication as Repeated Addition</div><div class="np-si-detail">0% correct on representing multiplication as repeated addition (diff 406).</div></div>
+              <div class="np-si growth"><div class="np-si-title">Spelling: Error Identification</div><div class="np-si-detail">"Identifies &amp; corrects error" items averaged lower success than "correctly spells" items.</div></div>
+            </div>
+            <div class="np-card">
+              <h3>Year 5 — Key Focus Areas</h3>
+              <div class="np-si growth"><div class="np-si-title">Grammar: NAS Rate of 14.5%</div><div class="np-si-detail">8 students in NAS. Grammar remains the weakest domain for both cohorts.</div></div>
+              <div class="np-si growth"><div class="np-si-title">Grammar: Exclamation Marks</div><div class="np-si-detail">25% correct on identifying exclamation mark punctuation — a NAS-level item (diff 381).</div></div>
+              <div class="np-si growth"><div class="np-si-title">Reading: Character Motivations</div><div class="np-si-detail">25% correct on interpreting character motivations in imaginative text (diff 396).</div></div>
+              <div class="np-si growth"><div class="np-si-title">Numeracy: Equal Groups / Multiplication-Division</div><div class="np-si-detail">0% correct on interpreting equal groups as multiplication or division (diff 387).</div></div>
+              <div class="np-si growth"><div class="np-si-title">Numeracy: Number Strand</div><div class="np-si-detail">Number and Algebra are weakest subdomains (50.0% avg correct each). Fractions a recurrent concern.</div></div>
+              <div class="np-si growth"><div class="np-si-title">5 Students in NAS Across 2+ Domains</div><div class="np-si-detail">A small group of students need intensive cross-curricular support.</div></div>
+            </div>
+          </div>
+          <div class="np-section-title">Teaching Priorities — Mapped to Curriculum</div>
+          <div class="np-card"><div class="np-table-wrap"><table class="np-table">
+            <tr><th>#</th><th>Year</th><th>Focus</th><th>Evidence</th></tr>
+            <tr><td>1</td><td>3 &amp; 5</td><td>Grammar — sentence structure, clause knowledge, punctuation conventions</td><td>Lowest Strong+ rates: Y3 45%, Y5 60%. Items on clauses, question marks, pronouns all below 35%.</td></tr>
+            <tr><td>2</td><td>3</td><td>Reading — main idea identification, author purpose</td><td>17% correct on purpose/main idea items at Developing difficulty.</td></tr>
+            <tr><td>3</td><td>3 &amp; 5</td><td>Numeracy — multiplicative thinking, number sentences</td><td>0% on multiple items linking multiplication to repeated addition and number sentence representation.</td></tr>
+            <tr><td>4</td><td>3</td><td>Spelling — error identification &amp; correction strategy</td><td>"Corrects error" items systematically weaker — proofreading strategy needed.</td></tr>
+            <tr><td>5</td><td>5</td><td>Reading — inferring character motivations</td><td>25% on Developing-level character motivation item (diff 396).</td></tr>
+          </table></div></div>
+        </div>
+
+        <!-- ===== STUDENT CROSS-DOMAIN ===== -->
+        <div class="np-panel" id="np-panel-students">
+          <div class="np-section-title">Year 3 — Student Cross-Domain Profile</div>
+          <div class="np-card">
+            <div class="np-table-wrap">
+              <table class="np-table" id="np-y3-student-table">
+                <tr><th>Student</th><th>Grammar</th><th>Reading</th><th>Numeracy</th><th>Spelling</th></tr>
+              </table>
+            </div>
+          </div>
+          <div class="np-section-title">Year 5 — Student Cross-Domain Profile</div>
+          <div class="np-card">
+            <div class="np-table-wrap">
+              <table class="np-table" id="np-y5-student-table">
+                <tr><th>Student</th><th>Grammar</th><th>Reading</th><th>Numeracy</th><th>Spelling</th></tr>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div class="np-footer">
+          Highbury Primary School — Site 0596 — 2026 NAPLAN Preliminary Analysis<br>
+          Generated from SSSR Extract data (10 April 2026) · Internal staff reference · Not for public distribution
+        </div>
+      </div><!-- end naplan-shell -->
+    </div>
+    <!-- ── END NAPLAN DATA VIEW ── -->
 
     <!-- ── MEETINGS VIEW ── -->
     <div id="view-meetings" class="view">
@@ -2727,7 +3378,8 @@
                     <th style="padding:7px 8px;text-align:left;font-weight:600;border:1px solid var(--gray2);width:28%">Item</th>
                     <th style="padding:7px 8px;text-align:left;font-weight:600;border:1px solid var(--gray2);width:17%">Proposer</th>
                     <th style="padding:7px 8px;text-align:center;font-weight:600;border:1px solid var(--gray2);width:10%">Mins</th>
-                    <th style="padding:7px 8px;text-align:left;font-weight:600;border:1px solid var(--gray2)">Notes / Outcome</th>
+                    <th style="padding:7px 8px;text-align:center;font-weight:600;border:1px solid var(--gray2);width:14%">Priority</th>
+                    <th style="padding:7px 8px;text-align:left;font-weight:600;border:1px solid var(--gray2)">Notes</th>
                     <th style="padding:7px 8px;text-align:center;font-weight:600;border:1px solid var(--gray2);width:40px"></th>
                   </tr>
                 </thead>
@@ -2989,6 +3641,7 @@
               <option value="Daybook">Daybook</option>
               <option value="Timetables">Timetables</option>
               <option value="Planner / Calendar">Planner / Calendar</option>
+              <option value="NAPLAN Data">NAPLAN Data</option>
               <option value="Meetings">Meetings</option>
               <option value="General / Other">General / Other</option>
             </select>
@@ -3079,27 +3732,9 @@
           </div>
         </div>
 
-        <!-- Who am I relieving? -->
-        <div class="trt-card">
-          <div class="trt-card-header">🔍 Who Am I Relieving?</div>
-          <div class="trt-card-body">
-            <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:16px">
-              <select id="trt-teacher-select" class="form-input" style="flex:1;max-width:280px;font-size:14px" onchange="trtLookupTeacher()">
-                <option value="">Select teacher I&apos;m relieving…</option>
-              </select>
-              <div style="font-size:12px;color:var(--subtext)">Shows their yard duties and specialist classes today</div>
-            </div>
-            <div id="trt-teacher-summary" style="display:none">
-              <div id="trt-teacher-duties" style="margin-bottom:12px"></div>
-              <div id="trt-teacher-specialist"></div>
-            </div>
-            <div id="trt-teacher-none" style="color:var(--subtext);font-size:13px;display:none">No yard duties or specialist classes found for today.</div>
-          </div>
-        </div>
-
         <!-- Yard Duty Timetable -->
         <div class="trt-card">
-          <div class="trt-card-header">🏃 Full Yard Duty Roster</div>
+          <div class="trt-card-header">🏃 Yard Duty Roster</div>
           <div class="trt-card-body" id="trt-yard-duty">Loading…</div>
         </div>
 
@@ -3999,8 +4634,7 @@ const firebaseConfig = {
   // ══════════════════════════════════════
   // DOM EVENT LISTENERS
   // ══════════════════════════════════════
-  if (!window.KIOSK_MODE) {
-    document.getElementById('sign-in-btn').addEventListener('click', doLogin);
+  document.getElementById('sign-in-btn').addEventListener('click', doLogin);
   document.getElementById('reset-link').addEventListener('click', (e) => { e.preventDefault(); doReset(); });
   document.getElementById('sign-out-btn').addEventListener('click', doLogout);
   document.getElementById('login-password').addEventListener('keydown', (e) => { if (e.key === 'Enter') doLogin(); });
@@ -4012,206 +4646,7 @@ const firebaseConfig = {
   // ══════════════════════════════════════
   // AUTH STATE — allowlist check
   // ══════════════════════════════════════
-
-  // ══════════════════════════════════════
-  // KIOSK MODE
-  // ══════════════════════════════════════
-  window.KIOSK_MODE = new URLSearchParams(window.location.search).get('kiosk') === 'true';
-
-  async function kioskInit() {
-    if (!window.KIOSK_MODE) return;
-    document.getElementById('auth-screen').style.display  = 'none';
-    document.getElementById('app-screen').style.display   = 'none';
-    document.getElementById('kiosk-screen').style.display = 'block';
-    kioskClock();
-    setInterval(kioskClock, 30000);
-    await kioskLoad();
-    setInterval(kioskLoad, 5 * 60 * 1000);
-  }
-
-  function kioskClock() {
-    const now  = new Date();
-    const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-    const mons = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-    const dateStr = `${days[now.getDay()]} ${now.getDate()} ${mons[now.getMonth()]} ${now.getFullYear()}`;
-    const timeStr = now.toLocaleTimeString('en-AU', { hour:'2-digit', minute:'2-digit', hour12:false });
-    const ymd = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
-    document.getElementById('k-date').textContent = dateStr;
-    document.getElementById('k-time').textContent = timeStr;
-    const tw = termWeekLabel(ymd);
-    document.getElementById('k-termweek').textContent = tw ? tw.label : '';
-  }
-
-  async function kioskLoad() {
-    const now = new Date();
-    const ymd = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
-    await Promise.all([
-      kioskLoadDaybook(ymd),
-      kioskLoadUV(),
-      kioskLoadEvents(ymd),
-      kioskLoadConfig(),
-      kioskLoadBirthdays(ymd),
-    ]);
-  }
-
-  async function kioskLoadDaybook(ymd) {
-    try {
-      const snap = await getDoc(doc(db, 'daybook', ymd));
-      const data = snap.exists() ? snap.data() : {};
-      const rows = data.rows || [];
-      const track = document.getElementById('k-absences-track');
-      const filled = rows.filter(r => r.absent && r.absent.trim());
-      if (!filled.length) {
-        track.innerHTML = '<div style="color:rgba(255,255,255,0.3);font-size:16px;padding:12px 0">No absences recorded for today.</div>';
-      } else {
-        track.innerHTML = filled.map(r => `
-          <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:12px;background:rgba(255,255,255,0.05);border-radius:10px;padding:14px 16px;border-left:4px solid rgba(245,172,28,0.5)">
-            <div style="font-size:18px;font-weight:700;color:#fff">${escHtml(r.absent||'')}</div>
-            <div style="font-size:16px;color:rgba(255,255,255,0.75)">${escHtml(r.reliever||'—')}</div>
-            <div style="font-size:16px;color:rgba(255,255,255,0.75)">${escHtml(r.duty||'—')}</div>
-            <div style="font-size:16px;color:rgba(255,255,255,0.75)">${escHtml(r.nit||'—')}</div>
-          </div>`).join('');
-        kioskAutoScroll(track, filled.length);
-      }
-      const items = data.infoItems || data.items || [];
-      const noticesEl = document.getElementById('k-notices');
-      if (!items.length) {
-        noticesEl.innerHTML = '<div style="color:rgba(255,255,255,0.3);font-size:12px">No notices today.</div>';
-      } else {
-        noticesEl.innerHTML = items.map(item => `
-          <div style="background:rgba(255,255,255,0.05);border-radius:10px;padding:12px 14px;border-left:3px solid rgba(245,172,28,0.5)">
-            <div style="font-size:15px;color:rgba(255,255,255,0.9);line-height:1.5;font-weight:500">${escHtml(typeof item === 'string' ? item : (item.text||''))}</div>
-          </div>`).join('');
-      }
-    } catch(e) { console.error('kioskLoadDaybook:', e); }
-  }
-
-  let _kioskScrollInterval = null;
-  function kioskAutoScroll(track, rowCount) {
-    if (_kioskScrollInterval) clearInterval(_kioskScrollInterval);
-    if (rowCount <= 6) { track.style.transform = 'translateY(0)'; return; }
-    const rowH = 62;
-    const visible = 6;
-    let current = 0;
-    const max = rowCount - visible;
-    _kioskScrollInterval = setInterval(() => {
-      current = current >= max ? 0 : current + 1;
-      track.style.transform = `translateY(-${current * rowH}px)`;
-    }, 3000);
-  }
-
-  async function kioskLoadUV() {
-    try {
-      const resp = await fetch('https://api.open-meteo.com/v1/forecast?latitude=-34.93&longitude=138.60&daily=uv_index_max&timezone=Australia/Adelaide&forecast_days=1');
-      const data = await resp.json();
-      const uv = Math.round(data?.daily?.uv_index_max?.[0] ?? 0);
-      document.getElementById('k-uv-number').textContent = uv;
-      let label = 'Low', color = '#4ade80';
-      if (uv >= 11)      { label = 'Extreme';   color = '#a855f7'; }
-      else if (uv >= 8)  { label = 'Very High'; color = '#ef4444'; }
-      else if (uv >= 6)  { label = 'High';      color = '#f97316'; }
-      else if (uv >= 3)  { label = 'Moderate';  color = '#facc15'; }
-      document.getElementById('k-uv-label').textContent  = label;
-      document.getElementById('k-uv-number').style.color = color;
-      const hatEl = document.getElementById('k-hat-rule');
-      hatEl.style.display = uv >= 3 ? 'block' : 'none';
-    } catch(e) { document.getElementById('k-uv-label').textContent = 'Unavailable'; }
-  }
-
-  async function kioskLoadEvents(ymd) {
-    try {
-      const today = new Date(ymd + 'T00:00:00');
-      const dow = today.getDay();
-      const daysUntilFri = dow <= 5 ? 5 - dow : 0;
-      const fri = new Date(today);
-      fri.setDate(today.getDate() + daysUntilFri);
-      const fridayStr = `${fri.getFullYear()}-${String(fri.getMonth()+1).padStart(2,'0')}-${String(fri.getDate()).padStart(2,'0')}`;
-      const snap = await getDocs(query(
-        collection(db, 'planner_events'),
-        where('date', '>=', ymd),
-        where('date', '<=', fridayStr)
-      ));
-      const eventsEl = document.getElementById('k-events');
-      if (snap.empty) { eventsEl.innerHTML = '<div style="color:rgba(255,255,255,0.3);font-size:13px">No events this week.</div>'; return; }
-      const days3 = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-      const mons3 = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-      const items = [];
-      snap.forEach(d => items.push(d.data()));
-      items.sort((a,b) => (a.date > b.date ? 1 : a.date < b.date ? -1 : 0));
-      const grouped = {};
-      items.forEach(ev => { if (!grouped[ev.date]) grouped[ev.date] = []; grouped[ev.date].push(ev); });
-      const catColors = { 'Staff Only':'#6366f1','Whole School':'#f5ac1c','Reception':'#34d399','Year 1':'#60a5fa','Year 2':'#f472b6','Year 3':'#fb923c','Year 4':'#a78bfa','Year 5':'#4ade80','Year 6':'#38bdf8','Disability Unit':'#e879f9','Special Classes':'#fbbf24' };
-      eventsEl.innerHTML = Object.entries(grouped).map(([date, evs]) => {
-        const d = new Date(date + 'T00:00:00');
-        const isToday = date === ymd;
-        const dayLabel = isToday ? 'Today' : `${days3[d.getDay()]} ${d.getDate()} ${mons3[d.getMonth()]}`;
-        return `<div style="margin-bottom:8px">
-          <div style="font-size:12px;font-weight:700;color:${isToday?'#f5ac1c':'rgba(255,255,255,0.45)'};text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">${dayLabel}</div>
-          ${evs.map(ev => {
-            const col = catColors[ev.category] || '#94a3b8';
-            return `<div style="background:rgba(255,255,255,0.05);border-radius:8px;padding:10px 12px;border-left:4px solid ${col};margin-bottom:5px">
-              <div style="font-size:15px;font-weight:700;color:#fff;line-height:1.3">${escHtml(ev.title||ev.name||'')}</div>
-              ${ev.audience?`<div style="font-size:12px;color:rgba(255,255,255,0.5);margin-top:3px">${escHtml(Array.isArray(ev.audience)?ev.audience.join(', '):ev.audience)}</div>`:''}
-            </div>`;
-          }).join('')}
-        </div>`;
-      }).join('');
-    } catch(e) { console.error('kioskLoadEvents:', e); document.getElementById('k-events').innerHTML = '<div style="color:rgba(255,255,255,0.3);font-size:13px">Unable to load events.</div>'; }
-  }
-
-  async function kioskLoadConfig() {
-    try {
-      const snap = await getDoc(doc(db, 'kiosk_config', 'settings'));
-      if (snap.exists()) {
-        const d = snap.data();
-        const pblHeader = document.getElementById('k-pbl-header');
-        const pblText   = document.getElementById('k-pbl-header-text');
-        if (d.pbl && pblText) { pblText.textContent = d.pbl; pblHeader.style.display = 'block'; }
-        const crewWrap = document.getElementById('k-crew-wrap');
-        const crewEl   = document.getElementById('k-crew');
-        if (d.crew && crewEl) {
-          const names = d.crew.split(/[,&]/).map(n => n.trim()).filter(Boolean);
-          crewEl.innerHTML = names.length > 1
-            ? names.map(n => `<div style="font-size:17px;font-weight:700;color:rgba(255,255,255,0.9);padding:4px 0;border-bottom:1px solid rgba(255,255,255,0.06)">${escHtml(n)}</div>`).join('')
-            : `<div style="font-size:17px;font-weight:700;color:rgba(255,255,255,0.9)">${escHtml(d.crew)}</div>`;
-          crewWrap.style.display = 'block';
-        }
-      }
-    } catch(e) { console.warn('kioskLoadConfig:', e); }
-  }
-
-  async function kioskLoadBirthdays(ymd) {
-    try {
-      const today = new Date(ymd + 'T00:00:00');
-      const dow = today.getDay();
-      const checkDays = [{ day: today.getDate(), month: today.getMonth()+1 }];
-      if (dow === 5) {
-        const sat = new Date(today); sat.setDate(today.getDate()+1);
-        const sun = new Date(today); sun.setDate(today.getDate()+2);
-        checkDays.push({ day: sat.getDate(), month: sat.getMonth()+1 });
-        checkDays.push({ day: sun.getDate(), month: sun.getMonth()+1 });
-      }
-      const snap = await getDocs(collection(db, 'birthdays'));
-      const allBdays = [];
-      snap.forEach(d => allBdays.push(d.data()));
-      const todayBdays   = allBdays.filter(b => b.day === checkDays[0].day && b.month === checkDays[0].month);
-      const weekendBdays = dow === 5 ? allBdays.filter(b => checkDays.slice(1).some(cd => b.day === cd.day && b.month === cd.month)) : [];
-      const wrap = document.getElementById('k-birthdays-wrap');
-      const el   = document.getElementById('k-birthdays');
-      if (!todayBdays.length && !weekendBdays.length) { wrap.style.display = 'none'; return; }
-      wrap.style.display = 'block';
-      const MONS = ['','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-      el.innerHTML = [
-        ...todayBdays.map(b => `<div style="font-size:15px;font-weight:700;color:#f5ac1c;margin-bottom:4px">🎂 Happy Birthday ${escHtml(b.name)}!</div>`),
-        ...weekendBdays.map(b => `<div style="font-size:13px;font-weight:600;color:rgba(255,255,255,0.7);margin-bottom:4px">🎂 ${escHtml(b.name)} — ${b.day} ${MONS[b.month]} (weekend)</div>`)
-      ].join('');
-    } catch(e) { console.warn('kioskLoadBirthdays:', e); }
-  }
-
-  if (window.KIOSK_MODE) kioskInit();
-
   onAuthStateChanged(auth, async user => {
-    if (window.KIOSK_MODE) return;
     console.log('AUTH STATE CHANGED — user:', user ? user.email : 'null');
     if (user) {
       // 1. Must be a school email
@@ -4250,15 +4685,14 @@ const firebaseConfig = {
 
       document.getElementById('auth-screen').style.display = 'none';
       document.getElementById('app-screen').style.display  = 'block';
-      const _staffName = allowed.name || user.displayName || user.email;
-      document.getElementById('topbar-name').textContent = _staffName;
-      window._currentStaffName = _staffName;
+      document.getElementById('topbar-name').textContent   = user.displayName || user.email;
 
       document.getElementById('nav-admin').style.display = currentIsAdmin ? '' : 'none';
 
       setGreeting();
       populateStaffDropdowns();
       loadAllTickets();
+      setupReportDropdowns();
       showView('home');
 
     } else {
@@ -4365,14 +4799,16 @@ const firebaseConfig = {
         (view === 'daybook'    && t.includes('daybook')) ||
         (view === 'planner'    && t.includes('planner')) ||
         (view === 'tickets'    && t.includes('ticket')) ||
+        (view === 'naplan'     && t.includes('naplan')) ||
         (view === 'meetings'   && t.includes('meeting')) ||
         (view === 'documents'  && t.includes('document')) ||
         (view === 'suggest'    && t.includes('suggest')) ||
         (view === 'admin'      && t.includes('admin'))
       ) b.classList.add('active');
     });
-    if (view === 'tickets')  { renderDashboard(); renderAllTickets(allTickets); }
+    if (view === 'tickets')  { renderDashboard(); renderAllTickets(allTickets); setupReportDropdowns(); }
     if (view === 'admin')    loadAdminUsers();
+    if (view === 'naplan' && !_npInited) { _npInited = true; npInitDashboard(); }
     if (view === 'meetings') meetingsInit();
     if (view === 'documents') docInit();
     if (view === 'suggest')  suggestInit();
@@ -4403,7 +4839,8 @@ const firebaseConfig = {
     const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
     const hour = now.getHours();
     const greet = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
-    const firstName = (window._currentStaffName || '').split(' ')[0] || '';
+    const nameEl = document.getElementById('topbar-name');
+    const firstName = nameEl ? nameEl.textContent.split(' ')[0] : '';
     document.getElementById('home-greeting').textContent = greet + (firstName ? ', ' + firstName : '') + '!';
     document.getElementById('home-day').textContent = days[now.getDay()];
     document.getElementById('home-date-full').textContent = now.getDate() + ' ' + months[now.getMonth()] + ' ' + now.getFullYear();
@@ -4432,10 +4869,9 @@ const firebaseConfig = {
   }
 
   async function loadHomeDaybookPreview() {
-    const el = document.getElementById('home-daybook-preview');
-    if (!el) return;
     const dateKey = daybookDateKey(new Date());
     const snap = await getDoc(doc(db, 'daybook', dateKey));
+    const el = document.getElementById('home-daybook-preview');
     if (!snap.exists()) {
       el.innerHTML = '<div class="db-empty">No daybook entry yet for today. <a href="#" onclick="showView(\'daybook\')">Add one →</a></div>';
       return;
@@ -4514,7 +4950,7 @@ const firebaseConfig = {
   // ── UV Index ──
   async function loadUVIndex() {
     try {
-      const url = 'https://api.open-meteo.com/v1/forecast?latitude=-34.93&longitude=138.60&hourly=uv_index&daily=uv_index_max&timezone=Australia/Adelaide&forecast_days=1';
+      const url = 'https://api.open-meteo.com/v1/forecast?latitude=-34.9285&longitude=138.6007&hourly=uv_index&daily=uv_index_max&timezone=Australia%2FAdelaide&forecast_days=1';
       const resp = await fetch(url);
       const json = await resp.json();
       const now = new Date();
@@ -4618,7 +5054,6 @@ const firebaseConfig = {
   }
 
   async function plannerLoad() {
-    if (!document.getElementById('planner-week-label')) return;
     const { mon, sun } = plannerWeekRange(plannerCurrentWeekStart || new Date());
     if (!plannerCurrentWeekStart) plannerCurrentWeekStart = mon;
 
@@ -5001,10 +5436,8 @@ const firebaseConfig = {
   }
 
   async function daybookLoad() {
-    const _savebar = document.getElementById('daybook-save-bar');
-    if (!_savebar) return;
     daybookIsEditing = false;
-    _savebar.style.display = 'none';
+    document.getElementById('daybook-save-bar').style.display = 'none';
     document.getElementById('daybook-add-btn').style.display = 'none';
     document.getElementById('daybook-edit-btn').textContent = '✏️ Edit';
     const label = document.getElementById('daybook-nav-label');
@@ -5672,9 +6105,8 @@ const firebaseConfig = {
   // REPORTS
   // ══════════════════════════════════════
   function setupReportDropdowns() {
-    const monthSel = document.getElementById('report-month');
-    if (!monthSel) return;
     const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    const monthSel = document.getElementById('report-month');
     months.forEach((m, i) => {
       monthSel.innerHTML += `<option value="${i}" ${i === new Date().getMonth() ? 'selected' : ''}>${m}</option>`;
     });
@@ -5981,6 +6413,8 @@ const firebaseConfig = {
   // NAPLAN DATA
   // ══════════════════════════════════════
   function npShowPanel(id, btn) {
+    document.querySelectorAll('#naplan-shell .np-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('#naplan-shell .np-tab').forEach(t => t.classList.remove('active'));
     document.getElementById('np-panel-' + id).classList.add('active');
     if (btn) btn.classList.add('active');
   }
@@ -6002,6 +6436,231 @@ const firebaseConfig = {
     return '<span style="background:#FDECEB;color:#C0392B;font-weight:700;padding:0.1rem 0.35rem;border-radius:3px;font-size:0.68rem">⬇⬇</span>';
   }
 
+  function npInitDashboard() {
+    // Band data for overview bars
+    const bandData = [
+      { label:'Y3 Grammar',  exc:0,    str:45.3, dev:34.0, nas:20.8, exm:10.2 },
+      { label:'Y3 Reading',  exc:16.7, str:35.2, dev:31.5, nas:16.7, exm:10.0 },
+      { label:'Y3 Numeracy', exc:11.1, str:59.3, dev:22.2, nas:7.4,  exm:10.0 },
+      { label:'Y3 Spelling', exc:5.7,  str:58.5, dev:22.6, nas:13.2, exm:10.2 },
+      { label:'Y5 Grammar',  exc:14.5, str:45.5, dev:25.5, nas:14.5, exm:9.8  },
+      { label:'Y5 Reading',  exc:16.4, str:61.8, dev:16.4, nas:5.5,  exm:9.8  },
+      { label:'Y5 Numeracy', exc:7.3,  str:72.7, dev:14.5, nas:5.5,  exm:9.8  },
+      { label:'Y5 Spelling', exc:20.0, str:58.2, dev:10.9, nas:10.9, exm:9.8  },
+    ];
+
+    function makeBarRow(label, segs, labelStyle) {
+      const total = segs.reduce((a,s)=>a+s.v,0)||100;
+      const scale = 100/total;
+      const segHtml = segs.map(s => s.v > 0
+        ? `<div class="np-bar-seg ${s.cls}" style="width:${s.v*scale}%">${s.v > 8 ? s.v.toFixed(0)+'%' : ''}</div>`
+        : '').join('');
+      return `<div class="np-bar-row"><div class="np-bar-label" style="${labelStyle||''}">${label}</div><div class="np-bar-track">${segHtml}</div></div>`;
+    }
+
+    const ob = document.getElementById('np-overview-bars');
+    if (ob) ob.innerHTML = bandData.map(d => makeBarRow(d.label,[
+      {v:d.exc,cls:'exc'},{v:d.str,cls:'str'},{v:d.dev,cls:'dev'},{v:d.nas,cls:'nas'},{v:d.exm,cls:'exm'}
+    ])).join('');
+
+    function renderStrongBars(id, data) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.innerHTML = data.map(d => {
+        const strong = d.exc + d.str;
+        return `<div class="np-bar-row"><div class="np-bar-label">${d.label.replace(/Y[35] /,'')}</div><div class="np-bar-track"><div class="np-bar-seg str" style="width:${strong}%;border-radius:6px">${strong.toFixed(0)}%</div></div></div>`;
+      }).join('');
+    }
+    renderStrongBars('np-y3-strong-bars', bandData.filter(d=>d.label.startsWith('Y3')));
+    renderStrongBars('np-y5-strong-bars', bandData.filter(d=>d.label.startsWith('Y5')));
+
+    // Trend data
+    const trendData = {
+      Y3: {
+        Grammar:  {'2024':{sp:41.0,exc:0,str:29.5,dev:42.6,nas:16.4,n:61},'2025':{sp:50.8,exc:4.8,str:46.0,dev:36.5,nas:12.7,n:63},'2026':{sp:45.3,exc:0,str:45.3,dev:34.0,nas:20.8,n:53}},
+        Reading:  {'2024':{sp:58.1,exc:16.1,str:41.9,dev:32.3,nas:9.7,n:62},'2025':{sp:50.8,exc:9.5,str:41.3,dev:36.5,nas:12.7,n:63},'2026':{sp:51.9,exc:16.7,str:35.2,dev:31.5,nas:16.7,n:54}},
+        Numeracy: {'2024':{sp:71.7,exc:6.7,str:65.0,dev:21.7,nas:6.7,n:60},'2025':{sp:52.4,exc:3.2,str:49.2,dev:42.9,nas:4.8,n:63},'2026':{sp:70.4,exc:11.1,str:59.3,dev:22.2,nas:7.4,n:54}},
+        Spelling: {'2024':{sp:65.6,exc:19.7,str:45.9,dev:27.9,nas:6.6,n:61},'2025':{sp:66.7,exc:14.3,str:52.4,dev:30.2,nas:3.2,n:63},'2026':{sp:64.2,exc:5.7,str:58.5,dev:22.6,nas:13.2,n:53}},
+      },
+      Y5: {
+        Grammar:  {'2024':{sp:67.8,exc:13.6,str:54.2,dev:20.3,nas:11.9,n:59},'2025':{sp:77.6,exc:17.2,str:60.3,dev:20.7,nas:1.7,n:58},'2026':{sp:60.0,exc:14.5,str:45.5,dev:25.5,nas:14.5,n:55}},
+        Reading:  {'2024':{sp:67.8,exc:23.7,str:44.1,dev:25.4,nas:6.8,n:59},'2025':{sp:81.0,exc:13.8,str:67.2,dev:17.2,nas:1.7,n:58},'2026':{sp:78.2,exc:16.4,str:61.8,dev:16.4,nas:5.5,n:55}},
+        Numeracy: {'2024':{sp:65.5,exc:6.9,str:58.6,dev:22.4,nas:12.1,n:58},'2025':{sp:76.4,exc:9.1,str:67.3,dev:21.8,nas:1.8,n:55},'2026':{sp:80.0,exc:7.3,str:72.7,dev:14.5,nas:5.5,n:55}},
+        Spelling: {'2024':{sp:74.6,exc:23.7,str:50.8,dev:20.3,nas:5.1,n:59},'2025':{sp:65.5,exc:19.0,str:46.6,dev:27.6,nas:6.9,n:58},'2026':{sp:78.2,exc:20.0,str:58.2,dev:10.9,nas:10.9,n:55}},
+      }
+    };
+    const yearColors = {'2024':'#374151','2025':'#2E86C1','2026':'#D4A843'};
+
+    function renderTrendBars(id, yl) {
+      const el = document.getElementById(id); if (!el) return;
+      ['Grammar','Reading','Numeracy','Spelling'].forEach(domain => {
+        const gDiv = document.createElement('div'); gDiv.style.marginBottom='0.9rem';
+        gDiv.innerHTML = `<div style="font-size:0.78rem;font-weight:700;color:#0B1D3A;margin-bottom:0.35rem">${domain}</div>`;
+        ['2024','2025','2026'].forEach(yr => {
+          const d = trendData[yl][domain][yr];
+          const c = yearColors[yr];
+          gDiv.innerHTML += `<div class="np-bar-row"><div class="np-bar-label" style="color:${c};font-weight:700">${yr}</div><div class="np-bar-track"><div class="np-bar-seg" style="width:${d.sp}%;background:${c};border-radius:6px">${d.sp}%</div></div><div style="font-size:0.68rem;color:#6B7280;width:36px;text-align:right">n=${d.n}</div></div>`;
+        });
+        el.appendChild(gDiv);
+      });
+    }
+
+    function renderFullBars(id, yl) {
+      const el = document.getElementById(id); if (!el) return;
+      ['Grammar','Reading','Numeracy','Spelling'].forEach(domain => {
+        const gDiv = document.createElement('div'); gDiv.style.marginBottom='1rem';
+        gDiv.innerHTML = `<div style="font-size:0.78rem;font-weight:700;color:#0B1D3A;margin-bottom:0.35rem">${domain}</div>`;
+        ['2024','2025','2026'].forEach(yr => {
+          const d = trendData[yl][domain][yr];
+          const total = d.exc+d.str+d.dev+d.nas;
+          const c = yearColors[yr];
+          gDiv.innerHTML += `<div class="np-bar-row"><div class="np-bar-label" style="color:${c};font-weight:700">${yr}</div><div class="np-bar-track">${d.exc>0?`<div class="np-bar-seg exc" style="width:${d.exc/total*100}%">${d.exc>8?d.exc.toFixed(0)+'%':''}</div>`:''}<div class="np-bar-seg str" style="width:${d.str/total*100}%">${d.str.toFixed(0)}%</div><div class="np-bar-seg dev" style="width:${d.dev/total*100}%">${d.dev>8?d.dev.toFixed(0)+'%':''}</div><div class="np-bar-seg nas" style="width:${d.nas/total*100}%">${d.nas>8?d.nas.toFixed(0)+'%':''}</div></div></div>`;
+        });
+        el.appendChild(gDiv);
+      });
+    }
+
+    renderTrendBars('np-y5-trend-bars','Y5'); renderTrendBars('np-y3-trend-bars','Y3');
+    renderFullBars('np-y5-full-bars','Y5'); renderFullBars('np-y3-full-bars','Y3');
+
+    // Longitudinal table
+    const longData = [
+      ['ALANA CAITLIN SACHSE','STR','EXC','STR','EXC','STR','STR','STR','STR'],
+      ['ALEX MARK VINCENT','DEV','STR','DEV','STR','STR','STR','STR','STR'],
+      ['ALEXIS MARGARET LA BELLA','STR','STR','STR','STR','STR','STR','STR','STR'],
+      ['AMELIE EVE SMITH','DEV','DEV','DEV','STR','STR','STR','DEV','DEV'],
+      ['ANTONY JUNIOR WINTON-LEPPA','NAS','NAS','NAS','NAS','—','NAS','NAS','NAS'],
+      ['AURELIA JEAN TONER','EXC','EXC','STR','EXC','STR','STR','EXC','EXC'],
+      ['AZALIA FURINA','NAS','DEV','NAS','DEV','NAS','STR','DEV','DEV'],
+      ['BENJAMIN MATT WIMMER','STR','EXC','EXC','EXC','STR','STR','EXC','EXC'],
+      ['BILLY RUSHE ANDERSSON','DEV','DEV','DEV','DEV','DEV','STR','DEV','STR'],
+      ['CHARLOTTE GRACE MARTYN-CHIENG','DEV','STR','DEV','STR','STR','STR','STR','EXC'],
+      ['COHEN LONG','STR','STR','STR','STR','STR','STR','STR','STR'],
+      ['DANTE TIAGO TOLEDO','NAS','DEV','DEV','STR','DEV','STR','DEV','DEV'],
+      ['ECHO SAPPHIRE PROUD','DEV','DEV','DEV','STR','DEV','STR','NAS','DEV'],
+      ['EMMA MAE HOLLINGWORTH','DEV','DEV','STR','STR','STR','STR','STR','STR'],
+      ['EVA OCENASEK','STR','STR','STR','STR','DEV','STR','STR','STR'],
+      ['EYLAH HEINA BRANDENBURG-HUNG','EXC','EXC','EXC','EXC','EXC','EXC','EXC','EXC'],
+      ['GREYSON BUSHELL-PEARCE','DEV','DEV','DEV','STR','DEV','DEV','STR','STR'],
+      ['HAYDEN JEREBICA EMES','NAS','NAS','NAS','DEV','STR','STR','DEV','NAS'],
+      ['HUDSON JAMES BOWER','STR','STR','EXC','STR','STR','STR','EXC','STR'],
+      ['HUNTER JOHN GRANT MANNIX','EXC','STR','EXC','STR','EXC','EXC','STR','STR'],
+      ['ISAAC WILLIAM WILSON','NAS','DEV','DEV','STR','DEV','STR','STR','STR'],
+      ['ISABELLA PIRONE','STR','STR','STR','STR','STR','STR','STR','STR'],
+      ['ISABELLE LI YEN SCHNEIDER','STR','STR','STR','STR','STR','STR','STR','STR'],
+      ['ISABELLE MARIE ANDERSON','STR','STR','STR','STR','STR','STR','STR','STR'],
+      ['IZAIAH LEE BINGAPORE','STR','DEV','STR','STR','STR','STR','STR','EXC'],
+      ['JACK EDWARD JOHN LYNCH','NAS','STR','DEV','STR','STR','DEV','DEV','STR'],
+      ['JACOB ANTHONY PARADISO','NAS','NAS','NAS','NAS','NAS','NAS','DEV','NAS'],
+      ['JADE EMILY BAIRSTOW','DEV','STR','STR','STR','STR','STR','DEV','STR'],
+      ['JAKE BRENTON HUGHES','STR','STR','EXC','STR','STR','STR','STR','STR'],
+      ['JESSIE LUO','EXC','EXC','EXC','EXC','STR','EXC','EXC','EXC'],
+      ['KAYLA PAIGE ROMAINE','EXC','EXC','EXC','EXC','STR','STR','EXC','EXC'],
+      ['LUCAS SIMILE','DEV','NAS','DEV','STR','STR','STR','DEV','STR'],
+      ['LUCY MAY RAYMOND','DEV','DEV','DEV','STR','STR','STR','STR','STR'],
+      ['MADDISON GRACE MEDHURST','STR','DEV','STR','STR','STR','STR','DEV','STR'],
+      ['MAXWELL TOM PARKER','DEV','STR','DEV','STR','DEV','STR','STR','STR'],
+      ['MEHDEEP SINGH','DEV','NAS','STR','DEV','NAS','DEV','DEV','STR'],
+      ['MITCHELL OLIVER PERRY','DEV','STR','STR','STR','STR','STR','STR','STR'],
+      ['NATE JUSTIN WILDE','NAS','NAS','NAS','NAS','DEV','DEV','NAS','NAS'],
+      ['OWEN TIMOTHY SKILTON','DEV','STR','STR','STR','STR','STR','DEV','NAS'],
+      ['POPPY PRUNTY','DEV','STR','STR','STR','STR','STR','STR','STR'],
+      ['RAJVIR SINGH','DEV','NAS','DEV','DEV','STR','STR','DEV','DEV'],
+      ['RYAN JIMMY MITCHELL','NAS','STR','STR','STR','STR','STR','STR','STR'],
+      ['SAMARPRATAP SINGH','STR','STR','STR','EXC','STR','STR','EXC','EXC'],
+      ['SCARLETTE POTTER-COOK','STR','STR','STR','STR','STR','STR','EXC','EXC'],
+      ['SLOANE AVA BARTHOLOMEW','DEV','DEV','DEV','DEV','DEV','DEV','STR','DEV'],
+      ['TALHA NOOR','STR','STR','EXC','STR','STR','EXC','EXC','EXC'],
+      ['TASIA ROSIE PISANIELLO','DEV','STR','STR','STR','DEV','DEV','STR','STR'],
+      ['VEGHA RAMPAL','DEV','DEV','DEV','DEV','DEV','STR','STR','STR'],
+      ['VIVIANNA PIRONE','STR','EXC','STR','EXC','STR','STR','STR','STR'],
+      ['WILLOW CHARLOTTE ANGUS','STR','STR','STR','STR','STR','STR','STR','STR'],
+      ['ZAYN GHAMRAWI','DEV','STR','STR','STR','STR','STR','STR','STR'],
+      ['ZOE KATHLEEN WILLIAMS','STR','STR','STR','EXC','STR','DEV','EXC','STR'],
+    ];
+    const lt = document.getElementById('np-longitudinal-table');
+    if (lt) longData.forEach(s => {
+      const cols = [[s[1],s[2]],[s[3],s[4]],[s[5],s[6]],[s[7],s[8]]];
+      const tr = document.createElement('tr');
+      let html = `<td style="font-weight:500;white-space:nowrap;font-size:0.73rem">${s[0]}</td>`;
+      cols.forEach(([b24,b26]) => { html += `<td>${npPill(b24)}</td><td>${npPill(b26)}</td><td style="text-align:center">${npArrowPill(b24,b26)}</td>`; });
+      tr.innerHTML = html;
+      lt.appendChild(tr);
+    });
+
+    // Student tables
+    const y3Students = [
+      ['ACE JAMES THOMPSON','STR','STR','STR','STR'],['ALEX MOYLE','STR','EXC','STR','STR'],
+      ['ARCHER CHRISTOPHER ACKLAND','STR','STR','STR','STR'],['ARIANA ROSE MANNO','DEV','DEV','DEV','DEV'],
+      ['ARTHUR ALAN SARSON','DEV','NAS','DEV','DEV'],['BENJAMIN WALTER FLETCHER','STR','STR','DEV','STR'],
+      ['CASPIAN EDWARD COOPER','DEV','DEV','STR','STR'],['CHARLOTTE VICTORIA BUCKLEY','STR','EXC','STR','STR'],
+      ['CHELSEA BELLA RADETTI','STR','STR','STR','STR'],['CHLOE JEAN BARRY','DEV','STR','STR','STR'],
+      ['CLAIRE LI ANN NORSWORTHY','STR','STR','STR','STR'],['DAISY GRACE HARRINGTON','STR','EXC','EXC','STR'],
+      ['DANE JOHN FREDERICK GREEN','NAS','DEV','STR','STR'],['EDDY LEO SINCLAIR-COOPER','NAS','NAS','DEV','NAS'],
+      ['ELI JOHN POTTER-COOK','DEV','DEV','STR','STR'],['ELLA UNN','NAS','NAS','DEV','NAS'],
+      ['EMMETT MICAH BRADY','STR','STR','STR','STR'],['EVIE HAZEL PARADISO','STR','DEV','STR','STR'],
+      ['EZEKIEL WOLFGANG MOLS','DEV','NAS','DEV','STR'],['FLYNN RONSON ADSETT','NAS','DEV','STR','DEV'],
+      ['GIROLEMO JAMES-SCOTT TRIMBOLI','NAS','NAS','DEV','NAS'],['HARVEY JACK SMITH','NAS','NAS','STR','NAS'],
+      ['HERBERT DIETER DANSIE','STR','EXC','STR','STR'],['HETWAN ELIASSISARZALI','DEV','STR','STR','STR'],
+      ['HUDSON WALKER','NAS','NAS','NAS','NAS'],['INDIANNA PRUNTY','DEV','DEV','DEV','DEV'],
+      ['ISAAC ZAYNE JAMALEDDINE','DEV','DEV','DEV','DEV'],['ISABELLA ELLEN ROSE HENDRIE','NAS','DEV','NAS','NAS'],
+      ['ISABELLA JESSICA PARADISO','DEV','STR','STR','DEV'],['JACE EDWARD YEARSLEY','STR','STR','STR','STR'],
+      ['JESSE JAMES RHYS HAMMOND','DEV','DEV','STR','DEV'],['JOSHUA CHRISTIAN KELLY','STR','EXC','EXC','EXC'],
+      ['KAI DENNIS FENTON','DEV','STR','STR','STR'],['KAI SYDNEY TRENWITH GRIFFITH','STR','EXC','EXC','EXC'],
+      ['KATHERINE ELIZA JOYCE','DEV','DEV','STR','DEV'],['LACHLAN DUNCAN QUANG HOSSACK','STR','STR','STR','STR'],
+      ['LACHLAN PETER BRIDGES','STR','STR','DEV','DEV'],['LINCOLN DONALD REIMER','STR','EXC','STR','STR'],
+      ['LLOYD BRUCE BUTLER','STR','EXC','STR','STR'],['LOGAN FOX LUDWIGS-CHRISTOFF','STR','STR','STR','EXC'],
+      ['MILLICENT ROSE TOONE BARRETT','DEV','DEV','STR','DEV'],['NOAH LOK-NGA BRANDENBURG-HUNG','STR','STR','EXC','STR'],
+      ['OLIVER ROBERT MCDOUGALL','STR','STR','EXC','STR'],['OLIVER RYAN NICHOLSON','DEV','STR','EXC','DEV'],
+      ['OLIVIA CATE TOBIN','DEV','DEV','STR','STR'],['PENELOPE HOPE CHIENG','STR','EXC','STR','STR'],
+      ['PINTHERU MAHAWADUGE SARAH FERNANDO','NAS','DEV','NAS','DEV'],['RAADEEN ALIMARDANI','NAS','NAS','NAS','STR'],
+      ['SOFIA ISABEL GARCIA MCCARTHY','STR','STR','STR','STR'],['SUMMER INDIGO MAULITZ','STR','STR','STR','STR'],
+      ['SYEDA GOHAR','DEV','DEV','DEV','STR'],['THOMAS CAMPBELL YEARSLEY','DEV','DEV','STR','STR'],
+      ['WILLOW PEARL KNAPPSTEIN','NAS','NAS','DEV','NAS'],
+    ];
+    const y5Students = [
+      ['ALANA CAITLIN SACHSE','EXC','EXC','STR','STR'],['ALEX MARK VINCENT','STR','STR','STR','STR'],
+      ['ALEXIS MARGARET LA BELLA','STR','STR','STR','STR'],['AMELIE EVE SMITH','DEV','STR','STR','DEV'],
+      ['ANTONY JUNIOR WINTON-LEPPA','NAS','NAS','NAS','NAS'],['AURELIA JEAN TONER','EXC','EXC','STR','EXC'],
+      ['AZALIA FURINA','DEV','DEV','STR','DEV'],['BENJAMIN MATT WIMMER','EXC','EXC','STR','EXC'],
+      ['BILLY RUSHE ANDERSSON','DEV','DEV','STR','STR'],['CHARLOTTE GRACE MARTYN-CHIENG','STR','STR','STR','EXC'],
+      ['COHEN LONG','STR','STR','STR','STR'],['DANTE TIAGO TOLEDO','DEV','STR','STR','DEV'],
+      ['ECHO SAPPHIRE PROUD','DEV','STR','STR','DEV'],['EMMA MAE HOLLINGWORTH','DEV','STR','STR','STR'],
+      ['EVA OCENASEK','STR','STR','STR','STR'],['EYLAH HEINA BRANDENBURG-HUNG','EXC','EXC','EXC','EXC'],
+      ['GREYSON BUSHELL-PEARCE','DEV','STR','DEV','STR'],['HAYDEN JEREBICA EMES','NAS','DEV','STR','NAS'],
+      ['HUDSON JAMES BOWER','STR','STR','STR','STR'],['HUNTER JOHN GRANT MANNIX','STR','STR','EXC','STR'],
+      ['ISAAC WILLIAM WILSON','DEV','STR','STR','STR'],['ISABELLA PIRONE','STR','STR','STR','STR'],
+      ['ISABELLE LI YEN SCHNEIDER','STR','STR','STR','STR'],['ISABELLE MARIE ANDERSON','STR','STR','STR','STR'],
+      ['IZAIAH LEE BINGAPORE','DEV','STR','STR','EXC'],['JACK EDWARD JOHN LYNCH','STR','STR','DEV','STR'],
+      ['JACOB ANTHONY PARADISO','NAS','NAS','NAS','NAS'],['JADE EMILY BAIRSTOW','STR','STR','STR','STR'],
+      ['JAKE BRENTON HUGHES','STR','STR','STR','STR'],['JESSIE LUO','EXC','EXC','EXC','EXC'],
+      ['KARV DESAI','DEV','DEV','STR','STR'],['KAYLA PAIGE ROMAINE','EXC','EXC','STR','EXC'],
+      ['LUCAS SIMILE','NAS','STR','STR','STR'],['LUCY MAY RAYMOND','DEV','STR','STR','STR'],
+      ['MADDISON GRACE MEDHURST','DEV','STR','STR','STR'],['MAXWELL TOM PARKER','STR','STR','STR','STR'],
+      ['MEHDEEP SINGH','NAS','DEV','DEV','STR'],['MILES HOLLARD','EXC','STR','NAS','EXC'],
+      ['MITCHELL OLIVER PERRY','STR','STR','STR','STR'],['NATE JUSTIN WILDE','NAS','NAS','DEV','NAS'],
+      ['NATHANIEL JAMES THOMAS','NAS','DEV','DEV','NAS'],['OWEN TIMOTHY SKILTON','STR','STR','STR','NAS'],
+      ['POPPY PRUNTY','STR','STR','STR','STR'],['RAJVIR SINGH','NAS','DEV','STR','DEV'],
+      ['RYAN JIMMY MITCHELL','STR','STR','STR','STR'],['SAMARPRATAP SINGH','STR','EXC','STR','EXC'],
+      ['SCARLETTE POTTER-COOK','STR','STR','STR','EXC'],['SLOANE AVA BARTHOLOMEW','DEV','DEV','DEV','DEV'],
+      ['TALHA NOOR','STR','STR','EXC','EXC'],['TASIA ROSIE PISANIELLO','STR','STR','DEV','STR'],
+      ['VEGHA RAMPAL','DEV','DEV','STR','STR'],['VIVIANNA PIRONE','EXC','EXC','STR','STR'],
+      ['WILLOW CHARLOTTE ANGUS','STR','STR','STR','STR'],['ZAYN GHAMRAWI','STR','STR','STR','STR'],
+      ['ZOE KATHLEEN WILLIAMS','STR','EXC','DEV','STR'],
+    ];
+
+    function renderStudentTable(id, students) {
+      const tbl = document.getElementById(id); if (!tbl) return;
+      students.forEach(s => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td style="font-weight:500;white-space:nowrap;font-size:0.73rem">${s[0]}</td>
+          <td>${npPill(s[1])}</td><td>${npPill(s[2])}</td><td>${npPill(s[3])}</td><td>${npPill(s[4])}</td>`;
+        tbl.appendChild(tr);
+      });
+    }
+    renderStudentTable('np-y3-student-table', y3Students);
+    renderStudentTable('np-y5-student-table', y5Students);
+  }
 
   // ══════════════════════════════════════════════════════
   // ══════════════════════════════════════════════════════
@@ -6094,7 +6753,6 @@ const firebaseConfig = {
   // ── Init ────────────────────────────────────────────────
   async function meetingsInit() {
     const listEl = document.getElementById('meetings-list');
-    if (!listEl) return;
     listEl.innerHTML = '<div style="color:var(--subtext);padding:32px;text-align:center">Loading meetings…</div>';
     await Promise.all([meetingsLoadTypes(), meetingsLoadStaff()]);
     meetingsRenderTabBar();
@@ -6428,8 +7086,14 @@ const firebaseConfig = {
       <td style="border:1px solid var(--gray2);padding:4px"><input class="form-input" style="padding:5px 8px;font-size:12px;width:100%" placeholder="Agenda item…" value="${esc(a.item||'')}"></td>
       <td style="border:1px solid var(--gray2);padding:4px"><input class="form-input" style="padding:5px 8px;font-size:12px;width:100%" placeholder="Who?" value="${esc(a.proposer||'')}"></td>
       <td style="border:1px solid var(--gray2);padding:4px"><input class="form-input" style="padding:5px 8px;font-size:12px;width:100%;text-align:center" placeholder="5 min" value="${esc(a.time||'')}"></td>
-
-      <td style="border:1px solid var(--gray2);padding:4px"><textarea class="form-input" style="padding:5px 8px;font-size:12px;width:100%;min-height:80px;resize:vertical;line-height:1.5" placeholder="Notes / outcome…">${esc(a.notes||'')}</textarea></td>
+      <td style="border:1px solid var(--gray2);padding:4px">
+        <select class="form-input" style="padding:5px 6px;font-size:12px;width:100%">
+          <option value="Low"${(a.priority||'Low')==='Low'?' selected':''}>Low</option>
+          <option value="Med"${a.priority==='Med'?' selected':''}>Med</option>
+          <option value="High"${a.priority==='High'?' selected':''}>High</option>
+        </select>
+      </td>
+      <td style="border:1px solid var(--gray2);padding:4px"><input class="form-input" style="padding:5px 8px;font-size:12px;width:100%" placeholder="Notes / outcome…" value="${esc(a.notes||'')}"></td>
       <td style="border:1px solid var(--gray2);padding:4px;text-align:center"><button onclick="this.closest('tr').remove()" style="background:none;border:none;cursor:pointer;color:var(--red);font-size:16px">✕</button></td>`;
     tbody.appendChild(tr);
   }
@@ -7272,122 +7936,6 @@ const firebaseConfig = {
   window.docRemoveCategory     = docRemoveCategory;
 
   // ══════════════════════════════════════
-  // KIOSK CONFIGURATOR + BIRTHDAY MANAGER
-  // ══════════════════════════════════════
-  const MONTHS = ['','January','February','March','April','May','June','July','August','September','October','November','December'];
-
-  async function kioskConfigLoad() {
-    try {
-      const snap = await getDoc(doc(db, 'kiosk_config', 'settings'));
-      if (snap.exists()) {
-        const d = snap.data();
-        const pbl  = document.getElementById('kiosk-pbl');
-        const crew = document.getElementById('kiosk-crew');
-        if (pbl)  pbl.value  = d.pbl  || '';
-        if (crew) crew.value = d.crew || '';
-      }
-    } catch(e) { console.warn('kioskConfigLoad:', e); }
-  }
-
-  async function kioskConfigSave() {
-    const pbl  = document.getElementById('kiosk-pbl').value.trim();
-    const crew = document.getElementById('kiosk-crew').value.trim();
-    const msg  = document.getElementById('kiosk-config-msg');
-    try {
-      await setDoc(doc(db, 'kiosk_config', 'settings'), { pbl, crew, updatedAt: serverTimestamp() });
-      msg.textContent = '✅ Saved!'; msg.style.display = 'inline';
-      setTimeout(() => msg.style.display = 'none', 3000);
-    } catch(e) { msg.textContent = '❌ Error: ' + e.message; msg.style.color = 'var(--red)'; msg.style.display = 'inline'; }
-  }
-
-  let _allBirthdays = [];
-
-  async function bdayLoad() {
-    try {
-      const snap = await getDocs(collection(db, 'birthdays'));
-      _allBirthdays = [];
-      snap.forEach(d => _allBirthdays.push({ id: d.id, ...d.data() }));
-      _allBirthdays.sort((a,b) => a.month !== b.month ? a.month - b.month : a.day - b.day);
-      bdayRenderList();
-    } catch(e) { console.warn('bdayLoad:', e); }
-  }
-
-  function bdayRenderList() {
-    const el = document.getElementById('bday-list');
-    if (!el) return;
-    if (!_allBirthdays.length) { el.innerHTML = '<div style="color:var(--subtext);font-size:13px">No birthdays added yet.</div>'; return; }
-    el.innerHTML = _allBirthdays.map(b => `
-      <div style="display:flex;justify-content:space-between;align-items:center;background:var(--gray1);border-radius:8px;padding:10px 14px">
-        <div><span style="font-weight:700;font-size:14px">🎂 ${escHtml(b.name)}</span><span style="color:var(--subtext);font-size:12px;margin-left:10px">${b.day} ${MONTHS[b.month]}</span></div>
-        <button class="btn btn-sm btn-danger" style="font-size:11px" onclick="bdayDelete('${b.id}','${escHtml(b.name)}')">Remove</button>
-      </div>`).join('');
-  }
-
-  function bdayOpenAdd() {
-    document.getElementById('bday-add-name').value  = '';
-    document.getElementById('bday-add-day').value   = '';
-    document.getElementById('bday-add-month').value = '';
-    hideEl('bday-add-error');
-    openModal('bday-add-modal');
-  }
-
-  async function bdaySaveAdd() {
-    const name  = document.getElementById('bday-add-name').value.trim();
-    const day   = parseInt(document.getElementById('bday-add-day').value);
-    const month = parseInt(document.getElementById('bday-add-month').value);
-    const errEl = document.getElementById('bday-add-error');
-    hideEl('bday-add-error');
-    if (!name)       { errEl.textContent = 'Please enter a name.'; showEl('bday-add-error'); return; }
-    if (!day||!month){ errEl.textContent = 'Please select a day and month.'; showEl('bday-add-error'); return; }
-    try {
-      const id = name.toLowerCase().replace(/\s+/g,'_') + '_' + Date.now();
-      await setDoc(doc(db, 'birthdays', id), { name, day, month });
-      closeModal('bday-add-modal');
-      showToast(`Birthday added for ${name}.`, 'success');
-      await bdayLoad();
-    } catch(e) { errEl.textContent = 'Error: ' + e.message; showEl('bday-add-error'); }
-  }
-
-  async function bdayDelete(id, name) {
-    if (!confirm(`Remove birthday for ${name}?`)) return;
-    try {
-      await deleteDoc(doc(db, 'birthdays', id));
-      showToast(`Birthday removed for ${name}.`, 'success');
-      _allBirthdays = _allBirthdays.filter(b => b.id !== id);
-      bdayRenderList();
-    } catch(e) { showToast('Error: ' + e.message, 'error'); }
-  }
-
-  async function bdayBulkImport() {
-    const raw = document.getElementById('bday-bulk-input').value.trim();
-    const msg = document.getElementById('bday-import-msg');
-    if (!raw) return;
-    const lines = raw.split('\n').filter(l => l.trim());
-    let ok = 0, fail = 0;
-    for (const line of lines) {
-      const parts = line.split(',').map(p => p.trim());
-      if (parts.length < 3) { fail++; continue; }
-      const name = parts[0], day = parseInt(parts[1]), month = parseInt(parts[2]);
-      if (!name || isNaN(day) || isNaN(month) || day < 1 || day > 31 || month < 1 || month > 12) { fail++; continue; }
-      try {
-        await setDoc(doc(db, 'birthdays', name.toLowerCase().replace(/\s+/g,'_') + '_bday'), { name, day, month });
-        ok++;
-      } catch(e) { fail++; }
-    }
-    msg.textContent = `✅ ${ok} imported${fail ? ', ❌ ' + fail + ' skipped' : ''}.`;
-    msg.style.color = ok > 0 ? 'green' : 'red';
-    msg.style.display = 'block';
-    document.getElementById('bday-bulk-input').value = '';
-    await bdayLoad();
-  }
-
-  window.kioskConfigSave = kioskConfigSave;
-  window.bdayOpenAdd     = bdayOpenAdd;
-  window.bdaySaveAdd     = bdaySaveAdd;
-  window.bdayDelete      = bdayDelete;
-  window.bdayBulkImport  = bdayBulkImport;
-
-  // ══════════════════════════════════════
   // TRT (RELIEVING TEACHER) MODULE
   // ══════════════════════════════════════
   function trtEnter() {
@@ -7426,7 +7974,7 @@ const firebaseConfig = {
     if (dow === 0) displayDate.setDate(displayDate.getDate() + 1); // Sunday → Monday
     if (dow === 6) displayDate.setDate(displayDate.getDate() - 1); // Saturday → Friday
 
-    const key = `${displayDate.getFullYear()}-${String(displayDate.getMonth()+1).padStart(2,'0')}-${String(displayDate.getDate()).padStart(2,'0')}`; // YYYY-MM-DD local time
+    const key = displayDate.toISOString().slice(0,10); // YYYY-MM-DD
     const friendly = displayDate.toLocaleDateString('en-AU',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
     document.getElementById('trt-date-label').textContent = friendly;
 
@@ -7497,13 +8045,12 @@ const firebaseConfig = {
 
     // Yard duty — reuse the existing rendered table if available
     trtLoadYardDuty();
-    setTimeout(trtPopulateTeacherSelect, 500);
   }
 
   async function trtLoadUV() {
     const uvEl = document.getElementById('trt-uv');
     try {
-      const resp = await fetch('https://api.open-meteo.com/v1/forecast?latitude=-34.93&longitude=138.60&daily=uv_index_max&timezone=Australia/Adelaide&forecast_days=1');
+      const resp = await fetch('https://api.open-meteo.com/v1/forecast?latitude=-34.8&longitude=138.6&daily=uv_index_max&timezone=Australia%2FAdelaide&forecast_days=1');
       const json = await resp.json();
       const uv = json.daily?.uv_index_max?.[0];
       if (uv === undefined) { uvEl.textContent = 'Unavailable'; return; }
@@ -7532,13 +8079,7 @@ const firebaseConfig = {
         head.style.cssText = 'font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--subtext);margin-bottom:6px';
         head.textContent = labels[i] || '';
         wrap.appendChild(head);
-        const cloned = tbl.cloneNode(true);
-        cloned.querySelectorAll('.tt-highlight,.tt-highlight-nit,.duty-highlight,.name-highlight').forEach(el2 => {
-          el2.classList.remove('tt-highlight','tt-highlight-nit','duty-highlight','name-highlight');
-          el2.style.background = '';
-          el2.style.fontWeight = '';
-        });
-        wrap.appendChild(cloned);
+        wrap.appendChild(tbl.cloneNode(true));
         el.appendChild(wrap);
       });
     } else {
@@ -7547,79 +8088,8 @@ const firebaseConfig = {
     }
   }
 
-  function trtPopulateTeacherSelect() {
-    const sel = document.getElementById('trt-teacher-select');
-    if (!sel) return;
-    const absenceRows = document.querySelectorAll('#trt-absence-rows tr');
-    const names = [];
-    absenceRows.forEach(row => {
-      const cells = row.querySelectorAll('td');
-      if (cells.length >= 1) {
-        const name = cells[0].textContent.trim();
-        if (name && name !== '—' && name !== '') names.push(name);
-      }
-    });
-    if (window._ttIndividualData) {
-      window._ttIndividualData.forEach(p => {
-        if (!names.includes(p.name)) names.push(p.name);
-      });
-    }
-    names.sort();
-    sel.innerHTML = '<option value="">Select teacher I&apos;m relieving…</option>' +
-      names.map(n => `<option value="${n}">${n}</option>`).join('');
-  }
-
-  function trtLookupTeacher() {
-    const sel      = document.getElementById('trt-teacher-select');
-    const name     = sel.value;
-    const summary  = document.getElementById('trt-teacher-summary');
-    const noneEl   = document.getElementById('trt-teacher-none');
-    const dutiesEl = document.getElementById('trt-teacher-duties');
-    const specEl   = document.getElementById('trt-teacher-specialist');
-    if (!name) { summary.style.display = 'none'; noneEl.style.display = 'none'; return; }
-    const now = new Date();
-    const dayNames = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-    const todayName = dayNames[now.getDay()];
-    const colIndex = ['Monday','Tuesday','Wednesday','Thursday','Friday'].indexOf(todayName);
-    const periodLabels = ['Before School (8:20–8:40)', 'Recess (10:30–11:00)', 'Lunch (12:50–1:20)', 'After School (3:00–3:20)'];
-    const duties = [];
-    document.querySelectorAll('.duty-table').forEach((tbl, pi) => {
-      tbl.querySelectorAll('tbody tr').forEach(row => {
-        const cells = row.querySelectorAll('td');
-        if (cells.length < 2) return;
-        const area = cells[0].textContent.trim();
-        const dutyCell = cells[colIndex + 1];
-        if (dutyCell && dutyCell.textContent.trim().toLowerCase().includes(name.split(' ')[0].toLowerCase())) {
-          duties.push({ period: periodLabels[pi], area });
-        }
-      });
-    });
-    const specDuties = [];
-    document.querySelectorAll('.tt-site-table tbody tr').forEach(row => {
-      const cells = row.querySelectorAll('td');
-      if (cells.length < 2) return;
-      const period = cells[0].textContent.trim();
-      const specCell = cells[colIndex + 1];
-      if (specCell) {
-        const text = specCell.textContent.trim();
-        if (text && text !== '—' && text !== '-' && text.toLowerCase().includes(name.split(' ')[0].toLowerCase())) {
-          specDuties.push({ period, detail: text });
-        }
-      }
-    });
-    if (!duties.length && !specDuties.length) {
-      summary.style.display = 'none'; noneEl.style.display = 'block'; return;
-    }
-    noneEl.style.display = 'none'; summary.style.display = 'block';
-    dutiesEl.innerHTML = duties.length ? `<div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--subtext);margin-bottom:8px">Yard Duties Today</div>${duties.map(d=>`<div style="display:flex;gap:12px;align-items:center;padding:8px 12px;background:var(--gray1);border-radius:8px;margin-bottom:6px;border-left:3px solid var(--gold)"><div style="font-size:13px;font-weight:700;color:var(--navy)">${d.period}</div><div style="font-size:13px;color:var(--subtext)">→ ${d.area}</div></div>`).join('')}` : '';
-    specEl.innerHTML = specDuties.length ? `<div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--subtext);margin-bottom:8px;margin-top:${duties.length?'12px':'0'}">Specialist Classes Today</div>${specDuties.map(d=>`<div style="display:flex;gap:12px;align-items:center;padding:8px 12px;background:var(--gray1);border-radius:8px;margin-bottom:6px;border-left:3px solid var(--navy)"><div style="font-size:13px;font-weight:700;color:var(--navy)">${d.period}</div><div style="font-size:13px;color:var(--subtext)">→ ${d.detail}</div></div>`).join('')}` : '';
-  }
-
   window.trtEnter = trtEnter;
   window.trtExit  = trtExit;
-  window.trtLookupTeacher = trtLookupTeacher;
-
-} // close outer block
 </script>
 
 <!-- Login bridge — plain script so onclick always works regardless of module loading -->
@@ -7694,14 +8164,8 @@ const firebaseConfig = {
   function docOpenManageCategories()      { if (window.docOpenManageCategories)     window.docOpenManageCategories(); }
   function docAddCategory()               { if (window.docAddCategory)              window.docAddCategory(); }
   function docRemoveCategory(n)           { if (window.docRemoveCategory)           window.docRemoveCategory(n); }
-  function kioskConfigSave()              { if (window.kioskConfigSave)             window.kioskConfigSave(); }
-  function bdayOpenAdd()                  { if (window.bdayOpenAdd)                 window.bdayOpenAdd(); }
-  function bdaySaveAdd()                  { if (window.bdaySaveAdd)                 window.bdaySaveAdd(); }
-  function bdayDelete(id,n)               { if (window.bdayDelete)                  window.bdayDelete(id,n); }
-  function bdayBulkImport()               { if (window.bdayBulkImport)              window.bdayBulkImport(); }
   function trtEnter()                     { if (window.trtEnter)                    window.trtEnter(); }
   function trtExit()                      { if (window.trtExit)                     window.trtExit(); }
-  function trtLookupTeacher()             { if (window.trtLookupTeacher)             window.trtLookupTeacher(); }
   function dbAttachSetMode(m)             { if (window.dbAttachSetMode)             window.dbAttachSetMode(m); }
   function dbAttachAddUrl()               { if (window.dbAttachAddUrl)              window.dbAttachAddUrl(); }
   function dbAttachDelete(i)              { if (window.dbAttachDelete)              window.dbAttachDelete(i); }

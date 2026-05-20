@@ -4013,20 +4013,18 @@
           <div class="trt-topbar-title">📋 Relieving Teacher — Today&apos;s Daybook</div>
           <div class="trt-topbar-sub" id="trt-date-label">Loading…</div>
         </div>
+        <div style="display:flex;align-items:center;gap:20px;flex:1;justify-content:center">
+          <div style="background:rgba(255,255,255,0.1);border-radius:8px;padding:6px 16px;font-size:14px;font-weight:700" id="trt-term-badge-header">—</div>
+          <div style="background:rgba(255,255,255,0.1);border-radius:8px;padding:6px 16px;font-size:14px;font-weight:700" id="trt-uv-header">☀️ UV Loading…</div>
+        </div>
         <button class="trt-exit-btn" onclick="trtExit()">← Back to Login</button>
       </div>
       <div class="trt-body">
 
-        <!-- Term/Week + UV row -->
-        <div style="display:flex;gap:14px;flex-wrap:wrap;align-items:stretch">
-          <div class="trt-card" style="flex:1;min-width:180px">
-            <div class="trt-card-header">📅 School Week</div>
-            <div class="trt-card-body" id="trt-term-badge" style="font-size:15px;font-weight:700;color:var(--navy)">—</div>
-          </div>
-          <div class="trt-card" style="flex:1;min-width:180px">
-            <div class="trt-card-header">☀️ UV Index</div>
-            <div class="trt-card-body" id="trt-uv">Loading…</div>
-          </div>
+        <!-- Term/Week + UV — now in header (hidden cards kept for JS compatibility) -->
+        <div style="display:none">
+          <div id="trt-term-badge"></div>
+          <div id="trt-uv"></div>
         </div>
 
         <!-- Absences & Duties -->
@@ -4065,11 +4063,8 @@
           </div>
         </div>
 
-        <!-- Yard Duty Timetable -->
-        <div class="trt-card">
-          <div class="trt-card-header">🏃 Yard Duty Roster</div>
-          <div class="trt-card-body" id="trt-yard-duty">Loading…</div>
-        </div>
+        <!-- Yard Duty hidden -->
+        <div style="display:none" id="trt-yard-duty"></div>
 
       </div>
     </div>
@@ -8320,14 +8315,17 @@ const firebaseConfig = {
     // Term/week badge
     const tw = termWeekLabel(key);
     const termEl = document.getElementById('trt-term-badge');
+    const termHeaderEl = document.getElementById('trt-term-badge-header');
     if (tw && !tw.comingUp) {
       const hats = HAT_TERMS.includes(tw.term);
-      termEl.innerHTML = `Term ${tw.term} &nbsp;·&nbsp; Week ${tw.week}`
-        + (hats ? `<div style="margin-top:6px;font-size:12px;font-weight:600;color:#92400e;background:#fef3c7;display:inline-block;padding:2px 10px;border-radius:20px">🧢 Hats on</div>` : '');
+      termEl.innerHTML = `Term ${tw.term} &nbsp;·&nbsp; Week ${tw.week}`;
+      if (termHeaderEl) termHeaderEl.textContent = `📅 Term ${tw.term} · Week ${tw.week}` + (hats ? ' 🧢' : '');
     } else if (tw) {
-      termEl.innerHTML = `<span style="color:var(--subtext);font-size:13px">Coming up · Term ${tw.term} Week ${tw.week}</span>`;
+      termEl.innerHTML = `Coming up · Term ${tw.term} Week ${tw.week}`;
+      if (termHeaderEl) termHeaderEl.textContent = `📅 Term ${tw.term} · Week ${tw.week}`;
     } else {
-      termEl.innerHTML = `<span style="color:var(--subtext);font-size:13px">School Holidays</span>`;
+      termEl.innerHTML = `School Holidays`;
+      if (termHeaderEl) termHeaderEl.textContent = '📅 School Holidays';
     }
 
     // UV Index
@@ -8401,6 +8399,8 @@ const firebaseConfig = {
       uvEl.innerHTML = `<span style="font-size:22px;font-weight:800;color:${colour}">${uv}</span>
         <span style="font-size:13px;font-weight:600;color:${colour};margin-left:6px">${label}</span>`
         + (uv >= 3 ? `<div style="margin-top:6px;font-size:12px;font-weight:600;color:#92400e;background:#fef3c7;padding:2px 10px;border-radius:20px;display:inline-block">🧢 Hats required</div>` : '');
+      const uvH = document.getElementById('trt-uv-header');
+      if (uvH) uvH.textContent = `☀️ UV ${uv} — ${label}` + (uv >= 3 ? ' 🧢' : '');
     } catch(e) { uvEl.textContent = 'UV data unavailable'; }
   }
 

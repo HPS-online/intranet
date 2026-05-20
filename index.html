@@ -1859,7 +1859,67 @@
       </div>
 
       <div class="quick-tiles">
-        
+        <a class="quick-tile" href="https://edi.sa.edu.au" target="_blank"><div class="tile-icon" style="background:#0072ce;color:#fff;font-weight:800;font-size:15px">EDi</div><div class="tile-label">EDi</div></a>
+        <a class="quick-tile" href="https://app.seesaw.me/" target="_blank"><div class="tile-icon" style="background:#6b4fbb;color:#fff;font-size:22px">🎨</div><div class="tile-label">Seesaw</div></a>
+        <a class="quick-tile" href="https://www.edpass.sa.edu.au" target="_blank"><div class="tile-icon" style="background:#00a651;color:#fff;font-weight:800;font-size:14px">EdPass</div><div class="tile-label">EdPass</div></a>
+        <a class="quick-tile" href="https://www.eduportal.sa.edu.au/EIK/hub/" target="_blank"><div class="tile-icon" style="background:#00b4b4;color:#fff;font-weight:800;font-size:15px">EIK</div><div class="tile-label">EIK Leave</div></a>
+        <a class="quick-tile" href="https://form.jotform.com/230297613966869" target="_blank"><div class="tile-icon" style="background:#f5ac1c;color:#fff;font-size:22px">📋</div><div class="tile-label">Leave Request</div></a>
+        <a class="quick-tile" href="#" onclick="showView('daybook');return false;"><div class="tile-icon" style="background:#242b63;color:#fff;font-size:22px">📅</div><div class="tile-label">Daybook</div></a>
+      </div>
+
+      <div class="home-grid">
+        <div>
+          <!-- Daybook snapshot -->
+          <div class="card" style="margin-bottom:20px">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+              <div style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--navy)">📋 Today's Daybook</div>
+              <a href="#" onclick="showView('daybook');return false;" style="font-size:12px;color:var(--navy);font-weight:600">View →</a>
+            </div>
+            <div id="home-daybook-preview"><div class="spinner"></div></div>
+          </div>
+
+          <!-- Open tickets summary -->
+          <div class="card">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+              <div style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--navy)">🎫 Open Tickets</div>
+              <a href="#" onclick="showView('tickets');return false;" style="font-size:12px;color:var(--navy);font-weight:600">View →</a>
+            </div>
+            <div id="home-tickets-preview"><div class="spinner"></div></div>
+          </div>
+        </div>
+
+        <div>
+          <!-- This week -->
+          <div class="card" style="margin-bottom:20px">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+              <div style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--navy)">📆 This Week</div>
+              <a href="#" onclick="showView('planner');return false;" style="font-size:12px;color:var(--navy);font-weight:600">Planner →</a>
+            </div>
+            <div id="home-week-preview"><div class="spinner"></div></div>
+          </div>
+
+          <!-- UV Index -->
+          <div class="card">
+            <div style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--navy);margin-bottom:14px">☀️ UV Index</div>
+            <div id="uv-widget-home">
+              <div style="display:flex;align-items:flex-end;gap:10px;margin-bottom:6px">
+                <span id="uv-current" style="font-size:42px;font-weight:800;color:var(--navy);line-height:1">—</span>
+                <span id="uv-cat" style="font-size:14px;font-weight:600;color:var(--subtext);padding-bottom:6px">Loading…</span>
+              </div>
+              <div id="uv-hat-notice" style="display:none;margin-top:8px;background:rgba(245,172,28,0.18);border:1px solid rgba(245,172,28,0.4);border-radius:6px;padding:5px 10px;font-size:11px;font-weight:700;color:var(--gold2)"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <!-- ── END HOME VIEW ── -->
+
+    <!-- ── SUGGEST AN EDIT VIEW ── -->
+    <div id="view-suggest" class="view">
+      <div class="page-header">
+        <h2>Suggest an Edit</h2>
+        <p>Have an idea or spot something that needs updating? Submit a suggestion below. Admins will review and respond.</p>
       </div>
 
       <!-- Filters -->

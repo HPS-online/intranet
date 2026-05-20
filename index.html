@@ -1661,6 +1661,11 @@
         <div id="k-hat-rule" style="font-size:13px;font-weight:700;color:#f5ac1c;display:none;padding-left:6px;border-left:1px solid rgba(255,255,255,0.2);margin-left:4px">🧢 Hats on</div>
       </div>
       <div style="width:1px;height:32px;background:rgba(255,255,255,0.12)"></div>
+      <div id="k-pbl-header" style="display:none;max-width:320px">
+        <div style="font-size:9px;font-weight:700;letter-spacing:1.5px;color:rgba(255,255,255,0.4);text-transform:uppercase;margin-bottom:2px">PBL Focus</div>
+        <div id="k-pbl-header-text" style="font-size:13px;font-weight:700;color:#f5ac1c;white-space:nowrap;overflow:hidden;text-overflow:ellipsis"></div>
+      </div>
+      <div style="width:1px;height:32px;background:rgba(255,255,255,0.12)"></div>
       <div id="k-termweek" style="background:rgba(245,172,28,0.15);border:1px solid rgba(245,172,28,0.4);border-radius:20px;padding:5px 16px;font-size:14px;font-weight:700;color:#f5ac1c"></div>
       <div id="k-date" style="font-size:15px;font-weight:700;color:rgba(255,255,255,0.8)"></div>
       <div id="k-time" style="font-size:26px;font-weight:800;color:#fff;min-width:80px;text-align:right"></div>
@@ -1692,14 +1697,14 @@
       <!-- BOTTOM: Daily notices in 2-column grid -->
       <div style="flex:1;padding:18px 32px 20px;overflow:hidden;display:flex;flex-direction:column">
         <div style="font-size:11px;font-weight:700;letter-spacing:2px;color:rgba(255,255,255,0.4);text-transform:uppercase;margin-bottom:12px">Daily Notices</div>
-        <div id="k-notices" style="display:grid;grid-template-columns:1fr 1fr;gap:8px 36px;overflow:hidden;align-content:start"></div>
+        <div id="k-notices" style="display:flex;flex-direction:column;gap:8px;overflow:hidden"></div>
       </div>
 
     </div>
 
     <!-- RIGHT: This week + birthdays + PBL + crew -->
     <div style="background:#161d45;padding:22px 20px;display:flex;flex-direction:column;overflow:hidden;gap:0">
-      <div style="font-size:11px;font-weight:700;letter-spacing:2px;color:rgba(255,255,255,0.4);text-transform:uppercase;margin-bottom:14px">This Week</div>
+      <div style="font-size:11px;font-weight:700;letter-spacing:2px;color:rgba(255,255,255,0.4);text-transform:uppercase;margin-bottom:14px">Still To Come This Week</div>
       <div id="k-events" style="display:flex;flex-direction:column;gap:8px;overflow:hidden;flex:1;min-height:0"></div>
 
       <!-- Birthdays -->
@@ -1708,16 +1713,12 @@
         <div id="k-birthdays"></div>
       </div>
 
-      <!-- PBL Focus -->
-      <div id="k-pbl-wrap" style="display:none;margin-top:16px;border-top:1px solid rgba(255,255,255,0.08);padding-top:14px">
-        <div style="font-size:11px;font-weight:700;letter-spacing:2px;color:rgba(255,255,255,0.4);text-transform:uppercase;margin-bottom:8px">PBL Focus</div>
-        <div id="k-pbl" style="font-size:14px;font-weight:600;color:#f5ac1c;line-height:1.4"></div>
-      </div>
+
 
       <!-- Clean Crew -->
       <div id="k-crew-wrap" style="display:none;margin-top:16px;border-top:1px solid rgba(255,255,255,0.08);padding-top:14px">
-        <div style="font-size:11px;font-weight:700;letter-spacing:2px;color:rgba(255,255,255,0.4);text-transform:uppercase;margin-bottom:8px">🧹 Clean-Up Crew</div>
-        <div id="k-crew" style="font-size:14px;font-weight:600;color:rgba(255,255,255,0.85);line-height:1.4"></div>
+        <div style="font-size:11px;font-weight:700;letter-spacing:2px;color:rgba(255,255,255,0.4);text-transform:uppercase;margin-bottom:10px">🧹 Clean-Up Crew</div>
+        <div id="k-crew" style="display:flex;flex-direction:column;gap:6px"></div>
       </div>
     </div>
 
@@ -1997,9 +1998,27 @@
           </div>
         </div>
 
+        <!-- Who am I relieving? -->
+        <div class="trt-card">
+          <div class="trt-card-header">🔍 Who Am I Relieving?</div>
+          <div class="trt-card-body">
+            <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:16px">
+              <select id="trt-teacher-select" class="form-input" style="flex:1;max-width:280px;font-size:14px" onchange="trtLookupTeacher()">
+                <option value="">Select teacher I'm relieving…</option>
+              </select>
+              <div style="font-size:12px;color:var(--subtext)">Shows their yard duties and specialist classes today</div>
+            </div>
+            <div id="trt-teacher-summary" style="display:none">
+              <div id="trt-teacher-duties" style="margin-bottom:12px"></div>
+              <div id="trt-teacher-specialist"></div>
+            </div>
+            <div id="trt-teacher-none" style="color:var(--subtext);font-size:13px;display:none">No yard duties or specialist classes found for today.</div>
+          </div>
+        </div>
+
         <!-- Yard Duty Timetable -->
         <div class="trt-card">
-          <div class="trt-card-header">🏃 Yard Duty Roster</div>
+          <div class="trt-card-header">🏃 Full Yard Duty Roster</div>
           <div class="trt-card-body" id="trt-yard-duty">Loading…</div>
         </div>
 
@@ -3030,12 +3049,30 @@ const firebaseConfig = {
       const snap = await getDoc(doc(db, 'kiosk_config', 'settings'));
       if (snap.exists()) {
         const d = snap.data();
-        const pblWrap  = document.getElementById('k-pbl-wrap');
+
+        // PBL Focus — now in header bar
+        const pblHeader     = document.getElementById('k-pbl-header');
+        const pblHeaderText = document.getElementById('k-pbl-header-text');
+        if (d.pbl && pblHeaderText) {
+          pblHeaderText.textContent = d.pbl;
+          pblHeader.style.display   = 'block';
+        }
+
+        // Clean-Up Crew — vertical list, bigger text
         const crewWrap = document.getElementById('k-crew-wrap');
-        const pblEl    = document.getElementById('k-pbl');
         const crewEl   = document.getElementById('k-crew');
-        if (d.pbl && pblEl)  { pblEl.textContent  = d.pbl;  pblWrap.style.display  = 'block'; }
-        if (d.crew && crewEl){ crewEl.textContent = d.crew; crewWrap.style.display = 'block'; }
+        if (d.crew && crewEl) {
+          // Split by commas or & for multiple names
+          const names = d.crew.split(/[,&]/).map(n => n.trim()).filter(Boolean);
+          if (names.length > 1) {
+            crewEl.innerHTML = names.map(n =>
+              `<div style="font-size:17px;font-weight:700;color:rgba(255,255,255,0.9);padding:4px 0;border-bottom:1px solid rgba(255,255,255,0.06)">${escHtml(n)}</div>`
+            ).join('');
+          } else {
+            crewEl.innerHTML = `<div style="font-size:17px;font-weight:700;color:rgba(255,255,255,0.9)">${escHtml(d.crew)}</div>`;
+          }
+          crewWrap.style.display = 'block';
+        }
       }
     } catch(e) { console.warn('kioskLoadConfig:', e); }
   }
@@ -3131,7 +3168,7 @@ const firebaseConfig = {
 
   async function kioskLoadUV() {
     try {
-      const resp = await fetch('https://api.open-meteo.com/v1/forecast?latitude=-34.9285&longitude=138.6007&daily=uv_index_max&timezone=Australia%2FAdelaide&forecast_days=1');
+      const resp = await fetch('https://api.open-meteo.com/v1/forecast?latitude=-34.93&longitude=138.60&daily=uv_index_max&timezone=Australia/Adelaide&forecast_days=1');
       const data = await resp.json();
       const uv = Math.round(data?.daily?.uv_index_max?.[0] ?? 0);
       document.getElementById('k-uv-number').textContent = uv;
@@ -3266,7 +3303,9 @@ const firebaseConfig = {
 
       document.getElementById('auth-screen').style.display = 'none';
       document.getElementById('app-screen').style.display  = 'block';
-      document.getElementById('topbar-name').textContent   = user.displayName || user.email;
+      const _staffName = allowed.name || user.displayName || user.email;
+      document.getElementById('topbar-name').textContent = _staffName;
+      window._currentStaffName = _staffName;
 
       document.getElementById('nav-admin').style.display = currentIsAdmin ? '' : 'none';
 
@@ -3494,8 +3533,7 @@ const firebaseConfig = {
     const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
     const hour = now.getHours();
     const greet = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
-    const nameEl = document.getElementById('topbar-name');
-    const firstName = nameEl ? nameEl.textContent.split(' ')[0] : '';
+    const firstName = (window._currentStaffName || '').split(' ')[0] || '';
     document.getElementById('home-greeting').textContent = greet + (firstName ? ', ' + firstName : '') + '!';
     document.getElementById('home-day').textContent = days[now.getDay()];
     document.getElementById('home-date-full').textContent = now.getDate() + ' ' + months[now.getMonth()] + ' ' + now.getFullYear();
@@ -3606,7 +3644,7 @@ const firebaseConfig = {
   // ── UV Index ──
   async function loadUVIndex() {
     try {
-      const url = 'https://api.open-meteo.com/v1/forecast?latitude=-34.9285&longitude=138.6007&hourly=uv_index&daily=uv_index_max&timezone=Australia%2FAdelaide&forecast_days=1';
+      const url = 'https://api.open-meteo.com/v1/forecast?latitude=-34.93&longitude=138.60&hourly=uv_index&daily=uv_index_max&timezone=Australia/Adelaide&forecast_days=1';
       const resp = await fetch(url);
       const json = await resp.json();
       const now = new Date();
@@ -3710,6 +3748,7 @@ const firebaseConfig = {
   }
 
   async function plannerLoad() {
+    if (!document.getElementById('planner-week-label')) return; // planner view not active
     const { mon, sun } = plannerWeekRange(plannerCurrentWeekStart || new Date());
     if (!plannerCurrentWeekStart) plannerCurrentWeekStart = mon;
 
@@ -5197,6 +5236,7 @@ const firebaseConfig = {
   // ── Init ────────────────────────────────────────────────
   async function meetingsInit() {
     const listEl = document.getElementById('meetings-list');
+    if (!listEl) return; // meetings view not active
     listEl.innerHTML = '<div style="color:var(--subtext);padding:32px;text-align:center">Loading meetings…</div>';
     await Promise.all([meetingsLoadTypes(), meetingsLoadStaff()]);
     meetingsRenderTabBar();
@@ -6641,12 +6681,13 @@ const firebaseConfig = {
 
     // Yard duty — reuse the existing rendered table if available
     trtLoadYardDuty();
+    setTimeout(trtPopulateTeacherSelect, 500); // wait for rows to render
   }
 
   async function trtLoadUV() {
     const uvEl = document.getElementById('trt-uv');
     try {
-      const resp = await fetch('https://api.open-meteo.com/v1/forecast?latitude=-34.8&longitude=138.6&daily=uv_index_max&timezone=Australia%2FAdelaide&forecast_days=1');
+      const resp = await fetch('https://api.open-meteo.com/v1/forecast?latitude=-34.93&longitude=138.60&daily=uv_index_max&timezone=Australia/Adelaide&forecast_days=1');
       const json = await resp.json();
       const uv = json.daily?.uv_index_max?.[0];
       if (uv === undefined) { uvEl.textContent = 'Unavailable'; return; }
@@ -6675,7 +6716,14 @@ const firebaseConfig = {
         head.style.cssText = 'font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--subtext);margin-bottom:6px';
         head.textContent = labels[i] || '';
         wrap.appendChild(head);
-        wrap.appendChild(tbl.cloneNode(true));
+        const cloned = tbl.cloneNode(true);
+        // Strip any name-filter highlights so logged-in user's selection doesn't show
+        cloned.querySelectorAll('.tt-highlight,.tt-highlight-nit,.duty-highlight,.name-highlight').forEach(el2 => {
+          el2.classList.remove('tt-highlight','tt-highlight-nit','duty-highlight','name-highlight');
+          el2.style.background = '';
+          el2.style.fontWeight = '';
+        });
+        wrap.appendChild(cloned);
         el.appendChild(wrap);
       });
     } else {
@@ -6684,8 +6732,108 @@ const firebaseConfig = {
     }
   }
 
+  // Populate teacher selector from absence rows
+  function trtPopulateTeacherSelect() {
+    const sel = document.getElementById('trt-teacher-select');
+    if (!sel) return;
+    // Get absent staff from the daybook rows
+    const absenceRows = document.querySelectorAll('#trt-absence-rows tr');
+    const names = [];
+    absenceRows.forEach(row => {
+      const cells = row.querySelectorAll('td');
+      if (cells.length >= 1) {
+        const name = cells[0].textContent.trim();
+        if (name && name !== '—' && name !== '') names.push(name);
+      }
+    });
+    // Also add from individual timetables list
+    if (window._ttIndividualData) {
+      window._ttIndividualData.forEach(p => {
+        if (!names.includes(p.name)) names.push(p.name);
+      });
+    }
+    names.sort();
+    sel.innerHTML = '<option value="">Select teacher I'm relieving…</option>' +
+      names.map(n => `<option value="${n}">${n}</option>`).join('');
+  }
+
+  function trtLookupTeacher() {
+    const sel      = document.getElementById('trt-teacher-select');
+    const name     = sel.value;
+    const summary  = document.getElementById('trt-teacher-summary');
+    const noneEl   = document.getElementById('trt-teacher-none');
+    const dutiesEl = document.getElementById('trt-teacher-duties');
+    const specEl   = document.getElementById('trt-teacher-specialist');
+
+    if (!name) { summary.style.display = 'none'; noneEl.style.display = 'none'; return; }
+
+    // Search yard duty tables for this teacher's duties today
+    const now = new Date();
+    const dayNames = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+    const todayName = dayNames[now.getDay()];
+    const colIndex = ['Monday','Tuesday','Wednesday','Thursday','Friday'].indexOf(todayName);
+
+    const periodLabels = ['Before School (8:20–8:40)', 'Recess (10:30–11:00)', 'Lunch (12:50–1:20)', 'After School (3:00–3:20)'];
+    const duties = [];
+
+    document.querySelectorAll('.duty-table').forEach((tbl, pi) => {
+      const rows = tbl.querySelectorAll('tbody tr');
+      rows.forEach(row => {
+        const cells = row.querySelectorAll('td');
+        if (cells.length < 2) return;
+        const area = cells[0].textContent.trim();
+        const dutyCell = cells[colIndex + 1]; // +1 for area column
+        if (dutyCell && dutyCell.textContent.trim().toLowerCase().includes(name.split(' ')[0].toLowerCase())) {
+          duties.push({ period: periodLabels[pi], area });
+        }
+      });
+    });
+
+    // Check specialist timetable for this teacher
+    const specDuties = [];
+    document.querySelectorAll('.tt-site-table tbody tr').forEach(row => {
+      const cells = row.querySelectorAll('td');
+      if (cells.length < 2) return;
+      const period = cells[0].textContent.trim();
+      const specCell = cells[colIndex + 1];
+      if (specCell) {
+        const text = specCell.textContent.trim();
+        if (text && text !== '—' && text !== '-') {
+          const nameMatch = text.toLowerCase().includes(name.split(' ')[0].toLowerCase());
+          if (nameMatch) specDuties.push({ period, detail: text });
+        }
+      }
+    });
+
+    if (!duties.length && !specDuties.length) {
+      summary.style.display = 'none';
+      noneEl.style.display = 'block';
+      return;
+    }
+
+    noneEl.style.display = 'none';
+    summary.style.display = 'block';
+
+    dutiesEl.innerHTML = duties.length ? `
+      <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--subtext);margin-bottom:8px">Yard Duties Today</div>
+      ${duties.map(d => `
+        <div style="display:flex;gap:12px;align-items:center;padding:8px 12px;background:var(--gray1);border-radius:8px;margin-bottom:6px;border-left:3px solid var(--gold)">
+          <div style="font-size:13px;font-weight:700;color:var(--navy)">${d.period}</div>
+          <div style="font-size:13px;color:var(--subtext)">→ ${d.area}</div>
+        </div>`).join('')}` : '';
+
+    specEl.innerHTML = specDuties.length ? `
+      <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--subtext);margin-bottom:8px;margin-top:${duties.length ? '12px' : '0'}">Specialist Classes Today</div>
+      ${specDuties.map(d => `
+        <div style="display:flex;gap:12px;align-items:center;padding:8px 12px;background:var(--gray1);border-radius:8px;margin-bottom:6px;border-left:3px solid var(--navy)">
+          <div style="font-size:13px;font-weight:700;color:var(--navy)">${d.period}</div>
+          <div style="font-size:13px;color:var(--subtext)">→ ${d.detail}</div>
+        </div>`).join('')}` : '';
+  }
+
   window.trtEnter = trtEnter;
   window.trtExit  = trtExit;
+  window.trtLookupTeacher = trtLookupTeacher;
 </script>
 
 <!-- Login bridge — plain script so onclick always works regardless of module loading -->
@@ -6769,6 +6917,7 @@ const firebaseConfig = {
   function bdayBulkImport()               { if (window.bdayBulkImport)              window.bdayBulkImport(); }
   function trtEnter()                     { if (window.trtEnter)                    window.trtEnter(); }
   function trtExit()                      { if (window.trtExit)                     window.trtExit(); }
+  function trtLookupTeacher()             { if (window.trtLookupTeacher)             window.trtLookupTeacher(); }
   function dbAttachSetMode(m)             { if (window.dbAttachSetMode)             window.dbAttachSetMode(m); }
   function dbAttachAddUrl()               { if (window.dbAttachAddUrl)              window.dbAttachAddUrl(); }
   function dbAttachDelete(i)              { if (window.dbAttachDelete)              window.dbAttachDelete(i); }

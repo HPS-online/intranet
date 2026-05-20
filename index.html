@@ -3857,6 +3857,32 @@
         <div id="kiosk-config-msg" style="display:none;font-size:13px;font-weight:600;color:var(--green);margin-top:10px"></div>
       </div>
 
+      <!-- ── TICKET ROUTING ── -->
+      <div style="background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);padding:20px 24px;margin-bottom:24px;border-left:4px solid #6366f1">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+          <div>
+            <div style="font-size:14px;font-weight:800;color:var(--navy);text-transform:uppercase;letter-spacing:0.3px">🎫 Ticket Email Routing</div>
+            <div style="font-size:12px;color:var(--subtext);margin-top:3px">These people are automatically emailed when a ticket of each type is lodged</div>
+          </div>
+          <button class="btn btn-gold" onclick="ticketRoutingSave()" style="flex-shrink:0">💾 Save</button>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <div style="display:grid;grid-template-columns:180px 1fr;gap:12px;align-items:center">
+            <label class="form-label" style="margin:0">🔧 Maintenance & Facilities</label>
+            <input type="email" id="routing-maintenance" class="form-input" placeholder="email@schools.sa.edu.au"/>
+          </div>
+          <div style="display:grid;grid-template-columns:180px 1fr;gap:12px;align-items:center">
+            <label class="form-label" style="margin:0">💻 IT Issues</label>
+            <input type="email" id="routing-it" class="form-input" placeholder="email@schools.sa.edu.au"/>
+          </div>
+          <div style="display:grid;grid-template-columns:180px 1fr;gap:12px;align-items:center">
+            <label class="form-label" style="margin:0">⚠️ WHS</label>
+            <input type="email" id="routing-whs" class="form-input" placeholder="email@schools.sa.edu.au"/>
+          </div>
+        </div>
+        <div id="routing-msg" style="display:none;font-size:13px;font-weight:600;color:var(--green);margin-top:10px"></div>
+      </div>
+
       <div class="tickets-table-wrap">
         <table>
           <thead>
@@ -4188,6 +4214,7 @@
               <option value="">Select category…</option>
               <option value="Maintenance & Facilities">Maintenance & Facilities</option>
               <option value="IT Issues">IT Issues</option>
+              <option value="WHS">WHS / Work Health & Safety</option>
             </select>
           </div>
           <div class="form-group">
@@ -5081,6 +5108,7 @@ const firebaseConfig = {
       setGreeting();
       populateStaffDropdowns();
       loadAllTickets();
+      ticketRoutingLoad();
       setupReportDropdowns();
       showView('home');
 
@@ -5196,7 +5224,7 @@ const firebaseConfig = {
       ) b.classList.add('active');
     });
     if (view === 'tickets')  { renderDashboard(); renderAllTickets(allTickets); setupReportDropdowns(); }
-    if (view === 'admin')    { loadAdminUsers(); kioskConfigLoad(); }
+    if (view === 'admin')    { loadAdminUsers(); kioskConfigLoad(); ticketRoutingLoad(); }
     if (view === 'naplan' && !_npInited) { _npInited = true; npInitDashboard(); }
     if (view === 'meetings') meetingsInit();
     if (view === 'documents') docInit();
@@ -6280,12 +6308,35 @@ const firebaseConfig = {
 
       const docRef = await addDoc(collection(db, 'tickets'), ticketData);
 
-      // Send email notification
+      // Send email to assigned person
       if (assignedEmail) {
         sendEmail({
           to_email: assignedEmail,
           to_name:  assignedName,
           subject:  `New Ticket Assigned: ${title}`,
+          ticket_id: docRef.id,
+          ticket_title: title,
+          ticket_category: category,
+          ticket_priority: priority,
+          ticket_location: location || 'Not specified',
+          ticket_description: description || 'No description provided.',
+          submitted_by: currentUser.displayName || currentUser.email,
+          message_type: 'new_assignment'
+        });
+      }
+
+      // Auto-email category routing recipient
+      const routingEmail = window._ticketRouting && window._ticketRouting[category];
+      if (routingEmail && routingEmail !== assignedEmail) {
+        const routingNames = {
+          'Maintenance & Facilities': 'Sarah Nobes',
+          'IT Issues': 'Nouman Haider',
+          'WHS': 'Jess De Conno'
+        };
+        sendEmail({
+          to_email: routingEmail,
+          to_name:  routingNames[category] || category,
+          subject:  `New ${category} Ticket: ${title}`,
           ticket_id: docRef.id,
           ticket_title: title,
           ticket_category: category,
@@ -6696,6 +6747,61 @@ const firebaseConfig = {
     }
   }
   window.kioskConfigSave = kioskConfigSave;
+
+  // ── TICKET ROUTING ──
+  const TICKET_ROUTING_DEFAULTS = {
+    'Maintenance & Facilities': 'sarah.nobes347@schools.sa.edu.au',
+    'IT Issues':                'nouman.haider53@schools.sa.edu.au',
+    'WHS':                      'Jessica.DeConno153@schools.sa.edu.au'
+  };
+
+  // Cache loaded routing so submitTicket can use it
+  window._ticketRouting = Object.assign({}, TICKET_ROUTING_DEFAULTS);
+
+  async function ticketRoutingLoad() {
+    try {
+      const snap = await getDoc(doc(db, 'ticket_routing', 'settings'));
+      if (snap.exists()) {
+        const d = snap.data();
+        window._ticketRouting = {
+          'Maintenance & Facilities': d.maintenance || TICKET_ROUTING_DEFAULTS['Maintenance & Facilities'],
+          'IT Issues':                d.it          || TICKET_ROUTING_DEFAULTS['IT Issues'],
+          'WHS':                      d.whs         || TICKET_ROUTING_DEFAULTS['WHS']
+        };
+      }
+      // Populate admin fields if visible
+      const mEl = document.getElementById('routing-maintenance');
+      const iEl = document.getElementById('routing-it');
+      const wEl = document.getElementById('routing-whs');
+      if (mEl) mEl.value = window._ticketRouting['Maintenance & Facilities'];
+      if (iEl) iEl.value = window._ticketRouting['IT Issues'];
+      if (wEl) wEl.value = window._ticketRouting['WHS'];
+    } catch(e) { console.warn('ticketRoutingLoad:', e); }
+  }
+
+  async function ticketRoutingSave() {
+    const maintenance = document.getElementById('routing-maintenance').value.trim();
+    const it          = document.getElementById('routing-it').value.trim();
+    const whs         = document.getElementById('routing-whs').value.trim();
+    const msg         = document.getElementById('routing-msg');
+    try {
+      await setDoc(doc(db, 'ticket_routing', 'settings'), { maintenance, it, whs, updatedAt: serverTimestamp() });
+      window._ticketRouting = {
+        'Maintenance & Facilities': maintenance,
+        'IT Issues': it,
+        'WHS': whs
+      };
+      msg.textContent = '✅ Saved!';
+      msg.style.color = 'var(--green)';
+      msg.style.display = 'block';
+      setTimeout(() => msg.style.display = 'none', 3000);
+    } catch(e) {
+      msg.textContent = '❌ Error: ' + e.message;
+      msg.style.color = 'var(--red)';
+      msg.style.display = 'block';
+    }
+  }
+  window.ticketRoutingSave = ticketRoutingSave;
 
   function openAddUserModal() {
     document.getElementById('add-name').value  = '';

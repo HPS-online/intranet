@@ -5013,7 +5013,7 @@ const firebaseConfig = {
 
       document.getElementById('auth-screen').style.display = 'none';
       document.getElementById('app-screen').style.display  = 'block';
-      document.getElementById('topbar-name').textContent   = user.displayName || user.email;
+      document.getElementById('topbar-name').textContent   = allowed.name || user.displayName || user.email;
 
       document.getElementById('nav-admin').style.display = currentIsAdmin ? '' : 'none';
 

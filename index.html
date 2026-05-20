@@ -3830,6 +3830,29 @@
         <button class="btn btn-gold" onclick="openAddUserModal()">+ Add Staff Account</button>
       </div>
 
+      <!-- ── KIOSK CONFIGURATOR ── -->
+      <div style="background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);padding:20px 24px;margin-bottom:24px;border-left:4px solid var(--gold)">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+          <div>
+            <div style="font-size:14px;font-weight:800;color:var(--navy);text-transform:uppercase;letter-spacing:0.3px">📺 Kiosk Display Settings</div>
+            <div style="font-size:12px;color:var(--subtext);margin-top:3px">Shown on the staffroom screen at <code>?kiosk=true</code> — update these each week</div>
+          </div>
+          <button class="btn btn-gold" onclick="kioskConfigSave()" style="flex-shrink:0">💾 Save</button>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+          <div>
+            <label class="form-label">PBL Focus / Term Theme</label>
+            <input type="text" id="kiosk-pbl" class="form-input" placeholder="e.g. Term 2 — Calm Bodies, Quiet Voices"/>
+          </div>
+          <div>
+            <label class="form-label">Weekly Clean-Up Crew</label>
+            <input type="text" id="kiosk-crew" class="form-input" placeholder="e.g. Keely, Nicole, Megan K, Mel"/>
+            <div style="font-size:11px;color:var(--subtext);margin-top:4px">Separate names with commas</div>
+          </div>
+        </div>
+        <div id="kiosk-config-msg" style="display:none;font-size:13px;font-weight:600;color:var(--green);margin-top:10px"></div>
+      </div>
+
       <div class="tickets-table-wrap">
         <table>
           <thead>
@@ -5134,7 +5157,7 @@ const firebaseConfig = {
       ) b.classList.add('active');
     });
     if (view === 'tickets')  { renderDashboard(); renderAllTickets(allTickets); setupReportDropdowns(); }
-    if (view === 'admin')    loadAdminUsers();
+    if (view === 'admin')    { loadAdminUsers(); kioskConfigLoad(); }
     if (view === 'naplan' && !_npInited) { _npInited = true; npInitDashboard(); }
     if (view === 'meetings') meetingsInit();
     if (view === 'documents') docInit();
@@ -6603,6 +6626,37 @@ const firebaseConfig = {
     }
   }
   window.resendInvite = resendInvite;
+
+  // ── KIOSK CONFIGURATOR ──
+  async function kioskConfigLoad() {
+    try {
+      const snap = await getDoc(doc(db, 'kiosk_config', 'settings'));
+      if (snap.exists()) {
+        const d = snap.data();
+        const pbl  = document.getElementById('kiosk-pbl');
+        const crew = document.getElementById('kiosk-crew');
+        if (pbl && d.pbl)   pbl.value  = d.pbl;
+        if (crew && d.crew) crew.value = d.crew;
+      }
+    } catch(e) { console.warn('kioskConfigLoad:', e); }
+  }
+
+  async function kioskConfigSave() {
+    const pbl  = document.getElementById('kiosk-pbl').value.trim();
+    const crew = document.getElementById('kiosk-crew').value.trim();
+    const msg  = document.getElementById('kiosk-config-msg');
+    try {
+      await setDoc(doc(db, 'kiosk_config', 'settings'), { pbl, crew, updatedAt: serverTimestamp() });
+      msg.textContent = '✅ Saved!';
+      msg.style.display = 'block';
+      setTimeout(() => msg.style.display = 'none', 3000);
+    } catch(e) {
+      msg.textContent = '❌ Error: ' + e.message;
+      msg.style.color = 'var(--red)';
+      msg.style.display = 'block';
+    }
+  }
+  window.kioskConfigSave = kioskConfigSave;
 
   function openAddUserModal() {
     document.getElementById('add-name').value  = '';

@@ -1640,6 +1640,340 @@
 <!-- ════════════════════════════════════════
      AUTH SCREEN
 ════════════════════════════════════════ -->
+<!-- ══════════════════════════════════════ -->
+<!-- KIOSK DISPLAY SCREEN (?kiosk=true)   -->
+<!-- ══════════════════════════════════════ -->
+<div id="kiosk-screen" style="display:none;position:fixed;inset:0;background:#0f1535;font-family:'Montserrat',sans-serif;color:#fff;overflow:hidden;z-index:9999">
+
+  <!-- Header -->
+  <div style="background:linear-gradient(90deg,#1a2057,#242b63);border-bottom:3px solid #f5ac1c;padding:0 32px;height:68px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0">
+    <div>
+      <div style="font-size:10px;font-weight:700;letter-spacing:2px;color:#f5ac1c;text-transform:uppercase">Highbury Primary School</div>
+      <div style="font-size:20px;font-weight:800">Daily Organisation</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:20px">
+      <div style="display:flex;align-items:center;gap:10px;background:rgba(255,255,255,0.07);border-radius:12px;padding:7px 18px">
+        <div style="font-size:11px;font-weight:700;letter-spacing:1px;color:rgba(255,255,255,0.4);text-transform:uppercase">UV</div>
+        <div id="k-uv-number" style="font-size:26px;font-weight:800;color:#f5ac1c">—</div>
+        <div id="k-uv-label" style="font-size:14px;font-weight:700;color:rgba(255,255,255,0.65)">Loading…</div>
+        <div id="k-hat-rule" style="font-size:13px;font-weight:700;color:#f5ac1c;display:none;padding-left:6px;border-left:1px solid rgba(255,255,255,0.2);margin-left:4px">🧢 Hats on</div>
+      </div>
+      <div style="width:1px;height:32px;background:rgba(255,255,255,0.12)"></div>
+      <div id="k-pbl-header" style="display:none;max-width:320px">
+        <div style="font-size:9px;font-weight:700;letter-spacing:1.5px;color:rgba(255,255,255,0.4);text-transform:uppercase;margin-bottom:2px">PBL Focus</div>
+        <div id="k-pbl-header-text" style="font-size:13px;font-weight:700;color:#f5ac1c;white-space:nowrap;overflow:hidden;text-overflow:ellipsis"></div>
+      </div>
+      <div style="width:1px;height:32px;background:rgba(255,255,255,0.12)"></div>
+      <div id="k-termweek" style="background:rgba(245,172,28,0.15);border:1px solid rgba(245,172,28,0.4);border-radius:20px;padding:5px 16px;font-size:14px;font-weight:700;color:#f5ac1c"></div>
+      <div id="k-date" style="font-size:15px;font-weight:700;color:rgba(255,255,255,0.8)"></div>
+      <div id="k-time" style="font-size:26px;font-weight:800;min-width:80px;text-align:right"></div>
+    </div>
+  </div>
+
+  <!-- Main: centre (absences + notices) + right panel -->
+  <div style="display:grid;grid-template-columns:1fr 340px;height:calc(100vh - 68px)">
+
+    <!-- Centre -->
+    <div style="display:flex;flex-direction:column;overflow:hidden;border-right:1px solid rgba(255,255,255,0.08)">
+      <!-- Absences -->
+      <div style="padding:22px 32px 18px;border-bottom:1px solid rgba(255,255,255,0.08)">
+        <div style="font-size:11px;font-weight:700;letter-spacing:2px;color:rgba(255,255,255,0.4);text-transform:uppercase;margin-bottom:12px">Staff Absences &amp; Duties</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:12px;margin-bottom:10px">
+          <div style="font-size:13px;font-weight:700;color:#f5ac1c;text-transform:uppercase;letter-spacing:1px">Absent</div>
+          <div style="font-size:13px;font-weight:700;color:#f5ac1c;text-transform:uppercase;letter-spacing:1px">Reliever</div>
+          <div style="font-size:13px;font-weight:700;color:#f5ac1c;text-transform:uppercase;letter-spacing:1px">Duty</div>
+          <div style="font-size:13px;font-weight:700;color:#f5ac1c;text-transform:uppercase;letter-spacing:1px">NIT Coverage</div>
+        </div>
+        <div id="k-absences-track" style="display:flex;flex-direction:column;gap:6px;transition:transform 0.8s ease">
+          <div style="color:rgba(255,255,255,0.3);font-size:16px;padding:12px 0">Loading…</div>
+        </div>
+      </div>
+      <!-- Notices -->
+      <div style="flex:1;padding:18px 32px 20px;overflow:hidden;display:flex;flex-direction:column">
+        <div style="font-size:11px;font-weight:700;letter-spacing:2px;color:rgba(255,255,255,0.4);text-transform:uppercase;margin-bottom:12px">Daily Notices</div>
+        <div id="k-notices" style="display:flex;flex-direction:column;gap:8px;overflow:hidden"></div>
+      </div>
+    </div>
+
+    <!-- Right panel -->
+    <div style="background:#161d45;padding:22px 20px;display:flex;flex-direction:column;overflow:hidden">
+      <div style="font-size:11px;font-weight:700;letter-spacing:2px;color:rgba(255,255,255,0.4);text-transform:uppercase;margin-bottom:14px">Still To Come This Week</div>
+      <div id="k-events" style="display:flex;flex-direction:column;gap:8px;overflow:hidden;flex:1;min-height:0"></div>
+      <div id="k-birthdays-wrap" style="display:none;margin-top:16px;border-top:1px solid rgba(255,255,255,0.08);padding-top:14px">
+        <div style="font-size:11px;font-weight:700;letter-spacing:2px;color:rgba(255,255,255,0.4);text-transform:uppercase;margin-bottom:10px">🎂 Birthdays</div>
+        <div id="k-birthdays"></div>
+      </div>
+      <div id="k-crew-wrap" style="display:none;margin-top:16px;border-top:1px solid rgba(255,255,255,0.08);padding-top:14px">
+        <div style="font-size:11px;font-weight:700;letter-spacing:2px;color:rgba(255,255,255,0.4);text-transform:uppercase;margin-bottom:10px">🧹 Clean-Up Crew</div>
+        <div id="k-crew" style="display:flex;flex-direction:column;gap:6px"></div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- END KIOSK SCREEN -->
+
+<script>
+// ── KIOSK: runs immediately, before Firebase loads ──
+(function() {
+  if (new URLSearchParams(window.location.search).get('kiosk') !== 'true') return;
+
+  // Hide auth + app screens as soon as DOM is ready
+  document.addEventListener('DOMContentLoaded', function() {
+    var auth = document.getElementById('auth-screen');
+    var app  = document.getElementById('app-screen');
+    var kiosk = document.getElementById('kiosk-screen');
+    if (auth)  auth.style.display  = 'none';
+    if (app)   app.style.display   = 'none';
+    if (kiosk) kiosk.style.display = 'block';
+  });
+
+  // Term/week data (self-contained copy)
+  var TERM_WEEKS = [
+    {term:1,week:1,mon:'2026-01-27'},{term:1,week:2,mon:'2026-02-03'},{term:1,week:3,mon:'2026-02-10'},
+    {term:1,week:4,mon:'2026-02-17'},{term:1,week:5,mon:'2026-02-24'},{term:1,week:6,mon:'2026-03-03'},
+    {term:1,week:7,mon:'2026-03-10'},{term:1,week:8,mon:'2026-03-17'},{term:1,week:9,mon:'2026-03-24'},
+    {term:1,week:10,mon:'2026-03-31'},{term:2,week:1,mon:'2026-04-14'},{term:2,week:2,mon:'2026-04-21'},
+    {term:2,week:3,mon:'2026-04-28'},{term:2,week:4,mon:'2026-05-05'},{term:2,week:5,mon:'2026-05-12'},
+    {term:2,week:6,mon:'2026-05-19'},{term:2,week:7,mon:'2026-05-26'},{term:2,week:8,mon:'2026-06-02'},
+    {term:2,week:9,mon:'2026-06-09'},{term:2,week:10,mon:'2026-06-16'},{term:3,week:1,mon:'2026-07-14'},
+    {term:3,week:2,mon:'2026-07-21'},{term:3,week:3,mon:'2026-07-28'},{term:3,week:4,mon:'2026-08-04'},
+    {term:3,week:5,mon:'2026-08-11'},{term:3,week:6,mon:'2026-08-18'},{term:3,week:7,mon:'2026-08-25'},
+    {term:3,week:8,mon:'2026-09-01'},{term:3,week:9,mon:'2026-09-08'},{term:3,week:10,mon:'2026-09-15'},
+    {term:4,week:1,mon:'2026-10-06'},{term:4,week:2,mon:'2026-10-13'},{term:4,week:3,mon:'2026-10-20'},
+    {term:4,week:4,mon:'2026-10-27'},{term:4,week:5,mon:'2026-11-03'},{term:4,week:6,mon:'2026-11-10'},
+    {term:4,week:7,mon:'2026-11-17'},{term:4,week:8,mon:'2026-11-24'},{term:4,week:9,mon:'2026-12-01'},
+    {term:4,week:10,mon:'2026-12-08'}
+  ];
+
+  function kioskYmd(d) {
+    return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+  }
+
+  function kioskTermWeek(ymd) {
+    for (var i = TERM_WEEKS.length - 1; i >= 0; i--) {
+      if (ymd >= TERM_WEEKS[i].mon) return 'Term ' + TERM_WEEKS[i].term + ' · Week ' + TERM_WEEKS[i].week;
+    }
+    return '';
+  }
+
+  function kioskEsc(str) {
+    return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  function kioskClock() {
+    var now  = new Date();
+    var days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+    var mons = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    var ymd  = kioskYmd(now);
+    var h    = now.getHours(), m = String(now.getMinutes()).padStart(2,'0');
+    var time = String(h).padStart(2,'0') + ':' + m;
+    document.getElementById('k-date').textContent    = days[now.getDay()] + ' ' + now.getDate() + ' ' + mons[now.getMonth()] + ' ' + now.getFullYear();
+    document.getElementById('k-time').textContent    = time;
+    document.getElementById('k-termweek').textContent = kioskTermWeek(ymd);
+  }
+
+  function kioskLoad() {
+    var now = new Date();
+    var ymd = kioskYmd(now);
+    kioskLoadDaybook(ymd);
+    kioskLoadUV();
+    kioskLoadEvents(ymd);
+    kioskLoadConfig();
+    kioskLoadBirthdays(ymd);
+  }
+
+  function kioskLoadDaybook(ymd) {
+    // Read from Firestore REST API (no auth needed - rules allow public read on daybook)
+    var url = 'https://firestore.googleapis.com/v1/projects/hps-net/databases/(default)/documents/daybook/' + ymd;
+    fetch(url).then(function(r){ return r.json(); }).then(function(doc) {
+      var track = document.getElementById('k-absences-track');
+      var noticesEl = document.getElementById('k-notices');
+      if (!doc.fields) {
+        track.innerHTML = '<div style="color:rgba(255,255,255,0.3);font-size:16px;padding:12px 0">No daybook entry for today.</div>';
+        noticesEl.innerHTML = '<div style="color:rgba(255,255,255,0.3);font-size:13px">No notices today.</div>';
+        return;
+      }
+      // Parse rows
+      var rows = [];
+      try { rows = doc.fields.rows.arrayValue.values || []; } catch(e) {}
+      var filled = rows.filter(function(r) {
+        try { return r.mapValue.fields.absent.stringValue.trim(); } catch(e) { return false; }
+      });
+      if (!filled.length) {
+        track.innerHTML = '<div style="color:rgba(255,255,255,0.3);font-size:16px;padding:12px 0">No absences recorded for today.</div>';
+      } else {
+        track.innerHTML = filled.map(function(r) {
+          var f = r.mapValue.fields;
+          var absent   = (f.absent   && f.absent.stringValue)   || '';
+          var reliever = (f.reliever && f.reliever.stringValue)  || '—';
+          var duty     = (f.duty     && f.duty.stringValue)      || '—';
+          var nit      = (f.nit      && f.nit.stringValue)       || '—';
+          return '<div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:12px;background:rgba(255,255,255,0.05);border-radius:10px;padding:14px 16px;border-left:4px solid rgba(245,172,28,0.5);margin-bottom:6px">' +
+            '<div style="font-size:18px;font-weight:700;color:#fff">'                    + kioskEsc(absent)   + '</div>' +
+            '<div style="font-size:16px;color:rgba(255,255,255,0.75)">'                  + kioskEsc(reliever) + '</div>' +
+            '<div style="font-size:16px;color:rgba(255,255,255,0.75)">'                  + kioskEsc(duty)     + '</div>' +
+            '<div style="font-size:16px;color:rgba(255,255,255,0.75)">'                  + kioskEsc(nit)      + '</div>' +
+          '</div>';
+        }).join('');
+      }
+      // Parse notices (infoItems)
+      var items = [];
+      try { items = doc.fields.infoItems.arrayValue.values || []; } catch(e) {}
+      if (!items.length) {
+        noticesEl.innerHTML = '<div style="color:rgba(255,255,255,0.3);font-size:13px">No notices today.</div>';
+      } else {
+        noticesEl.innerHTML = items.map(function(item) {
+          var text = '';
+          try { text = item.mapValue.fields.text.stringValue; } catch(e) {
+            try { text = item.stringValue; } catch(e2) {}
+          }
+          return '<div style="background:rgba(255,255,255,0.05);border-radius:10px;padding:12px 14px;border-left:3px solid rgba(245,172,28,0.5)">' +
+            '<div style="font-size:15px;color:rgba(255,255,255,0.9);line-height:1.5;font-weight:500">' + kioskEsc(text) + '</div>' +
+          '</div>';
+        }).join('');
+      }
+    }).catch(function() {
+      document.getElementById('k-absences-track').innerHTML = '<div style="color:rgba(255,255,255,0.3)">Could not load daybook.</div>';
+    });
+  }
+
+  function kioskLoadUV() {
+    fetch('https://api.open-meteo.com/v1/forecast?latitude=-34.93&longitude=138.60&daily=uv_index_max&timezone=Australia/Adelaide&forecast_days=1')
+    .then(function(r){ return r.json(); }).then(function(data) {
+      var uv = Math.round((data.daily && data.daily.uv_index_max && data.daily.uv_index_max[0]) || 0);
+      document.getElementById('k-uv-number').textContent = uv;
+      var label = 'Low', color = '#4ade80';
+      if (uv >= 11)     { label = 'Extreme';   color = '#a855f7'; }
+      else if (uv >= 8) { label = 'Very High'; color = '#ef4444'; }
+      else if (uv >= 6) { label = 'High';      color = '#f97316'; }
+      else if (uv >= 3) { label = 'Moderate';  color = '#facc15'; }
+      document.getElementById('k-uv-label').textContent  = label;
+      document.getElementById('k-uv-number').style.color = color;
+      document.getElementById('k-hat-rule').style.display = uv >= 3 ? 'block' : 'none';
+    }).catch(function(){});
+  }
+
+  function kioskLoadEvents(ymd) {
+    var now = new Date(ymd + 'T00:00:00');
+    var dow = now.getDay();
+    var daysToFri = dow <= 5 ? 5 - dow : 0;
+    var fri = new Date(now);
+    fri.setDate(now.getDate() + daysToFri);
+    var fridayStr = kioskYmd(fri);
+    var url = 'https://firestore.googleapis.com/v1/projects/hps-net/databases/(default)/documents:runQuery';
+    fetch(url, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        structuredQuery: {
+          from: [{collectionId:'planner_events'}],
+          where: {
+            compositeFilter: {
+              op: 'AND',
+              filters: [
+                {fieldFilter:{field:{fieldPath:'date'},op:'GREATER_THAN_OR_EQUAL',value:{stringValue:ymd}}},
+                {fieldFilter:{field:{fieldPath:'date'},op:'LESS_THAN_OR_EQUAL',value:{stringValue:fridayStr}}}
+              ]
+            }
+          },
+          orderBy: [{field:{fieldPath:'date'},direction:'ASCENDING'}]
+        }
+      })
+    }).then(function(r){ return r.json(); }).then(function(results) {
+      var eventsEl = document.getElementById('k-events');
+      var items = results.filter(function(r){ return r.document; }).map(function(r) {
+        var f = r.document.fields;
+        return {
+          date:     (f.date     && f.date.stringValue)     || '',
+          title:    (f.title    && f.title.stringValue)    || (f.name && f.name.stringValue) || '',
+          category: (f.category && f.category.stringValue) || '',
+          audience: f.audience ? (f.audience.stringValue || (f.audience.arrayValue && f.audience.arrayValue.values && f.audience.arrayValue.values.map(function(v){ return v.stringValue; }).join(', ')) || '') : ''
+        };
+      }).filter(function(e){ return e.date && e.title; });
+
+      if (!items.length) { eventsEl.innerHTML = '<div style="color:rgba(255,255,255,0.3);font-size:13px">No events this week.</div>'; return; }
+
+      var days3 = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+      var mons3 = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      var catColors = {'Staff Only':'#6366f1','Whole School':'#f5ac1c','Reception':'#34d399','Year 1':'#60a5fa','Year 2':'#f472b6','Year 3':'#fb923c','Year 4':'#a78bfa','Year 5':'#4ade80','Year 6':'#38bdf8','Disability Unit':'#e879f9','Special Classes':'#fbbf24'};
+      var grouped = {};
+      items.forEach(function(ev){ if (!grouped[ev.date]) grouped[ev.date]=[]; grouped[ev.date].push(ev); });
+      eventsEl.innerHTML = Object.keys(grouped).sort().map(function(date) {
+        var d = new Date(date + 'T00:00:00');
+        var isToday = date === ymd;
+        var dayLabel = isToday ? 'Today' : days3[d.getDay()] + ' ' + d.getDate() + ' ' + mons3[d.getMonth()];
+        return '<div style="margin-bottom:8px">' +
+          '<div style="font-size:12px;font-weight:700;color:' + (isToday?'#f5ac1c':'rgba(255,255,255,0.45)') + ';text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">' + dayLabel + '</div>' +
+          grouped[date].map(function(ev) {
+            var col = catColors[ev.category] || '#94a3b8';
+            return '<div style="background:rgba(255,255,255,0.05);border-radius:8px;padding:10px 12px;border-left:4px solid ' + col + ';margin-bottom:5px">' +
+              '<div style="font-size:15px;font-weight:700;color:#fff;line-height:1.3">' + kioskEsc(ev.title) + '</div>' +
+              (ev.audience ? '<div style="font-size:12px;color:rgba(255,255,255,0.5);margin-top:3px">' + kioskEsc(ev.audience) + '</div>' : '') +
+            '</div>';
+          }).join('') +
+        '</div>';
+      }).join('');
+    }).catch(function(){});
+  }
+
+  function kioskLoadConfig() {
+    fetch('https://firestore.googleapis.com/v1/projects/hps-net/databases/(default)/documents/kiosk_config/settings')
+    .then(function(r){ return r.json(); }).then(function(doc) {
+      if (!doc.fields) return;
+      var pbl = doc.fields.pbl && doc.fields.pbl.stringValue;
+      if (pbl) {
+        document.getElementById('k-pbl-header-text').textContent = pbl;
+        document.getElementById('k-pbl-header').style.display = 'block';
+      }
+      var crew = doc.fields.crew && doc.fields.crew.stringValue;
+      if (crew) {
+        var names = crew.split(/[,&]/).map(function(n){ return n.trim(); }).filter(Boolean);
+        document.getElementById('k-crew').innerHTML = names.map(function(n){
+          return '<div style="font-size:17px;font-weight:700;color:rgba(255,255,255,0.9);padding:4px 0;border-bottom:1px solid rgba(255,255,255,0.06)">' + kioskEsc(n) + '</div>';
+        }).join('');
+        document.getElementById('k-crew-wrap').style.display = 'block';
+      }
+    }).catch(function(){});
+  }
+
+  function kioskLoadBirthdays(ymd) {
+    var now = new Date(ymd + 'T00:00:00');
+    var dow = now.getDay();
+    fetch('https://firestore.googleapis.com/v1/projects/hps-net/databases/(default)/documents/birthdays')
+    .then(function(r){ return r.json(); }).then(function(data) {
+      if (!data.documents) return;
+      var today = {day: now.getDate(), month: now.getMonth()+1};
+      var checkDays = [today];
+      if (dow === 5) {
+        var sat = new Date(now); sat.setDate(now.getDate()+1);
+        var sun = new Date(now); sun.setDate(now.getDate()+2);
+        checkDays.push({day:sat.getDate(),month:sat.getMonth()+1});
+        checkDays.push({day:sun.getDate(),month:sun.getMonth()+1});
+      }
+      var allBdays = data.documents.map(function(d) {
+        return { name: d.fields.name.stringValue, day: parseInt(d.fields.day.integerValue), month: parseInt(d.fields.month.integerValue) };
+      });
+      var todayBdays   = allBdays.filter(function(b){ return b.day===today.day && b.month===today.month; });
+      var weekendBdays = dow===5 ? allBdays.filter(function(b){ return checkDays.slice(1).some(function(cd){ return b.day===cd.day && b.month===cd.month; }); }) : [];
+      if (!todayBdays.length && !weekendBdays.length) return;
+      var MONS = ['','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      document.getElementById('k-birthdays').innerHTML =
+        todayBdays.map(function(b){ return '<div style="font-size:15px;font-weight:700;color:#f5ac1c;margin-bottom:4px">🎂 Happy Birthday ' + kioskEsc(b.name) + '!</div>'; }).join('') +
+        weekendBdays.map(function(b){ return '<div style="font-size:13px;font-weight:600;color:rgba(255,255,255,0.7);margin-bottom:4px">🎂 ' + kioskEsc(b.name) + ' — ' + b.day + ' ' + MONS[b.month] + ' (weekend)</div>'; }).join('');
+      document.getElementById('k-birthdays-wrap').style.display = 'block';
+    }).catch(function(){});
+  }
+
+  // Start
+  document.addEventListener('DOMContentLoaded', function() {
+    kioskClock();
+    setInterval(kioskClock, 30000);
+    kioskLoad();
+    setInterval(kioskLoad, 5 * 60 * 1000);
+  });
+})();
+</script>
+
 <div id="auth-screen">
 
   <!-- LEFT — branding panel -->

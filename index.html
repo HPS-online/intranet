@@ -4988,7 +4988,11 @@ const firebaseConfig = {
   // ══════════════════════════════════════
   // DOM EVENT LISTENERS
   // ══════════════════════════════════════
-  document.getElementById('sign-in-btn').addEventListener('click', doLogin);
+  // Brief delay before enabling Sign In — prevents accidental trigger from browser autofill
+  const _signInBtn = document.getElementById('sign-in-btn');
+  _signInBtn.disabled = true;
+  setTimeout(() => { _signInBtn.disabled = false; }, 1500);
+  _signInBtn.addEventListener('click', doLogin);
   document.getElementById('reset-link').addEventListener('click', (e) => { e.preventDefault(); doReset(); });
   document.getElementById('sign-out-btn').addEventListener('click', doLogout);
   document.getElementById('login-password').addEventListener('keydown', (e) => { if (e.key === 'Enter') doLogin(); });

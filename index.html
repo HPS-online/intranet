@@ -4099,6 +4099,37 @@
   </div><!-- /main -->
 </div><!-- /app-screen -->
 
+<!-- MEETING EMAIL PREVIEW MODAL -->
+<div class="modal-overlay" id="meeting-email-preview-modal" style="display:none">
+  <div class="modal-box" style="max-width:640px;width:95%;max-height:90vh;overflow-y:auto;padding:0">
+    <div style="background:var(--navy);color:#fff;padding:16px 24px;display:flex;justify-content:space-between;align-items:center;border-radius:var(--radius) var(--radius) 0 0;border-bottom:3px solid var(--gold)">
+      <div>
+        <div style="font-weight:800;font-size:16px">✉ Email Preview</div>
+        <div style="font-size:11px;opacity:0.65;margin-top:2px">Review before sending</div>
+      </div>
+      <button class="btn btn-outline btn-sm" onclick="closeModal('meeting-email-preview-modal')" style="color:#fff;border-color:rgba(255,255,255,0.35)">✕ Cancel</button>
+    </div>
+    <div style="padding:20px 24px;display:flex;flex-direction:column;gap:14px">
+      <div>
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--subtext);margin-bottom:4px">To</div>
+        <div id="email-preview-to" style="font-size:13px;color:var(--navy);font-weight:600;background:var(--gray1);padding:8px 12px;border-radius:6px"></div>
+      </div>
+      <div>
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--subtext);margin-bottom:4px">Subject</div>
+        <div id="email-preview-subject" style="font-size:13px;color:var(--navy);font-weight:600;background:var(--gray1);padding:8px 12px;border-radius:6px"></div>
+      </div>
+      <div>
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--subtext);margin-bottom:4px">Message</div>
+        <pre id="email-preview-body" style="font-size:12px;line-height:1.6;white-space:pre-wrap;background:var(--gray1);padding:12px 14px;border-radius:6px;font-family:inherit;max-height:320px;overflow-y:auto;margin:0"></pre>
+      </div>
+      <div style="display:flex;gap:10px;justify-content:flex-end;padding-top:8px;border-top:1px solid var(--gray2)">
+        <button class="btn btn-outline" onclick="closeModal('meeting-email-preview-modal')">Cancel</button>
+        <button class="btn btn-gold" id="email-preview-confirm-btn" onclick="meetingsEmailConfirmSend()">✉ Confirm &amp; Send</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- ADD USER MODAL -->
 <div class="modal-overlay" id="add-user-modal">
   <div class="modal">
@@ -7736,31 +7767,55 @@ const firebaseConfig = {
         'Highbury Primary School — Staff Intranet',
       ].filter(l => l !== undefined).join('\n');
 
-      if (typeof emailjs === 'undefined') {
-        alert('EmailJS not loaded. Check your internet connection.');
-        btn.textContent = '✉ Email Summary';
-        btn.disabled    = false;
-        return;
-      }
+      // Store for confirm step
+      window._pendingMeetingEmail = { toEmails, subject, body, meetingType: d.meetingType };
 
-      btn.textContent = '⏳ Sending…';
-      await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
-        to_email:    toEmails,
-        to_name:     `${d.meetingType} Committee`,
-        subject:     subject,
-        message:     body,
-        from_name:   'Highbury Primary Intranet',
-        reply_to:    currentUser ? currentUser.email : '',
-      }, EMAILJS_PUBLIC_KEY);
+      // Show preview modal
+      document.getElementById('email-preview-to').textContent      = toEmails;
+      document.getElementById('email-preview-subject').textContent = subject;
+      document.getElementById('email-preview-body').textContent    = body;
+      btn.textContent = '✉ Email Summary';
+      btn.disabled    = false;
+      openModal('meeting-email-preview-modal');
 
-      btn.textContent = '✅ Sent!';
-      setTimeout(() => { btn.textContent = '✉ Email Summary'; btn.disabled = false; }, 3000);
     } catch(e) {
-      alert('Email failed: ' + e.message + '\n\nCheck that your EmailJS template has a "to_email" field mapped to {{to_email}}.');
+      alert('Error building preview: ' + e.message);
       btn.textContent = '✉ Email Summary';
       btn.disabled    = false;
     }
   }
+
+  async function meetingsEmailConfirmSend() {
+    const pending = window._pendingMeetingEmail;
+    if (!pending) return;
+    const confirmBtn = document.getElementById('email-preview-confirm-btn');
+    confirmBtn.textContent = '⏳ Sending…';
+    confirmBtn.disabled    = true;
+    try {
+      if (typeof emailjs === 'undefined') {
+        alert('EmailJS not loaded. Check your internet connection.');
+        confirmBtn.textContent = '✉ Confirm & Send';
+        confirmBtn.disabled    = false;
+        return;
+      }
+      await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+        to_email:  pending.toEmails,
+        to_name:   `${pending.meetingType} Committee`,
+        subject:   pending.subject,
+        message:   pending.body,
+        from_name: 'Highbury Primary Intranet',
+        reply_to:  currentUser ? currentUser.email : '',
+      }, EMAILJS_PUBLIC_KEY);
+      closeModal('meeting-email-preview-modal');
+      window._pendingMeetingEmail = null;
+      showToast('Meeting summary emailed successfully.', 'success');
+    } catch(e) {
+      alert('Email failed: ' + e.message);
+      confirmBtn.textContent = '✉ Confirm & Send';
+      confirmBtn.disabled    = false;
+    }
+  }
+  window.meetingsEmailConfirmSend = meetingsEmailConfirmSend;
 
   // ── Shared helper ───────────────────────────────────────
   function esc(str) {

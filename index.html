@@ -3213,7 +3213,6 @@ const firebaseConfig = {
       setGreeting();
       populateStaffDropdowns();
       loadAllTickets();
-      setupReportDropdowns();
       showView('home');
 
     } else {
@@ -3403,7 +3402,7 @@ const firebaseConfig = {
         (view === 'admin'      && t.includes('admin'))
       ) b.classList.add('active');
     });
-    if (view === 'tickets')  { renderDashboard(); renderAllTickets(allTickets); setupReportDropdowns(); }
+    if (view === 'tickets')  { renderDashboard(); renderAllTickets(allTickets); }
     if (view === 'admin')    { loadAdminUsers(); kioskConfigLoad(); bdayLoad(); }
     if (view === 'meetings') meetingsInit();
     if (view === 'documents') docInit();
@@ -4701,8 +4700,9 @@ const firebaseConfig = {
   // REPORTS
   // ══════════════════════════════════════
   function setupReportDropdowns() {
-    const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
     const monthSel = document.getElementById('report-month');
+    if (!monthSel) return; // report UI removed
+    const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
     months.forEach((m, i) => {
       monthSel.innerHTML += `<option value="${i}" ${i === new Date().getMonth() ? 'selected' : ''}>${m}</option>`;
     });

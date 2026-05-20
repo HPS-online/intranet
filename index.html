@@ -1640,6 +1640,78 @@
 <!-- ════════════════════════════════════════
      AUTH SCREEN
 ════════════════════════════════════════ -->
+<!-- ══════════════════════════════════════ -->
+<!-- KIOSK DISPLAY SCREEN (?kiosk=true)   -->
+<!-- ══════════════════════════════════════ -->
+<div id="kiosk-screen" style="display:none;position:fixed;inset:0;background:#0f1535;font-family:'Montserrat',sans-serif;color:#fff;overflow:hidden;z-index:9999">
+
+  <!-- Header bar -->
+  <div style="background:linear-gradient(90deg,#1a2057 0%,#242b63 100%);border-bottom:3px solid #f5ac1c;padding:0 32px;height:68px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0">
+    <div>
+      <div style="font-size:10px;font-weight:700;letter-spacing:2px;color:#f5ac1c;text-transform:uppercase">Highbury Primary School</div>
+      <div style="font-size:20px;font-weight:800;letter-spacing:0.5px">Daily Organisation</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:20px">
+      <div style="display:flex;align-items:center;gap:10px;background:rgba(255,255,255,0.07);border-radius:12px;padding:7px 18px">
+        <div style="font-size:11px;font-weight:700;letter-spacing:1px;color:rgba(255,255,255,0.4);text-transform:uppercase">UV</div>
+        <div id="k-uv-number" style="font-size:26px;font-weight:800;line-height:1;color:#f5ac1c">—</div>
+        <div id="k-uv-label" style="font-size:14px;font-weight:700;color:rgba(255,255,255,0.65)">Loading…</div>
+        <div id="k-hat-rule" style="font-size:13px;font-weight:700;color:#f5ac1c;display:none;padding-left:6px;border-left:1px solid rgba(255,255,255,0.2);margin-left:4px">🧢 Hats on</div>
+      </div>
+      <div style="width:1px;height:32px;background:rgba(255,255,255,0.12)"></div>
+      <div id="k-pbl-header" style="display:none;max-width:320px">
+        <div style="font-size:9px;font-weight:700;letter-spacing:1.5px;color:rgba(255,255,255,0.4);text-transform:uppercase;margin-bottom:2px">PBL Focus</div>
+        <div id="k-pbl-header-text" style="font-size:13px;font-weight:700;color:#f5ac1c;white-space:nowrap;overflow:hidden;text-overflow:ellipsis"></div>
+      </div>
+      <div style="width:1px;height:32px;background:rgba(255,255,255,0.12)"></div>
+      <div id="k-termweek" style="background:rgba(245,172,28,0.15);border:1px solid rgba(245,172,28,0.4);border-radius:20px;padding:5px 16px;font-size:14px;font-weight:700;color:#f5ac1c"></div>
+      <div id="k-date" style="font-size:15px;font-weight:700;color:rgba(255,255,255,0.8)"></div>
+      <div id="k-time" style="font-size:26px;font-weight:800;color:#fff;min-width:80px;text-align:right"></div>
+    </div>
+  </div>
+
+  <!-- Main content -->
+  <div style="display:grid;grid-template-columns:1fr 340px;gap:0;height:calc(100vh - 68px)">
+
+    <!-- CENTRE: absences + notices -->
+    <div style="display:flex;flex-direction:column;overflow:hidden;border-right:1px solid rgba(255,255,255,0.08)">
+      <div style="padding:22px 32px 18px;border-bottom:1px solid rgba(255,255,255,0.08)">
+        <div style="font-size:11px;font-weight:700;letter-spacing:2px;color:rgba(255,255,255,0.4);text-transform:uppercase;margin-bottom:12px">Staff Absences &amp; Duties</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:12px;margin-bottom:10px;padding:0 2px">
+          <div style="font-size:13px;font-weight:700;color:#f5ac1c;text-transform:uppercase;letter-spacing:1px">Absent</div>
+          <div style="font-size:13px;font-weight:700;color:#f5ac1c;text-transform:uppercase;letter-spacing:1px">Reliever</div>
+          <div style="font-size:13px;font-weight:700;color:#f5ac1c;text-transform:uppercase;letter-spacing:1px">Duty</div>
+          <div style="font-size:13px;font-weight:700;color:#f5ac1c;text-transform:uppercase;letter-spacing:1px">NIT Coverage</div>
+        </div>
+        <div style="overflow:hidden;position:relative">
+          <div id="k-absences-track" style="display:flex;flex-direction:column;gap:6px;width:100%;transition:transform 0.8s ease">
+            <div style="color:rgba(255,255,255,0.3);font-size:16px;padding:12px 0">Loading…</div>
+          </div>
+        </div>
+      </div>
+      <div style="flex:1;padding:18px 32px 20px;overflow:hidden;display:flex;flex-direction:column">
+        <div style="font-size:11px;font-weight:700;letter-spacing:2px;color:rgba(255,255,255,0.4);text-transform:uppercase;margin-bottom:12px">Daily Notices</div>
+        <div id="k-notices" style="display:flex;flex-direction:column;gap:8px;overflow:hidden"></div>
+      </div>
+    </div>
+
+    <!-- RIGHT: events + birthdays + crew -->
+    <div style="background:#161d45;padding:22px 20px;display:flex;flex-direction:column;overflow:hidden;gap:0">
+      <div style="font-size:11px;font-weight:700;letter-spacing:2px;color:rgba(255,255,255,0.4);text-transform:uppercase;margin-bottom:14px">Still To Come This Week</div>
+      <div id="k-events" style="display:flex;flex-direction:column;gap:8px;overflow:hidden;flex:1;min-height:0"></div>
+      <div id="k-birthdays-wrap" style="display:none;margin-top:16px;border-top:1px solid rgba(255,255,255,0.08);padding-top:14px">
+        <div style="font-size:11px;font-weight:700;letter-spacing:2px;color:rgba(255,255,255,0.4);text-transform:uppercase;margin-bottom:10px">🎂 Birthdays</div>
+        <div id="k-birthdays"></div>
+      </div>
+      <div id="k-crew-wrap" style="display:none;margin-top:16px;border-top:1px solid rgba(255,255,255,0.08);padding-top:14px">
+        <div style="font-size:11px;font-weight:700;letter-spacing:2px;color:rgba(255,255,255,0.4);text-transform:uppercase;margin-bottom:10px">🧹 Clean-Up Crew</div>
+        <div id="k-crew" style="display:flex;flex-direction:column;gap:6px"></div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- END KIOSK SCREEN -->
+
 <div id="auth-screen">
 
   <!-- LEFT — branding panel -->
@@ -1745,12 +1817,40 @@
       </div>
 
       <div class="quick-tiles">
-        <a class="quick-tile" href="https://edi.sa.edu.au" target="_blank"><div class="tile-icon" style="background:#0072ce;color:#fff;font-weight:800;font-size:15px">EDi</div><div class="tile-label">EDi</div></a>
-        <a class="quick-tile" href="https://app.seesaw.me/" target="_blank"><div class="tile-icon" style="background:#6b4fbb;color:#fff;font-size:22px">🎨</div><div class="tile-label">Seesaw</div></a>
-        <a class="quick-tile" href="https://www.edpass.sa.edu.au" target="_blank"><div class="tile-icon" style="background:#00a651;color:#fff;font-weight:800;font-size:14px">EdPass</div><div class="tile-label">EdPass</div></a>
-        <a class="quick-tile" href="https://www.eduportal.sa.edu.au/EIK/hub/" target="_blank"><div class="tile-icon" style="background:#00b4b4;color:#fff;font-weight:800;font-size:15px">EIK</div><div class="tile-label">EIK Leave</div></a>
-        <a class="quick-tile" href="https://form.jotform.com/230297613966869" target="_blank"><div class="tile-icon" style="background:#f5ac1c;color:#fff;font-size:22px">📋</div><div class="tile-label">Leave Request</div></a>
-        <a class="quick-tile" href="#" onclick="showView('daybook');return false;"><div class="tile-icon" style="background:#242b63;color:#fff;font-size:22px">📅</div><div class="tile-label">Daybook</div></a>
+        <div class="quick-tile" onclick="showView('daybook')">
+          <div class="tile-icon">📋</div>
+          <div class="tile-label">Daybook</div>
+        </div>
+        <div class="quick-tile" onclick="showView('planner')">
+          <div class="tile-icon">📅</div>
+          <div class="tile-label">Planner</div>
+        </div>
+        <div class="quick-tile" onclick="showView('tickets')">
+          <div class="tile-icon">🎫</div>
+          <div class="tile-label">Lodge a Ticket</div>
+        </div>
+        <div class="quick-tile" onclick="window.open('https://www.edi.sa.edu.au','_blank')">
+          <div class="tile-icon" style="background:#00787a;color:#fff;font-family:'Montserrat',sans-serif;font-weight:800;font-size:16px;width:40px;height:40px;border-radius:6px;display:flex;align-items:center;justify-content:center;">EDi</div>
+          <div class="tile-label">EDi</div>
+        </div>
+        <div class="quick-tile" onclick="window.open('https://app.seesaw.me/','_blank')">
+          <div class="tile-icon" style="background:#6c3be8;color:#fff;font-family:'Montserrat',sans-serif;font-weight:800;font-size:13px;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;">S</div>
+          <div class="tile-label">Seesaw</div>
+        </div>
+        <div class="quick-tile" onclick="window.open('https://www.edpass.sa.edu.au','_blank')">
+          <div class="tile-icon" style="display:flex;align-items:center;justify-content:font-size:22px;">
+            <span style="font-family:'Montserrat',sans-serif;font-weight:800;color:#1a3a5c;font-size:15px;letter-spacing:-0.5px;">Ed<span style="color:#4caf50;">Pass</span></span>
+          </div>
+          <div class="tile-label">EdPass</div>
+        </div>
+        <div class="quick-tile" onclick="window.open('https://www.eduportal.sa.edu.au/EIK/hub/','_blank')">
+          <div class="tile-icon" style="background:#b2d8d8;color:#2a6e6e;font-family:'Montserrat',sans-serif;font-weight:800;font-size:16px;width:40px;height:40px;border-radius:6px;display:flex;align-items:center;justify-content:center;">EIK</div>
+          <div class="tile-label">EIK</div>
+        </div>
+        <div class="quick-tile" onclick="window.open('https://form.jotform.com/230297613966869','_blank')">
+          <div class="tile-icon">📝</div>
+          <div class="tile-label">Planned Leave</div>
+        </div>
       </div>
 
       <div class="home-grid">
@@ -1771,8 +1871,8 @@
               <div class="uv-widget-title">☀️ UV Index — Adelaide</div>
               <div class="uv-widget-loc" id="uv-updated"></div>
             </div>
-            <!-- Two panels side by side -->
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+            <!-- Two panels stacked -->
+            <div style="display:grid;grid-template-columns:1fr;gap:10px;">
               <!-- Live UV -->
               <div>
                 <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:rgba(255,255,255,0.4);margin-bottom:8px;">Live Reading</div>
@@ -1788,7 +1888,7 @@
                 <div class="uv-scale-labels"><span>0</span><span>3</span><span>6</span><span>8</span><span>11+</span></div>
               </div>
               <!-- Daily Max UV -->
-              <div style="border-left:1px solid rgba(255,255,255,0.1);padding-left:14px;">
+              <div style="border-top:1px solid rgba(255,255,255,0.1);padding-top:10px;">
                 <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:rgba(255,255,255,0.4);margin-bottom:8px;">Today's Max</div>
                 <div class="uv-main">
                   <div class="uv-index" id="uv-max-index">—</div>
@@ -3899,7 +3999,8 @@ const firebaseConfig = {
   // ══════════════════════════════════════
   // DOM EVENT LISTENERS
   // ══════════════════════════════════════
-  document.getElementById('sign-in-btn').addEventListener('click', doLogin);
+  if (!window.KIOSK_MODE) {
+    document.getElementById('sign-in-btn').addEventListener('click', doLogin);
   document.getElementById('reset-link').addEventListener('click', (e) => { e.preventDefault(); doReset(); });
   document.getElementById('sign-out-btn').addEventListener('click', doLogout);
   document.getElementById('login-password').addEventListener('keydown', (e) => { if (e.key === 'Enter') doLogin(); });
@@ -3911,7 +4012,206 @@ const firebaseConfig = {
   // ══════════════════════════════════════
   // AUTH STATE — allowlist check
   // ══════════════════════════════════════
+
+  // ══════════════════════════════════════
+  // KIOSK MODE
+  // ══════════════════════════════════════
+  window.KIOSK_MODE = new URLSearchParams(window.location.search).get('kiosk') === 'true';
+
+  async function kioskInit() {
+    if (!window.KIOSK_MODE) return;
+    document.getElementById('auth-screen').style.display  = 'none';
+    document.getElementById('app-screen').style.display   = 'none';
+    document.getElementById('kiosk-screen').style.display = 'block';
+    kioskClock();
+    setInterval(kioskClock, 30000);
+    await kioskLoad();
+    setInterval(kioskLoad, 5 * 60 * 1000);
+  }
+
+  function kioskClock() {
+    const now  = new Date();
+    const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+    const mons = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    const dateStr = `${days[now.getDay()]} ${now.getDate()} ${mons[now.getMonth()]} ${now.getFullYear()}`;
+    const timeStr = now.toLocaleTimeString('en-AU', { hour:'2-digit', minute:'2-digit', hour12:false });
+    const ymd = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
+    document.getElementById('k-date').textContent = dateStr;
+    document.getElementById('k-time').textContent = timeStr;
+    const tw = termWeekLabel(ymd);
+    document.getElementById('k-termweek').textContent = tw ? tw.label : '';
+  }
+
+  async function kioskLoad() {
+    const now = new Date();
+    const ymd = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
+    await Promise.all([
+      kioskLoadDaybook(ymd),
+      kioskLoadUV(),
+      kioskLoadEvents(ymd),
+      kioskLoadConfig(),
+      kioskLoadBirthdays(ymd),
+    ]);
+  }
+
+  async function kioskLoadDaybook(ymd) {
+    try {
+      const snap = await getDoc(doc(db, 'daybook', ymd));
+      const data = snap.exists() ? snap.data() : {};
+      const rows = data.rows || [];
+      const track = document.getElementById('k-absences-track');
+      const filled = rows.filter(r => r.absent && r.absent.trim());
+      if (!filled.length) {
+        track.innerHTML = '<div style="color:rgba(255,255,255,0.3);font-size:16px;padding:12px 0">No absences recorded for today.</div>';
+      } else {
+        track.innerHTML = filled.map(r => `
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:12px;background:rgba(255,255,255,0.05);border-radius:10px;padding:14px 16px;border-left:4px solid rgba(245,172,28,0.5)">
+            <div style="font-size:18px;font-weight:700;color:#fff">${escHtml(r.absent||'')}</div>
+            <div style="font-size:16px;color:rgba(255,255,255,0.75)">${escHtml(r.reliever||'—')}</div>
+            <div style="font-size:16px;color:rgba(255,255,255,0.75)">${escHtml(r.duty||'—')}</div>
+            <div style="font-size:16px;color:rgba(255,255,255,0.75)">${escHtml(r.nit||'—')}</div>
+          </div>`).join('');
+        kioskAutoScroll(track, filled.length);
+      }
+      const items = data.infoItems || data.items || [];
+      const noticesEl = document.getElementById('k-notices');
+      if (!items.length) {
+        noticesEl.innerHTML = '<div style="color:rgba(255,255,255,0.3);font-size:12px">No notices today.</div>';
+      } else {
+        noticesEl.innerHTML = items.map(item => `
+          <div style="background:rgba(255,255,255,0.05);border-radius:10px;padding:12px 14px;border-left:3px solid rgba(245,172,28,0.5)">
+            <div style="font-size:15px;color:rgba(255,255,255,0.9);line-height:1.5;font-weight:500">${escHtml(typeof item === 'string' ? item : (item.text||''))}</div>
+          </div>`).join('');
+      }
+    } catch(e) { console.error('kioskLoadDaybook:', e); }
+  }
+
+  let _kioskScrollInterval = null;
+  function kioskAutoScroll(track, rowCount) {
+    if (_kioskScrollInterval) clearInterval(_kioskScrollInterval);
+    if (rowCount <= 6) { track.style.transform = 'translateY(0)'; return; }
+    const rowH = 62;
+    const visible = 6;
+    let current = 0;
+    const max = rowCount - visible;
+    _kioskScrollInterval = setInterval(() => {
+      current = current >= max ? 0 : current + 1;
+      track.style.transform = `translateY(-${current * rowH}px)`;
+    }, 3000);
+  }
+
+  async function kioskLoadUV() {
+    try {
+      const resp = await fetch('https://api.open-meteo.com/v1/forecast?latitude=-34.93&longitude=138.60&daily=uv_index_max&timezone=Australia/Adelaide&forecast_days=1');
+      const data = await resp.json();
+      const uv = Math.round(data?.daily?.uv_index_max?.[0] ?? 0);
+      document.getElementById('k-uv-number').textContent = uv;
+      let label = 'Low', color = '#4ade80';
+      if (uv >= 11)      { label = 'Extreme';   color = '#a855f7'; }
+      else if (uv >= 8)  { label = 'Very High'; color = '#ef4444'; }
+      else if (uv >= 6)  { label = 'High';      color = '#f97316'; }
+      else if (uv >= 3)  { label = 'Moderate';  color = '#facc15'; }
+      document.getElementById('k-uv-label').textContent  = label;
+      document.getElementById('k-uv-number').style.color = color;
+      const hatEl = document.getElementById('k-hat-rule');
+      hatEl.style.display = uv >= 3 ? 'block' : 'none';
+    } catch(e) { document.getElementById('k-uv-label').textContent = 'Unavailable'; }
+  }
+
+  async function kioskLoadEvents(ymd) {
+    try {
+      const today = new Date(ymd + 'T00:00:00');
+      const dow = today.getDay();
+      const daysUntilFri = dow <= 5 ? 5 - dow : 0;
+      const fri = new Date(today);
+      fri.setDate(today.getDate() + daysUntilFri);
+      const fridayStr = `${fri.getFullYear()}-${String(fri.getMonth()+1).padStart(2,'0')}-${String(fri.getDate()).padStart(2,'0')}`;
+      const snap = await getDocs(query(
+        collection(db, 'planner_events'),
+        where('date', '>=', ymd),
+        where('date', '<=', fridayStr)
+      ));
+      const eventsEl = document.getElementById('k-events');
+      if (snap.empty) { eventsEl.innerHTML = '<div style="color:rgba(255,255,255,0.3);font-size:13px">No events this week.</div>'; return; }
+      const days3 = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+      const mons3 = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      const items = [];
+      snap.forEach(d => items.push(d.data()));
+      items.sort((a,b) => (a.date > b.date ? 1 : a.date < b.date ? -1 : 0));
+      const grouped = {};
+      items.forEach(ev => { if (!grouped[ev.date]) grouped[ev.date] = []; grouped[ev.date].push(ev); });
+      const catColors = { 'Staff Only':'#6366f1','Whole School':'#f5ac1c','Reception':'#34d399','Year 1':'#60a5fa','Year 2':'#f472b6','Year 3':'#fb923c','Year 4':'#a78bfa','Year 5':'#4ade80','Year 6':'#38bdf8','Disability Unit':'#e879f9','Special Classes':'#fbbf24' };
+      eventsEl.innerHTML = Object.entries(grouped).map(([date, evs]) => {
+        const d = new Date(date + 'T00:00:00');
+        const isToday = date === ymd;
+        const dayLabel = isToday ? 'Today' : `${days3[d.getDay()]} ${d.getDate()} ${mons3[d.getMonth()]}`;
+        return `<div style="margin-bottom:8px">
+          <div style="font-size:12px;font-weight:700;color:${isToday?'#f5ac1c':'rgba(255,255,255,0.45)'};text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">${dayLabel}</div>
+          ${evs.map(ev => {
+            const col = catColors[ev.category] || '#94a3b8';
+            return `<div style="background:rgba(255,255,255,0.05);border-radius:8px;padding:10px 12px;border-left:4px solid ${col};margin-bottom:5px">
+              <div style="font-size:15px;font-weight:700;color:#fff;line-height:1.3">${escHtml(ev.title||ev.name||'')}</div>
+              ${ev.audience?`<div style="font-size:12px;color:rgba(255,255,255,0.5);margin-top:3px">${escHtml(Array.isArray(ev.audience)?ev.audience.join(', '):ev.audience)}</div>`:''}
+            </div>`;
+          }).join('')}
+        </div>`;
+      }).join('');
+    } catch(e) { console.error('kioskLoadEvents:', e); document.getElementById('k-events').innerHTML = '<div style="color:rgba(255,255,255,0.3);font-size:13px">Unable to load events.</div>'; }
+  }
+
+  async function kioskLoadConfig() {
+    try {
+      const snap = await getDoc(doc(db, 'kiosk_config', 'settings'));
+      if (snap.exists()) {
+        const d = snap.data();
+        const pblHeader = document.getElementById('k-pbl-header');
+        const pblText   = document.getElementById('k-pbl-header-text');
+        if (d.pbl && pblText) { pblText.textContent = d.pbl; pblHeader.style.display = 'block'; }
+        const crewWrap = document.getElementById('k-crew-wrap');
+        const crewEl   = document.getElementById('k-crew');
+        if (d.crew && crewEl) {
+          const names = d.crew.split(/[,&]/).map(n => n.trim()).filter(Boolean);
+          crewEl.innerHTML = names.length > 1
+            ? names.map(n => `<div style="font-size:17px;font-weight:700;color:rgba(255,255,255,0.9);padding:4px 0;border-bottom:1px solid rgba(255,255,255,0.06)">${escHtml(n)}</div>`).join('')
+            : `<div style="font-size:17px;font-weight:700;color:rgba(255,255,255,0.9)">${escHtml(d.crew)}</div>`;
+          crewWrap.style.display = 'block';
+        }
+      }
+    } catch(e) { console.warn('kioskLoadConfig:', e); }
+  }
+
+  async function kioskLoadBirthdays(ymd) {
+    try {
+      const today = new Date(ymd + 'T00:00:00');
+      const dow = today.getDay();
+      const checkDays = [{ day: today.getDate(), month: today.getMonth()+1 }];
+      if (dow === 5) {
+        const sat = new Date(today); sat.setDate(today.getDate()+1);
+        const sun = new Date(today); sun.setDate(today.getDate()+2);
+        checkDays.push({ day: sat.getDate(), month: sat.getMonth()+1 });
+        checkDays.push({ day: sun.getDate(), month: sun.getMonth()+1 });
+      }
+      const snap = await getDocs(collection(db, 'birthdays'));
+      const allBdays = [];
+      snap.forEach(d => allBdays.push(d.data()));
+      const todayBdays   = allBdays.filter(b => b.day === checkDays[0].day && b.month === checkDays[0].month);
+      const weekendBdays = dow === 5 ? allBdays.filter(b => checkDays.slice(1).some(cd => b.day === cd.day && b.month === cd.month)) : [];
+      const wrap = document.getElementById('k-birthdays-wrap');
+      const el   = document.getElementById('k-birthdays');
+      if (!todayBdays.length && !weekendBdays.length) { wrap.style.display = 'none'; return; }
+      wrap.style.display = 'block';
+      const MONS = ['','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      el.innerHTML = [
+        ...todayBdays.map(b => `<div style="font-size:15px;font-weight:700;color:#f5ac1c;margin-bottom:4px">🎂 Happy Birthday ${escHtml(b.name)}!</div>`),
+        ...weekendBdays.map(b => `<div style="font-size:13px;font-weight:600;color:rgba(255,255,255,0.7);margin-bottom:4px">🎂 ${escHtml(b.name)} — ${b.day} ${MONS[b.month]} (weekend)</div>`)
+      ].join('');
+    } catch(e) { console.warn('kioskLoadBirthdays:', e); }
+  }
+
+  if (window.KIOSK_MODE) kioskInit();
+
   onAuthStateChanged(auth, async user => {
+    if (window.KIOSK_MODE) return;
     console.log('AUTH STATE CHANGED — user:', user ? user.email : 'null');
     if (user) {
       // 1. Must be a school email
@@ -6972,6 +7272,123 @@ const firebaseConfig = {
   window.docRemoveCategory     = docRemoveCategory;
 
   // ══════════════════════════════════════
+  // KIOSK CONFIGURATOR + BIRTHDAY MANAGER
+  // ══════════════════════════════════════
+  const MONTHS = ['','January','February','March','April','May','June','July','August','September','October','November','December'];
+
+  async function kioskConfigLoad() {
+    try {
+      const snap = await getDoc(doc(db, 'kiosk_config', 'settings'));
+      if (snap.exists()) {
+        const d = snap.data();
+        const pbl  = document.getElementById('kiosk-pbl');
+        const crew = document.getElementById('kiosk-crew');
+        if (pbl)  pbl.value  = d.pbl  || '';
+        if (crew) crew.value = d.crew || '';
+      }
+    } catch(e) { console.warn('kioskConfigLoad:', e); }
+  }
+
+  async function kioskConfigSave() {
+    const pbl  = document.getElementById('kiosk-pbl').value.trim();
+    const crew = document.getElementById('kiosk-crew').value.trim();
+    const msg  = document.getElementById('kiosk-config-msg');
+    try {
+      await setDoc(doc(db, 'kiosk_config', 'settings'), { pbl, crew, updatedAt: serverTimestamp() });
+      msg.textContent = '✅ Saved!'; msg.style.display = 'inline';
+      setTimeout(() => msg.style.display = 'none', 3000);
+    } catch(e) { msg.textContent = '❌ Error: ' + e.message; msg.style.color = 'var(--red)'; msg.style.display = 'inline'; }
+  }
+
+  let _allBirthdays = [];
+
+  async function bdayLoad() {
+    try {
+      const snap = await getDocs(collection(db, 'birthdays'));
+      _allBirthdays = [];
+      snap.forEach(d => _allBirthdays.push({ id: d.id, ...d.data() }));
+      _allBirthdays.sort((a,b) => a.month !== b.month ? a.month - b.month : a.day - b.day);
+      bdayRenderList();
+    } catch(e) { console.warn('bdayLoad:', e); }
+  }
+
+  function bdayRenderList() {
+    const el = document.getElementById('bday-list');
+    if (!el) return;
+    if (!_allBirthdays.length) { el.innerHTML = '<div style="color:var(--subtext);font-size:13px">No birthdays added yet.</div>'; return; }
+    el.innerHTML = _allBirthdays.map(b => `
+      <div style="display:flex;justify-content:space-between;align-items:center;background:var(--gray1);border-radius:8px;padding:10px 14px">
+        <div><span style="font-weight:700;font-size:14px">🎂 ${escHtml(b.name)}</span><span style="color:var(--subtext);font-size:12px;margin-left:10px">${b.day} ${MONTHS[b.month]}</span></div>
+        <button class="btn btn-sm btn-danger" style="font-size:11px" onclick="bdayDelete('${b.id}','${escHtml(b.name)}')">Remove</button>
+      </div>`).join('');
+  }
+
+  function bdayOpenAdd() {
+    document.getElementById('bday-add-name').value  = '';
+    document.getElementById('bday-add-day').value   = '';
+    document.getElementById('bday-add-month').value = '';
+    hideEl('bday-add-error');
+    openModal('bday-add-modal');
+  }
+
+  async function bdaySaveAdd() {
+    const name  = document.getElementById('bday-add-name').value.trim();
+    const day   = parseInt(document.getElementById('bday-add-day').value);
+    const month = parseInt(document.getElementById('bday-add-month').value);
+    const errEl = document.getElementById('bday-add-error');
+    hideEl('bday-add-error');
+    if (!name)       { errEl.textContent = 'Please enter a name.'; showEl('bday-add-error'); return; }
+    if (!day||!month){ errEl.textContent = 'Please select a day and month.'; showEl('bday-add-error'); return; }
+    try {
+      const id = name.toLowerCase().replace(/\s+/g,'_') + '_' + Date.now();
+      await setDoc(doc(db, 'birthdays', id), { name, day, month });
+      closeModal('bday-add-modal');
+      showToast(`Birthday added for ${name}.`, 'success');
+      await bdayLoad();
+    } catch(e) { errEl.textContent = 'Error: ' + e.message; showEl('bday-add-error'); }
+  }
+
+  async function bdayDelete(id, name) {
+    if (!confirm(`Remove birthday for ${name}?`)) return;
+    try {
+      await deleteDoc(doc(db, 'birthdays', id));
+      showToast(`Birthday removed for ${name}.`, 'success');
+      _allBirthdays = _allBirthdays.filter(b => b.id !== id);
+      bdayRenderList();
+    } catch(e) { showToast('Error: ' + e.message, 'error'); }
+  }
+
+  async function bdayBulkImport() {
+    const raw = document.getElementById('bday-bulk-input').value.trim();
+    const msg = document.getElementById('bday-import-msg');
+    if (!raw) return;
+    const lines = raw.split('
+').filter(l => l.trim());
+    let ok = 0, fail = 0;
+    for (const line of lines) {
+      const parts = line.split(',').map(p => p.trim());
+      if (parts.length < 3) { fail++; continue; }
+      const name = parts[0], day = parseInt(parts[1]), month = parseInt(parts[2]);
+      if (!name || isNaN(day) || isNaN(month) || day < 1 || day > 31 || month < 1 || month > 12) { fail++; continue; }
+      try {
+        await setDoc(doc(db, 'birthdays', name.toLowerCase().replace(/\s+/g,'_') + '_bday'), { name, day, month });
+        ok++;
+      } catch(e) { fail++; }
+    }
+    msg.textContent = `✅ ${ok} imported${fail ? ', ❌ ' + fail + ' skipped' : ''}.`;
+    msg.style.color = ok > 0 ? 'green' : 'red';
+    msg.style.display = 'block';
+    document.getElementById('bday-bulk-input').value = '';
+    await bdayLoad();
+  }
+
+  window.kioskConfigSave = kioskConfigSave;
+  window.bdayOpenAdd     = bdayOpenAdd;
+  window.bdaySaveAdd     = bdaySaveAdd;
+  window.bdayDelete      = bdayDelete;
+  window.bdayBulkImport  = bdayBulkImport;
+
+  // ══════════════════════════════════════
   // TRT (RELIEVING TEACHER) MODULE
   // ══════════════════════════════════════
   function trtEnter() {
@@ -7276,6 +7693,11 @@ const firebaseConfig = {
   function docOpenManageCategories()      { if (window.docOpenManageCategories)     window.docOpenManageCategories(); }
   function docAddCategory()               { if (window.docAddCategory)              window.docAddCategory(); }
   function docRemoveCategory(n)           { if (window.docRemoveCategory)           window.docRemoveCategory(n); }
+  function kioskConfigSave()              { if (window.kioskConfigSave)             window.kioskConfigSave(); }
+  function bdayOpenAdd()                  { if (window.bdayOpenAdd)                 window.bdayOpenAdd(); }
+  function bdaySaveAdd()                  { if (window.bdaySaveAdd)                 window.bdaySaveAdd(); }
+  function bdayDelete(id,n)               { if (window.bdayDelete)                  window.bdayDelete(id,n); }
+  function bdayBulkImport()               { if (window.bdayBulkImport)              window.bdayBulkImport(); }
   function trtEnter()                     { if (window.trtEnter)                    window.trtEnter(); }
   function trtExit()                      { if (window.trtExit)                     window.trtExit(); }
   function trtLookupTeacher()             { if (window.trtLookupTeacher)             window.trtLookupTeacher(); }

@@ -4271,12 +4271,6 @@
           <textarea id="nt-description" rows="4" placeholder="Describe the issue in detail…"></textarea>
         </div>
         <div class="form-group">
-          <label>Assign To</label>
-          <select id="nt-assigned">
-            <option value="">Unassigned</option>
-          </select>
-        </div>
-        <div class="form-group">
           <label>Photo (optional)</label>
           <div class="photo-upload-area" onclick="document.getElementById('nt-photo').click()">
             <div class="upload-icon">📷</div>
@@ -6344,9 +6338,8 @@ const firebaseConfig = {
     const title       = document.getElementById('nt-title').value.trim();
     const location    = document.getElementById('nt-location').value.trim();
     const description = document.getElementById('nt-description').value.trim();
-    const assignedSel = document.getElementById('nt-assigned');
-    const assignedEmail = assignedSel.value;
-    const assignedName  = assignedSel.options[assignedSel.selectedIndex]?.dataset?.name || '';
+    const assignedEmail = '';
+    const assignedName  = '';
     const photoFile   = document.getElementById('nt-photo').files[0];
 
     hideEl('nt-error');

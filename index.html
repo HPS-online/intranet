@@ -7731,8 +7731,8 @@ const firebaseConfig = {
     }
 
     const agendaItems = Array.from(document.querySelectorAll('.me-agenda-row')).map(tr => {
-      const inputs = tr.querySelectorAll('input,select');
-      return { item: inputs[0].value.trim(), proposer: inputs[1].value.trim(), time: inputs[2].value.trim(), priority: inputs[3].value, notes: inputs[4].value.trim() };
+      const inputs = tr.querySelectorAll('input,select,textarea');
+      return { item: inputs[0].value.trim(), proposer: inputs[1].value.trim(), time: inputs[2].value.trim(), notes: inputs[3] ? inputs[3].value.trim() : '' };
     }).filter(a => a.item);
 
     const actionItems = Array.from(document.querySelectorAll('.me-action-row')).map(tr => {

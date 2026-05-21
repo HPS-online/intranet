@@ -7932,8 +7932,7 @@ const firebaseConfig = {
         d.apologies ? `Apologies: ${d.apologies}` : '',
         '',
         '── MEETING NOTES ──',
-        d.body || '(no notes recorded)',
-        agendaText ? '\n── AGENDA ITEMS ──\n' + agendaText : '',
+        agendaText ? '── AGENDA ITEMS ──\n' + agendaText : '',
         actionsText ? '\n── ACTION ITEMS ──\n' + actionsText : '',
         '',
         '──────────────────────────────',
@@ -7977,7 +7976,6 @@ const firebaseConfig = {
         subject:   pending.subject,
         message:   pending.body,
         from_name: 'Highbury Primary Intranet',
-        reply_to:  currentUser ? currentUser.email : '',
       }, EMAILJS_PUBLIC_KEY);
       closeModal('meeting-email-preview-modal');
       window._pendingMeetingEmail = null;

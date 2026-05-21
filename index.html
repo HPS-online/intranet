@@ -445,6 +445,9 @@
     .view { display: none; }
     .view.active { display: block; }
 
+    /* Wide mode for timetables */
+    .main.wide-view { max-width: 1600px; padding-left: 32px; padding-right: 32px; }
+
     /* ── DASHBOARD ── */
     .page-header {
       margin-bottom: 28px;
@@ -5278,6 +5281,9 @@ const firebaseConfig = {
     document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
     const viewEl = document.getElementById('view-' + view);
     if (viewEl) viewEl.classList.add('active');
+    // Widen layout for timetables, restore for all other views
+    const mainEl = document.querySelector('.main');
+    if (mainEl) mainEl.classList.toggle('wide-view', view === 'timetables');
     document.querySelectorAll('.nav-btn').forEach(b => {
       const t = b.textContent.toLowerCase();
       if (

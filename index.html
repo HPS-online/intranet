@@ -5277,6 +5277,13 @@ const firebaseConfig = {
   // ══════════════════════════════════════
   function showView(view) {
     if (view === 'admin' && !currentIsAdmin) return;
+    // Unsaved daybook guard
+    if (daybookIsEditing && view !== 'daybook') {
+      if (!confirm('You have unsaved changes in the Daybook. Leave without saving?')) return;
+      daybookIsEditing = false;
+      const savebar = document.getElementById('daybook-save-bar');
+      if (savebar) savebar.style.display = 'none';
+    }
     document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
     document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
     const viewEl = document.getElementById('view-' + view);
@@ -6385,18 +6392,29 @@ const firebaseConfig = {
 
       // Send email to assigned person
       if (assignedEmail) {
+        const assignedMsg = [
+          `Category: ${category}`,
+          `Priority: ${priority}`,
+          `Location: ${location || 'Not specified'}`,
+          `Submitted by: ${currentUser.displayName || currentUser.email}`,
+          ``,
+          `Description:`,
+          description || 'No description provided.',
+          ``,
+          `View and manage this ticket at:`,
+          `https://hps-online.github.io/intranet/`,
+        ].join('\n');
         sendEmail({
           to_email: assignedEmail,
           to_name:  assignedName,
           subject:  `New Ticket Assigned: ${title}`,
-          ticket_id: docRef.id,
+          message:  assignedMsg,
           ticket_title: title,
           ticket_category: category,
           ticket_priority: priority,
           ticket_location: location || 'Not specified',
           ticket_description: description || 'No description provided.',
           submitted_by: currentUser.displayName || currentUser.email,
-          message_type: 'new_assignment'
         });
       }
 
@@ -6408,18 +6426,29 @@ const firebaseConfig = {
           'IT Issues': 'Nouman Haider',
           'WHS': 'Jess De Conno'
         };
+        const routingMsg = [
+          `Category: ${category}`,
+          `Priority: ${priority}`,
+          `Location: ${location || 'Not specified'}`,
+          `Submitted by: ${currentUser.displayName || currentUser.email}`,
+          ``,
+          `Description:`,
+          description || 'No description provided.',
+          ``,
+          `View and manage this ticket at:`,
+          `https://hps-online.github.io/intranet/`,
+        ].join('\n');
         sendEmail({
           to_email: routingEmail,
           to_name:  routingNames[category] || category,
           subject:  `New ${category} Ticket: ${title}`,
-          ticket_id: docRef.id,
+          message:  routingMsg,
           ticket_title: title,
           ticket_category: category,
           ticket_priority: priority,
           ticket_location: location || 'Not specified',
           ticket_description: description || 'No description provided.',
           submitted_by: currentUser.displayName || currentUser.email,
-          message_type: 'new_assignment'
         });
       }
 

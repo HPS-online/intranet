@@ -196,10 +196,73 @@
     .auth-tabs        { display: none; }
 
     @media (max-width: 640px) {
+      /* Login — hide left panel, show compact header instead */
       #auth-screen    { flex-direction: column; }
-      .auth-left      { width: 100%; padding: 32px 24px; min-height: auto; }
-      .auth-right     { padding: 32px 20px; }
-      .auth-form-card { padding: 28px 24px; }
+      .auth-left      { display: none; }
+      .auth-right     {
+        padding: 0;
+        background: #f4f5f9;
+        min-height: 100vh;
+        align-items: flex-start;
+      }
+      .auth-form-card {
+        border-radius: 0;
+        border-top: none;
+        border-bottom: 4px solid var(--gold);
+        padding: 0;
+        max-width: 100%;
+        box-shadow: none;
+        width: 100%;
+      }
+
+      /* Mobile login header — navy strip with school name */
+      .auth-form-card::before {
+        content: 'HIGHBURY PRIMARY SCHOOL';
+        display: block;
+        background: var(--navy);
+        color: var(--gold);
+        font-family: 'Montserrat', sans-serif;
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 2px;
+        padding: 16px 24px 6px;
+        border-bottom: 3px solid var(--gold);
+      }
+      .auth-form-card::after {
+        content: 'Staff Intranet';
+        display: block;
+        background: var(--navy);
+        color: rgba(255,255,255,0.7);
+        font-family: 'Montserrat', sans-serif;
+        font-size: 18px;
+        font-weight: 800;
+        padding: 0 24px 20px;
+      }
+
+      /* Form content padding on mobile */
+      .auth-form-title    { padding: 24px 24px 0; font-size: 16px; }
+      .auth-form-subtitle { padding: 4px 24px 0; margin-bottom: 0; }
+      .auth-form          { padding: 16px 24px 24px; gap: 14px; }
+
+      /* Bigger touch targets for inputs */
+      .auth-form input {
+        font-size: 16px !important; /* prevents iOS zoom */
+        padding: 14px 16px !important;
+        height: auto !important;
+      }
+
+      /* Bigger sign in button */
+      #sign-in-btn {
+        padding: 16px !important;
+        font-size: 16px !important;
+      }
+
+      /* TRT button on mobile */
+      .trt-login-btn {
+        border-radius: 0 !important;
+        margin: 0 !important;
+        width: 100% !important;
+      }
     }
 
     .auth-tabs {
@@ -1166,6 +1229,61 @@
       .topbar-nav { display: none; }
     }
 
+    /* ── MOBILE ── */
+    @media (max-width: 768px) {
+      /* Hamburger visible, desktop nav hidden */
+      #hamburger-btn  { display: block !important; }
+      .topbar-divider { display: none; }
+      .user-chip      { display: none; }
+      #sign-out-btn   { display: none; }
+
+      /* Compact topbar */
+      .topbar { padding: 0 12px; height: 52px; }
+
+      /* Full width content, less padding */
+      .main { padding: 16px 14px; max-width: 100% !important; }
+
+      /* Home */
+      .home-hero { padding: 20px; }
+      .home-hero h1 { font-size: 20px; }
+      .home-date-badge { display: none; }
+      .home-grid { grid-template-columns: 1fr; }
+
+      /* Quick tiles — 3 columns on mobile */
+      .quick-tiles { grid-template-columns: repeat(3, 1fr); gap: 10px; }
+      .quick-tile  { padding: 12px 8px; }
+      .tile-icon   { font-size: 22px; margin-bottom: 5px; }
+      .tile-label  { font-size: 10px; }
+
+      /* Touch-friendly inputs */
+      .form-input, select.form-input, textarea.form-input {
+        font-size: 16px !important;
+        padding: 12px 14px !important;
+        min-height: 48px;
+      }
+      label, .form-label { font-size: 13px; }
+
+      /* Bigger buttons */
+      .btn        { min-height: 44px; }
+      .btn-gold   { padding: 14px 20px !important; width: 100%; }
+      #sign-in-btn { width: 100%; padding: 16px !important; font-size: 16px !important; }
+
+      /* Modals — full screen */
+      .modal-overlay { padding: 0 !important; align-items: flex-start !important; }
+      .modal-box {
+        width: 100% !important; max-width: 100% !important;
+        border-radius: 0 !important; margin: 0 !important;
+        max-height: 100vh !important; overflow-y: auto !important;
+      }
+
+      /* Tables scroll */
+      .tickets-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+
+      /* Cards */
+      .card { padding: 16px; }
+      .page-header h2 { font-size: 20px; }
+    }
+
 
     /* ── TIMETABLES ── */
     .tt-tabs { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
@@ -2069,8 +2187,32 @@
 <div id="app-screen">
 
   <!-- TOPBAR -->
+  <!-- Mobile nav overlay -->
+  <div id="mobile-nav-overlay" onclick="closeMobileNav()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:1000"></div>
+  <div id="mobile-nav-drawer" style="display:none;position:fixed;top:0;left:0;bottom:0;width:280px;background:var(--navy);z-index:1001;flex-direction:column;padding:20px 0;overflow-y:auto">
+    <div style="padding:16px 20px 20px;border-bottom:1px solid rgba(255,255,255,0.1);margin-bottom:8px">
+      <div style="font-size:11px;font-weight:800;color:var(--gold);letter-spacing:2px;text-transform:uppercase">Highbury Primary</div>
+      <div style="font-size:16px;font-weight:700;color:#fff;margin-top:2px">Staff Intranet</div>
+      <div id="mobile-nav-user" style="font-size:12px;color:rgba(255,255,255,0.5);margin-top:6px"></div>
+    </div>
+    <button class="nav-btn" onclick="showView('home');closeMobileNav()" style="display:block;width:100%;text-align:left;padding:14px 20px;border-radius:0;font-size:14px">🏠 Home</button>
+    <button class="nav-btn" onclick="showView('daybook');closeMobileNav()" style="display:block;width:100%;text-align:left;padding:14px 20px;border-radius:0;font-size:14px">📋 Daybook</button>
+    <button class="nav-btn" onclick="showView('planner');closeMobileNav()" style="display:block;width:100%;text-align:left;padding:14px 20px;border-radius:0;font-size:14px">📅 Planner</button>
+    <button class="nav-btn" onclick="showView('timetables');closeMobileNav()" style="display:block;width:100%;text-align:left;padding:14px 20px;border-radius:0;font-size:14px">📆 Timetables</button>
+    <button class="nav-btn" onclick="showView('tickets');closeMobileNav()" style="display:block;width:100%;text-align:left;padding:14px 20px;border-radius:0;font-size:14px">🎫 Lodge a Ticket</button>
+    <button class="nav-btn" onclick="showView('meetings');closeMobileNav()" style="display:block;width:100%;text-align:left;padding:14px 20px;border-radius:0;font-size:14px">📝 Meetings</button>
+    <button class="nav-btn" onclick="showView('documents');closeMobileNav()" style="display:block;width:100%;text-align:left;padding:14px 20px;border-radius:0;font-size:14px">📁 Documents</button>
+    <button class="nav-btn" onclick="showView('suggest');closeMobileNav()" style="display:block;width:100%;text-align:left;padding:14px 20px;border-radius:0;font-size:14px">💡 Suggest an Edit</button>
+    <button class="nav-btn admin-only" id="mobile-nav-admin" onclick="showView('admin');closeMobileNav()" style="display:none;width:100%;text-align:left;padding:14px 20px;border-radius:0;font-size:14px;color:#f5ac1c">⚙️ Admin</button>
+    <div style="margin-top:auto;padding:16px 20px;border-top:1px solid rgba(255,255,255,0.1)">
+      <button class="btn btn-outline btn-sm" id="mobile-sign-out-btn" style="color:#fff;border-color:rgba(255,255,255,0.3);width:100%">Sign Out</button>
+    </div>
+  </div>
+
   <div class="topbar">
     <div class="topbar-left">
+      <!-- Hamburger — mobile only -->
+      <button id="hamburger-btn" onclick="openMobileNav()" style="display:none;background:none;border:none;cursor:pointer;padding:4px 8px;margin-right:8px;color:#fff;font-size:22px;line-height:1">☰</button>
       <div class="topbar-logo">
         <div class="topbar-logo-text">
           <span><strong style="font-weight:800">HIGHBURY</strong> <span style="font-weight:400">PRIMARY SCHOOL</span></span>
@@ -8759,6 +8901,32 @@ const firebaseConfig = {
   }
   function doLogout() { if (window._doLogoutModule) window._doLogoutModule(); }
   function doReset()  { if (window._doResetModule)  window._doResetModule(); }
+
+  // ── MOBILE NAV ──
+  function openMobileNav() {
+    document.getElementById('mobile-nav-overlay').style.display = 'block';
+    document.getElementById('mobile-nav-drawer').style.display  = 'flex';
+    // Sync user name
+    const name = document.getElementById('topbar-name');
+    const mnu  = document.getElementById('mobile-nav-user');
+    if (name && mnu) mnu.textContent = 'Signed in as ' + name.textContent;
+    // Sync admin button
+    const adminBtn       = document.getElementById('nav-admin');
+    const mobileAdminBtn = document.getElementById('mobile-nav-admin');
+    if (adminBtn && mobileAdminBtn) {
+      mobileAdminBtn.style.display = adminBtn.style.display === 'none' ? 'none' : 'block';
+    }
+  }
+  function closeMobileNav() {
+    document.getElementById('mobile-nav-overlay').style.display = 'none';
+    document.getElementById('mobile-nav-drawer').style.display  = 'none';
+  }
+
+  // Wire mobile sign out
+  document.addEventListener('DOMContentLoaded', function() {
+    var mso = document.getElementById('mobile-sign-out-btn');
+    if (mso) mso.addEventListener('click', function() { closeMobileNav(); doLogout(); });
+  });
   function showFirstTimeSetup() { if (window.showFirstTimeSetup) window.showFirstTimeSetup(); }
   function showNormalLogin()    { if (window.showNormalLogin)    window.showNormalLogin(); }
   function npShowPanel(id, btn) { if (window._npShowPanelModule) window._npShowPanelModule(id, btn); }

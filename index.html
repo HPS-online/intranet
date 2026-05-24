@@ -500,7 +500,7 @@
     .view.active { display: block; }
 
     /* Wide mode for timetables */
-    .main.wide-view { max-width: 1600px; padding-left: 32px; padding-right: 32px; }
+    .main.wide-view { max-width: calc(100vw - 48px); padding-left: 24px; padding-right: 24px; }
 
     /* ── DASHBOARD ── */
     .page-header {
@@ -1269,6 +1269,7 @@
 
       /* Tables scroll */
       .tickets-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+      .duty-table { font-size: 12px; }
 
       /* Cards */
       .card { padding: 16px; }
@@ -1338,7 +1339,7 @@
     .duty-period-header { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
     .duty-period-header h3 { font-size: 14px; font-weight: 700; color: var(--navy); text-transform: uppercase; letter-spacing: 0.5px; }
     .duty-period-header .duty-time { font-size: 12px; color: var(--gray3); background: var(--gray1); padding: 3px 10px; border-radius: 10px; }
-    .duty-table { width: 100%; border-collapse: collapse; font-size: 13px; table-layout: fixed; }
+    .duty-table { width: 100%; border-collapse: collapse; font-size: 13px; }
     .duty-table th { background: var(--navy); color: var(--white); padding: 8px 12px; text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; }
     .duty-table td { padding: 8px 12px; border-bottom: 1px solid var(--gray2); }
     .duty-table tr:last-child td { border-bottom: none; }
@@ -2492,7 +2493,6 @@
             </div>
             <div class="home-card"><div class="daybook-table-wrap">
             <table class="duty-table">
-              <colgroup><col style="width:32%"><col style="width:17%"><col style="width:17%"><col style="width:17%"><col style="width:17%"></colgroup>
               <thead><tr><th>Area</th><th>Monday</th><th>Tuesday</th><th>Wednesday</th><th>Thursday</th><th>Friday</th></tr></thead>
               <tbody>
                 <tr><td class="area-name">Kangaroo Building</td><td><span class="duty-cell" data-name="Keely">Keely</span></td><td><span class="duty-cell" data-name="Sara">Sara</span></td><td><span class="duty-cell" data-name="Keely">Keely</span></td><td><span class="duty-cell" data-name="Belinda">Belinda</span></td><td><span class="duty-cell" data-name="Daniel">Daniel</span></td></tr>
@@ -2511,7 +2511,6 @@
             </div>
             <div class="home-card"><div class="daybook-table-wrap">
             <table class="duty-table">
-              <colgroup><col style="width:32%"><col style="width:17%"><col style="width:17%"><col style="width:17%"><col style="width:17%"></colgroup>
               <thead><tr><th>Area</th><th>Monday</th><th>Tuesday</th><th>Wednesday</th><th>Thursday</th><th>Friday</th></tr></thead>
               <tbody>
                 <tr><td class="area-name">Kangaroo Building</td><td><span class="duty-cell" data-name="Melissa">Melissa</span></td><td><span class="duty-cell" data-name="Daniel">Daniel</span></td><td><span class="duty-cell" data-name="Gabby">Gabby</span></td><td><span class="duty-cell" data-name="Melissa">Melissa</span></td><td><span class="duty-cell" data-name="Gabby">Gabby</span></td></tr>
@@ -2534,7 +2533,6 @@
             </div>
             <div class="home-card"><div class="daybook-table-wrap">
             <table class="duty-table">
-              <colgroup><col style="width:32%"><col style="width:17%"><col style="width:17%"><col style="width:17%"><col style="width:17%"></colgroup>
               <thead><tr><th>Area</th><th>Monday</th><th>Tuesday</th><th>Wednesday</th><th>Thursday</th><th>Friday</th></tr></thead>
               <tbody>
                 <tr><td class="area-name">North Oval</td><td><span class="duty-cell" data-name="Callie">Callie</span></td><td><span class="duty-cell" data-name="Sam">Sam</span></td><td><span class="duty-cell" data-name="Nicole">Nicole</span></td><td><span class="duty-cell" data-name="Mike">Mike</span></td><td><span class="duty-cell" data-name="Sam">Sam</span></td></tr>
@@ -2556,7 +2554,6 @@
             </div>
             <div class="home-card"><div class="daybook-table-wrap">
             <table class="duty-table">
-              <colgroup><col style="width:32%"><col style="width:17%"><col style="width:17%"><col style="width:17%"><col style="width:17%"></colgroup>
               <thead><tr><th>Area</th><th>Monday</th><th>Tuesday</th><th>Wednesday</th><th>Thursday</th><th>Friday</th></tr></thead>
               <tbody>
                 <tr><td class="area-name">Lorikeet Building</td><td><span class="duty-cell" data-name="Belinda">Belinda</span></td><td><span class="duty-cell" data-name="Kristel">Kristel</span></td><td><span class="duty-cell" data-name="Katy">Katy</span></td><td><span class="duty-cell" data-name="Sara">Sara</span></td><td><span class="duty-cell" data-name="Belinda">Belinda</span></td></tr>

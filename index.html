@@ -217,7 +217,7 @@
 
       /* Mobile login header — navy strip with school name */
       .auth-form-card::before {
-        content: 'HIGHBURY PRIMARY SCHOOL';
+        content: 'HIGHBURY PRIMARY SCHOOL — Staff Intranet';
         display: block;
         background: var(--navy);
         color: var(--gold);
@@ -225,24 +225,15 @@
         font-size: 11px;
         font-weight: 800;
         letter-spacing: 2px;
-        padding: 16px 24px 6px;
+        padding: 16px 24px 16px;
         border-bottom: 3px solid var(--gold);
       }
-      .auth-form-card::after {
-        content: 'Staff Intranet';
-        display: block;
-        background: var(--navy);
-        color: rgba(255,255,255,0.7);
-        font-family: 'Montserrat', sans-serif;
-        font-size: 18px;
-        font-weight: 800;
-        padding: 0 24px 20px;
-      }
+      .auth-form-card::after { display: none; }
 
       /* Form content padding on mobile */
       .auth-form-title    { padding: 24px 24px 0; font-size: 16px; }
       .auth-form-subtitle { padding: 4px 24px 0; margin-bottom: 0; }
-      .auth-form          { padding: 16px 24px 24px; gap: 14px; }
+      .auth-form          { padding: 16px 24px 32px; gap: 14px; }
 
       /* Bigger touch targets for inputs */
       .auth-form input {

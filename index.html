@@ -2359,7 +2359,10 @@
           <h2>Daybook</h2>
           <p>Daily staff absences, reliever duties and notices.</p>
         </div>
-        <button class="btn btn-gold" id="daybook-edit-btn" onclick="daybookToggleEdit()">✏️ Edit Today</button>
+        <div style="display:flex;gap:8px;align-items:center">
+          <button class="btn" id="daybook-edit-btn" onclick="daybookToggleEdit()" style="background:#22c55e;color:#fff;border:none">✏️ Edit Today</button>
+          <button class="btn" id="daybook-save-top-btn" onclick="daybookSave()" style="background:#22c55e;color:#fff;border:none;display:none">💾 Save</button>
+        </div>
       </div>
 
       <div class="daybook-nav">
@@ -2440,7 +2443,7 @@
       </div>
 
       <div class="daybook-save-bar" id="daybook-save-bar" style="display:none">
-        <button class="btn btn-primary" onclick="daybookSave()">💾 Save Daybook</button>
+        <button class="btn" style="background:#22c55e;color:#fff;border:none" onclick="daybookSave()">💾 Save Daybook</button>
         <button class="btn btn-outline" onclick="daybookCancelEdit()">Cancel</button>
         <span id="daybook-save-status" style="font-size:13px;color:var(--gray3)"></span>
       </div>
@@ -6163,6 +6166,8 @@ const firebaseConfig = {
     if (key < today) { showToast('Past daybooks are read-only.', 'error'); return; }
     daybookIsEditing = !daybookIsEditing;
     document.getElementById('daybook-edit-btn').textContent = daybookIsEditing ? '✕ Cancel' : '✏️ Edit';
+    document.getElementById('daybook-edit-btn').style.background = daybookIsEditing ? '#ef4444' : '#22c55e';
+    document.getElementById('daybook-save-top-btn').style.display = daybookIsEditing ? 'inline-block' : 'none';
     document.getElementById('daybook-save-bar').style.display  = daybookIsEditing ? 'flex' : 'none';
     document.getElementById('daybook-add-btn').style.display   = daybookIsEditing ? 'inline-block' : 'none';
     daybookRenderRows(daybookCurrentData.rows || [], daybookIsEditing);

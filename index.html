@@ -4845,8 +4845,8 @@ const firebaseConfig = {
     if (pane === 'individual') ttLoadIndividual();
     const addSiteBtn   = document.getElementById('tt-add-site-btn');
     const addPersonBtn = document.getElementById('tt-add-person-btn');
-    if (addSiteBtn)   addSiteBtn.style.display   = (pane === 'site'       && currentIsAdmin) ? '' : 'none';
-    if (addPersonBtn) addPersonBtn.style.display  = (pane === 'individual' && currentIsAdmin) ? '' : 'none';
+    if (addSiteBtn)   addSiteBtn.style.display   = pane === 'site'       ? '' : 'none';
+    if (addPersonBtn) addPersonBtn.style.display  = pane === 'individual' ? '' : 'none';
   };
   window.highlightDuties    = highlightDuties;
   window.highlightSpec      = highlightSpec;
@@ -4906,7 +4906,7 @@ const firebaseConfig = {
   function ttRenderSite() {
     const el = document.getElementById('tt-site-list');
     if (_ttSiteData.length === 0) {
-      el.innerHTML = `<div style="color:var(--subtext);font-size:14px;padding:32px;text-align:center;grid-column:1/-1">No site timetables added yet.${currentIsAdmin ? ' Click <strong>+ Add Timetable</strong> to get started.' : ''}</div>`;
+      el.innerHTML = `<div style="color:var(--subtext);font-size:14px;padding:32px;text-align:center;grid-column:1/-1">No site timetables added yet. Click <strong>+ Add Timetable</strong> to get started.</div>`;
       return;
     }
     el.innerHTML = _ttSiteData.map((t,idx) => {
@@ -5169,7 +5169,7 @@ const firebaseConfig = {
   function ttRenderIndividual() {
     const el = document.getElementById('tt-individual-list');
     if (_ttIndividualData.length === 0) {
-      el.innerHTML = `<div style="color:var(--subtext);font-size:14px;padding:32px;text-align:center;grid-column:1/-1">No individual timetables added yet.${currentIsAdmin?' Click <strong>+ Add Person</strong> to get started.':''}</div>`;
+      el.innerHTML = `<div style="color:var(--subtext);font-size:14px;padding:32px;text-align:center;grid-column:1/-1">No individual timetables added yet. Click <strong>+ Add Person</strong> to get started.</div>`;
       return;
     }
     el.innerHTML = _ttIndividualData.map(p => {

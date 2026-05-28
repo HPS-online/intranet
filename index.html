@@ -1804,6 +1804,10 @@
       <!-- Notices -->
       <div style="flex:1;padding:18px 32px 20px;overflow:hidden;display:flex;flex-direction:column">
         <div style="font-size:11px;font-weight:700;letter-spacing:2px;color:rgba(255,255,255,0.4);text-transform:uppercase;margin-bottom:12px">Daily Notices</div>
+        <div id="k-clubs-wrap" style="display:none;margin-bottom:12px;background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.3);border-radius:8px;padding:10px 14px">
+          <div style="font-size:10px;font-weight:700;letter-spacing:1.5px;color:#4ade80;text-transform:uppercase;margin-bottom:6px">🎯 Today's Student Clubs</div>
+          <div id="k-clubs" style="display:flex;flex-direction:column;gap:4px;font-size:14px;font-weight:600"></div>
+        </div>
         <div id="k-notices" style="display:flex;flex-direction:column;gap:8px;overflow:hidden"></div>
       </div>
     </div>
@@ -1893,6 +1897,29 @@
     kioskLoadEvents(ymd);
     kioskLoadConfig();
     kioskLoadBirthdays(ymd);
+    kioskLoadClubs(ymd);
+  }
+
+  function kioskLoadClubs(ymd) {
+    var days = ['sun','mon','tue','wed','thu','fri','sat'];
+    var dayKey = days[new Date().getDay()];
+    if (dayKey === 'sun' || dayKey === 'sat') return;
+    fetch('https://firestore.googleapis.com/v1/projects/hps-net/databases/(default)/documents/clubs_config/timetable')
+      .then(function(r){ return r.json(); })
+      .then(function(data) {
+        if (!data.fields) return;
+        var clubs = [];
+        var f = data.fields;
+        if (f['recess_'+dayKey] && f['recess_'+dayKey].stringValue) clubs.push('Recess: ' + f['recess_'+dayKey].stringValue);
+        if (f['lunch_'+dayKey]  && f['lunch_'+dayKey].stringValue)  clubs.push('Lunch: '  + f['lunch_'+dayKey].stringValue);
+        if (!clubs.length) return;
+        var wrap = document.getElementById('k-clubs-wrap');
+        var list = document.getElementById('k-clubs');
+        if (wrap && list) {
+          list.innerHTML = clubs.map(function(c){ return '<div style="color:#fff">'+kioskEsc(c)+'</div>'; }).join('');
+          wrap.style.display = 'block';
+        }
+      }).catch(function(){});
   }
 
   function kioskLoadDaybook(ymd) {
@@ -2336,6 +2363,12 @@
             <!-- Hat notice spans full width -->
             <div id="uv-hat-notice" style="display:none;margin-top:12px;background:rgba(245,172,28,0.18);border:1px solid rgba(245,172,28,0.4);border-radius:6px;padding:5px 10px;font-size:11px;font-weight:700;color:var(--gold2)"></div>
             <div class="uv-footer" id="uv-footer">Open-Meteo · Adelaide</div>
+          </div>
+
+          <!-- Student Clubs Today -->
+          <div id="home-clubs-card" style="display:none;background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);padding:12px 16px;border-left:4px solid #22c55e;margin-bottom:0">
+            <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:#16a34a;margin-bottom:6px">🎯 Today's Student Clubs</div>
+            <div id="home-clubs-list" style="font-size:13px;color:var(--navy);display:flex;flex-direction:column;gap:3px"></div>
           </div>
 
           <!-- Week Ahead -->
@@ -4022,6 +4055,41 @@
         <div id="kiosk-config-msg" style="display:none;font-size:13px;font-weight:600;color:var(--green);margin-top:10px"></div>
       </div>
 
+      <!-- ── STUDENT CLUBS CONFIGURATOR ── -->
+      <div style="background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);padding:20px 24px;margin-bottom:24px;border-left:4px solid #22c55e">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+          <div>
+            <div style="font-size:14px;font-weight:800;color:var(--navy);text-transform:uppercase;letter-spacing:0.3px">🎯 Student Clubs Timetable</div>
+            <div style="font-size:12px;color:var(--subtext);margin-top:3px">Recess and lunch clubs — shown on home page, TRT view, and kiosk</div>
+          </div>
+          <button class="btn" style="background:#22c55e;color:#fff;border:none;flex-shrink:0" onclick="clubsConfigSave()">💾 Save</button>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:8px">
+          <div style="font-size:11px;font-weight:700;color:var(--subtext);text-transform:uppercase;letter-spacing:0.5px">Monday</div>
+          <div style="font-size:11px;font-weight:700;color:var(--subtext);text-transform:uppercase;letter-spacing:0.5px">Tuesday</div>
+          <div style="font-size:11px;font-weight:700;color:var(--subtext);text-transform:uppercase;letter-spacing:0.5px">Wednesday</div>
+          <div style="font-size:11px;font-weight:700;color:var(--subtext);text-transform:uppercase;letter-spacing:0.5px">Thursday</div>
+          <div style="font-size:11px;font-weight:700;color:var(--subtext);text-transform:uppercase;letter-spacing:0.5px">Friday</div>
+        </div>
+        <div style="font-size:11px;font-weight:600;color:var(--navy);margin-bottom:4px">Recess</div>
+        <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:12px">
+          <input type="text" id="club-recess-mon" class="form-input" style="font-size:12px;padding:6px 8px" placeholder="—">
+          <input type="text" id="club-recess-tue" class="form-input" style="font-size:12px;padding:6px 8px" placeholder="—">
+          <input type="text" id="club-recess-wed" class="form-input" style="font-size:12px;padding:6px 8px" placeholder="—">
+          <input type="text" id="club-recess-thu" class="form-input" style="font-size:12px;padding:6px 8px" placeholder="—">
+          <input type="text" id="club-recess-fri" class="form-input" style="font-size:12px;padding:6px 8px" placeholder="—">
+        </div>
+        <div style="font-size:11px;font-weight:600;color:var(--navy);margin-bottom:4px">Lunch</div>
+        <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px">
+          <input type="text" id="club-lunch-mon" class="form-input" style="font-size:12px;padding:6px 8px" placeholder="—">
+          <input type="text" id="club-lunch-tue" class="form-input" style="font-size:12px;padding:6px 8px" placeholder="—">
+          <input type="text" id="club-lunch-wed" class="form-input" style="font-size:12px;padding:6px 8px" placeholder="—">
+          <input type="text" id="club-lunch-thu" class="form-input" style="font-size:12px;padding:6px 8px" placeholder="—">
+          <input type="text" id="club-lunch-fri" class="form-input" style="font-size:12px;padding:6px 8px" placeholder="—">
+        </div>
+        <div id="clubs-config-msg" style="display:none;font-size:13px;font-weight:600;color:var(--green);margin-top:10px">✅ Saved!</div>
+      </div>
+
       <!-- ── TICKET ROUTING ── -->
       <div style="background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);padding:20px 24px;margin-bottom:24px;border-left:4px solid #6366f1">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
@@ -4270,6 +4338,12 @@
         <div class="trt-card">
           <div class="trt-card-header">📌 Daily Information</div>
           <div class="trt-card-body" id="trt-info-items">Loading…</div>
+        </div>
+
+        <!-- Student Clubs Today -->
+        <div class="trt-card" id="trt-clubs-card" style="display:none">
+          <div class="trt-card-header">🎯 Today's Student Clubs</div>
+          <div class="trt-card-body" id="trt-clubs-list"></div>
         </div>
 
         <!-- Attachments -->
@@ -5441,7 +5515,7 @@ const firebaseConfig = {
       ) b.classList.add('active');
     });
     if (view === 'tickets')  { renderDashboard(); renderAllTickets(allTickets); setupReportDropdowns(); }
-    if (view === 'admin')    { loadAdminUsers(); kioskConfigLoad(); ticketRoutingLoad(); }
+    if (view === 'admin')    { loadAdminUsers(); kioskConfigLoad(); ticketRoutingLoad(); clubsConfigLoad(); }
     if (view === 'naplan' && !_npInited) { _npInited = true; npInitDashboard(); }
     if (view === 'meetings') meetingsInit();
     if (view === 'documents') docInit();
@@ -5499,6 +5573,7 @@ const firebaseConfig = {
 
     loadHomeDaybookPreview();
     loadHomeWeekPreview();
+    loadTodaysClubs();
     loadUVIndex();
   }
 
@@ -7002,6 +7077,82 @@ const firebaseConfig = {
     }
   }
   window.kioskConfigSave = kioskConfigSave;
+
+  // ── STUDENT CLUBS CONFIG ─────────────────────────────────
+  const CLUB_DAYS = ['mon','tue','wed','thu','fri'];
+  const CLUB_SLOTS = ['recess','lunch'];
+
+  async function clubsConfigLoad() {
+    try {
+      const snap = await getDoc(doc(db, 'clubs_config', 'timetable'));
+      if (snap.exists()) {
+        const d = snap.data();
+        CLUB_SLOTS.forEach(slot => {
+          CLUB_DAYS.forEach(day => {
+            const el = document.getElementById(`club-${slot}-${day}`);
+            if (el) el.value = d[`${slot}_${day}`] || '';
+          });
+        });
+      }
+    } catch(e) { console.warn('clubsConfigLoad:', e); }
+  }
+
+  async function clubsConfigSave() {
+    const data = { updatedAt: serverTimestamp() };
+    CLUB_SLOTS.forEach(slot => {
+      CLUB_DAYS.forEach(day => {
+        const el = document.getElementById(`club-${slot}-${day}`);
+        data[`${slot}_${day}`] = el ? el.value.trim() : '';
+      });
+    });
+    try {
+      await setDoc(doc(db, 'clubs_config', 'timetable'), data);
+      const msg = document.getElementById('clubs-config-msg');
+      msg.style.display = '';
+      setTimeout(() => msg.style.display = 'none', 3000);
+      loadTodaysClubs();
+    } catch(e) { alert('Error saving clubs: ' + e.message); }
+  }
+  window.clubsConfigSave = clubsConfigSave;
+
+  async function loadTodaysClubs() {
+    const days = ['sun','mon','tue','wed','thu','fri','sat'];
+    const dayKey = days[new Date().getDay()];
+    if (dayKey === 'sun' || dayKey === 'sat') return;
+    try {
+      const snap = await getDoc(doc(db, 'clubs_config', 'timetable'));
+      if (!snap.exists()) return;
+      const d = snap.data();
+      const clubs = [];
+      if (d[`recess_${dayKey}`]) clubs.push({ slot: 'Recess', name: d[`recess_${dayKey}`] });
+      if (d[`lunch_${dayKey}`])  clubs.push({ slot: 'Lunch',  name: d[`lunch_${dayKey}`] });
+
+      // Home page
+      const homeCard = document.getElementById('home-clubs-card');
+      const homeList = document.getElementById('home-clubs-list');
+      if (homeCard && homeList) {
+        if (clubs.length) {
+          homeList.innerHTML = clubs.map(c => `<span><strong>${c.slot}:</strong> ${c.name}</span>`).join('');
+          homeCard.style.display = '';
+        } else {
+          homeCard.style.display = 'none';
+        }
+      }
+
+      // TRT page
+      const trtCard = document.getElementById('trt-clubs-card');
+      const trtList = document.getElementById('trt-clubs-list');
+      if (trtCard && trtList) {
+        if (clubs.length) {
+          trtList.innerHTML = `<ul class="db-dotpoint-list">${clubs.map(c => `<li><strong>${c.slot}:</strong> ${c.name}</li>`).join('')}</ul>`;
+          trtCard.style.display = '';
+        } else {
+          trtCard.style.display = 'none';
+        }
+      }
+    } catch(e) { console.warn('loadTodaysClubs:', e); }
+  }
+  window.loadTodaysClubs = loadTodaysClubs;
 
   // ── TICKET ROUTING ──
   const TICKET_ROUTING_DEFAULTS = {
@@ -8865,6 +9016,7 @@ const firebaseConfig = {
 
     // Yard duty — reuse the existing rendered table if available
     trtLoadYardDuty();
+    loadTodaysClubs();
   }
 
   async function trtLoadUV() {

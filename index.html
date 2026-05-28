@@ -1824,6 +1824,10 @@
         <div style="font-size:11px;font-weight:700;letter-spacing:2px;color:rgba(255,255,255,0.4);text-transform:uppercase;margin-bottom:10px">🧹 Clean-Up Crew</div>
         <div id="k-crew" style="display:flex;flex-direction:column;gap:6px"></div>
       </div>
+      <div id="k-nit-wrap" style="display:none;margin-top:16px;border-top:1px solid rgba(255,255,255,0.08);padding-top:14px">
+        <div style="font-size:11px;font-weight:700;letter-spacing:2px;color:rgba(255,255,255,0.4);text-transform:uppercase;margin-bottom:10px">📋 NIT Payback Owed</div>
+        <div id="k-nit" style="display:flex;flex-direction:column;gap:5px"></div>
+      </div>
     </div>
   </div>
 </div>
@@ -1898,6 +1902,29 @@
     kioskLoadConfig();
     kioskLoadBirthdays(ymd);
     kioskLoadClubs(ymd);
+    kioskLoadNit();
+  }
+
+  function kioskLoadNit() {
+    fetch('https://firestore.googleapis.com/v1/projects/hps-net/databases/(default)/documents/nit_owed')
+      .then(function(r){ return r.json(); })
+      .then(function(data) {
+        if (!data.documents || !data.documents.length) return;
+        var entries = data.documents.map(function(d) {
+          var f = d.fields || {};
+          return (f.name && f.name.stringValue ? f.name.stringValue : '') +
+                 (f.reason && f.reason.stringValue ? ' — ' + f.reason.stringValue : '');
+        }).filter(Boolean);
+        if (!entries.length) return;
+        var wrap = document.getElementById('k-nit-wrap');
+        var list = document.getElementById('k-nit');
+        if (wrap && list) {
+          list.innerHTML = entries.map(function(e){
+            return '<div style="color:rgba(255,255,255,0.85);font-size:13px">'+kioskEsc(e)+'</div>';
+          }).join('');
+          wrap.style.display = 'block';
+        }
+      }).catch(function(){});
   }
 
   function kioskLoadClubs(ymd) {
@@ -2388,6 +2415,12 @@
               <div class="db-empty">Loading upcoming events…</div>
             </div>
           </div>
+
+          <!-- NIT Owed -->
+          <div id="home-nit-card" style="display:none;background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);padding:12px 16px;border-left:4px solid #f59e0b">
+            <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:#b45309;margin-bottom:8px">📋 NIT Payback Owed</div>
+            <div id="home-nit-list" style="display:flex;flex-direction:column;gap:6px"></div>
+          </div>
         </div>
       </div>
     </div>
@@ -2480,6 +2513,12 @@
             <button class="btn btn-primary btn-sm" onclick="dbAttachAddUrl()">+ Add Link</button>
           </div>
         </div>
+      </div>
+
+      <!-- NIT Payback -->
+      <div id="db-nit-section" style="display:none;margin-top:20px;background:#fffbeb;border:1px solid #fcd34d;border-radius:var(--radius);padding:14px 18px">
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:#b45309;margin-bottom:10px">📋 NIT Payback Owed</div>
+        <div id="db-nit-list" style="display:flex;flex-direction:column;gap:6px"></div>
       </div>
 
       <div class="daybook-save-bar" id="daybook-save-bar" style="display:none">
@@ -4097,6 +4136,24 @@
         <div id="clubs-config-msg" style="display:none;font-size:13px;font-weight:600;color:var(--green);margin-top:10px">✅ Saved!</div>
       </div>
 
+      <!-- ── NIT PAYBACK LIST ── -->
+      <div style="background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);padding:20px 24px;margin-bottom:24px;border-left:4px solid #f59e0b">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+          <div>
+            <div style="font-size:14px;font-weight:800;color:var(--navy);text-transform:uppercase;letter-spacing:0.3px">📋 NIT Payback Owed</div>
+            <div style="font-size:12px;color:var(--subtext);margin-top:3px">Staff currently owed NIT — shown on home page, daybook, and kiosk until removed</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap">
+          <input type="text" id="nit-add-name" class="form-input" placeholder="Staff name…" style="flex:1;min-width:160px">
+          <input type="text" id="nit-add-reason" class="form-input" placeholder="Reason (e.g. Assessment, Missed NIT)…" style="flex:2;min-width:200px">
+          <button class="btn btn-gold" onclick="nitAdd()" style="flex-shrink:0">+ Add</button>
+        </div>
+        <div id="nit-admin-list" style="display:flex;flex-direction:column;gap:8px">
+          <div class="db-empty">Loading…</div>
+        </div>
+      </div>
+
       <!-- ── TICKET ROUTING ── -->
       <div style="background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);padding:20px 24px;margin-bottom:24px;border-left:4px solid #6366f1">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
@@ -5522,7 +5579,7 @@ const firebaseConfig = {
       ) b.classList.add('active');
     });
     if (view === 'tickets')  { renderDashboard(); renderAllTickets(allTickets); setupReportDropdowns(); }
-    if (view === 'admin')    { loadAdminUsers(); kioskConfigLoad(); ticketRoutingLoad(); clubsConfigLoad(); }
+    if (view === 'admin')    { loadAdminUsers(); kioskConfigLoad(); ticketRoutingLoad(); clubsConfigLoad(); nitLoad(); }
     if (view === 'naplan' && !_npInited) { _npInited = true; npInitDashboard(); }
     if (view === 'meetings') meetingsInit();
     if (view === 'documents') docInit();
@@ -5532,6 +5589,7 @@ const firebaseConfig = {
       daybookCurrentDate = new Date();
       daybookSkipWeekend(daybookCurrentDate, -1);
       daybookLoad();
+      nitLoad();
     }
     if (view === 'home') renderHomeView();
   }
@@ -5582,6 +5640,7 @@ const firebaseConfig = {
     loadHomeWeekPreview();
     loadTodaysClubs();
     loadLatestBulletin();
+    nitLoad();
     loadUVIndex();
   }
 
@@ -7191,6 +7250,97 @@ const firebaseConfig = {
   }
   window.homeBulletinOpen   = homeBulletinOpen;
   window.loadLatestBulletin = loadLatestBulletin;
+
+  // ── NIT PAYBACK LIST ─────────────────────────────────────
+  let _nitEntries = [];
+
+  async function nitLoad() {
+    try {
+      const snap = await getDocs(query(collection(db, 'nit_owed'), orderBy('addedAt', 'asc')));
+      _nitEntries = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      nitRenderAdmin();
+      nitRenderDisplay();
+    } catch(e) { console.warn('nitLoad:', e); }
+  }
+
+  function nitRenderAdmin() {
+    const el = document.getElementById('nit-admin-list');
+    if (!el) return;
+    if (!_nitEntries.length) {
+      el.innerHTML = '<div class="db-empty">No NIT payback entries. Add one above.</div>';
+      return;
+    }
+    el.innerHTML = _nitEntries.map(e => `
+      <div style="display:flex;align-items:center;gap:10px;background:var(--gray1);border-radius:8px;padding:10px 14px">
+        <div style="flex:1">
+          <span style="font-weight:700;color:var(--navy)">${escHtml(e.name)}</span>
+          <span style="color:var(--subtext);font-size:13px;margin-left:8px">— ${escHtml(e.reason||'')}</span>
+        </div>
+        <button onclick="nitDelete('${e.id}')" style="background:none;border:none;cursor:pointer;color:var(--red);font-size:18px;padding:0 4px" title="Remove">✕</button>
+      </div>`).join('');
+  }
+
+  function nitRenderDisplay() {
+    // Home page
+    const homeCard = document.getElementById('home-nit-card');
+    const homeList = document.getElementById('home-nit-list');
+    if (homeCard && homeList) {
+      if (_nitEntries.length) {
+        homeList.innerHTML = _nitEntries.map(e =>
+          `<div style="font-size:13px;color:var(--navy)"><strong>${escHtml(e.name)}</strong> <span style="color:var(--subtext)">— ${escHtml(e.reason||'')}</span></div>`
+        ).join('');
+        homeCard.style.display = '';
+      } else {
+        homeCard.style.display = 'none';
+      }
+    }
+    // Daybook
+    const dbSection = document.getElementById('db-nit-section');
+    const dbList    = document.getElementById('db-nit-list');
+    if (dbSection && dbList) {
+      if (_nitEntries.length) {
+        dbList.innerHTML = _nitEntries.map(e =>
+          `<div style="font-size:13px;color:var(--navy)"><strong>${escHtml(e.name)}</strong> <span style="color:#92400e">— ${escHtml(e.reason||'')}</span></div>`
+        ).join('');
+        dbSection.style.display = '';
+      } else {
+        dbSection.style.display = 'none';
+      }
+    }
+  }
+
+  async function nitAdd() {
+    const name   = document.getElementById('nit-add-name').value.trim();
+    const reason = document.getElementById('nit-add-reason').value.trim();
+    if (!name) { showToast('Please enter a staff name.', 'error'); return; }
+    try {
+      const ref = await addDoc(collection(db, 'nit_owed'), {
+        name, reason, addedAt: serverTimestamp(),
+        addedBy: currentUser?.displayName || currentUser?.email || ''
+      });
+      _nitEntries.push({ id: ref.id, name, reason });
+      document.getElementById('nit-add-name').value   = '';
+      document.getElementById('nit-add-reason').value = '';
+      nitRenderAdmin();
+      nitRenderDisplay();
+      showToast(`${name} added to NIT list.`, 'success');
+    } catch(e) { showToast('Error adding entry: ' + e.message, 'error'); }
+  }
+
+  async function nitDelete(id) {
+    if (!confirm('Remove this NIT entry?')) return;
+    try {
+      await deleteDoc(doc(db, 'nit_owed', id));
+      _nitEntries = _nitEntries.filter(e => e.id !== id);
+      nitRenderAdmin();
+      nitRenderDisplay();
+      showToast('Entry removed.', 'success');
+    } catch(e) { showToast('Error removing entry.', 'error'); }
+  }
+
+  window.nitAdd    = nitAdd;
+  window.nitDelete = nitDelete;
+  window.nitLoad   = nitLoad;
 
   // ── TICKET ROUTING ──
   const TICKET_ROUTING_DEFAULTS = {

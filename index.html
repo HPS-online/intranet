@@ -3722,7 +3722,8 @@
             <div id="md-meta" style="font-size:12px;opacity:0.7;margin-top:3px"></div>
           </div>
           <div style="display:flex;gap:8px;flex-shrink:0;flex-wrap:wrap;justify-content:flex-end">
-            <button id="md-email-btn" class="btn btn-sm" onclick="meetingsEmailSummary()" style="background:#059669;color:#fff;font-size:12px;display:none">✉ Email Summary</button>
+            <button id="md-email-all-btn" class="btn btn-sm" onclick="meetingsEmailSummary(false)" style="background:#059669;color:#fff;font-size:12px;display:none">✉ Email All Members</button>
+            <button id="md-email-self-btn" class="btn btn-sm" onclick="meetingsEmailSummary(true)" style="background:#0284c7;color:#fff;font-size:12px;display:none">✉ Email Myself a Copy</button>
             <button id="md-edit-btn" class="btn btn-gold btn-sm" onclick="meetingsEditCurrent()" style="font-size:12px">✏ Edit</button>
             <button class="btn btn-outline btn-sm" onclick="closeMeetingDetail()" style="color:#fff;border-color:rgba(255,255,255,0.35);font-size:12px">✕ Close</button>
           </div>
@@ -7655,9 +7656,11 @@ const firebaseConfig = {
     if (!(d.attachments||[]).length) attEl.innerHTML = '<span style="color:var(--subtext);font-size:13px">No attachments.</span>';
 
     // Show/hide email button — only show if meeting type is NOT Staff Meeting
-    const emailBtn = document.getElementById('md-email-btn');
+    const emailAllBtn  = document.getElementById('md-email-all-btn');
+    const emailSelfBtn = document.getElementById('md-email-self-btn');
     const isStaffMeeting = (d.meetingType || '') === 'Staff Meeting';
-    emailBtn.style.display = isStaffMeeting ? 'none' : '';
+    emailAllBtn.style.display  = isStaffMeeting ? 'none' : '';
+    emailSelfBtn.style.display = '';
 
     document.getElementById('meeting-detail-modal').style.display = 'flex';
   }
@@ -8085,23 +8088,30 @@ const firebaseConfig = {
   }
 
   // ── Email summary ────────────────────────────────────────
-  async function meetingsEmailSummary() {
+  async function meetingsEmailSummary(selfOnly) {
     const d = _meetingsAllDocs.find(x => x.id === _meetingsCurrentId);
     if (!d) return;
-    const btn = document.getElementById('md-email-btn');
+    const btn = selfOnly ? document.getElementById('md-email-self-btn') : document.getElementById('md-email-all-btn');
     btn.textContent = '⏳ Loading…';
     btn.disabled    = true;
     try {
-      // Get committee members
-      const snap = await getDocs(query(collection(db, 'committee_members'), where('meetingType','==',d.meetingType)));
-      const members = snap.docs.map(doc => doc.data());
-      if (!members.length) {
-        alert(`No committee members configured for "${d.meetingType}".\n\nUse ⚙ Configure Committees to add members and their email addresses.`);
-        btn.textContent = '✉ Email Summary';
-        btn.disabled    = false;
-        return;
+      let toEmails, toName;
+      if (selfOnly) {
+        toEmails = currentUser.email;
+        toName   = currentUser.displayName || currentUser.email;
+      } else {
+        // Get committee members
+        const snap = await getDocs(query(collection(db, 'committee_members'), where('meetingType','==',d.meetingType)));
+        const members = snap.docs.map(doc => doc.data());
+        if (!members.length) {
+          alert(`No committee members configured for "${d.meetingType}".\n\nUse ⚙ Configure Committees to add members and their email addresses.`);
+          btn.textContent = '✉ Email All Members';
+          btn.disabled    = false;
+          return;
+        }
+        toEmails = members.map(m => m.email).join(', ');
+        toName   = `${d.meetingType} Committee`;
       }
-      const toEmails  = members.map(m => m.email).join(', ');
       const dateStr   = d.date ? new Date(d.date+'T00:00:00').toLocaleDateString('en-AU',{weekday:'long',day:'numeric',month:'long',year:'numeric'}) : '—';
 
       // Build plain-text agenda
@@ -8133,19 +8143,19 @@ const firebaseConfig = {
       ].filter(l => l !== undefined).join('\n');
 
       // Store for confirm step
-      window._pendingMeetingEmail = { toEmails, subject, body, meetingType: d.meetingType };
+      window._pendingMeetingEmail = { toEmails, toName, subject, body, meetingType: d.meetingType };
 
       // Show preview modal
       document.getElementById('email-preview-to').textContent      = toEmails;
       document.getElementById('email-preview-subject').textContent = subject;
       document.getElementById('email-preview-body').textContent    = body;
-      btn.textContent = '✉ Email Summary';
+      btn.textContent = selfOnly ? '✉ Email Myself a Copy' : '✉ Email All Members';
       btn.disabled    = false;
       openModal('meeting-email-preview-modal');
 
     } catch(e) {
       alert('Error building preview: ' + e.message);
-      btn.textContent = '✉ Email Summary';
+      btn.textContent = btn.id === 'md-email-self-btn' ? '✉ Email Myself a Copy' : '✉ Email All Members';
       btn.disabled    = false;
     }
   }
@@ -8165,7 +8175,7 @@ const firebaseConfig = {
       }
       await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
         to_email:  pending.toEmails,
-        to_name:   `${pending.meetingType} Committee`,
+        to_name:   pending.toName,
         subject:   pending.subject,
         message:   pending.body,
         from_name: 'Highbury Primary Intranet',
@@ -8973,7 +8983,7 @@ const firebaseConfig = {
   function meetingsAiTopPointsDetail()    { if (window.meetingsAiTopPointsDetail)   window.meetingsAiTopPointsDetail(); }
   function meetingsApplyAiSummary()       { if (window.meetingsApplyAiSummary)      window.meetingsApplyAiSummary(); }
   function closeMeetingAiModal()          { if (window.closeMeetingAiModal)         window.closeMeetingAiModal(); }
-  function meetingsEmailSummary()         { if (window.meetingsEmailSummary)        window.meetingsEmailSummary(); }
+  function meetingsEmailSummary(selfOnly)         { if (window.meetingsEmailSummary)        window.meetingsEmailSummary(selfOnly); }
   function meetingsOpenConfigure()        { if (window.meetingsOpenConfigure)       window.meetingsOpenConfigure(); }
   function closeMeetingConfigure()        { if (window.closeMeetingConfigure)       window.closeMeetingConfigure(); }
   function cfgAddMeetingType()            { if (window.cfgAddMeetingType)           window.cfgAddMeetingType(); }

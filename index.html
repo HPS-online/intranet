@@ -6116,7 +6116,7 @@ const firebaseConfig = {
       badge.innerHTML = '<span style="background:var(--gray2);color:var(--gray3);font-size:11px;padding:2px 10px;border-radius:20px">School Holidays</span>';
     }
     document.getElementById('daybook-next-btn').disabled = false;
-    document.getElementById('daybook-edit-btn').style.display = key >= today ? '' : 'none';
+    document.getElementById('daybook-edit-btn').style.display = (key >= today || currentIsAdmin) ? '' : 'none';
 
     const snap = await getDoc(doc(db, 'daybook', key));
     daybookCurrentData = snap.exists() ? snap.data() : { rows: [], infoItems: [] };
@@ -6178,7 +6178,7 @@ const firebaseConfig = {
   function daybookToggleEdit() {
     const today = daybookDateKey(new Date());
     const key   = daybookDateKey(daybookCurrentDate);
-    if (key < today) { showToast('Past daybooks are read-only.', 'error'); return; }
+    if (key < today && !currentIsAdmin) { showToast('Past daybooks are read-only.', 'error'); return; }
     daybookIsEditing = !daybookIsEditing;
     document.getElementById('daybook-edit-btn').textContent = daybookIsEditing ? '✕ Cancel' : '✏️ Edit';
     document.getElementById('daybook-edit-btn').style.background = daybookIsEditing ? '#ef4444' : '#22c55e';

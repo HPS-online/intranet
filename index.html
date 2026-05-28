@@ -473,7 +473,7 @@
     }
 
     .nav-btn:hover { background: rgba(255,255,255,0.1); color: var(--white); }
-    .nav-btn.active { background: rgba(201,150,42,0.2); color: var(--gold2); border: 1px solid rgba(201,150,42,0.3); }
+    .nav-btn.active { background: #fff; color: var(--navy); border: 1px solid var(--gray2); border-bottom: 2px solid var(--navy); }
 
     .topbar-right {
       display: flex;
@@ -2821,8 +2821,8 @@
 
       <!-- Tabs: All Tickets | Reports -->
       <div style="display:flex;gap:8px;margin-bottom:18px;border-bottom:2px solid var(--gray2);padding-bottom:0">
-        <button id="tkttab-all" class="nav-btn active" style="border-radius:6px 6px 0 0;border-bottom:2px solid var(--navy);margin-bottom:-2px" onclick="ticketsShowTab('all')">All Tickets</button>
-        <button id="tkttab-reports" class="nav-btn" style="border-radius:6px 6px 0 0" onclick="ticketsShowTab('reports')">📈 Reports</button>
+        <button id="tkttab-all" class="nav-btn active" style="border-radius:6px 6px 0 0;border-bottom:2px solid var(--navy);margin-bottom:-2px;color:var(--navy)" onclick="ticketsShowTab('all')">All Tickets</button>
+        <button id="tkttab-reports" class="nav-btn" style="border-radius:6px 6px 0 0;color:var(--navy)" onclick="ticketsShowTab('reports')">📈 Reports</button>
       </div>
 
       <!-- All tickets panel -->
@@ -2859,7 +2859,7 @@
           <table>
             <thead><tr>
               <th style="width:8px"></th><th>Ticket</th><th>Category</th>
-              <th>Priority</th><th>Status</th><th>Assigned To</th><th>Opened</th>
+              <th>Priority</th><th>Status</th><th style="display:none">Assigned To</th><th>Opened</th>
             </tr></thead>
             <tbody id="all-ticket-list"><tr><td colspan="7"><div class="spinner"></div></td></tr></tbody>
           </table>
@@ -2878,7 +2878,7 @@
           <table>
             <thead><tr>
               <th>ID</th><th>Title</th><th>Category</th>
-              <th>Priority</th><th>Status</th><th>Opened</th><th>Assigned To</th>
+              <th>Priority</th><th>Status</th><th>Opened</th><th style="display:none">Assigned To</th>
             </tr></thead>
             <tbody id="report-ticket-list"></tbody>
           </table>
@@ -6377,7 +6377,7 @@ const firebaseConfig = {
         <td><span class="badge ${t.category === 'IT Issues' ? 'badge-cat-it' : 'badge-cat-maint'}">${escHtml(t.category)}</span></td>
         <td><span class="priority-${(t.priority||'').toLowerCase()}">${escHtml(t.priority)}</span></td>
         <td><span class="badge ${statusBadge(t.status)}">${escHtml(t.status)}</span></td>
-        <td>${escHtml(t.assignedToName || 'Unassigned')}</td>
+        <td style="display:none">${escHtml(t.assignedToName || 'Unassigned')}</td>
         <td>${dateStr}</td>
       </tr>`;
   }
@@ -6725,7 +6725,8 @@ const firebaseConfig = {
           ticket_category: t.category,
           new_status: newStatus,
           updated_by: currentUser.displayName || currentUser.email,
-          message_type: 'status_update'
+          message_type: 'status_update',
+          message: `Your ticket "${t.title}" has been updated.\n\nNew Status: ${newStatus}\nUpdated by: ${currentUser.displayName || currentUser.email}\n\nCategory: ${t.category}\nOriginal description: ${t.description || 'No description provided.'}\n\nView your ticket at:\nhttps://hps-online.github.io/intranet/`
         });
       }
 
@@ -6844,7 +6845,7 @@ const firebaseConfig = {
           <td class="priority-${(t.priority||'').toLowerCase()}">${escHtml(t.priority)}</td>
           <td><span class="badge ${statusBadge(t.status)}">${escHtml(t.status)}</span></td>
           <td>${t.createdAt?.toDate ? formatDate(t.createdAt.toDate()) : '—'}</td>
-          <td>${escHtml(t.assignedToName || 'Unassigned')}</td>
+          <td style="display:none">${escHtml(t.assignedToName || 'Unassigned')}</td>
         </tr>`).join('');
     } else {
       wrap.style.display = 'none';

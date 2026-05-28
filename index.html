@@ -2268,9 +2268,16 @@
           <p id="home-subtext">Welcome to Highbury Primary Staff Intranet</p>
           <div id="home-term-badge" style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap"></div>
         </div>
-        <div class="home-date-badge">
-          <strong id="home-day">—</strong>
-          <span id="home-date-full">—</span>
+        <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;justify-content:flex-end">
+          <!-- Latest Bulletin tile -->
+          <div id="home-bulletin-tile" style="display:none;background:rgba(245,172,28,0.15);border:1px solid rgba(245,172,28,0.4);border-radius:8px;padding:10px 16px;cursor:pointer;text-align:center;min-width:120px" onclick="homeBulletinOpen()">
+            <div style="font-size:9px;font-weight:700;letter-spacing:1.5px;color:rgba(255,255,255,0.5);text-transform:uppercase;margin-bottom:3px">📰 Latest Bulletin</div>
+            <div id="home-bulletin-label" style="font-size:12px;font-weight:700;color:var(--gold2)">Loading…</div>
+          </div>
+          <div class="home-date-badge">
+            <strong id="home-day">—</strong>
+            <span id="home-date-full">—</span>
+          </div>
         </div>
       </div>
 
@@ -5574,6 +5581,7 @@ const firebaseConfig = {
     loadHomeDaybookPreview();
     loadHomeWeekPreview();
     loadTodaysClubs();
+    loadLatestBulletin();
     loadUVIndex();
   }
 
@@ -7154,6 +7162,36 @@ const firebaseConfig = {
   }
   window.loadTodaysClubs = loadTodaysClubs;
 
+  // ── LATEST BULLETIN ─────────────────────────────────────
+  let _latestBulletinUrl = null;
+
+  async function loadLatestBulletin() {
+    try {
+      const q = query(
+        collection(db, 'documents'),
+        where('category', '==', 'Staff Bulletin'),
+        orderBy('uploadedAt', 'desc'),
+        limit(1)
+      );
+      const snap = await getDocs(q);
+      if (snap.empty) return;
+      const d = snap.docs[0].data();
+      _latestBulletinUrl = d.url || d.fileUrl || null;
+      const tile  = document.getElementById('home-bulletin-tile');
+      const label = document.getElementById('home-bulletin-label');
+      if (tile && label && _latestBulletinUrl) {
+        label.textContent = d.title || 'View Bulletin';
+        tile.style.display = '';
+      }
+    } catch(e) { console.warn('loadLatestBulletin:', e); }
+  }
+
+  function homeBulletinOpen() {
+    if (_latestBulletinUrl) window.open(_latestBulletinUrl, '_blank');
+  }
+  window.homeBulletinOpen   = homeBulletinOpen;
+  window.loadLatestBulletin = loadLatestBulletin;
+
   // ── TICKET ROUTING ──
   const TICKET_ROUTING_DEFAULTS = {
     'Maintenance & Facilities': 'sarah.nobes347@schools.sa.edu.au',
@@ -8591,7 +8629,7 @@ const firebaseConfig = {
   // ══════════════════════════════════════
   // DOCUMENT LIBRARY MODULE
   // ══════════════════════════════════════
-  const DOC_DEFAULT_CATS = ['Letterheads & Templates', 'Policies & Procedures'];
+  const DOC_DEFAULT_CATS = ['Letterheads & Templates', 'Policies & Procedures', 'Staff Bulletin'];
   let _docInited = false;
   let _docAllDocs = [];
   let _docCategories = [];

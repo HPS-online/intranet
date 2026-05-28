@@ -5539,7 +5539,22 @@ const firebaseConfig = {
     if (items.length) {
       html += '<div style="border-top:1px solid var(--gray2);margin-top:12px;padding-top:10px">';
       html += '<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--subtext);margin-bottom:8px">Daily Information</div>';
-      html += '<ul class="db-dotpoint-list">' + items.map(i => `<li>${escHtml(i)}</li>`).join('') + '</ul>';
+      html += '<ul class="db-dotpoint-list">' + items.map(i => `<li>${i}</li>`).join('') + '</ul>';
+      html += '</div>';
+    }
+    // Attachments
+    const attachments = data.attachments || [];
+    if (attachments.length > 0) {
+      html += '<div style="border-top:1px solid var(--gray2);margin-top:12px;padding-top:10px">';
+      html += '<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--subtext);margin-bottom:8px">Attachments</div>';
+      html += '<div class="db-attach-list">' + attachments.map(a => {
+        const icon = a.type === 'pdf' ? '📄' : a.type === 'url' ? '🔗' : '🖼️';
+        const label = escHtml(a.label || a.name || 'Attachment');
+        return `<a class="db-attach-chip" href="${escHtml(a.url)}" target="_blank" rel="noopener">
+          <span class="attach-icon">${icon}</span>
+          <span class="attach-label">${label}</span>
+        </a>`;
+      }).join('') + '</div>';
       html += '</div>';
     }
     el.innerHTML = html;
@@ -8807,7 +8822,7 @@ const firebaseConfig = {
       if (items.length === 0) {
         infoEl.innerHTML = `<div style="color:var(--subtext);font-size:13px">No daily information added yet.</div>`;
       } else {
-        infoEl.innerHTML = `<ul class="db-dotpoint-list">${items.map(i => `<li>${escHtml(i)}</li>`).join('')}</ul>`;
+        infoEl.innerHTML = `<ul class="db-dotpoint-list">${items.map(i => `<li>${i}</li>`).join('')}</ul>`;
       }
 
       // Attachments

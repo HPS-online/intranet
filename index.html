@@ -1818,6 +1818,10 @@
           <div style="font-size:10px;font-weight:700;letter-spacing:1.5px;color:#4ade80;text-transform:uppercase;margin-bottom:6px">🎯 Today's Student Clubs</div>
           <div id="k-clubs" style="display:flex;flex-direction:column;gap:4px;font-size:14px;font-weight:600"></div>
         </div>
+        <div id="k-ensembles-wrap" style="display:none;margin-bottom:12px;background:rgba(124,58,237,0.1);border:1px solid rgba(124,58,237,0.3);border-radius:8px;padding:10px 14px">
+          <div style="font-size:10px;font-weight:700;letter-spacing:1.5px;color:#a78bfa;text-transform:uppercase;margin-bottom:6px">🎵 Today's Music Ensembles</div>
+          <div id="k-ensembles" style="display:flex;flex-direction:column;gap:4px;font-size:14px;font-weight:600"></div>
+        </div>
         <div id="k-notices" style="display:flex;flex-direction:column;gap:8px;overflow:hidden"></div>
       </div>
     </div>
@@ -1913,6 +1917,37 @@
     kioskLoadBirthdays(ymd);
     kioskLoadClubs(ymd);
     kioskLoadNit();
+    kioskLoadEnsembles(ymd);
+  }
+
+  function kioskLoadEnsembles(ymd) {
+    var days   = ['sun','mon','tue','wed','thu','fri','sat'];
+    var dayKey = days[new Date().getDay()];
+    if (dayKey === 'sun' || dayKey === 'sat') return;
+    fetch('https://firestore.googleapis.com/v1/projects/hps-net/databases/(default)/documents/ensembles_config/timetable')
+      .then(function(r){ return r.json(); })
+      .then(function(data) {
+        if (!data.fields) return;
+        var f = data.fields;
+        var entries = [];
+        if (f['before_'+dayKey] && f['before_'+dayKey].stringValue) {
+          var note = f['before_'+dayKey+'_note'] && f['before_'+dayKey+'_note'].stringValue ? ' ('+f['before_'+dayKey+'_note'].stringValue+')' : '';
+          entries.push('Before School: ' + f['before_'+dayKey].stringValue + note);
+        }
+        if (f['l4_'+dayKey] && f['l4_'+dayKey].stringValue) {
+          var note2 = f['l4_'+dayKey+'_note'] && f['l4_'+dayKey+'_note'].stringValue ? ' ('+f['l4_'+dayKey+'_note'].stringValue+')' : '';
+          entries.push('Lesson 4: ' + f['l4_'+dayKey].stringValue + note2);
+        }
+        if (!entries.length) return;
+        var wrap = document.getElementById('k-ensembles-wrap');
+        var list = document.getElementById('k-ensembles');
+        if (wrap && list) {
+          list.innerHTML = entries.map(function(e){
+            return '<div style="color:#fff">'+kioskEsc(e)+'</div>';
+          }).join('');
+          wrap.style.display = 'block';
+        }
+      }).catch(function(){});
   }
 
   function kioskLoadNit() {
@@ -2415,6 +2450,12 @@
             <div id="home-clubs-list" style="font-size:13px;color:var(--navy);display:flex;flex-direction:column;gap:3px"></div>
           </div>
 
+          <!-- Music Ensembles Today -->
+          <div id="home-ensembles-card" style="display:none;background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);padding:12px 16px">
+            <div style="font-size:14px;font-weight:700;color:var(--navy);margin-bottom:8px">🎵 Today's Music Ensembles</div>
+            <div id="home-ensembles-list" style="font-size:13px;color:var(--navy);display:flex;flex-direction:column;gap:3px"></div>
+          </div>
+
           <!-- Week Ahead -->
           <div class="home-card">
             <div class="home-card-header">
@@ -2523,6 +2564,12 @@
             <button class="btn btn-primary btn-sm" onclick="dbAttachAddUrl()">+ Add Link</button>
           </div>
         </div>
+      </div>
+
+      <!-- Music Ensembles Today -->
+      <div id="db-ensembles-section" style="display:none;margin-top:12px;background:#f5f3ff;border:1px solid #c4b5fd;border-radius:var(--radius);padding:14px 18px">
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:#7c3aed;margin-bottom:10px">🎵 Today's Music Ensembles</div>
+        <div id="db-ensembles-list" style="display:flex;flex-direction:column;gap:6px"></div>
       </div>
 
       <!-- NIT Payback -->
@@ -4148,6 +4195,55 @@
         <div id="clubs-config-msg" style="display:none;font-size:13px;font-weight:600;color:var(--green);margin-top:10px">✅ Saved!</div>
       </div>
 
+      <!-- ── MUSIC ENSEMBLES TIMETABLE ── -->
+      <div style="background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);padding:20px 24px;margin-bottom:24px;border-left:4px solid #7c3aed">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+          <div>
+            <div style="font-size:14px;font-weight:800;color:var(--navy);text-transform:uppercase;letter-spacing:0.3px">🎵 Music Ensembles Timetable</div>
+            <div style="font-size:12px;color:var(--subtext);margin-top:3px">Before School (7:50am) and Lesson 4 (11:50am) — shown on home page, daybook, TRT, and kiosk</div>
+          </div>
+          <button class="btn btn-gold" style="flex-shrink:0" onclick="ensemblesConfigSave()">💾 Save</button>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:8px">
+          <div style="font-size:11px;font-weight:700;color:var(--subtext);text-transform:uppercase;letter-spacing:0.5px">Monday</div>
+          <div style="font-size:11px;font-weight:700;color:var(--subtext);text-transform:uppercase;letter-spacing:0.5px">Tuesday</div>
+          <div style="font-size:11px;font-weight:700;color:var(--subtext);text-transform:uppercase;letter-spacing:0.5px">Wednesday</div>
+          <div style="font-size:11px;font-weight:700;color:var(--subtext);text-transform:uppercase;letter-spacing:0.5px">Thursday</div>
+          <div style="font-size:11px;font-weight:700;color:var(--subtext);text-transform:uppercase;letter-spacing:0.5px">Friday</div>
+        </div>
+        <div style="font-size:11px;font-weight:600;color:var(--navy);margin-bottom:4px">Before School (7:50am)</div>
+        <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:4px">
+          <input type="text" id="ens-before-mon" class="form-input" style="font-size:12px;padding:6px 8px" placeholder="—">
+          <input type="text" id="ens-before-tue" class="form-input" style="font-size:12px;padding:6px 8px" placeholder="—">
+          <input type="text" id="ens-before-wed" class="form-input" style="font-size:12px;padding:6px 8px" placeholder="—">
+          <input type="text" id="ens-before-thu" class="form-input" style="font-size:12px;padding:6px 8px" placeholder="—">
+          <input type="text" id="ens-before-fri" class="form-input" style="font-size:12px;padding:6px 8px" placeholder="—">
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:12px">
+          <input type="text" id="ens-before-mon-note" class="form-input" style="font-size:11px;padding:4px 8px;color:var(--subtext)" placeholder="note…">
+          <input type="text" id="ens-before-tue-note" class="form-input" style="font-size:11px;padding:4px 8px;color:var(--subtext)" placeholder="note…">
+          <input type="text" id="ens-before-wed-note" class="form-input" style="font-size:11px;padding:4px 8px;color:var(--subtext)" placeholder="note…">
+          <input type="text" id="ens-before-thu-note" class="form-input" style="font-size:11px;padding:4px 8px;color:var(--subtext)" placeholder="note…">
+          <input type="text" id="ens-before-fri-note" class="form-input" style="font-size:11px;padding:4px 8px;color:var(--subtext)" placeholder="note…">
+        </div>
+        <div style="font-size:11px;font-weight:600;color:var(--navy);margin-bottom:4px">Lesson 4 (11:50am)</div>
+        <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:4px">
+          <input type="text" id="ens-l4-mon" class="form-input" style="font-size:12px;padding:6px 8px" placeholder="—">
+          <input type="text" id="ens-l4-tue" class="form-input" style="font-size:12px;padding:6px 8px" placeholder="—">
+          <input type="text" id="ens-l4-wed" class="form-input" style="font-size:12px;padding:6px 8px" placeholder="—">
+          <input type="text" id="ens-l4-thu" class="form-input" style="font-size:12px;padding:6px 8px" placeholder="—">
+          <input type="text" id="ens-l4-fri" class="form-input" style="font-size:12px;padding:6px 8px" placeholder="—">
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px">
+          <input type="text" id="ens-l4-mon-note" class="form-input" style="font-size:11px;padding:4px 8px;color:var(--subtext)" placeholder="note…">
+          <input type="text" id="ens-l4-tue-note" class="form-input" style="font-size:11px;padding:4px 8px;color:var(--subtext)" placeholder="note…">
+          <input type="text" id="ens-l4-wed-note" class="form-input" style="font-size:11px;padding:4px 8px;color:var(--subtext)" placeholder="note…">
+          <input type="text" id="ens-l4-thu-note" class="form-input" style="font-size:11px;padding:4px 8px;color:var(--subtext)" placeholder="note…">
+          <input type="text" id="ens-l4-fri-note" class="form-input" style="font-size:11px;padding:4px 8px;color:var(--subtext)" placeholder="note…">
+        </div>
+        <div id="ensembles-config-msg" style="display:none;font-size:13px;font-weight:600;color:var(--green);margin-top:10px">✅ Saved!</div>
+      </div>
+
       <!-- ── NIT PAYBACK LIST ── -->
       <div style="background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);padding:20px 24px;margin-bottom:24px;border-left:4px solid #f59e0b">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
@@ -4420,6 +4516,12 @@
         <div class="trt-card" id="trt-clubs-card" style="display:none">
           <div class="trt-card-header">🎯 Today's Student Clubs</div>
           <div class="trt-card-body" id="trt-clubs-list"></div>
+        </div>
+
+        <!-- Music Ensembles Today -->
+        <div class="trt-card" id="trt-ensembles-card" style="display:none">
+          <div class="trt-card-header">🎵 Today's Music Ensembles</div>
+          <div class="trt-card-body" id="trt-ensembles-list"></div>
         </div>
 
         <!-- Attachments -->
@@ -5591,7 +5693,7 @@ const firebaseConfig = {
       ) b.classList.add('active');
     });
     if (view === 'tickets')  { renderDashboard(); renderAllTickets(allTickets); setupReportDropdowns(); applyFilters(); }
-    if (view === 'admin')    { loadAdminUsers(); kioskConfigLoad(); ticketRoutingLoad(); clubsConfigLoad(); nitLoad(); }
+    if (view === 'admin')    { loadAdminUsers(); kioskConfigLoad(); ticketRoutingLoad(); clubsConfigLoad(); ensemblesConfigLoad(); nitLoad(); }
     if (view === 'naplan' && !_npInited) { _npInited = true; npInitDashboard(); }
     if (view === 'meetings') meetingsInit();
     if (view === 'documents') docInit();
@@ -5602,6 +5704,8 @@ const firebaseConfig = {
       daybookSkipWeekend(daybookCurrentDate, -1);
       daybookLoad();
       nitLoad();
+      loadTodaysClubs();
+      loadTodaysEnsembles();
     }
     if (view === 'home') renderHomeView();
   }
@@ -5651,6 +5755,7 @@ const firebaseConfig = {
     loadHomeDaybookPreview();
     loadHomeWeekPreview();
     loadTodaysClubs();
+    loadTodaysEnsembles();
     loadLatestBulletin();
     nitLoad();
     loadUVIndex();
@@ -7202,6 +7307,107 @@ const firebaseConfig = {
     } catch(e) { alert('Error saving clubs: ' + e.message); }
   }
   window.clubsConfigSave = clubsConfigSave;
+
+  // ── MUSIC ENSEMBLES CONFIG ────────────────────────────────
+  const ENS_DAYS  = ['mon','tue','wed','thu','fri'];
+  const ENS_SLOTS = ['before','l4'];
+
+  async function ensemblesConfigLoad() {
+    try {
+      const snap = await getDoc(doc(db, 'ensembles_config', 'timetable'));
+      if (snap.exists()) {
+        const d = snap.data();
+        ENS_SLOTS.forEach(slot => {
+          ENS_DAYS.forEach(day => {
+            const el     = document.getElementById(`ens-${slot}-${day}`);
+            const noteEl = document.getElementById(`ens-${slot}-${day}-note`);
+            if (el)     el.value     = d[`${slot}_${day}`]      || '';
+            if (noteEl) noteEl.value = d[`${slot}_${day}_note`] || '';
+          });
+        });
+      }
+    } catch(e) { console.warn('ensemblesConfigLoad:', e); }
+  }
+
+  async function ensemblesConfigSave() {
+    const data = { updatedAt: serverTimestamp() };
+    ENS_SLOTS.forEach(slot => {
+      ENS_DAYS.forEach(day => {
+        const el     = document.getElementById(`ens-${slot}-${day}`);
+        const noteEl = document.getElementById(`ens-${slot}-${day}-note`);
+        data[`${slot}_${day}`]      = el     ? el.value.trim()     : '';
+        data[`${slot}_${day}_note`] = noteEl ? noteEl.value.trim() : '';
+      });
+    });
+    try {
+      await setDoc(doc(db, 'ensembles_config', 'timetable'), data);
+      const msg = document.getElementById('ensembles-config-msg');
+      msg.style.display = '';
+      setTimeout(() => msg.style.display = 'none', 3000);
+      loadTodaysEnsembles();
+    } catch(e) { alert('Error saving ensembles: ' + e.message); }
+  }
+  window.ensemblesConfigSave = ensemblesConfigSave;
+
+  async function loadTodaysEnsembles() {
+    const days   = ['sun','mon','tue','wed','thu','fri','sat'];
+    const dayKey = days[new Date().getDay()];
+    if (dayKey === 'sun' || dayKey === 'sat') return;
+    try {
+      const snap = await getDoc(doc(db, 'ensembles_config', 'timetable'));
+      if (!snap.exists()) return;
+      const d = snap.data();
+      const ensembles = [];
+      if (d[`before_${dayKey}`]) ensembles.push({
+        slot: 'Before School (7:50am)',
+        name: d[`before_${dayKey}`],
+        note: d[`before_${dayKey}_note`] || ''
+      });
+      if (d[`l4_${dayKey}`]) ensembles.push({
+        slot: 'Lesson 4 (11:50am)',
+        name: d[`l4_${dayKey}`],
+        note: d[`l4_${dayKey}_note`] || ''
+      });
+
+      const renderItem = e =>
+        `<span><strong>${e.slot}:</strong> ${e.name}${e.note ? ` <span style="color:var(--subtext);font-size:12px">(${e.note})</span>` : ''}</span>`;
+
+      // Home page
+      const homeCard = document.getElementById('home-ensembles-card');
+      const homeList = document.getElementById('home-ensembles-list');
+      if (homeCard && homeList) {
+        if (ensembles.length) {
+          homeList.innerHTML = ensembles.map(renderItem).join('');
+          homeCard.style.display = '';
+        } else { homeCard.style.display = 'none'; }
+      }
+
+      // TRT page
+      const trtCard = document.getElementById('trt-ensembles-card');
+      const trtList = document.getElementById('trt-ensembles-list');
+      if (trtCard && trtList) {
+        if (ensembles.length) {
+          trtList.innerHTML = `<ul class="db-dotpoint-list">${ensembles.map(e =>
+            `<li><strong>${e.slot}:</strong> ${e.name}${e.note ? ` <em style="color:var(--subtext)">(${e.note})</em>` : ''}</li>`
+          ).join('')}</ul>`;
+          trtCard.style.display = '';
+        } else { trtCard.style.display = 'none'; }
+      }
+
+      // Daybook
+      const dbSection = document.getElementById('db-ensembles-section');
+      const dbList    = document.getElementById('db-ensembles-list');
+      if (dbSection && dbList) {
+        if (ensembles.length) {
+          dbList.innerHTML = ensembles.map(e =>
+            `<div style="font-size:13px;color:var(--navy)"><strong>${e.slot}:</strong> ${e.name}${e.note ? ` <span style="color:var(--subtext);font-size:12px">(${e.note})</span>` : ''}</div>`
+          ).join('');
+          dbSection.style.display = '';
+        } else { dbSection.style.display = 'none'; }
+      }
+    } catch(e) { console.warn('loadTodaysEnsembles:', e); }
+  }
+  window.loadTodaysEnsembles = loadTodaysEnsembles;
 
   async function loadTodaysClubs() {
     const days = ['sun','mon','tue','wed','thu','fri','sat'];
@@ -9230,6 +9436,7 @@ const firebaseConfig = {
     // Yard duty — reuse the existing rendered table if available
     trtLoadYardDuty();
     loadTodaysClubs();
+    loadTodaysEnsembles();
   }
 
   async function trtLoadUV() {

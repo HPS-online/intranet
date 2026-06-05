@@ -4550,13 +4550,13 @@
           <textarea id="nt-description" rows="4" placeholder="Describe the issue in detail…"></textarea>
         </div>
         <div class="form-group">
-          <label>Photo (optional)</label>
+          <label>Photos (optional)</label>
           <div class="photo-upload-area" onclick="document.getElementById('nt-photo').click()">
             <div class="upload-icon">📷</div>
-            <p>Click to attach a photo</p>
-            <input type="file" id="nt-photo" accept="image/*" style="display:none" onchange="previewPhoto(this)" />
-            <img id="photo-preview" src="" alt="Preview" />
+            <p>Click to attach photos (select multiple)</p>
+            <input type="file" id="nt-photo" accept="image/*" multiple style="display:none" onchange="previewPhotos(this)" />
           </div>
+          <div id="photo-preview-list" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px"></div>
         </div>
         <div id="nt-error" style="display:none" class="error-msg"></div>
       </div>
@@ -4817,7 +4817,7 @@ const firebaseConfig = {
   window.closeModal         = closeModal;
   window.submitTicket       = submitTicket;
   window.applyFilters       = applyFilters;
-  window.previewPhoto       = previewPhoto;
+  window.previewPhotos      = previewPhotos;
   window.generateReport     = generateReport;
   window.openTicketDetail   = openTicketDetail;
   window.updateTicketStatus = updateTicketStatus;
@@ -6624,21 +6624,25 @@ const firebaseConfig = {
     document.getElementById('nt-location').value    = '';
     document.getElementById('nt-description').value = '';
     document.getElementById('nt-photo').value       = '';
+    document.getElementById('photo-preview-list').innerHTML = '';
     document.getElementById('photo-preview').style.display = 'none';
     hideEl('nt-error');
     openModal('new-ticket-modal');
   }
 
-  function previewPhoto(input) {
-    const file = input.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = e => {
-      const img = document.getElementById('photo-preview');
-      img.src = e.target.result;
-      img.style.display = 'block';
-    };
-    reader.readAsDataURL(file);
+  function previewPhotos(input) {
+    const list = document.getElementById('photo-preview-list');
+    list.innerHTML = '';
+    Array.from(input.files).forEach(file => {
+      const reader = new FileReader();
+      reader.onload = e => {
+        const img = document.createElement('img');
+        img.src = e.target.result;
+        img.style.cssText = 'width:80px;height:80px;object-fit:cover;border-radius:6px;border:1px solid var(--gray2)';
+        list.appendChild(img);
+      };
+      reader.readAsDataURL(file);
+    });
   }
 
   async function submitTicket() {
@@ -6649,7 +6653,7 @@ const firebaseConfig = {
     const description = document.getElementById('nt-description').value.trim();
     const assignedEmail = '';
     const assignedName  = '';
-    const photoFile   = document.getElementById('nt-photo').files[0];
+    const photoFiles  = Array.from(document.getElementById('nt-photo').files);
 
     hideEl('nt-error');
     if (!category) { showEl('nt-error'); document.getElementById('nt-error').textContent = 'Please select a category.'; return; }
@@ -6660,11 +6664,12 @@ const firebaseConfig = {
     btn.textContent = 'Submitting…';
 
     try {
-      let photoURL = '';
-      if (photoFile) {
+      const photoURLs = [];
+      for (const photoFile of photoFiles) {
         const storageRef = ref(storage, `ticket-photos/${Date.now()}_${photoFile.name}`);
         await uploadBytes(storageRef, photoFile);
-        photoURL = await getDownloadURL(storageRef);
+        const url = await getDownloadURL(storageRef);
+        photoURLs.push(url);
       }
 
       const ticketData = {
@@ -6675,7 +6680,8 @@ const firebaseConfig = {
         description,
         assignedToEmail: assignedEmail,
         assignedToName:  assignedName,
-        photoURL,
+        photoURL:  photoURLs[0] || '',
+        photoURLs,
         status:          'New',
         submittedBy:     currentUser.displayName || currentUser.email,
         submittedByEmail: currentUser.email,
@@ -6817,7 +6823,7 @@ const firebaseConfig = {
         }).join('');
 
     body.innerHTML = `
-      ${t.photoURL ? `<img class="ticket-photo" src="${t.photoURL}" alt="Ticket photo" />` : ''}
+      ${(t.photoURLs && t.photoURLs.length ? t.photoURLs : (t.photoURL ? [t.photoURL] : [])).map(url => `<img class="ticket-photo" src="${url}" alt="Ticket photo" style="margin-right:8px;margin-bottom:8px" />`).join('')}
       <div class="ticket-detail-grid">
         <div class="detail-item"><label>Category</label>
           <p><span class="badge ${t.category === 'IT Issues' ? 'badge-cat-it' : 'badge-cat-maint'}">${escHtml(t.category)}</span></p></div>

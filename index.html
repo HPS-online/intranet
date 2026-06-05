@@ -549,10 +549,12 @@
 
     .stat-card:hover { transform: translateY(-2px); box-shadow: 0 6px 24px rgba(36,43,99,0.14); }
 
-    .stat-card.maint  { border-color: var(--gold); }
-    .stat-card.it     { border-color: var(--navy2); }
-    .stat-card.open   { border-color: var(--orange); }
+    .stat-card.maint  { border-color: var(--navy); }
+    .stat-card.it     { border-color: var(--navy); }
+    .stat-card.open   { border-color: var(--gold); }
+    .stat-card.open   .stat-number { color: var(--gold); }
     .stat-card.closed { border-color: var(--green); }
+    .stat-card.closed .stat-number { color: var(--green); }
 
     .stat-number {
       font-family: 'Montserrat', sans-serif;
@@ -2902,12 +2904,12 @@
 
       <!-- Stats strip -->
       <div class="stats-grid" id="stats-grid" style="margin-bottom:20px">
-        <div class="stat-card"><div class="stat-number" id="stat-total">—</div><div class="stat-label">Total Tickets</div></div>
         <div class="stat-card open"><div class="stat-number" id="stat-open">—</div><div class="stat-label">Open / Active</div></div>
         <div class="stat-card maint"><div class="stat-number" id="stat-maint">—</div><div class="stat-label">Maintenance</div></div>
         <div class="stat-card it"><div class="stat-number" id="stat-it">—</div><div class="stat-label">IT Issues</div></div>
-        <div class="stat-card" style="border-top-color:#f59e0b"><div class="stat-number" id="stat-whs" style="color:#f59e0b">—</div><div class="stat-label">WHS</div></div>
+        <div class="stat-card"><div class="stat-number" id="stat-whs">—</div><div class="stat-label">WHS</div></div>
         <div class="stat-card closed"><div class="stat-number" id="stat-closed">—</div><div class="stat-label">Resolved/Closed</div></div>
+        <div class="stat-card"><div class="stat-number" id="stat-total">—</div><div class="stat-label">Total Tickets</div></div>
       </div>
 
       <!-- Tabs: All Tickets | Reports -->

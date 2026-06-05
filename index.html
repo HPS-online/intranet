@@ -1938,6 +1938,10 @@
           var note2 = f['l4_'+dayKey+'_note'] && f['l4_'+dayKey+'_note'].stringValue ? ' ('+f['l4_'+dayKey+'_note'].stringValue+')' : '';
           entries.push('Lesson 4: ' + f['l4_'+dayKey].stringValue + note2);
         }
+        if (f['other_'+dayKey] && f['other_'+dayKey].stringValue) {
+          var note3 = f['other_'+dayKey+'_note'] && f['other_'+dayKey+'_note'].stringValue ? ' ('+f['other_'+dayKey+'_note'].stringValue+')' : '';
+          entries.push('Other: ' + f['other_'+dayKey].stringValue + note3);
+        }
         if (!entries.length) return;
         var wrap = document.getElementById('k-ensembles-wrap');
         var list = document.getElementById('k-ensembles');
@@ -4200,7 +4204,7 @@
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
           <div>
             <div style="font-size:14px;font-weight:800;color:var(--navy);text-transform:uppercase;letter-spacing:0.3px">🎵 Music Ensembles Timetable</div>
-            <div style="font-size:12px;color:var(--subtext);margin-top:3px">Before School (7:50am) and Lesson 4 (11:50am) — shown on home page, daybook, TRT, and kiosk</div>
+            <div style="font-size:12px;color:var(--subtext);margin-top:3px">Before School (7:50am), Lesson 4 (11:50am), and Other — shown on home page, daybook, TRT, and kiosk</div>
           </div>
           <button class="btn btn-gold" style="flex-shrink:0" onclick="ensemblesConfigSave()">💾 Save</button>
         </div>
@@ -4234,12 +4238,27 @@
           <input type="text" id="ens-l4-thu" class="form-input" style="font-size:12px;padding:6px 8px" placeholder="—">
           <input type="text" id="ens-l4-fri" class="form-input" style="font-size:12px;padding:6px 8px" placeholder="—">
         </div>
-        <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px">
+        <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:12px">
           <input type="text" id="ens-l4-mon-note" class="form-input" style="font-size:11px;padding:4px 8px;color:var(--subtext)" placeholder="note…">
           <input type="text" id="ens-l4-tue-note" class="form-input" style="font-size:11px;padding:4px 8px;color:var(--subtext)" placeholder="note…">
           <input type="text" id="ens-l4-wed-note" class="form-input" style="font-size:11px;padding:4px 8px;color:var(--subtext)" placeholder="note…">
           <input type="text" id="ens-l4-thu-note" class="form-input" style="font-size:11px;padding:4px 8px;color:var(--subtext)" placeholder="note…">
           <input type="text" id="ens-l4-fri-note" class="form-input" style="font-size:11px;padding:4px 8px;color:var(--subtext)" placeholder="note…">
+        </div>
+        <div style="font-size:11px;font-weight:600;color:var(--navy);margin-bottom:4px">Other</div>
+        <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:4px">
+          <input type="text" id="ens-other-mon" class="form-input" style="font-size:12px;padding:6px 8px" placeholder="—">
+          <input type="text" id="ens-other-tue" class="form-input" style="font-size:12px;padding:6px 8px" placeholder="—">
+          <input type="text" id="ens-other-wed" class="form-input" style="font-size:12px;padding:6px 8px" placeholder="—">
+          <input type="text" id="ens-other-thu" class="form-input" style="font-size:12px;padding:6px 8px" placeholder="—">
+          <input type="text" id="ens-other-fri" class="form-input" style="font-size:12px;padding:6px 8px" placeholder="—">
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px">
+          <input type="text" id="ens-other-mon-note" class="form-input" style="font-size:11px;padding:4px 8px;color:var(--subtext)" placeholder="note…">
+          <input type="text" id="ens-other-tue-note" class="form-input" style="font-size:11px;padding:4px 8px;color:var(--subtext)" placeholder="note…">
+          <input type="text" id="ens-other-wed-note" class="form-input" style="font-size:11px;padding:4px 8px;color:var(--subtext)" placeholder="note…">
+          <input type="text" id="ens-other-thu-note" class="form-input" style="font-size:11px;padding:4px 8px;color:var(--subtext)" placeholder="note…">
+          <input type="text" id="ens-other-fri-note" class="form-input" style="font-size:11px;padding:4px 8px;color:var(--subtext)" placeholder="note…">
         </div>
         <div id="ensembles-config-msg" style="display:none;font-size:13px;font-weight:600;color:var(--green);margin-top:10px">✅ Saved!</div>
       </div>
@@ -7310,7 +7329,7 @@ const firebaseConfig = {
 
   // ── MUSIC ENSEMBLES CONFIG ────────────────────────────────
   const ENS_DAYS  = ['mon','tue','wed','thu','fri'];
-  const ENS_SLOTS = ['before','l4'];
+  const ENS_SLOTS = ['before','l4','other'];
 
   async function ensemblesConfigLoad() {
     try {
@@ -7367,6 +7386,11 @@ const firebaseConfig = {
         slot: 'Lesson 4 (11:50am)',
         name: d[`l4_${dayKey}`],
         note: d[`l4_${dayKey}_note`] || ''
+      });
+      if (d[`other_${dayKey}`]) ensembles.push({
+        slot: 'Other',
+        name: d[`other_${dayKey}`],
+        note: d[`other_${dayKey}_note`] || ''
       });
 
       const renderItem = e =>

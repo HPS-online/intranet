@@ -2601,6 +2601,7 @@
         <button class="tt-tab" onclick="ttShowPane('specialist')">📚 Specialist Timetable</button>
         <button class="tt-tab" onclick="ttShowPane('site')">📋 Site Timetables</button>
         <button class="tt-tab" onclick="ttShowPane('individual')">👤 Individual Timetables</button>
+        <button class="tt-tab" onclick="ttShowPane('inclement')">🌧️ Inclement Weather</button>
       </div>
 
       <!-- YARD DUTY PANE -->
@@ -2833,6 +2834,51 @@
         </div>
         <div id="tt-individual-list" class="tt-person-grid">
           <div class="spinner"></div>
+        </div>
+      </div>
+
+    <!-- INCLEMENT WEATHER PANE -->
+      <div id="tt-inclement" class="tt-pane">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:8px">
+          <div>
+            <div style="font-size:16px;font-weight:700;color:var(--navy)">🌧️ Inclement Weather Buddies — 2026</div>
+            <div style="font-size:13px;color:var(--subtext);margin-top:2px">Room allocations and buddy assignments for wet weather days</div>
+          </div>
+          <button id="tt-inclement-edit-btn" class="btn btn-gold" onclick="inclementToggleEdit()" style="display:none">✏️ Edit</button>
+        </div>
+
+        <!-- View mode -->
+        <div id="tt-inclement-view">
+          <table style="width:100%;border-collapse:collapse;font-size:13px">
+            <thead>
+              <tr style="background:var(--navy);color:#fff">
+                <th style="padding:10px 14px;text-align:left;font-weight:600;width:25%">Room</th>
+                <th style="padding:10px 14px;text-align:left;font-weight:600;width:37%">Staff</th>
+                <th style="padding:10px 14px;text-align:left;font-weight:600">Buddy</th>
+              </tr>
+            </thead>
+            <tbody id="tt-inclement-tbody"></tbody>
+          </table>
+        </div>
+
+        <!-- Edit mode -->
+        <div id="tt-inclement-edit" style="display:none">
+          <table style="width:100%;border-collapse:collapse;font-size:13px;margin-bottom:12px">
+            <thead>
+              <tr style="background:var(--navy);color:#fff">
+                <th style="padding:10px 14px;text-align:left;font-weight:600;width:25%">Room</th>
+                <th style="padding:10px 14px;text-align:left;font-weight:600;width:37%">Staff</th>
+                <th style="padding:10px 14px;text-align:left;font-weight:600">Buddy</th>
+                <th style="padding:10px 14px;width:40px"></th>
+              </tr>
+            </thead>
+            <tbody id="tt-inclement-edit-tbody"></tbody>
+          </table>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button class="btn btn-gold" onclick="inclementSave()">💾 Save</button>
+            <button class="btn btn-outline" onclick="inclementAddRow()">+ Add Row</button>
+            <button class="btn btn-outline" onclick="inclementCancelEdit()">Cancel</button>
+          </div>
         </div>
       </div>
 
@@ -4972,17 +5018,131 @@ const firebaseConfig = {
       if (pane === 'specialist'  && txt.includes('spec'))       t.classList.add('active');
       if (pane === 'site'        && txt.includes('site'))       t.classList.add('active');
       if (pane === 'individual'  && txt.includes('individual')) t.classList.add('active');
+      if (pane === 'inclement'   && txt.includes('inclement'))  t.classList.add('active');
     });
     if (pane === 'specialist') tagSpecCols();
     if (pane === 'site')       ttLoadSite();
     if (pane === 'individual') ttLoadIndividual();
+    if (pane === 'inclement')  inclementLoad();
     const addSiteBtn   = document.getElementById('tt-add-site-btn');
     const addPersonBtn = document.getElementById('tt-add-person-btn');
+    const editBtn      = document.getElementById('tt-inclement-edit-btn');
     if (addSiteBtn)   addSiteBtn.style.display   = pane === 'site'       ? '' : 'none';
     if (addPersonBtn) addPersonBtn.style.display  = pane === 'individual' ? '' : 'none';
+    if (editBtn)      editBtn.style.display       = (pane === 'inclement' && currentIsAdmin) ? '' : 'none';
   };
   window.highlightDuties    = highlightDuties;
   window.highlightSpec      = highlightSpec;
+
+  // ── INCLEMENT WEATHER ────────────────────────────────────
+  const INCLEMENT_DEFAULT = [
+    ['Room 1','Katherine','Lauren'],
+    ['Room 2','Nicole','Beck'],
+    ['Room 3','Beck','Nicole'],
+    ['Room 4','Karine/Stephanie (Th/F)','Norma (M-T)/Emily (W-F)'],
+    ['Room 5','Eleanor','Dani (M-T)/Katy (W-F)'],
+    ['Room 6','Megan K','Leadership'],
+    ['Room 7','Sharon','Leadership'],
+    ['Room 8','Carolyne/Sim (F)','Leadership'],
+    ['Room 9','Laura','TBA for term 3/4'],
+    ['Room 10','Lauren','Katherine'],
+    ['Room 12','Kristel','Kirrabelle'],
+    ['Room 13','Dani (M-T)/Katy (W-F)','Eleanor'],
+    ['Room 14','Callie','Jess (M-W)/Mike (Th-F)'],
+    ['Room 15','Jess (M-W)/Mike (Th-F)','Callie'],
+    ['Room 16','Tamika','Sam'],
+    ['Room 17','Sam','Tamika'],
+    ['Room 18','Adele/Negin (F)','Kristel'],
+    ['Room 19','Tahya','Adele/Negin (F)'],
+    ['Room 20','Tonya','Arthur'],
+    ['Room 21','Arthur','Tonya'],
+    ['Room 23','Nikki','Kerry'],
+    ['Room 24','Mel/Keely (W)','Leadership / Keely (W)'],
+    ['Room 25','Gabby/Keely (Th)','Hannah/Keely (T)'],
+    ['Room 26','Hannah/Keely (T)','Gabby/Keely (Th)'],
+    ['PE','Kerry','Room 23 - Nikki'],
+    ['Music','Kirrabelle','Room 12 - Kristel'],
+    ['Auslan/Chinese','Norma (M-T)/Emily (W-F)','Room 4 – Karine/Stephanie (F)'],
+    ['AIT','Laura M (Th)','As needed'],
+    ['Principal','Belinda','Room 24 – Keely (M/Th) / Room 12 – Kristel (W)'],
+    ['DP','Daniel','Rooms 8 & 9'],
+    ['AP','Sara','Rooms 6 & 7'],
+    ['DU','Keely','Room 24 – Keely (T/W/F)'],
+  ];
+
+  let _inclementData = null;
+
+  async function inclementLoad() {
+    try {
+      const snap = await getDoc(doc(db, 'inclement_weather', 'buddies'));
+      _inclementData = snap.exists() ? snap.data().rows : INCLEMENT_DEFAULT;
+    } catch(e) {
+      _inclementData = INCLEMENT_DEFAULT;
+    }
+    inclementRender();
+  }
+
+  function inclementRender() {
+    const tbody = document.getElementById('tt-inclement-tbody');
+    if (!tbody || !_inclementData) return;
+    tbody.innerHTML = _inclementData.map((row, i) => `
+      <tr style="background:${i%2===0?'#fff':'var(--gray1)'}">
+        <td style="padding:8px 14px;border-bottom:1px solid var(--gray2);font-weight:600;color:var(--navy)">${escHtml(row[0]||'')}</td>
+        <td style="padding:8px 14px;border-bottom:1px solid var(--gray2)">${escHtml(row[1]||'')}</td>
+        <td style="padding:8px 14px;border-bottom:1px solid var(--gray2);color:var(--subtext)">${escHtml(row[2]||'')}</td>
+      </tr>`).join('');
+  }
+
+  function inclementToggleEdit() {
+    const view = document.getElementById('tt-inclement-view');
+    const edit = document.getElementById('tt-inclement-edit');
+    const btn  = document.getElementById('tt-inclement-edit-btn');
+    view.style.display = 'none';
+    edit.style.display = '';
+    btn.style.display  = 'none';
+    // Populate edit table
+    const tbody = document.getElementById('tt-inclement-edit-tbody');
+    tbody.innerHTML = '';
+    (_inclementData || INCLEMENT_DEFAULT).forEach(row => inclementAddRow(row));
+  }
+
+  function inclementAddRow(row) {
+    row = row || ['','',''];
+    const tbody = document.getElementById('tt-inclement-edit-tbody');
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td style="padding:4px;border-bottom:1px solid var(--gray2)"><input class="form-input" style="font-size:12px;padding:5px 8px;width:100%" value="${escHtml(row[0]||'')}"></td>
+      <td style="padding:4px;border-bottom:1px solid var(--gray2)"><input class="form-input" style="font-size:12px;padding:5px 8px;width:100%" value="${escHtml(row[1]||'')}"></td>
+      <td style="padding:4px;border-bottom:1px solid var(--gray2)"><input class="form-input" style="font-size:12px;padding:5px 8px;width:100%" value="${escHtml(row[2]||'')}"></td>
+      <td style="padding:4px;text-align:center"><button onclick="this.closest('tr').remove()" style="background:none;border:none;cursor:pointer;color:var(--red);font-size:16px">✕</button></td>`;
+    tbody.appendChild(tr);
+  }
+
+  async function inclementSave() {
+    const rows = Array.from(document.querySelectorAll('#tt-inclement-edit-tbody tr')).map(tr => {
+      const inputs = tr.querySelectorAll('input');
+      return [inputs[0].value.trim(), inputs[1].value.trim(), inputs[2].value.trim()];
+    }).filter(r => r[0] || r[1]);
+    try {
+      await setDoc(doc(db, 'inclement_weather', 'buddies'), { rows, updatedAt: serverTimestamp() });
+      _inclementData = rows;
+      inclementRender();
+      inclementCancelEdit();
+      showToast('Inclement weather list saved.', 'success');
+    } catch(e) { showToast('Error saving: ' + e.message, 'error'); }
+  }
+
+  function inclementCancelEdit() {
+    document.getElementById('tt-inclement-view').style.display = '';
+    document.getElementById('tt-inclement-edit').style.display = 'none';
+    document.getElementById('tt-inclement-edit-btn').style.display = currentIsAdmin ? '' : 'none';
+  }
+
+  window.inclementLoad       = inclementLoad;
+  window.inclementToggleEdit = inclementToggleEdit;
+  window.inclementAddRow     = inclementAddRow;
+  window.inclementSave       = inclementSave;
+  window.inclementCancelEdit = inclementCancelEdit;
   window.printTimetable     = printTimetable;
 
   // ── TIMETABLE MANAGER exposures ──
@@ -9656,6 +9816,10 @@ const firebaseConfig = {
   // TIMETABLES
   // ══════════════════════════════════════
   function ttShowPane(pane)            { if (window._ttShowPaneModule)    window._ttShowPaneModule(pane); }
+  function inclementToggleEdit()       { if (window.inclementToggleEdit)  window.inclementToggleEdit(); }
+  function inclementAddRow(row)        { if (window.inclementAddRow)      window.inclementAddRow(row); }
+  function inclementSave()             { if (window.inclementSave)        window.inclementSave(); }
+  function inclementCancelEdit()       { if (window.inclementCancelEdit)  window.inclementCancelEdit(); }
   function ttOpenAddSite()             { if (window.ttOpenAddSite)       window.ttOpenAddSite(); }
   function ttCloseAddSite()            { if (window.ttCloseAddSite)      window.ttCloseAddSite(); }
   function ttSelectType(t)             { if (window.ttSelectType)        window.ttSelectType(t); }

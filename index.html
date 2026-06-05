@@ -9006,9 +9006,26 @@ const firebaseConfig = {
     if (!currentIsAdmin) return;
     try {
       const commentEl = document.getElementById('sug-comment-' + id);
+      const comment = commentEl ? commentEl.value.trim() : '';
       const updates = { completed: done };
-      if (commentEl) updates.adminComment = commentEl.value.trim();
+      if (commentEl) updates.adminComment = comment;
       await updateDoc(doc(db, 'suggestions', id), updates);
+
+      // Send email to submitter when marking complete
+      if (done) {
+        const snap = await getDoc(doc(db, 'suggestions', id));
+        const s = snap.data();
+        if (s && s.byEmail && s.byEmail !== currentUser.email) {
+          const message = 'Hi ' + (s.by || 'there') + ',\n\nYour suggestion has been marked as complete.\n\nYour suggestion: "' + (s.text || '') + '"\n\nAdmin response: ' + (comment || 'No additional comment.') + '\n\nThank you for helping improve the HPS Staff Intranet!';
+          sendEmail({
+            to_email: s.byEmail,
+            to_name:  s.by || s.byEmail,
+            subject:  'Your suggestion has been completed — HPS Staff Intranet',
+            message,
+          });
+        }
+      }
+
       showToast(done ? 'Marked as complete.' : 'Reopened.', 'success');
       await suggestInit();
     } catch(e) { showToast('Error: ' + e.message, 'error'); }

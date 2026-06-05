@@ -2906,6 +2906,7 @@
         <div class="stat-card open"><div class="stat-number" id="stat-open">—</div><div class="stat-label">Open / Active</div></div>
         <div class="stat-card maint"><div class="stat-number" id="stat-maint">—</div><div class="stat-label">Maintenance</div></div>
         <div class="stat-card it"><div class="stat-number" id="stat-it">—</div><div class="stat-label">IT Issues</div></div>
+        <div class="stat-card" style="border-top-color:#f59e0b"><div class="stat-number" id="stat-whs" style="color:#f59e0b">—</div><div class="stat-label">WHS</div></div>
         <div class="stat-card closed"><div class="stat-number" id="stat-closed">—</div><div class="stat-label">Resolved/Closed</div></div>
       </div>
 
@@ -2927,6 +2928,7 @@
           </select>
           <select id="filter-status" onchange="applyFilters()">
             <option value="">All Statuses</option>
+            <option value="open" selected>Open (Active)</option>
             <option value="New">New</option>
             <option value="In Progress">In Progress</option>
             <option value="Resolved">Resolved</option>
@@ -5586,7 +5588,7 @@ const firebaseConfig = {
         (view === 'admin'      && t.includes('admin'))
       ) b.classList.add('active');
     });
-    if (view === 'tickets')  { renderDashboard(); renderAllTickets(allTickets); setupReportDropdowns(); }
+    if (view === 'tickets')  { renderDashboard(); renderAllTickets(allTickets); setupReportDropdowns(); applyFilters(); }
     if (view === 'admin')    { loadAdminUsers(); kioskConfigLoad(); ticketRoutingLoad(); clubsConfigLoad(); nitLoad(); }
     if (view === 'naplan' && !_npInited) { _npInited = true; npInitDashboard(); }
     if (view === 'meetings') meetingsInit();
@@ -6507,12 +6509,14 @@ const firebaseConfig = {
     const closed = allTickets.filter(t => ['Resolved','Closed'].includes(t.status));
     const maint  = allTickets.filter(t => t.category === 'Maintenance & Facilities');
     const it     = allTickets.filter(t => t.category === 'IT Issues');
+    const whs    = allTickets.filter(t => t.category === 'WHS');
 
     const setEl = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
     setEl('stat-total',  allTickets.length);
     setEl('stat-open',   open.length);
     setEl('stat-maint',  maint.length);
     setEl('stat-it',     it.length);
+    setEl('stat-whs',    whs.length);
     setEl('stat-closed', closed.length);
 
     const tbody = document.getElementById('all-ticket-list');
@@ -6592,7 +6596,9 @@ const firebaseConfig = {
         (t.location||'').toLowerCase().includes(search) ||
         (t.assignedToName||'').toLowerCase().includes(search);
       const matchCat  = !category || t.category === category;
-      const matchSt   = !status   || t.status   === status;
+      const matchSt   = !status ? true :
+                        status === 'open' ? !['Resolved','Closed'].includes(t.status) :
+                        t.status === status;
       const matchPri  = !priority || t.priority  === priority;
       return matchSearch && matchCat && matchSt && matchPri;
     });

@@ -2602,6 +2602,7 @@
         <button class="tt-tab" onclick="ttShowPane('site')">📋 Site Timetables</button>
         <button class="tt-tab" onclick="ttShowPane('individual')">👤 Individual Timetables</button>
         <button class="tt-tab" onclick="ttShowPane('inclement')">🌧️ Inclement Weather</button>
+        <button class="tt-tab" onclick="ttShowPane('instrumental')">🎸 Instrumental Music</button>
       </div>
 
       <!-- YARD DUTY PANE -->
@@ -2878,6 +2879,66 @@
             <button class="btn btn-gold" onclick="inclementSave()">💾 Save</button>
             <button class="btn btn-outline" onclick="inclementAddRow()">+ Add Row</button>
             <button class="btn btn-outline" onclick="inclementCancelEdit()">Cancel</button>
+          </div>
+        </div>
+      </div>
+
+    <!-- INSTRUMENTAL MUSIC PANE -->
+      <div id="tt-instrumental" class="tt-pane">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:8px">
+          <div>
+            <div style="font-size:16px;font-weight:700;color:var(--navy)">🎸 Instrumental Music Lessons</div>
+            <div style="font-size:13px;color:var(--subtext);margin-top:2px">External music teachers and their timetables — upload and manage below</div>
+          </div>
+          <button class="btn btn-gold" onclick="instrOpenAdd()">+ Add Entry</button>
+        </div>
+        <div id="tt-instrumental-list"></div>
+      </div>
+
+      <!-- Instrumental Add Modal -->
+      <div id="instr-modal" class="modal-overlay" style="display:none" onclick="if(event.target===this)instrCloseModal()">
+        <div class="modal-box" style="max-width:480px;width:95%">
+          <div class="modal-header">
+            <div style="font-size:16px;font-weight:800" id="instr-modal-title">Add Instrumental Entry</div>
+            <button class="modal-close" onclick="instrCloseModal()">✕</button>
+          </div>
+          <div class="modal-body" style="display:flex;flex-direction:column;gap:14px">
+            <div class="form-group">
+              <label>Day</label>
+              <select id="instr-day" class="form-input">
+                <option value="Monday">Monday</option>
+                <option value="Tuesday">Tuesday</option>
+                <option value="Wednesday">Wednesday</option>
+                <option value="Thursday">Thursday</option>
+                <option value="Friday">Friday</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Instrument / Programme</label>
+              <input type="text" id="instr-instrument" class="form-input" placeholder="e.g. Guitar, Woodwind, Strings…">
+            </div>
+            <div class="form-group">
+              <label>Teacher Name</label>
+              <input type="text" id="instr-teacher" class="form-input" placeholder="e.g. George Dinedios">
+            </div>
+            <div class="form-group">
+              <label>Notes (optional)</label>
+              <input type="text" id="instr-notes" class="form-input" placeholder="e.g. Weeks 3-8 only">
+            </div>
+            <div class="form-group">
+              <label>Timetable Document (optional)</label>
+              <input type="file" id="instr-file" accept=".pdf,.doc,.docx" class="form-input" style="padding:6px">
+            </div>
+            <div id="instr-upload-bar-wrap" style="display:none">
+              <div style="background:var(--gray2);border-radius:4px;height:6px">
+                <div id="instr-upload-bar" style="background:var(--navy);height:6px;border-radius:4px;width:0%;transition:width 0.3s"></div>
+              </div>
+              <div id="instr-upload-label" style="font-size:12px;color:var(--subtext);margin-top:4px">Uploading…</div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-outline" onclick="instrCloseModal()">Cancel</button>
+            <button class="btn btn-gold" onclick="instrSave()" id="instr-save-btn">Save</button>
           </div>
         </div>
       </div>
@@ -5019,11 +5080,13 @@ const firebaseConfig = {
       if (pane === 'site'        && txt.includes('site'))       t.classList.add('active');
       if (pane === 'individual'  && txt.includes('individual')) t.classList.add('active');
       if (pane === 'inclement'   && txt.includes('inclement'))  t.classList.add('active');
+      if (pane === 'instrumental' && txt.includes('instrumental')) t.classList.add('active');
     });
     if (pane === 'specialist') tagSpecCols();
     if (pane === 'site')       ttLoadSite();
     if (pane === 'individual') ttLoadIndividual();
     if (pane === 'inclement')  inclementLoad();
+    if (pane === 'instrumental') instrLoad();
     const addSiteBtn   = document.getElementById('tt-add-site-btn');
     const addPersonBtn = document.getElementById('tt-add-person-btn');
     const editBtn      = document.getElementById('tt-inclement-edit-btn');
@@ -5143,6 +5206,133 @@ const firebaseConfig = {
   window.inclementAddRow     = inclementAddRow;
   window.inclementSave       = inclementSave;
   window.inclementCancelEdit = inclementCancelEdit;
+
+  // ── INSTRUMENTAL MUSIC ───────────────────────────────────
+  const INSTR_DAYS = ['Monday','Tuesday','Wednesday','Thursday','Friday'];
+  let _instrEditId = null;
+
+  async function instrLoad() {
+    const el = document.getElementById('tt-instrumental-list');
+    if (!el) return;
+    el.innerHTML = '<div class="db-empty">Loading…</div>';
+    try {
+      const snap = await getDocs(query(collection(db, 'instrumental_music'), orderBy('day_order','asc'), orderBy('instrument','asc')));
+      const docs = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      if (!docs.length) { el.innerHTML = '<div class="db-empty">No instrumental entries yet. Click + Add Entry to get started.</div>'; return; }
+      // Group by day
+      const grouped = {};
+      INSTR_DAYS.forEach(d => grouped[d] = []);
+      docs.forEach(d => { if (grouped[d.day]) grouped[d.day].push(d); });
+      el.innerHTML = INSTR_DAYS.map(day => {
+        const entries = grouped[day];
+        if (!entries.length) return '';
+        return `<div style="margin-bottom:20px">
+          <div style="font-size:14px;font-weight:800;color:var(--navy);border-bottom:2px solid var(--gold);padding-bottom:4px;margin-bottom:12px">${day}</div>
+          ${entries.map(e => `
+            <div style="background:#fff;border:1px solid var(--gray2);border-radius:8px;padding:12px 16px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+              <div>
+                <div style="font-weight:700;color:var(--navy)">${escHtml(e.instrument||'')} <span style="font-weight:400;color:var(--subtext)">— ${escHtml(e.teacher||'')}</span></div>
+                ${e.notes ? `<div style="font-size:12px;color:var(--subtext);margin-top:2px">${escHtml(e.notes)}</div>` : ''}
+                ${e.fileUrl ? `<a href="${escHtml(e.fileUrl)}" target="_blank" class="db-attach-chip" style="margin-top:6px;display:inline-flex"><span class="attach-icon">📄</span><span class="attach-label">${escHtml(e.fileName||'View Document')}</span></a>` : ''}
+              </div>
+              <div style="display:flex;gap:6px;flex-shrink:0">
+                <button class="btn btn-sm btn-outline" onclick="instrEdit('${e.id}')">✏️</button>
+                <button class="btn btn-sm" style="background:var(--red-light,#fee2e2);color:var(--red);border:none" onclick="instrDelete('${e.id}')">🗑</button>
+              </div>
+            </div>`).join('')}
+        </div>`;
+      }).join('');
+    } catch(e) { el.innerHTML = `<div class="db-empty">Error loading: ${e.message}</div>`; }
+  }
+
+  function instrOpenAdd() {
+    _instrEditId = null;
+    document.getElementById('instr-modal-title').textContent = 'Add Instrumental Entry';
+    document.getElementById('instr-day').value = 'Monday';
+    document.getElementById('instr-instrument').value = '';
+    document.getElementById('instr-teacher').value = '';
+    document.getElementById('instr-notes').value = '';
+    document.getElementById('instr-file').value = '';
+    document.getElementById('instr-upload-bar-wrap').style.display = 'none';
+    openModal('instr-modal');
+  }
+
+  async function instrEdit(id) {
+    try {
+      const snap = await getDoc(doc(db, 'instrumental_music', id));
+      if (!snap.exists()) return;
+      const d = snap.data();
+      _instrEditId = id;
+      document.getElementById('instr-modal-title').textContent = 'Edit Instrumental Entry';
+      document.getElementById('instr-day').value        = d.day || 'Monday';
+      document.getElementById('instr-instrument').value = d.instrument || '';
+      document.getElementById('instr-teacher').value    = d.teacher || '';
+      document.getElementById('instr-notes').value      = d.notes || '';
+      document.getElementById('instr-file').value       = '';
+      document.getElementById('instr-upload-bar-wrap').style.display = 'none';
+      openModal('instr-modal');
+    } catch(e) { showToast('Error loading entry.', 'error'); }
+  }
+
+  async function instrSave() {
+    const day        = document.getElementById('instr-day').value;
+    const instrument = document.getElementById('instr-instrument').value.trim();
+    const teacher    = document.getElementById('instr-teacher').value.trim();
+    const notes      = document.getElementById('instr-notes').value.trim();
+    const file       = document.getElementById('instr-file').files[0];
+    if (!instrument) { showToast('Please enter an instrument or programme name.', 'error'); return; }
+    const btn = document.getElementById('instr-save-btn');
+    btn.disabled = true; btn.textContent = 'Saving…';
+    try {
+      let fileUrl = '', fileName = '';
+      if (file) {
+        document.getElementById('instr-upload-bar-wrap').style.display = '';
+        const bar = document.getElementById('instr-upload-bar');
+        bar.style.width = '30%';
+        const sRef = ref(storage, `instrumental/${Date.now()}_${file.name}`);
+        await uploadBytes(sRef, file);
+        bar.style.width = '80%';
+        fileUrl  = await getDownloadURL(sRef);
+        fileName = file.name;
+        bar.style.width = '100%';
+      }
+      const data = {
+        day, instrument, teacher, notes,
+        day_order: INSTR_DAYS.indexOf(day),
+        updatedAt: serverTimestamp(),
+        updatedBy: currentUser?.displayName || currentUser?.email || ''
+      };
+      if (fileUrl) { data.fileUrl = fileUrl; data.fileName = fileName; }
+      if (_instrEditId) {
+        await updateDoc(doc(db, 'instrumental_music', _instrEditId), data);
+      } else {
+        data.createdAt = serverTimestamp();
+        await addDoc(collection(db, 'instrumental_music'), data);
+      }
+      instrCloseModal();
+      await instrLoad();
+      showToast('Saved successfully.', 'success');
+    } catch(e) { showToast('Error saving: ' + e.message, 'error'); }
+    finally { btn.disabled = false; btn.textContent = 'Save'; }
+  }
+
+  async function instrDelete(id) {
+    if (!confirm('Delete this entry?')) return;
+    try {
+      await deleteDoc(doc(db, 'instrumental_music', id));
+      await instrLoad();
+      showToast('Entry deleted.', 'success');
+    } catch(e) { showToast('Error deleting.', 'error'); }
+  }
+
+  function instrCloseModal() { closeModal('instr-modal'); }
+
+  window.instrLoad       = instrLoad;
+  window.instrOpenAdd    = instrOpenAdd;
+  window.instrEdit       = instrEdit;
+  window.instrSave       = instrSave;
+  window.instrDelete     = instrDelete;
+  window.instrCloseModal = instrCloseModal;
   window.printTimetable     = printTimetable;
 
   // ── TIMETABLE MANAGER exposures ──
@@ -9820,6 +10010,11 @@ const firebaseConfig = {
   function inclementAddRow(row)        { if (window.inclementAddRow)      window.inclementAddRow(row); }
   function inclementSave()             { if (window.inclementSave)        window.inclementSave(); }
   function inclementCancelEdit()       { if (window.inclementCancelEdit)  window.inclementCancelEdit(); }
+  function instrOpenAdd()              { if (window.instrOpenAdd)         window.instrOpenAdd(); }
+  function instrEdit(id)               { if (window.instrEdit)            window.instrEdit(id); }
+  function instrSave()                 { if (window.instrSave)            window.instrSave(); }
+  function instrDelete(id)             { if (window.instrDelete)          window.instrDelete(id); }
+  function instrCloseModal()           { if (window.instrCloseModal)      window.instrCloseModal(); }
   function ttOpenAddSite()             { if (window.ttOpenAddSite)       window.ttOpenAddSite(); }
   function ttCloseAddSite()            { if (window.ttCloseAddSite)      window.ttCloseAddSite(); }
   function ttSelectType(t)             { if (window.ttSelectType)        window.ttSelectType(t); }

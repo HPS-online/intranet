@@ -6226,6 +6226,10 @@ const firebaseConfig = {
       loadTodaysEnsembles();
     }
     if (view === 'home') renderHomeView();
+    // GA4 module tracking
+    if (typeof gtag === 'function') {
+      gtag('event', 'module_view', { module_name: view });
+    }
   }
 
   function ticketsShowTab(tab) {

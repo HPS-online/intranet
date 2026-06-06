@@ -753,7 +753,13 @@
       box-shadow: var(--shadow-lg);
     }
 
-    .modal-header {
+    .hub-emoji-btn {
+      width: 36px; height: 36px; font-size: 18px; border: 1px solid var(--gray2);
+      border-radius: 6px; background: var(--gray1); cursor: pointer; display: flex;
+      align-items: center; justify-content: center; transition: background 0.1s;
+    }
+    .hub-emoji-btn:hover { background: var(--gray2); }
+    .hub-emoji-btn.selected { border-color: var(--navy); background: rgba(36,43,99,0.1); }
       padding: 24px 28px 20px;
       border-bottom: 1px solid var(--gray2);
       display: flex;
@@ -4448,7 +4454,6 @@
           <p>School information, resources, and links — managed by staff</p>
         </div>
         <div style="display:flex;gap:8px;flex-wrap:wrap">
-          <button class="btn btn-outline" onclick="showView('documents')" style="font-size:13px">📁 Document Library</button>
           <button id="hub-add-section-btn" class="btn btn-gold" onclick="hubOpenAddSection()" style="display:none">+ Add Section</button>
         </div>
       </div>
@@ -4464,7 +4469,7 @@
     <div id="hub-section-modal" class="modal-overlay" onclick="if(event.target===this)hubCloseSectionModal()">
       <div class="modal-box" style="max-width:440px;width:95%">
         <div class="modal-header">
-          <div style="font-size:16px;font-weight:800" id="hub-section-modal-title">Add Section</div>
+          <div style="font-size:16px;font-weight:800;color:#fff" id="hub-section-modal-title">Add Section</div>
           <button class="modal-close" onclick="hubCloseSectionModal()">✕</button>
         </div>
         <div class="modal-body" style="display:flex;flex-direction:column;gap:12px">
@@ -4474,7 +4479,40 @@
           </div>
           <div class="form-group">
             <label>Icon (emoji)</label>
-            <input type="text" id="hub-section-icon" class="form-input" placeholder="e.g. 📋 🎓 🎉" style="font-size:20px">
+            <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px">
+              <button type="button" onclick="hubPickEmoji('📋')" class="hub-emoji-btn">📋</button>
+              <button type="button" onclick="hubPickEmoji('📚')" class="hub-emoji-btn">📚</button>
+              <button type="button" onclick="hubPickEmoji('🎓')" class="hub-emoji-btn">🎓</button>
+              <button type="button" onclick="hubPickEmoji('🎉')" class="hub-emoji-btn">🎉</button>
+              <button type="button" onclick="hubPickEmoji('🏫')" class="hub-emoji-btn">🏫</button>
+              <button type="button" onclick="hubPickEmoji('📄')" class="hub-emoji-btn">📄</button>
+              <button type="button" onclick="hubPickEmoji('🔗')" class="hub-emoji-btn">🔗</button>
+              <button type="button" onclick="hubPickEmoji('👥')" class="hub-emoji-btn">👥</button>
+              <button type="button" onclick="hubPickEmoji('🎯')" class="hub-emoji-btn">🎯</button>
+              <button type="button" onclick="hubPickEmoji('🌱')" class="hub-emoji-btn">🌱</button>
+              <button type="button" onclick="hubPickEmoji('💡')" class="hub-emoji-btn">💡</button>
+              <button type="button" onclick="hubPickEmoji('🏆')" class="hub-emoji-btn">🏆</button>
+              <button type="button" onclick="hubPickEmoji('🎸')" class="hub-emoji-btn">🎸</button>
+              <button type="button" onclick="hubPickEmoji('⚽')" class="hub-emoji-btn">⚽</button>
+              <button type="button" onclick="hubPickEmoji('🎨')" class="hub-emoji-btn">🎨</button>
+              <button type="button" onclick="hubPickEmoji('📊')" class="hub-emoji-btn">📊</button>
+              <button type="button" onclick="hubPickEmoji('🔔')" class="hub-emoji-btn">🔔</button>
+              <button type="button" onclick="hubPickEmoji('✅')" class="hub-emoji-btn">✅</button>
+              <button type="button" onclick="hubPickEmoji('📅')" class="hub-emoji-btn">📅</button>
+              <button type="button" onclick="hubPickEmoji('🏃')" class="hub-emoji-btn">🏃</button>
+              <button type="button" onclick="hubPickEmoji('🌧️')" class="hub-emoji-btn">🌧️</button>
+              <button type="button" onclick="hubPickEmoji('🤝')" class="hub-emoji-btn">🤝</button>
+              <button type="button" onclick="hubPickEmoji('💬')" class="hub-emoji-btn">💬</button>
+              <button type="button" onclick="hubPickEmoji('🧠')" class="hub-emoji-btn">🧠</button>
+              <button type="button" onclick="hubPickEmoji('🏠')" class="hub-emoji-btn">🏠</button>
+              <button type="button" onclick="hubPickEmoji('📝')" class="hub-emoji-btn">📝</button>
+              <button type="button" onclick="hubPickEmoji('🎵')" class="hub-emoji-btn">🎵</button>
+              <button type="button" onclick="hubPickEmoji('🌟')" class="hub-emoji-btn">🌟</button>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px">
+              <div id="hub-emoji-preview" style="font-size:28px;width:40px;text-align:center">📋</div>
+              <input type="text" id="hub-section-icon" class="form-input" placeholder="Or type any emoji…" style="font-size:18px" oninput="document.getElementById('hub-emoji-preview').textContent=this.value||'📋'">
+            </div>
           </div>
         </div>
         <div class="modal-footer">
@@ -4488,7 +4526,7 @@
     <div id="hub-sub-modal" class="modal-overlay" onclick="if(event.target===this)hubCloseSubModal()">
       <div class="modal-box" style="max-width:440px;width:95%">
         <div class="modal-header">
-          <div style="font-size:16px;font-weight:800" id="hub-sub-modal-title">Add Subsection</div>
+          <div style="font-size:16px;font-weight:800;color:#fff" id="hub-sub-modal-title">Add Subsection</div>
           <button class="modal-close" onclick="hubCloseSubModal()">✕</button>
         </div>
         <div class="modal-body">
@@ -4508,7 +4546,7 @@
     <div id="hub-item-modal" class="modal-overlay" onclick="if(event.target===this)hubCloseItemModal()">
       <div class="modal-box" style="max-width:480px;width:95%">
         <div class="modal-header">
-          <div style="font-size:16px;font-weight:800" id="hub-item-modal-title">Add Item</div>
+          <div style="font-size:16px;font-weight:800;color:#fff" id="hub-item-modal-title">Add Item</div>
           <button class="modal-close" onclick="hubCloseItemModal()">✕</button>
         </div>
         <div class="modal-body" style="display:flex;flex-direction:column;gap:12px">
@@ -9792,7 +9830,14 @@ const firebaseConfig = {
 
   function hubCloseItemModal() { closeModal('hub-item-modal'); }
 
-  window.hubInit             = hubInit;
+  function hubPickEmoji(emoji) {
+    document.getElementById('hub-section-icon').value = emoji;
+    document.getElementById('hub-emoji-preview').textContent = emoji;
+    document.querySelectorAll('.hub-emoji-btn').forEach(b => {
+      b.classList.toggle('selected', b.textContent.trim() === emoji);
+    });
+  }
+  window.hubPickEmoji = hubPickEmoji;
   window.hubOpenAddSection   = hubOpenAddSection;
   window.hubEditSection      = hubEditSection;
   window.hubSaveSection      = hubSaveSection;
@@ -10426,6 +10471,7 @@ const firebaseConfig = {
   function instrSave()                 { if (window.instrSave)            window.instrSave(); }
   function instrDelete(id)             { if (window.instrDelete)          window.instrDelete(id); }
   function instrCloseModal()           { if (window.instrCloseModal)      window.instrCloseModal(); }
+  function hubPickEmoji(e)             { if (window.hubPickEmoji)         window.hubPickEmoji(e); }
   function hubOpenAddSection()         { if (window.hubOpenAddSection)    window.hubOpenAddSection(); }
   function hubEditSection(id)          { if (window.hubEditSection)       window.hubEditSection(id); }
   function hubSaveSection()            { if (window.hubSaveSection)       window.hubSaveSection(); }

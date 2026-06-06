@@ -2296,7 +2296,7 @@
     <button class="nav-btn" onclick="showView('timetables');closeMobileNav()" style="display:block;width:100%;text-align:left;padding:14px 20px;border-radius:0;font-size:14px">📆 Timetables</button>
     <button class="nav-btn" onclick="showView('tickets');closeMobileNav()" style="display:block;width:100%;text-align:left;padding:14px 20px;border-radius:0;font-size:14px">🎫 Lodge a Ticket</button>
     <button class="nav-btn" onclick="showView('meetings');closeMobileNav()" style="display:block;width:100%;text-align:left;padding:14px 20px;border-radius:0;font-size:14px">📝 Meetings</button>
-    <button class="nav-btn" onclick="showView('documents');closeMobileNav()" style="display:block;width:100%;text-align:left;padding:14px 20px;border-radius:0;font-size:14px">📁 Documents</button>
+    <button class="nav-btn" onclick="showView('hub');closeMobileNav()" style="display:block;width:100%;text-align:left;padding:14px 20px;border-radius:0;font-size:14px">🏫 Highbury Hub</button>
     <button class="nav-btn" onclick="showView('suggest');closeMobileNav()" style="display:block;width:100%;text-align:left;padding:14px 20px;border-radius:0;font-size:14px">💡 Suggest an Edit</button>
     <button class="nav-btn admin-only" id="mobile-nav-admin" onclick="showView('admin');closeMobileNav()" style="display:none;width:100%;text-align:left;padding:14px 20px;border-radius:0;font-size:14px;color:#f5ac1c">⚙️ Admin</button>
     <div style="margin-top:auto;padding:16px 20px;border-top:1px solid rgba(255,255,255,0.1)">
@@ -2322,7 +2322,7 @@
         <button class="nav-btn" onclick="showView('timetables')">Timetables</button>
         <button class="nav-btn" onclick="showView('tickets')">Lodge a Ticket</button>
         <button class="nav-btn" onclick="showView('meetings')">Meetings</button>
-        <button class="nav-btn" onclick="showView('documents')">Documents</button>
+        <button class="nav-btn" onclick="showView('hub')">Highbury Hub</button>
         <button class="nav-btn" onclick="showView('suggest')">Suggest an Edit</button>
         <button class="nav-btn admin-only" id="nav-admin" onclick="showView('admin')" style="display:none;color:#f5ac1c;border:1px solid rgba(245,172,28,0.35)">Admin</button>
       </nav>
@@ -4440,6 +4440,115 @@
       </div>
     </div>
 
+    <!-- ── HIGHBURY HUB VIEW ── -->
+    <div id="view-hub" class="view">
+      <div class="page-header" style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px">
+        <div>
+          <h2>Highbury Hub</h2>
+          <p>School information, resources, and links — managed by staff</p>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn btn-outline" onclick="showView('documents')" style="font-size:13px">📁 Document Library</button>
+          <button id="hub-add-section-btn" class="btn btn-gold" onclick="hubOpenAddSection()" style="display:none">+ Add Section</button>
+        </div>
+      </div>
+      <div id="hub-sections-list" style="display:flex;flex-direction:column;gap:10px">
+        <div class="db-empty">Loading…</div>
+      </div>
+      <div id="hub-staff-note" style="display:none;margin-top:16px;font-size:13px;color:var(--subtext);text-align:center">
+        To request changes to a section, use <a href="#" onclick="showView('suggest')" style="color:var(--navy)">Suggest an Edit</a>.
+      </div>
+    </div>
+
+    <!-- Hub Add/Edit Section Modal -->
+    <div id="hub-section-modal" class="modal-overlay" onclick="if(event.target===this)hubCloseSectionModal()">
+      <div class="modal-box" style="max-width:440px;width:95%">
+        <div class="modal-header">
+          <div style="font-size:16px;font-weight:800" id="hub-section-modal-title">Add Section</div>
+          <button class="modal-close" onclick="hubCloseSectionModal()">✕</button>
+        </div>
+        <div class="modal-body" style="display:flex;flex-direction:column;gap:12px">
+          <div class="form-group">
+            <label>Section Name</label>
+            <input type="text" id="hub-section-name" class="form-input" placeholder="e.g. Site Processes, Literacy…">
+          </div>
+          <div class="form-group">
+            <label>Icon (emoji)</label>
+            <input type="text" id="hub-section-icon" class="form-input" placeholder="e.g. 📋 🎓 🎉" style="font-size:20px">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-outline" onclick="hubCloseSectionModal()">Cancel</button>
+          <button class="btn btn-gold" onclick="hubSaveSection()">Save</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Hub Add/Edit Subsection Modal -->
+    <div id="hub-sub-modal" class="modal-overlay" onclick="if(event.target===this)hubCloseSubModal()">
+      <div class="modal-box" style="max-width:440px;width:95%">
+        <div class="modal-header">
+          <div style="font-size:16px;font-weight:800" id="hub-sub-modal-title">Add Subsection</div>
+          <button class="modal-close" onclick="hubCloseSubModal()">✕</button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label>Subsection Name</label>
+            <input type="text" id="hub-sub-name" class="form-input" placeholder="e.g. Behaviour, Leave & Admin…">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-outline" onclick="hubCloseSubModal()">Cancel</button>
+          <button class="btn btn-gold" onclick="hubSaveSub()">Save</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Hub Add/Edit Item Modal -->
+    <div id="hub-item-modal" class="modal-overlay" onclick="if(event.target===this)hubCloseItemModal()">
+      <div class="modal-box" style="max-width:480px;width:95%">
+        <div class="modal-header">
+          <div style="font-size:16px;font-weight:800" id="hub-item-modal-title">Add Item</div>
+          <button class="modal-close" onclick="hubCloseItemModal()">✕</button>
+        </div>
+        <div class="modal-body" style="display:flex;flex-direction:column;gap:12px">
+          <div class="form-group">
+            <label>Type</label>
+            <div style="display:flex;gap:8px">
+              <button id="hub-type-link" class="btn btn-sm" onclick="hubSetType('link')" style="background:var(--navy);color:#fff">🔗 Link</button>
+              <button id="hub-type-file" class="btn btn-sm btn-outline" onclick="hubSetType('file')">📄 File</button>
+              <button id="hub-type-note" class="btn btn-sm btn-outline" onclick="hubSetType('note')">📝 Note</button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Label</label>
+            <input type="text" id="hub-item-label" class="form-input" placeholder="e.g. Attendance referral form">
+          </div>
+          <div id="hub-item-url-row" class="form-group">
+            <label>URL</label>
+            <input type="text" id="hub-item-url" class="form-input" placeholder="https://…">
+          </div>
+          <div id="hub-item-file-row" class="form-group" style="display:none">
+            <label>File (PDF, Word)</label>
+            <input type="file" id="hub-item-file" accept=".pdf,.doc,.docx,.png,.jpg" class="form-input" style="padding:6px">
+            <div id="hub-item-upload-bar-wrap" style="display:none;margin-top:6px">
+              <div style="background:var(--gray2);border-radius:4px;height:6px">
+                <div id="hub-item-upload-bar" style="background:var(--navy);height:6px;border-radius:4px;width:0%;transition:width 0.3s"></div>
+              </div>
+            </div>
+          </div>
+          <div id="hub-item-note-row" class="form-group" style="display:none">
+            <label>Note Text</label>
+            <textarea id="hub-item-note" class="form-input" rows="3" placeholder="Enter note or information…"></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-outline" onclick="hubCloseItemModal()">Cancel</button>
+          <button class="btn btn-gold" onclick="hubSaveItem()" id="hub-item-save-btn">Save</button>
+        </div>
+      </div>
+    </div>
+
     <!-- ── DOCUMENTS VIEW ── -->
     <div id="view-documents" class="view">
       <div class="page-header" style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px">
@@ -6057,6 +6166,7 @@ const firebaseConfig = {
         (view === 'naplan'     && t.includes('naplan')) ||
         (view === 'meetings'   && t.includes('meeting')) ||
         (view === 'documents'  && t.includes('document')) ||
+        (view === 'hub'        && t.includes('hub')) ||
         (view === 'suggest'    && t.includes('suggest')) ||
         (view === 'admin'      && t.includes('admin'))
       ) b.classList.add('active');
@@ -6066,6 +6176,7 @@ const firebaseConfig = {
     if (view === 'naplan' && !_npInited) { _npInited = true; npInitDashboard(); }
     if (view === 'meetings') meetingsInit();
     if (view === 'documents') docInit();
+    if (view === 'hub')       hubInit();
     if (view === 'suggest')  suggestInit();
     if (view === 'planner')  plannerLoad();
     if (view === 'daybook') {
@@ -9399,6 +9510,306 @@ const firebaseConfig = {
   window.suggestDelete      = suggestDelete;
 
   // ══════════════════════════════════════
+  // ══════════════════════════════════════
+  // HIGHBURY HUB MODULE
+  // ══════════════════════════════════════
+  let _hubSections    = [];
+  let _hubSubs        = {};
+  let _hubItems       = {};
+  let _hubEditSectionId = null;
+  let _hubEditSubId     = null;
+  let _hubEditItemId    = null;
+  let _hubActiveSubId   = null;
+  let _hubActiveSectionId = null;
+  let _hubItemType      = 'link';
+
+  async function hubInit() {
+    const addBtn = document.getElementById('hub-add-section-btn');
+    if (addBtn) addBtn.style.display = currentIsAdmin ? '' : 'none';
+    const note = document.getElementById('hub-staff-note');
+    if (note) note.style.display = currentIsAdmin ? 'none' : '';
+    await hubLoadAll();
+  }
+
+  async function hubLoadAll() {
+    const el = document.getElementById('hub-sections-list');
+    if (!el) return;
+    el.innerHTML = '<div class="db-empty">Loading…</div>';
+    try {
+      const [secSnap, subSnap, itemSnap] = await Promise.all([
+        getDocs(query(collection(db, 'hub_sections'), orderBy('order','asc'))),
+        getDocs(query(collection(db, 'hub_subsections'), orderBy('order','asc'))),
+        getDocs(collection(db, 'hub_items'))
+      ]);
+      _hubSections = secSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+      _hubSubs = {};
+      subSnap.docs.forEach(d => {
+        const data = { id: d.id, ...d.data() };
+        if (!_hubSubs[data.sectionId]) _hubSubs[data.sectionId] = [];
+        _hubSubs[data.sectionId].push(data);
+      });
+      _hubItems = {};
+      itemSnap.docs.forEach(d => {
+        const data = { id: d.id, ...d.data() };
+        if (!_hubItems[data.subId]) _hubItems[data.subId] = [];
+        _hubItems[data.subId].push(data);
+      });
+      hubRender();
+    } catch(e) { el.innerHTML = `<div class="db-empty">Error loading: ${e.message}</div>`; }
+  }
+
+  function hubRender() {
+    const el = document.getElementById('hub-sections-list');
+    if (!_hubSections.length) {
+      el.innerHTML = '<div class="db-empty">No sections yet. ' + (currentIsAdmin ? 'Click <strong>+ Add Section</strong> to get started.' : '') + '</div>';
+      return;
+    }
+    el.innerHTML = _hubSections.map(sec => hubRenderSection(sec)).join('');
+  }
+
+  function hubRenderSection(sec) {
+    const subs = _hubSubs[sec.id] || [];
+    const totalItems = subs.reduce((n, sub) => n + (_hubItems[sub.id]||[]).length, 0);
+    const adminBtns = currentIsAdmin ? `
+      <button onclick="hubEditSection('${sec.id}')" style="background:none;border:none;cursor:pointer;color:var(--subtext);font-size:14px;padding:4px" title="Edit section">✏️</button>
+      <button onclick="hubDeleteSection('${sec.id}')" style="background:none;border:none;cursor:pointer;color:var(--red);font-size:14px;padding:4px" title="Delete section">🗑</button>` : '';
+    return `
+      <div class="hub-section-card" id="hub-sec-${sec.id}" style="background:#fff;border:1px solid var(--gray2);border-radius:var(--radius);overflow:hidden">
+        <div style="display:flex;align-items:center;gap:12px;padding:14px 18px;cursor:pointer" onclick="hubToggleSection('${sec.id}')">
+          <div style="width:36px;height:36px;background:rgba(36,43,99,0.08);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">${sec.icon||'📋'}</div>
+          <div style="flex:1">
+            <div style="font-size:15px;font-weight:700;color:var(--navy)">${escHtml(sec.title)}</div>
+            <div style="font-size:12px;color:var(--subtext)">${subs.length} subsection${subs.length!==1?'s':''} · ${totalItems} item${totalItems!==1?'s':''}</div>
+          </div>
+          ${adminBtns}
+          <span id="hub-chev-${sec.id}" style="color:var(--subtext);font-size:18px;transition:transform 0.2s">▾</span>
+        </div>
+        <div id="hub-body-${sec.id}" style="display:none;border-top:1px solid var(--gray2);padding:14px 18px">
+          ${subs.map(sub => hubRenderSub(sub)).join('')}
+          <button onclick="hubOpenAddSub('${sec.id}')" style="display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--subtext);padding:6px 10px;border:1px dashed var(--gray2);border-radius:6px;cursor:pointer;margin-top:10px;background:none">+ Add subsection</button>
+        </div>
+      </div>`;
+  }
+
+  function hubRenderSub(sub) {
+    const items = _hubItems[sub.id] || [];
+    return `
+      <div style="margin-bottom:16px">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.6px;color:var(--subtext);flex:1">${escHtml(sub.title)}</div>
+          <button onclick="hubDeleteSub('${sub.id}','${sub.sectionId}')" style="background:none;border:none;cursor:pointer;color:var(--red);font-size:12px;padding:2px 4px" title="Delete subsection">✕</button>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:6px">
+          ${items.map(item => hubRenderItem(item)).join('')}
+        </div>
+        <button onclick="hubOpenAddItem('${sub.id}','${sub.sectionId}')" style="display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--subtext);padding:5px 10px;border:1px dashed var(--gray2);border-radius:6px;cursor:pointer;margin-top:6px;background:none">+ Add item</button>
+      </div>`;
+  }
+
+  function hubRenderItem(item) {
+    const icon = item.type === 'link' ? '🔗' : item.type === 'file' ? '📄' : '📝';
+    const badge = item.type === 'link' ? 'background:#E6F1FB;color:#185FA5' : item.type === 'file' ? 'background:#EAF3DE;color:#3B6D11' : 'background:#FAEEDA;color:#854F0B';
+    const content = item.type === 'link' ? `<a href="${escHtml(item.url||'')}" target="_blank" style="color:var(--navy);text-decoration:none;flex:1">${escHtml(item.label||item.url||'')}</a>`
+      : item.type === 'file' ? `<a href="${escHtml(item.fileUrl||'')}" target="_blank" style="color:var(--navy);text-decoration:none;flex:1">${escHtml(item.label||item.fileName||'')}</a>`
+      : `<span style="flex:1;color:var(--navy)">${escHtml(item.text||item.label||'')}</span>`;
+    return `
+      <div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--gray1);border-radius:6px;font-size:13px">
+        <span style="flex-shrink:0">${icon}</span>
+        ${content}
+        <span style="font-size:11px;padding:2px 8px;border-radius:20px;flex-shrink:0;${badge}">${item.type}</span>
+        <button onclick="hubDeleteItem('${item.id}','${item.subId}')" style="background:none;border:none;cursor:pointer;color:var(--red);font-size:13px;padding:0 2px;flex-shrink:0" title="Delete">✕</button>
+      </div>`;
+  }
+
+  function hubToggleSection(id) {
+    const body  = document.getElementById('hub-body-' + id);
+    const chev  = document.getElementById('hub-chev-' + id);
+    const isOpen = body.style.display !== 'none';
+    body.style.display = isOpen ? 'none' : '';
+    chev.style.transform = isOpen ? '' : 'rotate(180deg)';
+  }
+
+  // ── Section CRUD ──
+  function hubOpenAddSection() {
+    _hubEditSectionId = null;
+    document.getElementById('hub-section-modal-title').textContent = 'Add Section';
+    document.getElementById('hub-section-name').value = '';
+    document.getElementById('hub-section-icon').value = '';
+    openModal('hub-section-modal');
+  }
+
+  function hubEditSection(id) {
+    const sec = _hubSections.find(s => s.id === id);
+    if (!sec) return;
+    _hubEditSectionId = id;
+    document.getElementById('hub-section-modal-title').textContent = 'Edit Section';
+    document.getElementById('hub-section-name').value = sec.title || '';
+    document.getElementById('hub-section-icon').value = sec.icon || '';
+    openModal('hub-section-modal');
+  }
+
+  async function hubSaveSection() {
+    const title = document.getElementById('hub-section-name').value.trim();
+    const icon  = document.getElementById('hub-section-icon').value.trim();
+    if (!title) { showToast('Please enter a section name.', 'error'); return; }
+    try {
+      if (_hubEditSectionId) {
+        await updateDoc(doc(db, 'hub_sections', _hubEditSectionId), { title, icon, updatedAt: serverTimestamp() });
+      } else {
+        await addDoc(collection(db, 'hub_sections'), { title, icon, order: _hubSections.length, createdAt: serverTimestamp() });
+      }
+      hubCloseSectionModal();
+      await hubLoadAll();
+      showToast('Section saved.', 'success');
+    } catch(e) { showToast('Error: ' + e.message, 'error'); }
+  }
+
+  async function hubDeleteSection(id) {
+    if (!confirm('Delete this section and all its content? This cannot be undone.')) return;
+    try {
+      await deleteDoc(doc(db, 'hub_sections', id));
+      await hubLoadAll();
+      showToast('Section deleted.', 'success');
+    } catch(e) { showToast('Error: ' + e.message, 'error'); }
+  }
+
+  function hubCloseSectionModal() { closeModal('hub-section-modal'); }
+
+  // ── Subsection CRUD ──
+  function hubOpenAddSub(sectionId) {
+    _hubEditSubId = null;
+    _hubActiveSectionId = sectionId;
+    document.getElementById('hub-sub-modal-title').textContent = 'Add Subsection';
+    document.getElementById('hub-sub-name').value = '';
+    openModal('hub-sub-modal');
+  }
+
+  async function hubSaveSub() {
+    const title = document.getElementById('hub-sub-name').value.trim();
+    if (!title) { showToast('Please enter a subsection name.', 'error'); return; }
+    try {
+      await addDoc(collection(db, 'hub_subsections'), {
+        title, sectionId: _hubActiveSectionId,
+        order: (_hubSubs[_hubActiveSectionId]||[]).length,
+        createdAt: serverTimestamp(),
+        createdBy: currentUser?.displayName || currentUser?.email || ''
+      });
+      hubCloseSubModal();
+      await hubLoadAll();
+      showToast('Subsection added.', 'success');
+    } catch(e) { showToast('Error: ' + e.message, 'error'); }
+  }
+
+  async function hubDeleteSub(subId, sectionId) {
+    if (!confirm('Delete this subsection and its items?')) return;
+    try {
+      await deleteDoc(doc(db, 'hub_subsections', subId));
+      await hubLoadAll();
+      showToast('Subsection deleted.', 'success');
+    } catch(e) { showToast('Error: ' + e.message, 'error'); }
+  }
+
+  function hubCloseSubModal() { closeModal('hub-sub-modal'); }
+
+  // ── Item CRUD ──
+  function hubSetType(type) {
+    _hubItemType = type;
+    ['link','file','note'].forEach(t => {
+      const btn = document.getElementById('hub-type-' + t);
+      btn.style.background = t === type ? 'var(--navy)' : '';
+      btn.style.color = t === type ? '#fff' : '';
+      btn.className = t === type ? 'btn btn-sm' : 'btn btn-sm btn-outline';
+    });
+    document.getElementById('hub-item-url-row').style.display  = type === 'link' ? '' : 'none';
+    document.getElementById('hub-item-file-row').style.display = type === 'file' ? '' : 'none';
+    document.getElementById('hub-item-note-row').style.display = type === 'note' ? '' : 'none';
+  }
+
+  function hubOpenAddItem(subId, sectionId) {
+    _hubEditItemId = null;
+    _hubActiveSubId = subId;
+    _hubActiveSectionId = sectionId;
+    document.getElementById('hub-item-modal-title').textContent = 'Add Item';
+    document.getElementById('hub-item-label').value = '';
+    document.getElementById('hub-item-url').value = '';
+    document.getElementById('hub-item-note').value = '';
+    document.getElementById('hub-item-file').value = '';
+    document.getElementById('hub-item-upload-bar-wrap').style.display = 'none';
+    hubSetType('link');
+    openModal('hub-item-modal');
+  }
+
+  async function hubSaveItem() {
+    const label = document.getElementById('hub-item-label').value.trim();
+    const url   = document.getElementById('hub-item-url').value.trim();
+    const note  = document.getElementById('hub-item-note').value.trim();
+    const file  = document.getElementById('hub-item-file').files[0];
+    if (!label) { showToast('Please enter a label.', 'error'); return; }
+    if (_hubItemType === 'link' && !url) { showToast('Please enter a URL.', 'error'); return; }
+    if (_hubItemType === 'note' && !note) { showToast('Please enter a note.', 'error'); return; }
+    const btn = document.getElementById('hub-item-save-btn');
+    btn.disabled = true; btn.textContent = 'Saving…';
+    try {
+      const data = {
+        type: _hubItemType, label,
+        subId: _hubActiveSubId, sectionId: _hubActiveSectionId,
+        createdAt: serverTimestamp(),
+        createdBy: currentUser?.displayName || currentUser?.email || ''
+      };
+      if (_hubItemType === 'link') data.url = url;
+      if (_hubItemType === 'note') data.text = note;
+      if (_hubItemType === 'file' && file) {
+        document.getElementById('hub-item-upload-bar-wrap').style.display = '';
+        const bar = document.getElementById('hub-item-upload-bar');
+        bar.style.width = '30%';
+        const sRef = ref(storage, `hub-files/${Date.now()}_${file.name}`);
+        await uploadBytes(sRef, file);
+        bar.style.width = '80%';
+        data.fileUrl  = await getDownloadURL(sRef);
+        data.fileName = file.name;
+        bar.style.width = '100%';
+      }
+      await addDoc(collection(db, 'hub_items'), data);
+      hubCloseItemModal();
+      await hubLoadAll();
+      // Re-open the section
+      const body = document.getElementById('hub-body-' + _hubActiveSectionId);
+      const chev = document.getElementById('hub-chev-' + _hubActiveSectionId);
+      if (body) { body.style.display = ''; chev.style.transform = 'rotate(180deg)'; }
+      showToast('Item added.', 'success');
+    } catch(e) { showToast('Error: ' + e.message, 'error'); }
+    finally { btn.disabled = false; btn.textContent = 'Save'; }
+  }
+
+  async function hubDeleteItem(itemId, subId) {
+    if (!confirm('Delete this item?')) return;
+    try {
+      await deleteDoc(doc(db, 'hub_items', itemId));
+      await hubLoadAll();
+      showToast('Item deleted.', 'success');
+    } catch(e) { showToast('Error: ' + e.message, 'error'); }
+  }
+
+  function hubCloseItemModal() { closeModal('hub-item-modal'); }
+
+  window.hubInit             = hubInit;
+  window.hubOpenAddSection   = hubOpenAddSection;
+  window.hubEditSection      = hubEditSection;
+  window.hubSaveSection      = hubSaveSection;
+  window.hubDeleteSection    = hubDeleteSection;
+  window.hubCloseSectionModal= hubCloseSectionModal;
+  window.hubToggleSection    = hubToggleSection;
+  window.hubOpenAddSub       = hubOpenAddSub;
+  window.hubSaveSub          = hubSaveSub;
+  window.hubDeleteSub        = hubDeleteSub;
+  window.hubCloseSubModal    = hubCloseSubModal;
+  window.hubSetType          = hubSetType;
+  window.hubOpenAddItem      = hubOpenAddItem;
+  window.hubSaveItem         = hubSaveItem;
+  window.hubDeleteItem       = hubDeleteItem;
+  window.hubCloseItemModal   = hubCloseItemModal;
+
+  // ══════════════════════════════════════
   // DOCUMENT LIBRARY MODULE
   // ══════════════════════════════════════
   const DOC_DEFAULT_CATS = ['Letterheads & Templates', 'Policies & Procedures', 'Staff Bulletin'];
@@ -10015,6 +10426,21 @@ const firebaseConfig = {
   function instrSave()                 { if (window.instrSave)            window.instrSave(); }
   function instrDelete(id)             { if (window.instrDelete)          window.instrDelete(id); }
   function instrCloseModal()           { if (window.instrCloseModal)      window.instrCloseModal(); }
+  function hubOpenAddSection()         { if (window.hubOpenAddSection)    window.hubOpenAddSection(); }
+  function hubEditSection(id)          { if (window.hubEditSection)       window.hubEditSection(id); }
+  function hubSaveSection()            { if (window.hubSaveSection)       window.hubSaveSection(); }
+  function hubDeleteSection(id)        { if (window.hubDeleteSection)     window.hubDeleteSection(id); }
+  function hubCloseSectionModal()      { if (window.hubCloseSectionModal) window.hubCloseSectionModal(); }
+  function hubToggleSection(id)        { if (window.hubToggleSection)     window.hubToggleSection(id); }
+  function hubOpenAddSub(sId,secId)    { if (window.hubOpenAddSub)        window.hubOpenAddSub(sId,secId); }
+  function hubSaveSub()                { if (window.hubSaveSub)           window.hubSaveSub(); }
+  function hubDeleteSub(sId,secId)     { if (window.hubDeleteSub)         window.hubDeleteSub(sId,secId); }
+  function hubCloseSubModal()          { if (window.hubCloseSubModal)     window.hubCloseSubModal(); }
+  function hubSetType(t)               { if (window.hubSetType)           window.hubSetType(t); }
+  function hubOpenAddItem(sId,secId)   { if (window.hubOpenAddItem)       window.hubOpenAddItem(sId,secId); }
+  function hubSaveItem()               { if (window.hubSaveItem)          window.hubSaveItem(); }
+  function hubDeleteItem(iId,sId)      { if (window.hubDeleteItem)        window.hubDeleteItem(iId,sId); }
+  function hubCloseItemModal()         { if (window.hubCloseItemModal)    window.hubCloseItemModal(); }
   function ttOpenAddSite()             { if (window.ttOpenAddSite)       window.ttOpenAddSite(); }
   function ttCloseAddSite()            { if (window.ttCloseAddSite)      window.ttCloseAddSite(); }
   function ttSelectType(t)             { if (window.ttSelectType)        window.ttSelectType(t); }

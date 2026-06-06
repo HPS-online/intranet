@@ -9623,18 +9623,23 @@ const firebaseConfig = {
           <span id="hub-chev-${sec.id}" style="color:var(--subtext);font-size:18px;transition:transform 0.2s">▾</span>
         </div>
         <div id="hub-body-${sec.id}" style="display:none;border-top:1px solid var(--gray2);padding:14px 18px">
-          ${subs.map(sub => hubRenderSub(sub)).join('')}
+          ${subs.map((sub, i) => hubRenderSub(sub, i, subs.length)).join('')}
           <button onclick="hubOpenAddSub('${sec.id}')" style="display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--subtext);padding:6px 10px;border:1px dashed var(--gray2);border-radius:6px;cursor:pointer;margin-top:10px;background:none">+ Add subsection</button>
         </div>
       </div>`;
   }
 
-  function hubRenderSub(sub) {
+  function hubRenderSub(sub, idx, total) {
     const items = _hubItems[sub.id] || [];
+    const upBtn   = idx > 0
+      ? `<button onclick="hubMoveSub('${sub.id}','${sub.sectionId}',-1)" style="background:none;border:none;cursor:pointer;color:var(--subtext);font-size:12px;padding:2px 4px" title="Move up">▲</button>` : '';
+    const downBtn = idx < total - 1
+      ? `<button onclick="hubMoveSub('${sub.id}','${sub.sectionId}',1)" style="background:none;border:none;cursor:pointer;color:var(--subtext);font-size:12px;padding:2px 4px" title="Move down">▼</button>` : '';
     return `
       <div style="margin-bottom:16px">
         <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
           <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.6px;color:var(--subtext);flex:1">${escHtml(sub.title)}</div>
+          ${upBtn}${downBtn}
           <button onclick="hubDeleteSub('${sub.id}','${sub.sectionId}')" style="background:none;border:none;cursor:pointer;color:var(--red);font-size:12px;padding:2px 4px" title="Delete subsection">✕</button>
         </div>
         <div style="display:flex;flex-direction:column;gap:6px">
@@ -9737,6 +9742,29 @@ const firebaseConfig = {
       showToast('Subsection added.', 'success');
     } catch(e) { showToast('Error: ' + e.message, 'error'); }
   }
+
+  async function hubMoveSub(subId, sectionId, direction) {
+    const subs = (_hubSubs[sectionId] || []).slice();
+    const idx  = subs.findIndex(s => s.id === subId);
+    if (idx < 0) return;
+    const newIdx = idx + direction;
+    if (newIdx < 0 || newIdx >= subs.length) return;
+    // Swap orders
+    const a = subs[idx];
+    const b = subs[newIdx];
+    try {
+      await Promise.all([
+        updateDoc(doc(db, 'hub_subsections', a.id), { order: newIdx }),
+        updateDoc(doc(db, 'hub_subsections', b.id), { order: idx })
+      ]);
+      await hubLoadAll();
+      // Keep section open
+      const body = document.getElementById('hub-body-' + sectionId);
+      const chev = document.getElementById('hub-chev-' + sectionId);
+      if (body) { body.style.display = ''; chev.style.transform = 'rotate(180deg)'; }
+    } catch(e) { showToast('Error reordering: ' + e.message, 'error'); }
+  }
+  window.hubMoveSub = hubMoveSub;
 
   async function hubDeleteSub(subId, sectionId) {
     if (!confirm('Delete this subsection and its items?')) return;
@@ -10478,6 +10506,7 @@ const firebaseConfig = {
   function hubDeleteSection(id)        { if (window.hubDeleteSection)     window.hubDeleteSection(id); }
   function hubCloseSectionModal()      { if (window.hubCloseSectionModal) window.hubCloseSectionModal(); }
   function hubToggleSection(id)        { if (window.hubToggleSection)     window.hubToggleSection(id); }
+  function hubMoveSub(sId,secId,dir)   { if (window.hubMoveSub)           window.hubMoveSub(sId,secId,dir); }
   function hubOpenAddSub(sId,secId)    { if (window.hubOpenAddSub)        window.hubOpenAddSub(sId,secId); }
   function hubSaveSub()                { if (window.hubSaveSub)           window.hubSaveSub(); }
   function hubDeleteSub(sId,secId)     { if (window.hubDeleteSub)         window.hubDeleteSub(sId,secId); }

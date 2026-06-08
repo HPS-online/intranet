@@ -4277,6 +4277,28 @@
         <div id="kiosk-config-msg" style="display:none;font-size:13px;font-weight:600;color:var(--green);margin-top:10px"></div>
       </div>
 
+      <!-- ── LATEST BULLETIN ── -->
+      <div style="background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);padding:20px 24px;margin-bottom:24px;border-left:4px solid var(--navy)">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+          <div>
+            <div style="font-size:14px;font-weight:800;color:var(--navy);text-transform:uppercase;letter-spacing:0.3px">📰 Latest Bulletin</div>
+            <div style="font-size:12px;color:var(--subtext);margin-top:3px">URL shown as the bulletin tile on the home page — update each week</div>
+          </div>
+          <button class="btn btn-gold" onclick="bulletinConfigSave()" style="flex-shrink:0">💾 Save</button>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <div class="form-group" style="margin:0">
+            <label>Bulletin Label (e.g. "Term 2, Week 7")</label>
+            <input type="text" id="bulletin-config-label" class="form-input" placeholder="Term 2, Week 7">
+          </div>
+          <div class="form-group" style="margin:0">
+            <label>Bulletin URL (link to PDF or file)</label>
+            <input type="text" id="bulletin-config-url" class="form-input" placeholder="https://…">
+          </div>
+        </div>
+        <div id="bulletin-config-msg" style="display:none;font-size:13px;font-weight:600;color:var(--green);margin-top:10px">✅ Saved!</div>
+      </div>
+
       <!-- ── STUDENT CLUBS CONFIGURATOR ── -->
       <div style="background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);padding:20px 24px;margin-bottom:24px;border-left:4px solid #22c55e">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
@@ -6210,7 +6232,7 @@ const firebaseConfig = {
       ) b.classList.add('active');
     });
     if (view === 'tickets')  { renderDashboard(); renderAllTickets(allTickets); setupReportDropdowns(); applyFilters(); }
-    if (view === 'admin')    { loadAdminUsers(); kioskConfigLoad(); ticketRoutingLoad(); clubsConfigLoad(); ensemblesConfigLoad(); nitLoad(); }
+    if (view === 'admin')    { loadAdminUsers(); kioskConfigLoad(); bulletinConfigLoad(); ticketRoutingLoad(); clubsConfigLoad(); ensemblesConfigLoad(); nitLoad(); }
     if (view === 'naplan' && !_npInited) { _npInited = true; npInitDashboard(); }
     if (view === 'meetings') meetingsInit();
     if (view === 'documents') docInit();
@@ -7793,6 +7815,34 @@ const firebaseConfig = {
   }
   window.kioskConfigSave = kioskConfigSave;
 
+  // ── BULLETIN CONFIG ──────────────────────────────────────
+  async function bulletinConfigLoad() {
+    try {
+      const snap = await getDoc(doc(db, 'kiosk_config', 'bulletin'));
+      if (snap.exists()) {
+        const d = snap.data();
+        const labelEl = document.getElementById('bulletin-config-label');
+        const urlEl   = document.getElementById('bulletin-config-url');
+        if (labelEl) labelEl.value = d.label || '';
+        if (urlEl)   urlEl.value   = d.url   || '';
+      }
+    } catch(e) { console.warn('bulletinConfigLoad:', e); }
+  }
+
+  async function bulletinConfigSave() {
+    const label = document.getElementById('bulletin-config-label').value.trim();
+    const url   = document.getElementById('bulletin-config-url').value.trim();
+    try {
+      await setDoc(doc(db, 'kiosk_config', 'bulletin'), { label, url, updatedAt: serverTimestamp() });
+      const msg = document.getElementById('bulletin-config-msg');
+      msg.style.display = '';
+      setTimeout(() => msg.style.display = 'none', 3000);
+      loadLatestBulletin();
+    } catch(e) { alert('Error saving bulletin config: ' + e.message); }
+  }
+  window.bulletinConfigSave = bulletinConfigSave;
+  window.bulletinConfigLoad = bulletinConfigLoad;
+
   // ── STUDENT CLUBS CONFIG ─────────────────────────────────
   const CLUB_DAYS = ['mon','tue','wed','thu','fri'];
   const CLUB_SLOTS = ['recess','lunch'];
@@ -7980,25 +8030,17 @@ const firebaseConfig = {
 
   async function loadLatestBulletin() {
     try {
-      const snap = await getDocs(query(
-        collection(db, 'documents'),
-        where('category', '==', 'Staff Bulletin')
-      ));
-      if (snap.empty) return;
-      // Pick the most recently uploaded one client-side
-      const docs = snap.docs.map(d => ({ ...d.data() }));
-      docs.sort((a, b) => {
-        const ta = a.uploadedAt?.toMillis ? a.uploadedAt.toMillis() : 0;
-        const tb = b.uploadedAt?.toMillis ? b.uploadedAt.toMillis() : 0;
-        return tb - ta;
-      });
-      const d = docs[0];
-      _latestBulletinUrl = d.url || d.fileUrl || null;
+      const snap = await getDoc(doc(db, 'kiosk_config', 'bulletin'));
+      if (!snap.exists()) return;
+      const d = snap.data();
+      _latestBulletinUrl = d.url || null;
       const tile  = document.getElementById('home-bulletin-tile');
       const label = document.getElementById('home-bulletin-label');
       if (tile && label && _latestBulletinUrl) {
-        label.textContent = d.title || 'View Bulletin';
+        label.textContent = d.label || 'View Bulletin';
         tile.style.display = '';
+      } else if (tile) {
+        tile.style.display = 'none';
       }
     } catch(e) { console.warn('loadLatestBulletin:', e); }
   }

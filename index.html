@@ -6245,7 +6245,7 @@ const firebaseConfig = {
       daybookLoad();
       nitLoad();
       loadTodaysClubs();
-      loadTodaysEnsembles();
+      loadTodaysEnsembles(daybookCurrentDate);
     }
     if (view === 'home') renderHomeView();
     // GA4 module tracking
@@ -6892,6 +6892,8 @@ const firebaseConfig = {
     document.getElementById('daybook-save-bar').style.display = 'none';
     document.getElementById('daybook-add-btn').style.display = 'none';
     document.getElementById('daybook-edit-btn').textContent = '✏️ Edit';
+    loadTodaysEnsembles(daybookCurrentDate);
+    loadTodaysClubs(daybookCurrentDate);
     const label = document.getElementById('daybook-nav-label');
     const today = daybookDateKey(new Date());
     const key   = daybookDateKey(daybookCurrentDate);
@@ -7921,9 +7923,10 @@ const firebaseConfig = {
   }
   window.ensemblesConfigSave = ensemblesConfigSave;
 
-  async function loadTodaysEnsembles() {
+  async function loadTodaysEnsembles(dateOverride) {
     const days   = ['sun','mon','tue','wed','thu','fri','sat'];
-    const dayKey = days[new Date().getDay()];
+    const dateToUse = dateOverride || new Date();
+    const dayKey = days[dateToUse.getDay()];
     if (dayKey === 'sun' || dayKey === 'sat') return;
     try {
       const snap = await getDoc(doc(db, 'ensembles_config', 'timetable'));
@@ -7986,9 +7989,10 @@ const firebaseConfig = {
   }
   window.loadTodaysEnsembles = loadTodaysEnsembles;
 
-  async function loadTodaysClubs() {
+  async function loadTodaysClubs(dateOverride) {
     const days = ['sun','mon','tue','wed','thu','fri','sat'];
-    const dayKey = days[new Date().getDay()];
+    const dateToUse = dateOverride || new Date();
+    const dayKey = days[dateToUse.getDay()];
     if (dayKey === 'sun' || dayKey === 'sat') return;
     try {
       const snap = await getDoc(doc(db, 'clubs_config', 'timetable'));

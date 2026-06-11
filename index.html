@@ -761,6 +761,53 @@
     .hub-emoji-btn:hover { background: var(--gray2); }
     .hub-emoji-btn.selected { border-color: var(--navy); background: rgba(36,43,99,0.1); }
 
+    /* ── SERVICE PROVIDER TIMETABLE ── */
+    .sp-location-block { margin-bottom: 28px; }
+    .sp-location-heading {
+      font-size: 13px; font-weight: 800; color: var(--navy);
+      text-transform: uppercase; letter-spacing: 0.5px;
+      padding: 8px 14px; background: var(--navy);
+      color: white; border-radius: 8px 8px 0 0;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .sp-day-group { border: 1px solid var(--gray2); border-top: none; border-radius: 0 0 8px 8px; overflow: hidden; }
+    .sp-day-heading {
+      font-size: 12px; font-weight: 700; color: var(--navy);
+      background: var(--gray1); padding: 6px 14px;
+      border-bottom: 1px solid var(--gray2); text-transform: uppercase; letter-spacing: 0.3px;
+    }
+    .sp-session-row {
+      display: grid; grid-template-columns: 100px 1fr 1fr 1fr 1fr;
+      gap: 0; border-bottom: 1px solid var(--gray2); font-size: 13px;
+      align-items: stretch;
+    }
+    .sp-session-row:last-child { border-bottom: none; }
+    .sp-session-row:hover { background: rgba(36,43,99,0.03); }
+    .sp-cell { padding: 10px 14px; border-right: 1px solid var(--gray2); display: flex; align-items: center; }
+    .sp-cell:last-child { border-right: none; }
+    .sp-cell-time { font-weight: 700; color: var(--navy); font-size: 12px; white-space: nowrap; }
+    .sp-cell-student { font-weight: 600; }
+    .sp-cell-room { font-size: 11px; color: var(--subtext); display: block; }
+    .sp-cell-service { color: #6366f1; font-size: 12px; font-weight: 600; }
+    .sp-cell-org { color: var(--subtext); font-size: 12px; }
+    .sp-cell-provider { font-size: 12px; font-weight: 500; }
+    .sp-note { font-size: 11px; font-weight: 700; color: var(--gold); display: block; margin-top: 2px; }
+    .sp-header-row {
+      display: grid; grid-template-columns: 100px 1fr 1fr 1fr 1fr;
+      background: rgba(36,43,99,0.06); border-bottom: 2px solid var(--navy);
+      font-size: 11px; font-weight: 700; color: var(--navy);
+      text-transform: uppercase; letter-spacing: 0.3px;
+    }
+    .sp-admin-row {
+      display: grid; grid-template-columns: 1fr auto; gap: 12px;
+      padding: 12px 14px; border-bottom: 1px solid var(--gray2);
+      align-items: start; font-size: 13px;
+    }
+    .sp-admin-row:last-child { border-bottom: none; }
+    .sp-admin-row:hover { background: var(--gray1); }
+    .sp-admin-meta { font-size: 11px; color: var(--subtext); margin-top: 3px; }
+    .sp-admin-actions { display: flex; gap: 6px; flex-shrink: 0; }
+
     .modal-header {
       padding: 24px 28px 20px;
       border-bottom: 1px solid var(--gray2);
@@ -2611,6 +2658,7 @@
         <button class="tt-tab" onclick="ttShowPane('individual')">👤 Individual Timetables</button>
         <button class="tt-tab" onclick="ttShowPane('inclement')">🌧️ Inclement Weather</button>
         <button class="tt-tab" onclick="ttShowPane('instrumental')">🎸 Instrumental Music</button>
+        <button class="tt-tab" onclick="ttShowPane('service-providers')">🏥 Service Providers</button>
       </div>
 
       <!-- YARD DUTY PANE -->
@@ -2901,6 +2949,25 @@
           <button class="btn btn-gold" onclick="instrOpenAdd()">+ Add Entry</button>
         </div>
         <div id="tt-instrumental-list"></div>
+      </div>
+
+      <!-- SERVICE PROVIDERS PANE -->
+      <div id="tt-service-providers" class="tt-pane">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:8px">
+          <div>
+            <div style="font-size:16px;font-weight:700;color:var(--navy)">🏥 Service Provider Timetable</div>
+            <div style="font-size:13px;color:var(--subtext);margin-top:2px">External therapists and support workers visiting students on site</div>
+          </div>
+          <div style="display:flex;gap:8px;align-items:center">
+            <div class="tt-tabs" style="margin:0">
+              <button class="tt-tab active" id="sp-odd-btn" onclick="spSetWeek('odd')">Odd Weeks</button>
+              <button class="tt-tab" id="sp-even-btn" onclick="spSetWeek('even')">Even Weeks</button>
+            </div>
+          </div>
+        </div>
+        <div id="sp-grid-container">
+          <div style="text-align:center;padding:40px;color:var(--subtext)"><div class="spinner"></div></div>
+        </div>
       </div>
 
       <!-- Instrumental Add Modal -->
@@ -4468,6 +4535,135 @@
         Only accounts listed here can sign in — anyone else is automatically rejected, even if they have an <code>@schools.sa.edu.au</code> address.<br><br>
         <strong style="color:var(--navy)">Admin accounts</strong> can access this portal and add/remove users. Regular staff can only submit and view tickets.
       </div>
+
+      <!-- ── SERVICE PROVIDER TIMETABLE ADMIN ── -->
+      <div style="background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);padding:20px 24px;margin-bottom:24px;border-left:4px solid #8b5cf6">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;flex-wrap:wrap;gap:8px">
+          <div>
+            <div style="font-size:14px;font-weight:800;color:var(--navy);text-transform:uppercase;letter-spacing:0.3px">🏥 Service Provider Timetable</div>
+            <div style="font-size:12px;color:var(--subtext);margin-top:3px">Add, edit or remove service provider sessions. Changes are live immediately.</div>
+          </div>
+          <button class="btn btn-gold" onclick="spAdminOpenAdd()">+ Add Session</button>
+        </div>
+
+        <!-- Filter bar -->
+        <div style="display:flex;gap:10px;margin:16px 0 12px;flex-wrap:wrap;align-items:center">
+          <div style="display:flex;gap:6px">
+            <button class="tt-tab active" id="sp-admin-odd-btn" onclick="spAdminSetWeek('odd')">Odd Weeks</button>
+            <button class="tt-tab" id="sp-admin-even-btn" onclick="spAdminSetWeek('even')">Even Weeks</button>
+          </div>
+          <select id="sp-admin-filter-loc" class="form-input" style="width:auto;font-size:13px" onchange="spAdminRender()">
+            <option value="">All Locations</option>
+            <option value="koala_r26">Koala – Room 26</option>
+            <option value="kangaroo_r28">Kangaroo – Room 28</option>
+            <option value="kangaroo_r27">Kangaroo – Room 27</option>
+            <option value="office">Office Meeting Room</option>
+            <option value="fishbowl">Fish Bowl – Admin A</option>
+          </select>
+          <select id="sp-admin-filter-day" class="form-input" style="width:auto;font-size:13px" onchange="spAdminRender()">
+            <option value="">All Days</option>
+            <option value="mon">Monday</option>
+            <option value="tue">Tuesday</option>
+            <option value="wed">Wednesday</option>
+            <option value="thu">Thursday</option>
+            <option value="fri">Friday</option>
+          </select>
+          <input type="text" id="sp-admin-search" class="form-input" style="width:180px;font-size:13px" placeholder="🔍 Search student…" oninput="spAdminRender()">
+        </div>
+
+        <!-- Session count -->
+        <div id="sp-admin-count" style="font-size:12px;color:var(--subtext);margin-bottom:10px"></div>
+
+        <!-- List -->
+        <div id="sp-admin-list"></div>
+      </div>
+
+    </div>
+
+    <!-- ── SERVICE PROVIDER ADD/EDIT MODAL ── -->
+    <div id="sp-session-modal" class="modal-overlay" onclick="if(event.target===this)spCloseModal()">
+      <div class="modal" style="max-width:520px">
+        <div class="modal-header">
+          <h3 id="sp-modal-title">Add Session</h3>
+          <button class="modal-close" onclick="spCloseModal()">✕</button>
+        </div>
+        <div class="modal-body" style="display:flex;flex-direction:column;gap:14px">
+          <input type="hidden" id="sp-edit-id">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+            <div class="form-group" style="margin:0">
+              <label class="form-label">Week Type</label>
+              <select id="sp-f-week" class="form-input">
+                <option value="odd">Odd Weeks</option>
+                <option value="even">Even Weeks</option>
+              </select>
+            </div>
+            <div class="form-group" style="margin:0">
+              <label class="form-label">Day</label>
+              <select id="sp-f-day" class="form-input">
+                <option value="mon">Monday</option>
+                <option value="tue">Tuesday</option>
+                <option value="wed">Wednesday</option>
+                <option value="thu">Thursday</option>
+                <option value="fri">Friday</option>
+              </select>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+            <div class="form-group" style="margin:0">
+              <label class="form-label">Time Slot</label>
+              <select id="sp-f-slot" class="form-input">
+                <option value="8:50-9:40">8:50 – 9:40</option>
+                <option value="9:40-10:30">9:40 – 10:30</option>
+                <option value="11:00-11:50">11:00 – 11:50</option>
+                <option value="11:50-12:40">11:50 – 12:40</option>
+                <option value="1:20-2:10">1:20 – 2:10</option>
+                <option value="2:10-3:00">2:10 – 3:00</option>
+              </select>
+            </div>
+            <div class="form-group" style="margin:0">
+              <label class="form-label">Location</label>
+              <select id="sp-f-loc" class="form-input">
+                <option value="koala_r26">Koala – Room 26</option>
+                <option value="kangaroo_r28">Kangaroo – Room 28</option>
+                <option value="kangaroo_r27">Kangaroo – Room 27</option>
+                <option value="office">Office Meeting Room</option>
+                <option value="fishbowl">Fish Bowl – Admin A</option>
+              </select>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+            <div class="form-group" style="margin:0">
+              <label class="form-label">Student Name</label>
+              <input type="text" id="sp-f-student" class="form-input" placeholder="e.g. Jamel Khan">
+            </div>
+            <div class="form-group" style="margin:0">
+              <label class="form-label">Room Number</label>
+              <input type="text" id="sp-f-room" class="form-input" placeholder="e.g. R26">
+            </div>
+          </div>
+          <div class="form-group" style="margin:0">
+            <label class="form-label">Service Type</label>
+            <input type="text" id="sp-f-service" class="form-input" placeholder="e.g. OT, Speech, Physiotherapy">
+          </div>
+          <div class="form-group" style="margin:0">
+            <label class="form-label">Organisation</label>
+            <input type="text" id="sp-f-org" class="form-input" placeholder="e.g. Early Start Australia">
+          </div>
+          <div class="form-group" style="margin:0">
+            <label class="form-label">Provider / Therapist Name</label>
+            <input type="text" id="sp-f-provider" class="form-input" placeholder="e.g. Nikita Iskra">
+          </div>
+          <div class="form-group" style="margin:0">
+            <label class="form-label">Notes <span style="font-weight:400;color:var(--subtext)">(optional — start dates, one-offs, etc.)</span></label>
+            <input type="text" id="sp-f-notes" class="form-input" placeholder="e.g. Starting 10th March">
+          </div>
+          <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:4px">
+            <button class="btn btn-outline" onclick="spCloseModal()">Cancel</button>
+            <button class="btn btn-gold" onclick="spSaveSession()">💾 Save Session</button>
+          </div>
+          <div id="sp-modal-msg" style="display:none;font-size:13px;font-weight:600"></div>
+        </div>
+      </div>
     </div>
 
     <!-- ── HIGHBURY HUB VIEW ── -->
@@ -5252,12 +5448,14 @@ const firebaseConfig = {
       if (pane === 'individual'  && txt.includes('individual')) t.classList.add('active');
       if (pane === 'inclement'   && txt.includes('inclement'))  t.classList.add('active');
       if (pane === 'instrumental' && txt.includes('instrumental')) t.classList.add('active');
+      if (pane === 'service-providers' && txt.includes('service')) t.classList.add('active');
     });
     if (pane === 'specialist') tagSpecCols();
     if (pane === 'site')       ttLoadSite();
     if (pane === 'individual') ttLoadIndividual();
     if (pane === 'inclement')  inclementLoad();
     if (pane === 'instrumental') instrLoad();
+    if (pane === 'service-providers') spLoad();
     const addSiteBtn   = document.getElementById('tt-add-site-btn');
     const addPersonBtn = document.getElementById('tt-add-person-btn');
     const editBtn      = document.getElementById('tt-inclement-edit-btn');
@@ -5267,6 +5465,263 @@ const firebaseConfig = {
   };
   window.highlightDuties    = highlightDuties;
   window.highlightSpec      = highlightSpec;
+
+  // ── SERVICE PROVIDER TIMETABLE ──────────────────────────────
+  const SP_LOCATIONS = {
+    koala_r26:    'Koala – Room 26',
+    kangaroo_r28: 'Kangaroo – Room 28',
+    kangaroo_r27: 'Kangaroo – Room 27',
+    office:       'Office Meeting Room',
+    fishbowl:     'Fish Bowl – Admin A',
+  };
+  const SP_LOCATION_ORDER = ['koala_r26','kangaroo_r28','kangaroo_r27','office','fishbowl'];
+  const SP_DAYS = { mon:'Monday', tue:'Tuesday', wed:'Wednesday', thu:'Thursday', fri:'Friday' };
+  const SP_DAY_ORDER = ['mon','tue','wed','thu','fri'];
+  const SP_SLOTS = ['8:50-9:40','9:40-10:30','11:00-11:50','11:50-12:40','1:20-2:10','2:10-3:00'];
+  const SP_SLOT_LABELS = {
+    '8:50-9:40':'8:50–9:40','9:40-10:30':'9:40–10:30',
+    '11:00-11:50':'11:00–11:50','11:50-12:40':'11:50–12:40',
+    '1:20-2:10':'1:20–2:10','2:10-3:00':'2:10–3:00'
+  };
+
+  let _spSessions = null;
+  let _spWeek = 'odd';
+  let _spAdminWeek = 'odd';
+
+  async function spLoad() {
+    if (_spSessions) { spRender(); return; }
+    const container = document.getElementById('sp-grid-container');
+    if (!container) return;
+    try {
+      const snap = await getDocs(collection(db, 'sp_timetable'));
+      _spSessions = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      spRender();
+      spAdminRender();
+    } catch(e) {
+      container.innerHTML = '<div style="color:red;padding:20px">Error loading timetable: ' + e.message + '</div>';
+    }
+  }
+
+  function spSetWeek(week) {
+    _spWeek = week;
+    document.getElementById('sp-odd-btn').classList.toggle('active', week === 'odd');
+    document.getElementById('sp-even-btn').classList.toggle('active', week === 'even');
+    spRender();
+  }
+
+  function spRender() {
+    const container = document.getElementById('sp-grid-container');
+    if (!container || !_spSessions) return;
+    const sessions = _spSessions.filter(s => s.week === _spWeek);
+
+    if (sessions.length === 0) {
+      container.innerHTML = '<div style="text-align:center;padding:40px;color:var(--subtext)">No sessions for ' + (_spWeek === 'odd' ? 'odd' : 'even') + ' weeks.</div>';
+      return;
+    }
+
+    let html = '';
+    for (const loc of SP_LOCATION_ORDER) {
+      const locSessions = sessions.filter(s => s.location === loc);
+      if (locSessions.length === 0) continue;
+
+      html += '<div class="sp-location-block">';
+      html += '<div class="sp-location-heading">📍 ' + (SP_LOCATIONS[loc] || loc) + '</div>';
+      html += '<div class="sp-day-group">';
+
+      // Header row
+      html += '<div class="sp-header-row">';
+      html += '<div class="sp-cell">Time</div>';
+      html += '<div class="sp-cell">Student</div>';
+      html += '<div class="sp-cell">Service</div>';
+      html += '<div class="sp-cell">Organisation</div>';
+      html += '<div class="sp-cell">Provider</div>';
+      html += '</div>';
+
+      for (const day of SP_DAY_ORDER) {
+        const daySessions = locSessions.filter(s => s.day === day);
+        if (daySessions.length === 0) continue;
+
+        html += '<div class="sp-day-heading">' + (SP_DAYS[day] || day) + '</div>';
+
+        // Sort by time slot order
+        daySessions.sort((a,b) => SP_SLOTS.indexOf(a.timeSlot) - SP_SLOTS.indexOf(b.timeSlot));
+
+        for (const s of daySessions) {
+          html += '<div class="sp-session-row">';
+          html += '<div class="sp-cell sp-cell-time">' + (SP_SLOT_LABELS[s.timeSlot] || s.timeSlot) + '</div>';
+          html += '<div class="sp-cell"><div><span class="sp-cell-student">' + esc(s.studentName) + '</span>';
+          if (s.roomNumber) html += '<span class="sp-cell-room">' + esc(s.roomNumber) + '</span>';
+          html += '</div></div>';
+          html += '<div class="sp-cell"><span class="sp-cell-service">' + esc(s.serviceType) + '</span></div>';
+          html += '<div class="sp-cell"><span class="sp-cell-org">' + esc(s.organisation) + '</span></div>';
+          html += '<div class="sp-cell"><span class="sp-cell-provider">' + esc(s.providerName) + '</span>';
+          if (s.notes) html += '<span class="sp-note">⚠ ' + esc(s.notes) + '</span>';
+          html += '</div>';
+          html += '</div>';
+        }
+      }
+      html += '</div></div>';
+    }
+    container.innerHTML = html;
+  }
+
+  // ── SP ADMIN ──────────────────────────────────────────────
+  function spAdminSetWeek(week) {
+    _spAdminWeek = week;
+    document.getElementById('sp-admin-odd-btn').classList.toggle('active', week === 'odd');
+    document.getElementById('sp-admin-even-btn').classList.toggle('active', week === 'even');
+    spAdminRender();
+  }
+
+  function spAdminRender() {
+    const listEl = document.getElementById('sp-admin-list');
+    const countEl = document.getElementById('sp-admin-count');
+    if (!listEl || !_spSessions) return;
+
+    const filterLoc = document.getElementById('sp-admin-filter-loc')?.value || '';
+    const filterDay = document.getElementById('sp-admin-filter-day')?.value || '';
+    const search    = (document.getElementById('sp-admin-search')?.value || '').toLowerCase();
+
+    let sessions = _spSessions.filter(s => s.week === _spAdminWeek);
+    if (filterLoc) sessions = sessions.filter(s => s.location === filterLoc);
+    if (filterDay) sessions = sessions.filter(s => s.day === filterDay);
+    if (search)    sessions = sessions.filter(s =>
+      (s.studentName||'').toLowerCase().includes(search) ||
+      (s.providerName||'').toLowerCase().includes(search) ||
+      (s.organisation||'').toLowerCase().includes(search)
+    );
+
+    // Sort: location order → day order → time slot order
+    sessions.sort((a,b) => {
+      const li = SP_LOCATION_ORDER.indexOf(a.location) - SP_LOCATION_ORDER.indexOf(b.location);
+      if (li !== 0) return li;
+      const di = SP_DAY_ORDER.indexOf(a.day) - SP_DAY_ORDER.indexOf(b.day);
+      if (di !== 0) return di;
+      return SP_SLOTS.indexOf(a.timeSlot) - SP_SLOTS.indexOf(b.timeSlot);
+    });
+
+    if (countEl) countEl.textContent = sessions.length + ' session' + (sessions.length !== 1 ? 's' : '');
+
+    if (sessions.length === 0) {
+      listEl.innerHTML = '<div style="text-align:center;padding:30px;color:var(--subtext);font-size:13px">No sessions match your filters.</div>';
+      return;
+    }
+
+    const rows = sessions.map(s => `
+      <div class="sp-admin-row">
+        <div>
+          <div style="font-weight:700;color:var(--navy)">${esc(s.studentName)} <span style="font-weight:400;color:var(--subtext);font-size:12px">${esc(s.roomNumber)}</span></div>
+          <div class="sp-admin-meta">
+            ${SP_DAYS[s.day]||s.day} · ${SP_SLOT_LABELS[s.timeSlot]||s.timeSlot} · ${SP_LOCATIONS[s.location]||s.location}
+          </div>
+          <div class="sp-admin-meta" style="margin-top:2px">
+            <span style="color:#6366f1">${esc(s.serviceType)}</span> · ${esc(s.organisation)} · ${esc(s.providerName)}
+          </div>
+          ${s.notes ? '<div style="font-size:11px;font-weight:700;color:var(--gold);margin-top:3px">⚠ '+esc(s.notes)+'</div>' : ''}
+        </div>
+        <div class="sp-admin-actions">
+          <button class="btn btn-sm btn-outline" onclick="spAdminEdit('${s.id}')">✏️</button>
+          <button class="btn btn-sm" style="background:#fee2e2;color:#dc2626;border:1px solid #fca5a5" onclick="spAdminDelete('${s.id}')">🗑</button>
+        </div>
+      </div>
+    `).join('');
+
+    listEl.innerHTML = '<div style="border:1px solid var(--gray2);border-radius:8px;overflow:hidden">' + rows + '</div>';
+  }
+
+  function spAdminOpenAdd() {
+    if (!_spSessions) { alert('Timetable not loaded yet. Please go to Timetables → Service Providers first.'); return; }
+    document.getElementById('sp-modal-title').textContent = 'Add Session';
+    document.getElementById('sp-edit-id').value = '';
+    document.getElementById('sp-f-week').value = _spAdminWeek;
+    document.getElementById('sp-f-day').value = 'mon';
+    document.getElementById('sp-f-slot').value = '11:00-11:50';
+    document.getElementById('sp-f-loc').value = 'koala_r26';
+    document.getElementById('sp-f-student').value = '';
+    document.getElementById('sp-f-room').value = '';
+    document.getElementById('sp-f-service').value = '';
+    document.getElementById('sp-f-org').value = '';
+    document.getElementById('sp-f-provider').value = '';
+    document.getElementById('sp-f-notes').value = '';
+    document.getElementById('sp-modal-msg').style.display = 'none';
+    openModal('sp-session-modal');
+  }
+
+  function spAdminEdit(id) {
+    const s = _spSessions.find(x => x.id === id);
+    if (!s) return;
+    document.getElementById('sp-modal-title').textContent = 'Edit Session';
+    document.getElementById('sp-edit-id').value = id;
+    document.getElementById('sp-f-week').value = s.week;
+    document.getElementById('sp-f-day').value = s.day;
+    document.getElementById('sp-f-slot').value = s.timeSlot;
+    document.getElementById('sp-f-loc').value = s.location;
+    document.getElementById('sp-f-student').value = s.studentName || '';
+    document.getElementById('sp-f-room').value = s.roomNumber || '';
+    document.getElementById('sp-f-service').value = s.serviceType || '';
+    document.getElementById('sp-f-org').value = s.organisation || '';
+    document.getElementById('sp-f-provider').value = s.providerName || '';
+    document.getElementById('sp-f-notes').value = s.notes || '';
+    document.getElementById('sp-modal-msg').style.display = 'none';
+    openModal('sp-session-modal');
+  }
+
+  async function spAdminDelete(id) {
+    const s = _spSessions.find(x => x.id === id);
+    if (!s) return;
+    if (!confirm('Delete session for ' + s.studentName + ' (' + (SP_DAYS[s.day]||s.day) + ', ' + s.timeSlot + ')?')) return;
+    try {
+      await deleteDoc(doc(db, 'sp_timetable', id));
+      _spSessions = _spSessions.filter(x => x.id !== id);
+      spAdminRender();
+      spRender();
+    } catch(e) { alert('Error deleting: ' + e.message); }
+  }
+
+  async function spSaveSession() {
+    const msgEl = document.getElementById('sp-modal-msg');
+    msgEl.style.display = 'none';
+    const id = document.getElementById('sp-edit-id').value;
+    const data = {
+      week:        document.getElementById('sp-f-week').value,
+      day:         document.getElementById('sp-f-day').value,
+      timeSlot:    document.getElementById('sp-f-slot').value,
+      location:    document.getElementById('sp-f-loc').value,
+      studentName: document.getElementById('sp-f-student').value.trim(),
+      roomNumber:  document.getElementById('sp-f-room').value.trim(),
+      serviceType: document.getElementById('sp-f-service').value.trim(),
+      organisation:document.getElementById('sp-f-org').value.trim(),
+      providerName:document.getElementById('sp-f-provider').value.trim(),
+      notes:       document.getElementById('sp-f-notes').value.trim(),
+    };
+    if (!data.studentName) { msgEl.textContent = 'Please enter a student name.'; msgEl.style.color='#dc2626'; msgEl.style.display='block'; return; }
+    if (!data.serviceType) { msgEl.textContent = 'Please enter a service type.'; msgEl.style.color='#dc2626'; msgEl.style.display='block'; return; }
+    try {
+      if (id) {
+        await setDoc(doc(db, 'sp_timetable', id), data);
+        const idx = _spSessions.findIndex(x => x.id === id);
+        if (idx !== -1) _spSessions[idx] = { id, ...data };
+      } else {
+        const ref = doc(collection(db, 'sp_timetable'));
+        await setDoc(ref, data);
+        _spSessions.push({ id: ref.id, ...data });
+      }
+      spAdminRender();
+      spRender();
+      spCloseModal();
+    } catch(e) { msgEl.textContent = 'Error saving: ' + e.message; msgEl.style.color='#dc2626'; msgEl.style.display='block'; }
+  }
+
+  function spCloseModal() { closeModal('sp-session-modal'); }
+
+  window.spSetWeek       = spSetWeek;
+  window.spAdminSetWeek  = spAdminSetWeek;
+  window.spAdminRender   = spAdminRender;
+  window.spAdminOpenAdd  = spAdminOpenAdd;
+  window.spAdminEdit     = spAdminEdit;
+  window.spAdminDelete   = spAdminDelete;
+  window.spSaveSession   = spSaveSession;
+  window.spCloseModal    = spCloseModal;
 
   // ── INCLEMENT WEATHER ────────────────────────────────────
   const INCLEMENT_DEFAULT = [
@@ -6234,7 +6689,7 @@ const firebaseConfig = {
       ) b.classList.add('active');
     });
     if (view === 'tickets')  { renderDashboard(); renderAllTickets(allTickets); setupReportDropdowns(); applyFilters(); }
-    if (view === 'admin')    { loadAdminUsers(); kioskConfigLoad(); bulletinConfigLoad(); ticketRoutingLoad(); clubsConfigLoad(); ensemblesConfigLoad(); nitLoad(); }
+    if (view === 'admin')    { loadAdminUsers(); kioskConfigLoad(); bulletinConfigLoad(); ticketRoutingLoad(); clubsConfigLoad(); ensemblesConfigLoad(); nitLoad(); if (!_spSessions) spLoad(); else { spAdminRender(); } }
     if (view === 'naplan' && !_npInited) { _npInited = true; npInitDashboard(); }
     if (view === 'meetings') meetingsInit();
     if (view === 'documents') docInit();

@@ -3182,7 +3182,7 @@
           <span class="age-chip"><span class="age-dot age-orange"></span> 8–14 days</span>
           <span class="age-chip"><span class="age-dot age-red"></span> 2+ weeks</span>
         </div>
-        <div class="tickets-table-wrap">
+        <div id="admin-users" class="tickets-table-wrap">
           <table>
             <thead><tr>
               <th style="width:8px"></th><th>Ticket</th><th>Category</th>
@@ -4323,8 +4323,20 @@
         <button class="btn btn-gold" onclick="openAddUserModal()">+ Add Staff Account</button>
       </div>
 
+      <!-- ── ADMIN JUMP NAV ── -->
+      <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px">
+        <a href="#admin-kiosk"     class="tt-tab" style="text-decoration:none">📺 Kiosk</a>
+        <a href="#admin-bulletin"  class="tt-tab" style="text-decoration:none">📰 Bulletin</a>
+        <a href="#admin-clubs"     class="tt-tab" style="text-decoration:none">🎯 Clubs</a>
+        <a href="#admin-ensembles" class="tt-tab" style="text-decoration:none">🎵 Ensembles</a>
+        <a href="#admin-nit"       class="tt-tab" style="text-decoration:none">💰 NIT</a>
+        <a href="#admin-routing"   class="tt-tab" style="text-decoration:none">🎫 Ticket Routing</a>
+        <a href="#admin-sp"        class="tt-tab" style="text-decoration:none">🏥 Service Providers</a>
+        <a href="#admin-users"     class="tt-tab" style="text-decoration:none">👥 Users</a>
+      </div>
+
       <!-- ── KIOSK CONFIGURATOR ── -->
-      <div style="background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);padding:20px 24px;margin-bottom:24px;border-left:4px solid var(--gold)">
+      <div id="admin-kiosk" style="background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);padding:20px 24px;margin-bottom:24px;border-left:4px solid var(--gold)">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
           <div>
             <div style="font-size:14px;font-weight:800;color:var(--navy);text-transform:uppercase;letter-spacing:0.3px">📺 Kiosk Display Settings</div>
@@ -4347,7 +4359,7 @@
       </div>
 
       <!-- ── LATEST BULLETIN ── -->
-      <div style="background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);padding:20px 24px;margin-bottom:24px;border-left:4px solid var(--navy)">
+      <div id="admin-bulletin" style="background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);padding:20px 24px;margin-bottom:24px;border-left:4px solid var(--navy)">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
           <div>
             <div style="font-size:14px;font-weight:800;color:var(--navy);text-transform:uppercase;letter-spacing:0.3px">📰 Latest Bulletin</div>
@@ -4369,7 +4381,7 @@
       </div>
 
       <!-- ── STUDENT CLUBS CONFIGURATOR ── -->
-      <div style="background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);padding:20px 24px;margin-bottom:24px;border-left:4px solid #22c55e">
+      <div id="admin-clubs" style="background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);padding:20px 24px;margin-bottom:24px;border-left:4px solid #22c55e">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
           <div>
             <div style="font-size:14px;font-weight:800;color:var(--navy);text-transform:uppercase;letter-spacing:0.3px">🎯 Student Clubs Timetable</div>
@@ -4404,7 +4416,7 @@
       </div>
 
       <!-- ── MUSIC ENSEMBLES TIMETABLE ── -->
-      <div style="background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);padding:20px 24px;margin-bottom:24px;border-left:4px solid #7c3aed">
+      <div id="admin-ensembles" style="background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);padding:20px 24px;margin-bottom:24px;border-left:4px solid #7c3aed">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
           <div>
             <div style="font-size:14px;font-weight:800;color:var(--navy);text-transform:uppercase;letter-spacing:0.3px">🎵 Music Ensembles Timetable</div>
@@ -4468,7 +4480,7 @@
       </div>
 
       <!-- ── NIT PAYBACK LIST ── -->
-      <div style="background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);padding:20px 24px;margin-bottom:24px;border-left:4px solid #f59e0b">
+      <div id="admin-nit" style="background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);padding:20px 24px;margin-bottom:24px;border-left:4px solid #f59e0b">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
           <div>
             <div style="font-size:14px;font-weight:800;color:var(--navy);text-transform:uppercase;letter-spacing:0.3px">📋 NIT Payback Owed</div>
@@ -4486,7 +4498,7 @@
       </div>
 
       <!-- ── TICKET ROUTING ── -->
-      <div style="background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);padding:20px 24px;margin-bottom:24px;border-left:4px solid #6366f1">
+      <div id="admin-routing" style="background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);padding:20px 24px;margin-bottom:24px;border-left:4px solid #6366f1">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
           <div>
             <div style="font-size:14px;font-weight:800;color:var(--navy);text-transform:uppercase;letter-spacing:0.3px">🎫 Ticket Email Routing</div>
@@ -4537,7 +4549,7 @@
       </div>
 
       <!-- ── SERVICE PROVIDER TIMETABLE ADMIN ── -->
-      <div style="background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);padding:20px 24px;margin-bottom:24px;border-left:4px solid #8b5cf6">
+      <div id="admin-sp" style="background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);padding:20px 24px;margin-bottom:24px;border-left:4px solid #8b5cf6">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;flex-wrap:wrap;gap:8px">
           <div>
             <div style="font-size:14px;font-weight:800;color:var(--navy);text-transform:uppercase;letter-spacing:0.3px">🏥 Service Provider Timetable</div>

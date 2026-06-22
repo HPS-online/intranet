@@ -807,6 +807,15 @@
     .sp-admin-row:hover { background: var(--gray1); }
     .sp-admin-meta { font-size: 11px; color: var(--subtext); margin-top: 3px; }
     .sp-admin-actions { display: flex; gap: 6px; flex-shrink: 0; }
+    .sp-gap-row { background: #f0fdf4; }
+    .sp-gap-row:hover { background: #dcfce7; }
+    .sp-gap-label { grid-column: 2 / 6; border-right: none; }
+    .sp-inline-btn {
+      background: none; border: none; cursor: pointer; font-size: 13px;
+      padding: 3px 5px; border-radius: 4px; opacity: 0.6; transition: opacity 0.15s, background 0.15s;
+    }
+    .sp-inline-btn:hover { opacity: 1; background: var(--gray2); }
+    .sp-del-btn:hover { background: #fee2e2; }
 
     .modal-header {
       padding: 24px 28px 20px;
@@ -4331,7 +4340,7 @@
         <a href="#admin-ensembles" class="tt-tab" style="text-decoration:none">🎵 Ensembles</a>
         <a href="#admin-nit"       class="tt-tab" style="text-decoration:none">💰 NIT</a>
         <a href="#admin-routing"   class="tt-tab" style="text-decoration:none">🎫 Ticket Routing</a>
-        <a href="#admin-sp"        class="tt-tab" style="text-decoration:none">🏥 Service Providers</a>
+        <!-- SP admin nav hidden - managed via timetable view -->
         <a href="#admin-users"     class="tt-tab" style="text-decoration:none">👥 Users</a>
       </div>
 
@@ -4549,7 +4558,7 @@
       </div>
 
       <!-- ── SERVICE PROVIDER TIMETABLE ADMIN ── -->
-      <div id="admin-sp" style="background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);padding:20px 24px;margin-bottom:24px;border-left:4px solid #8b5cf6">
+      <div id="admin-sp" style="background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);padding:20px 24px;margin-bottom:24px;border-left:4px solid #8b5cf6;display:none">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;flex-wrap:wrap;gap:8px">
           <div>
             <div style="font-size:14px;font-weight:800;color:var(--navy);text-transform:uppercase;letter-spacing:0.3px">🏥 Service Provider Timetable</div>
@@ -5480,7 +5489,7 @@ const firebaseConfig = {
 
   // ── SERVICE PROVIDER TIMETABLE ──────────────────────────────
   const SP_LOCATIONS = {
-    koala_r26:    'Koala – Room 26',
+    koala_r26:    'Kangaroo – Room 26',
     kangaroo_r28: 'Kangaroo – Room 28',
     kangaroo_r27: 'Kangaroo – Room 27',
     office:       'Office Meeting Room',
@@ -5531,6 +5540,10 @@ const firebaseConfig = {
       return;
     }
 
+    const isAdmin = currentIsAdmin;
+    // Grid has 5 cols if admin (extra col for actions), 5 cols if not
+    const gridCols = isAdmin ? '100px 1fr 1fr 1fr 1fr 64px' : '100px 1fr 1fr 1fr 1fr';
+
     let html = '';
     for (const loc of SP_LOCATION_ORDER) {
       const locSessions = sessions.filter(s => s.location === loc);
@@ -5541,12 +5554,13 @@ const firebaseConfig = {
       html += '<div class="sp-day-group">';
 
       // Header row
-      html += '<div class="sp-header-row">';
+      html += '<div class="sp-header-row" style="grid-template-columns:' + gridCols + '">';
       html += '<div class="sp-cell">Time</div>';
       html += '<div class="sp-cell">Student</div>';
       html += '<div class="sp-cell">Service</div>';
       html += '<div class="sp-cell">Organisation</div>';
       html += '<div class="sp-cell">Provider</div>';
+      if (isAdmin) html += '<div class="sp-cell"></div>';
       html += '</div>';
 
       for (const day of SP_DAY_ORDER) {
@@ -5555,21 +5569,48 @@ const firebaseConfig = {
 
         html += '<div class="sp-day-heading">' + (SP_DAYS[day] || day) + '</div>';
 
-        // Sort by time slot order
-        daySessions.sort((a,b) => SP_SLOTS.indexOf(a.timeSlot) - SP_SLOTS.indexOf(b.timeSlot));
+        // Build full slot list — filled + gaps
+        const filledSlots = {};
+        daySessions.forEach(s => { filledSlots[s.timeSlot] = s; });
 
-        for (const s of daySessions) {
-          html += '<div class="sp-session-row">';
-          html += '<div class="sp-cell sp-cell-time">' + (SP_SLOT_LABELS[s.timeSlot] || s.timeSlot) + '</div>';
-          html += '<div class="sp-cell"><div><span class="sp-cell-student">' + esc(s.studentName) + '</span>';
-          if (s.roomNumber) html += '<span class="sp-cell-room">' + esc(s.roomNumber) + '</span>';
-          html += '</div></div>';
-          html += '<div class="sp-cell"><span class="sp-cell-service">' + esc(s.serviceType) + '</span></div>';
-          html += '<div class="sp-cell"><span class="sp-cell-org">' + esc(s.organisation) + '</span></div>';
-          html += '<div class="sp-cell"><span class="sp-cell-provider">' + esc(s.providerName) + '</span>';
-          if (s.notes) html += '<span class="sp-note">⚠ ' + esc(s.notes) + '</span>';
-          html += '</div>';
-          html += '</div>';
+        for (const slot of SP_SLOTS) {
+          const s = filledSlots[slot];
+          if (s) {
+            // Filled session row
+            html += '<div class="sp-session-row" style="grid-template-columns:' + gridCols + '">';
+            html += '<div class="sp-cell sp-cell-time">' + (SP_SLOT_LABELS[slot] || slot) + '</div>';
+            html += '<div class="sp-cell"><div><span class="sp-cell-student">' + esc(s.studentName) + '</span>';
+            if (s.roomNumber) html += '<span class="sp-cell-room">' + esc(s.roomNumber) + '</span>';
+            html += '</div></div>';
+            html += '<div class="sp-cell"><span class="sp-cell-service">' + esc(s.serviceType) + '</span></div>';
+            html += '<div class="sp-cell"><span class="sp-cell-org">' + esc(s.organisation) + '</span></div>';
+            html += '<div class="sp-cell"><span class="sp-cell-provider">' + esc(s.providerName) + '</span>';
+            if (s.notes) html += '<span class="sp-note">⚠ ' + esc(s.notes) + '</span>';
+            html += '</div>';
+            if (isAdmin) {
+              html += '<div class="sp-cell" style="gap:4px;justify-content:center;padding:6px">';
+              html += '<button class="sp-inline-btn sp-edit-btn" title="Edit" onclick="spAdminEdit(\'' + s.id + '\')">✏️</button>';
+              html += '<button class="sp-inline-btn sp-del-btn" title="Delete" onclick="spAdminDelete(\'' + s.id + '\')">🗑</button>';
+              html += '</div>';
+            }
+            html += '</div>';
+          } else {
+            // Gap / available slot
+            html += '<div class="sp-session-row sp-gap-row" style="grid-template-columns:' + gridCols + '">';
+            html += '<div class="sp-cell sp-cell-time" style="color:var(--subtext)">' + (SP_SLOT_LABELS[slot] || slot) + '</div>';
+            if (isAdmin) {
+              // Clickable available row for admins
+              html += '<div class="sp-cell sp-gap-label" colspan="4" style="grid-column:2/6;cursor:pointer" onclick="spAdminOpenAddPrefilled(\'' + loc + '\',\'' + day + '\',\'' + slot + '\')">'; 
+              html += '<span style="color:#15803d;font-size:12px;font-weight:600">＋ Available — click to add</span>';
+              html += '</div>';
+              html += '<div class="sp-cell"></div>';
+            } else {
+              html += '<div class="sp-cell sp-gap-label" style="grid-column:2/6">';
+              html += '<span style="color:#6b7280;font-size:12px;font-style:italic">Available</span>';
+              html += '</div>';
+            }
+            html += '</div>';
+          }
         }
       }
       html += '</div></div>';
@@ -5639,6 +5680,24 @@ const firebaseConfig = {
     `).join('');
 
     listEl.innerHTML = '<div style="border:1px solid var(--gray2);border-radius:8px;overflow:hidden">' + rows + '</div>';
+  }
+
+  function spAdminOpenAddPrefilled(loc, day, slot) {
+    if (!_spSessions) return;
+    document.getElementById('sp-modal-title').textContent = 'Add Session';
+    document.getElementById('sp-edit-id').value = '';
+    document.getElementById('sp-f-week').value = _spWeek;
+    document.getElementById('sp-f-day').value = day;
+    document.getElementById('sp-f-slot').value = slot;
+    document.getElementById('sp-f-loc').value = loc;
+    document.getElementById('sp-f-student').value = '';
+    document.getElementById('sp-f-room').value = '';
+    document.getElementById('sp-f-service').value = '';
+    document.getElementById('sp-f-org').value = '';
+    document.getElementById('sp-f-provider').value = '';
+    document.getElementById('sp-f-notes').value = '';
+    document.getElementById('sp-modal-msg').style.display = 'none';
+    openModal('sp-session-modal');
   }
 
   function spAdminOpenAdd() {
@@ -5726,7 +5785,8 @@ const firebaseConfig = {
 
   function spCloseModal() { closeModal('sp-session-modal'); }
 
-  window.spSetWeek       = spSetWeek;
+  window.spSetWeek              = spSetWeek;
+  window.spAdminOpenAddPrefilled = spAdminOpenAddPrefilled;
   window.spAdminSetWeek  = spAdminSetWeek;
   window.spAdminRender   = spAdminRender;
   window.spAdminOpenAdd  = spAdminOpenAdd;

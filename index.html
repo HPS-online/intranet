@@ -1858,10 +1858,10 @@
   </div>
 
   <!-- Main: centre (absences + notices) + right panel -->
-  <div style="display:grid;grid-template-columns:1fr 340px;height:calc(100vh - 68px)">
+  <div id="kiosk-body" style="display:grid;grid-template-columns:1fr 340px;min-height:calc(100vh - 68px)">
 
     <!-- Centre -->
-    <div style="display:flex;flex-direction:column;overflow:hidden;border-right:1px solid rgba(255,255,255,0.08)">
+    <div style="display:flex;flex-direction:column;border-right:1px solid rgba(255,255,255,0.08)">
       <!-- Absences -->
       <div style="padding:22px 32px 18px;border-bottom:1px solid rgba(255,255,255,0.08)">
         <div style="font-size:11px;font-weight:700;letter-spacing:2px;color:rgba(255,255,255,0.4);text-transform:uppercase;margin-bottom:12px">Staff Absences &amp; Duties</div>
@@ -1876,7 +1876,7 @@
         </div>
       </div>
       <!-- Notices -->
-      <div style="flex:1;padding:18px 32px 20px;overflow:hidden;display:flex;flex-direction:column">
+      <div style="flex:1;padding:18px 32px 20px;display:flex;flex-direction:column">
         <div style="font-size:11px;font-weight:700;letter-spacing:2px;color:rgba(255,255,255,0.4);text-transform:uppercase;margin-bottom:12px">Daily Notices</div>
         <div id="k-clubs-wrap" style="display:none;margin-bottom:12px;background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.3);border-radius:8px;padding:10px 14px">
           <div style="font-size:10px;font-weight:700;letter-spacing:1.5px;color:#4ade80;text-transform:uppercase;margin-bottom:6px">🎯 Today's Student Clubs</div>
@@ -1886,14 +1886,14 @@
           <div style="font-size:10px;font-weight:700;letter-spacing:1.5px;color:#a78bfa;text-transform:uppercase;margin-bottom:6px">🎵 Today's Music Ensembles</div>
           <div id="k-ensembles" style="display:flex;flex-direction:column;gap:4px;font-size:14px;font-weight:600"></div>
         </div>
-        <div id="k-notices" style="display:flex;flex-direction:column;gap:8px;overflow:hidden"></div>
+        <div id="k-notices" style="display:flex;flex-direction:column;gap:8px"></div>
       </div>
     </div>
 
     <!-- Right panel -->
-    <div style="background:#161d45;padding:22px 20px;display:flex;flex-direction:column;overflow:hidden">
+    <div style="background:#161d45;padding:22px 20px;display:flex;flex-direction:column">
       <div style="font-size:11px;font-weight:700;letter-spacing:2px;color:rgba(255,255,255,0.4);text-transform:uppercase;margin-bottom:14px">Still To Come This Week</div>
-      <div id="k-events" style="display:flex;flex-direction:column;gap:8px;overflow:hidden;flex:1;min-height:0"></div>
+      <div id="k-events" style="display:flex;flex-direction:column;gap:8px;flex:1"></div>
       <div id="k-birthdays-wrap" style="display:none;margin-top:16px;border-top:1px solid rgba(255,255,255,0.08);padding-top:14px">
         <div style="font-size:11px;font-weight:700;letter-spacing:2px;color:rgba(255,255,255,0.4);text-transform:uppercase;margin-bottom:10px">🎂 Birthdays</div>
         <div id="k-birthdays"></div>
@@ -2112,8 +2112,11 @@
           '</div>';
         }).join('');
       }
+      // Rescale after content renders
+      setTimeout(kioskAutoScale, 100);
     }).catch(function() {
       document.getElementById('k-absences-track').innerHTML = '<div style="color:rgba(255,255,255,0.3)">Could not load daybook.</div>';
+      setTimeout(kioskAutoScale, 100);
     });
   }
 
@@ -2244,12 +2247,32 @@
     }).catch(function(){});
   }
 
+  // Auto-scale kiosk content to fit screen with no scrolling
+  function kioskAutoScale() {
+    var screen  = document.getElementById('kiosk-screen');
+    var header  = screen ? screen.querySelector(':scope > div:first-child') : null;
+    var body    = document.getElementById('kiosk-body');
+    if (!screen || !header || !body) return;
+    // Reset scale first so we can measure natural height
+    body.style.transform       = 'none';
+    body.style.transformOrigin = 'top left';
+    body.style.width           = '100vw';
+    var availH   = screen.clientHeight - header.offsetHeight;
+    var naturalH = body.scrollHeight;
+    if (naturalH > availH) {
+      var scale = availH / naturalH;
+      body.style.transform = 'scale(' + scale.toFixed(4) + ')';
+      body.style.width     = (100 / scale).toFixed(2) + 'vw';
+    }
+  }
+
   // Start
   document.addEventListener('DOMContentLoaded', function() {
     kioskClock();
     setInterval(kioskClock, 30000);
     kioskLoad();
     setInterval(kioskLoad, 5 * 60 * 1000);
+    window.addEventListener('resize', kioskAutoScale);
   });
 })();
 </script>

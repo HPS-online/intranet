@@ -6222,10 +6222,22 @@ const firebaseConfig = {
           tableHtml = `<span style="color:var(--subtext);font-size:13px">No columns defined.</span>`;
         } else {
           tableHtml = `<div style="overflow-x:auto"><table class="tt-inline-table ${editing?'tt-inline-edit':''}">
-            <thead><tr>${cols.map(c=>`<th>${escHtml(c)}</th>`).join('')}${editing?'<th style="width:36px"></th>':''}</tr></thead>
+            <thead><tr>${cols.map(c=>{
+                const parts = c.split(' — ');
+                return parts.length > 1
+                  ? `<th>${escHtml(parts[0])}<br><span style="font-weight:400;font-size:11px;opacity:0.75">${escHtml(parts[1])}</span></th>`
+                  : `<th>${escHtml(c)}</th>`;
+              }).join('')}${editing?'<th style="width:36px"></th>':''}</tr></thead>
             <tbody id="tt-tbody-${t.id}">
               ${rows.length===0 && !editing ? `<tr><td colspan="${cols.length}" style="color:var(--subtext);font-style:italic;text-align:center;padding:10px">No rows yet — click Edit to add.</td></tr>` : ''}
-              ${rows.map((row,ri) => `<tr>${cols.map((_,ci)=>`<td>${editing?`<input value="${escHtml(row[ci]||'')}" oninput="ttCellInput('${t.id}',${ri},${ci},this.value)">`:escHtml(row[ci]||'')}</td>`).join('')}${editing?`<td><button onclick="ttDeleteRow('${t.id}',${ri})" style="background:none;border:none;color:var(--red);cursor:pointer;font-size:15px" title="Remove row">✕</button></td>`:''}</tr>`).join('')}
+              ${rows.map((row,ri) => {
+                // Detect span rows: row[0] starts with __SPAN: = full-width merged read-only row
+                if ((row[0]||'').startsWith('__SPAN:')) {
+                  const spanText = row[0].replace(/^__SPAN:/, '');
+                  return `<tr><td style="font-style:italic;color:var(--subtext);background:var(--gray1);text-align:center;padding:8px 10px;font-size:12px" colspan="${cols.length}">${escHtml(spanText)}</td></tr>`;
+                }
+                return `<tr>${cols.map((_,ci)=>`<td>${editing?`<input value="${escHtml(row[ci]||'')}" oninput="ttCellInput('${t.id}',${ri},${ci},this.value)">`:escHtml(row[ci]||'')}</td>`).join('')}${editing?`<td><button onclick="ttDeleteRow('${t.id}',${ri})" style="background:none;border:none;color:var(--red);cursor:pointer;font-size:15px" title="Remove row">✕</button></td>`:''}</tr>`;
+              }).join('')}
             </tbody>
           </table></div>`;
           if (editing) {

@@ -6188,16 +6188,10 @@ const firebaseConfig = {
           actions += `<button class="btn btn-sm btn-outline" style="font-size:12px;color:var(--red)" onclick="ttDeleteSite('${t.id}','${escHtml(t.name)}')">🗑</button>`;
         }
       } else {
-        // Table type — toggle expand
+        // Table type — delete only in row; Edit/Save/Cancel live inside the expand panel
         const isEditing = _ttEditingId === t.id;
-        // Table name is the toggle — no separate View button needed
-        if (currentIsAdmin && !isEditing) {
-          actions += `<button class="btn btn-sm" style="font-size:12px;background:#22c55e;color:#fff;border:none" onclick="ttEditTableExpand('${t.id}')">✏️ Edit</button>`;
+        if (currentIsAdmin) {
           actions += `<button class="btn btn-sm btn-outline" style="font-size:12px;color:var(--red)" onclick="ttDeleteSite('${t.id}','${escHtml(t.name)}')">🗑</button>`;
-        }
-        if (currentIsAdmin && isEditing) {
-          actions += `<button class="btn btn-sm btn-gold" style="font-size:12px" onclick="ttSaveTable('${t.id}')">💾 Save</button>`;
-          actions += `<button class="btn btn-sm" style="font-size:12px;background:#ef4444;color:#fff;border:none" onclick="ttCancelEditTable()">✕ Cancel</button>`;
         }
       }
 
@@ -6222,7 +6216,19 @@ const firebaseConfig = {
             tableHtml += `<button class="btn btn-sm" style="margin-top:8px;background:var(--navy);color:#fff;font-size:12px" onclick="ttAddRow('${t.id}')">+ Add Row</button>`;
           }
         }
-        expandHtml = `<div class="tt-list-expand" id="tt-expand-${t.id}">${tableHtml}</div>`;
+        // Admin toolbar inside the expand panel
+        let expandToolbar = '';
+        if (currentIsAdmin) {
+          expandToolbar = editing
+            ? `<div style="display:flex;gap:8px;margin-bottom:10px">
+                <button class="btn btn-sm btn-gold" style="font-size:12px" onclick="ttSaveTable('${t.id}')">💾 Save</button>
+                <button class="btn btn-sm" style="font-size:12px;background:#ef4444;color:#fff;border:none" onclick="ttCancelEditTable()">✕ Cancel</button>
+               </div>`
+            : `<div style="margin-bottom:10px">
+                <button class="btn btn-sm" style="font-size:12px;background:#22c55e;color:#fff;border:none" onclick="ttEditTableExpand('${t.id}')">✏️ Edit</button>
+               </div>`;
+        }
+        expandHtml = `<div class="tt-list-expand" id="tt-expand-${t.id}">${expandToolbar}${tableHtml}</div>`;
       }
 
       const nameEl = t.type === 'pdf'

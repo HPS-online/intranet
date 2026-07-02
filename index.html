@@ -1361,8 +1361,8 @@
 
     /* ── TIMETABLE MANAGER ── */
     .tt-mgr-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:12px; }
-    .tt-card-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(320px,1fr)); gap:18px; }
-    .tt-mgr-card { background:var(--white); border-radius:var(--radius); box-shadow:var(--shadow); overflow:hidden; display:flex; flex-direction:column; }
+    .tt-card-grid { display:flex; flex-direction:column; gap:0; }
+    .tt-mgr-card { background:var(--white); overflow:hidden; display:flex; flex-direction:column; }
     .tt-mgr-card-head { background:var(--navy); color:var(--white); padding:12px 16px; display:flex; justify-content:space-between; align-items:flex-start; gap:8px; }
     .tt-mgr-card-title { font-size:14px; font-weight:700; }
     .tt-mgr-card-meta  { font-size:11px; color:rgba(255,255,255,0.6); margin-top:2px; }
@@ -1370,6 +1370,15 @@
     .tt-mgr-card-foot  { padding:10px 16px; border-top:1px solid var(--gray2); display:flex; gap:8px; flex-wrap:wrap; align-items:center; background:var(--gray1); }
     .tt-cat-badge { display:inline-block; padding:2px 9px; border-radius:20px; font-size:11px; font-weight:700; background:var(--gold-light); color:var(--gold-dark); }
     .tt-type-badge { display:inline-block; padding:2px 9px; border-radius:20px; font-size:10px; font-weight:600; }
+    /* Site timetable clean list */
+    .tt-list-wrap { background:var(--white); border-radius:var(--radius); box-shadow:var(--shadow); overflow:hidden; }
+    .tt-list-row { display:flex; align-items:center; gap:12px; padding:11px 16px; border-bottom:1px solid var(--gray2); background:var(--white); }
+    .tt-list-row:last-child { border-bottom:none; }
+    .tt-list-row:hover { background:var(--gray1); }
+    .tt-list-name { flex:1; font-size:14px; font-weight:600; color:var(--navy); }
+    .tt-list-actions { display:flex; gap:6px; align-items:center; flex-shrink:0; }
+    .tt-list-expand { padding:12px 16px 14px; border-bottom:1px solid var(--gray2); background:#fafbff; display:none; }
+    .tt-list-expand.open { display:block; }
     .tt-type-pdf   { background:#dbeafe; color:#1e40af; }
     .tt-type-table { background:#d1fae5; color:#065f46; }
 
@@ -2949,8 +2958,8 @@
           </div>
           <button class="btn btn-gold" id="tt-add-site-btn" onclick="ttOpenAddSite()" style="display:none">+ Add Timetable</button>
         </div>
-        <div id="tt-site-list" class="tt-card-grid">
-          <div class="spinner"></div>
+        <div class="tt-list-wrap">
+          <div id="tt-site-list"><div class="spinner"></div></div>
         </div>
       </div>
 
@@ -6114,6 +6123,8 @@ const firebaseConfig = {
   window.ttCancelEditTable  = ttCancelEditTable;
   window.ttAddRow           = ttAddRow;
   window.ttDeleteRow        = ttDeleteRow;
+  window.ttToggleExpand     = ttToggleExpand;
+  window.ttEditTableExpand  = ttEditTableExpand;
   window.ttOpenAddPerson    = ttOpenAddPerson;
   window.ttCloseAddPerson   = ttCloseAddPerson;
   window.ttPersonPdfSelected= ttPersonPdfSelected;
@@ -6140,8 +6151,9 @@ const firebaseConfig = {
     const el = document.getElementById('tt-site-list');
     el.innerHTML = '<div class="spinner"></div>';
     try {
-      const snap = await getDocs(query(collection(db,'timetables_site'), orderBy('order','asc')));
-      _ttSiteData = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      const snap = await getDocs(collection(db,'timetables_site'));
+      _ttSiteData = snap.docs.map(d => ({ id: d.id, ...d.data() }))
+        .sort((a,b) => (a.name||'').localeCompare(b.name||''));
       ttRenderSite();
     } catch(e) {
       el.innerHTML = `<div style="color:var(--red);padding:20px">Error loading timetables: ${e.message}</div>`;
@@ -6151,63 +6163,78 @@ const firebaseConfig = {
   function ttRenderSite() {
     const el = document.getElementById('tt-site-list');
     if (_ttSiteData.length === 0) {
-      el.innerHTML = `<div style="color:var(--subtext);font-size:14px;padding:32px;text-align:center;grid-column:1/-1">No site timetables added yet. Click <strong>+ Add Timetable</strong> to get started.</div>`;
+      el.innerHTML = `<div style="color:var(--subtext);font-size:14px;padding:32px;text-align:center">No site timetables added yet. Click <strong>+ Add Timetable</strong> to get started.</div>`;
       return;
     }
-    el.innerHTML = _ttSiteData.map((t,idx) => {
-      const catBadge = t.category ? `<span class="tt-cat-badge">${escHtml(t.category)}</span>` : '';
-      const typeBadge = t.type === 'pdf'
-        ? `<span class="tt-type-badge tt-type-pdf">PDF</span>`
-        : `<span class="tt-type-badge tt-type-table">Table</span>`;
-      const updStr = t.updatedAt?.toDate ? t.updatedAt.toDate().toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'}) : '';
-
-      const adminFoot = currentIsAdmin ? `
-        <button class="btn btn-sm btn-outline" style="font-size:11px" onclick="ttDeleteSite('${t.id}','${escHtml(t.name)}')">🗑 Delete</button>
-        ${t.type==='pdf' ? `<label class="btn btn-sm btn-outline" style="font-size:11px;cursor:pointer">🔄 Replace PDF<input type="file" accept=".pdf" style="display:none" onchange="ttReplacePdf('${t.id}',this)"></label>` : ''}
-        ${t.type==='table' && _ttEditingId !== t.id ? `<button class="btn btn-sm btn-outline" style="font-size:11px" onclick="ttEditTable('${t.id}')">✏ Edit Rows</button>` : ''}
-        ${t.type==='table' && _ttEditingId === t.id ? `<button class="btn btn-sm btn-primary" style="font-size:11px" onclick="ttSaveTable('${t.id}')">💾 Save</button><button class="btn btn-sm btn-outline" style="font-size:11px" onclick="ttCancelEditTable()">Cancel</button>` : ''}
-        <div style="margin-left:auto;display:flex;gap:4px">
-          <button class="tt-order-btn" onclick="ttMoveUp(${idx})" ${idx===0?'disabled':''}>▲</button>
-          <button class="tt-order-btn" onclick="ttMoveDown(${idx})" ${idx===_ttSiteData.length-1?'disabled':''}>▼</button>
-        </div>` : '';
-
-      let bodyContent = '';
+    el.innerHTML = _ttSiteData.map((t) => {
+      // ── Action buttons ──
+      let actions = '';
       if (t.type === 'pdf') {
-        bodyContent = t.pdfUrl
-          ? `<a href="${escHtml(t.pdfUrl)}" target="_blank" rel="noopener" class="btn btn-primary btn-sm" style="font-size:12px">📄 View PDF</a>`
-          : `<span class="tt-no-pdf">No PDF uploaded yet.</span>`;
+        if (t.pdfUrl) {
+          actions += `<a href="${escHtml(t.pdfUrl)}" target="_blank" rel="noopener" class="btn btn-primary btn-sm" style="font-size:12px">📄 View PDF</a>`;
+        }
+        if (currentIsAdmin) {
+          actions += `<label class="btn btn-sm btn-outline" style="font-size:12px;cursor:pointer">🔄 Replace<input type="file" accept=".pdf" style="display:none" onchange="ttReplacePdf('${t.id}',this)"></label>`;
+          actions += `<button class="btn btn-sm btn-outline" style="font-size:12px;color:var(--red)" onclick="ttDeleteSite('${t.id}','${escHtml(t.name)}')">🗑</button>`;
+        }
       } else {
-        // Render table inline
+        // Table type — toggle expand
+        const isEditing = _ttEditingId === t.id;
+        actions += `<button class="btn btn-sm btn-outline" style="font-size:12px" onclick="ttToggleExpand('${t.id}')">📋 View</button>`;
+        if (currentIsAdmin && !isEditing) {
+          actions += `<button class="btn btn-sm btn-outline" style="font-size:12px" onclick="ttEditTableExpand('${t.id}')">✏ Edit</button>`;
+          actions += `<button class="btn btn-sm btn-outline" style="font-size:12px;color:var(--red)" onclick="ttDeleteSite('${t.id}','${escHtml(t.name)}')">🗑</button>`;
+        }
+        if (currentIsAdmin && isEditing) {
+          actions += `<button class="btn btn-sm btn-primary" style="font-size:12px" onclick="ttSaveTable('${t.id}')">💾 Save</button>`;
+          actions += `<button class="btn btn-sm btn-outline" style="font-size:12px" onclick="ttCancelEditTable()">Cancel</button>`;
+        }
+      }
+
+      // ── Expanded content (tables only) ──
+      let expandHtml = '';
+      if (t.type === 'table') {
         const editing = _ttEditingId === t.id;
         const cols = t.columns || [];
         const rows = t.rows || [];
+        let tableHtml = '';
         if (cols.length === 0) {
-          bodyContent = `<span class="tt-no-pdf">No columns defined.</span>`;
+          tableHtml = `<span style="color:var(--subtext);font-size:13px">No columns defined.</span>`;
         } else {
-          bodyContent = `<div style="overflow-x:auto"><table class="tt-inline-table ${editing?'tt-inline-edit':''}">
+          tableHtml = `<div style="overflow-x:auto"><table class="tt-inline-table ${editing?'tt-inline-edit':''}">
             <thead><tr>${cols.map(c=>`<th>${escHtml(c)}</th>`).join('')}${editing?'<th style="width:36px"></th>':''}</tr></thead>
             <tbody id="tt-tbody-${t.id}">
-              ${rows.length===0 && !editing ? `<tr><td colspan="${cols.length}" style="color:var(--subtext);font-style:italic;text-align:center">No rows yet — click Edit Rows to add.</td></tr>` : ''}
+              ${rows.length===0 && !editing ? `<tr><td colspan="${cols.length}" style="color:var(--subtext);font-style:italic;text-align:center;padding:10px">No rows yet — click Edit to add.</td></tr>` : ''}
               ${rows.map((row,ri) => `<tr>${cols.map((_,ci)=>`<td>${editing?`<input value="${escHtml(row[ci]||'')}" oninput="ttCellInput('${t.id}',${ri},${ci},this.value)">`:escHtml(row[ci]||'')}</td>`).join('')}${editing?`<td><button onclick="ttDeleteRow('${t.id}',${ri})" style="background:none;border:none;color:var(--red);cursor:pointer;font-size:15px" title="Remove row">✕</button></td>`:''}</tr>`).join('')}
             </tbody>
           </table></div>`;
           if (editing) {
-            bodyContent += `<button class="btn btn-sm" style="margin-top:8px;background:var(--navy);color:#fff;font-size:12px" onclick="ttAddRow('${t.id}')">+ Add Row</button>`;
+            tableHtml += `<button class="btn btn-sm" style="margin-top:8px;background:var(--navy);color:#fff;font-size:12px" onclick="ttAddRow('${t.id}')">+ Add Row</button>`;
           }
         }
+        expandHtml = `<div class="tt-list-expand" id="tt-expand-${t.id}">${tableHtml}</div>`;
       }
 
-      return `<div class="tt-mgr-card" id="tt-site-card-${t.id}">
-        <div class="tt-mgr-card-head">
-          <div>
-            <div class="tt-mgr-card-title">${escHtml(t.name)}</div>
-            <div class="tt-mgr-card-meta">${catBadge} ${typeBadge} ${updStr ? '· Updated '+updStr : ''}</div>
-          </div>
-        </div>
-        <div class="tt-mgr-card-body">${bodyContent}</div>
-        ${currentIsAdmin ? `<div class="tt-mgr-card-foot">${adminFoot}</div>` : ''}
-      </div>`;
+      return `<div class="tt-list-row" id="tt-site-card-${t.id}">
+          <span class="tt-list-name">${escHtml(t.name)}</span>
+          <span class="tt-list-actions">${actions}</span>
+        </div>${expandHtml}`;
     }).join('');
+  }
+
+  function ttToggleExpand(id) {
+    const el = document.getElementById('tt-expand-' + id);
+    if (el) el.classList.toggle('open');
+  }
+
+  function ttEditTableExpand(id) {
+    _ttEditingId = id;
+    const el = document.getElementById('tt-expand-' + id);
+    if (el) el.classList.add('open');
+    ttRenderSite();
+    // Re-open after re-render
+    const el2 = document.getElementById('tt-expand-' + id);
+    if (el2) el2.classList.add('open');
   }
 
   function ttOpenAddSite() {
@@ -11175,6 +11202,8 @@ const firebaseConfig = {
   function ttAddRow(id)                { if (window.ttAddRow)            window.ttAddRow(id); }
   function ttDeleteRow(id,ri)          { if (window.ttDeleteRow)         window.ttDeleteRow(id,ri); }
   function ttCellInput(id,ri,ci,v)     { if (window.ttCellInput)         window.ttCellInput(id,ri,ci,v); }
+  function ttToggleExpand(id)          { if (window.ttToggleExpand)      window.ttToggleExpand(id); }
+  function ttEditTableExpand(id)       { if (window.ttEditTableExpand)   window.ttEditTableExpand(id); }
   function ttOpenAddPerson()           { if (window.ttOpenAddPerson)     window.ttOpenAddPerson(); }
   function ttCloseAddPerson()          { if (window.ttCloseAddPerson)    window.ttCloseAddPerson(); }
   function ttPersonPdfSelected(el)     { if (window.ttPersonPdfSelected) window.ttPersonPdfSelected(el); }

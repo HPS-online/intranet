@@ -5131,6 +5131,20 @@
   </div><!-- /main -->
 </div><!-- /app-screen -->
 
+<!-- TIMETABLE GUIDELINES MODAL -->
+<div class="modal-overlay" id="tt-guidelines-modal">
+  <div class="modal" style="max-width:520px">
+    <div class="modal-header" style="background:var(--navy)">
+      <h3 id="tt-guidelines-modal-title" style="color:#fff;margin:0;font-size:15px"></h3>
+      <button class="modal-close" onclick="closeModal('tt-guidelines-modal')" style="color:#fff">&#x2715;</button>
+    </div>
+    <div class="modal-body" id="tt-guidelines-modal-body" style="padding:20px 24px;font-size:13px;line-height:1.7;color:var(--text)"></div>
+    <div class="modal-footer" style="padding:12px 24px;border-top:1px solid var(--gray2);text-align:right">
+      <button class="btn btn-primary" onclick="closeModal('tt-guidelines-modal')">Close</button>
+    </div>
+  </div>
+</div>
+
 <!-- MEETING EMAIL PREVIEW MODAL -->
 <div class="modal-overlay" id="meeting-email-preview-modal">
   <div class="modal-box" style="max-width:640px;width:95%;max-height:90vh;overflow-y:auto;padding:0">
@@ -6129,6 +6143,7 @@ const firebaseConfig = {
   window.ttEditTableExpand  = ttEditTableExpand;
   window.ttCellInput        = ttCellInput;
   window.ttToggleLock       = ttToggleLock;
+  window.ttShowGuidelines   = ttShowGuidelines;
   window.ttOpenAddPerson    = ttOpenAddPerson;
   window.ttCloseAddPerson   = ttCloseAddPerson;
   window.ttPersonPdfSelected= ttPersonPdfSelected;
@@ -6219,6 +6234,10 @@ const firebaseConfig = {
         }
         // Admin toolbar inside the expand panel
         const isLocked = !!t.locked;
+        // Info button — hardcoded for Koala iPads
+        const infoBtn = t.name === 'Koala iPads'
+          ? `<button class="btn btn-sm btn-outline" style="font-size:12px;border-color:#6366f1;color:#6366f1" onclick="ttShowGuidelines()">ℹ️ Guidelines</button>`
+          : '';
         let expandToolbar = '';
         if (currentIsAdmin) {
           const lockBtn = `<button class="btn btn-sm btn-outline" style="font-size:12px" title="${isLocked?'Unlock to allow editing':'Lock to prevent editing'}" onclick="ttToggleLock('${t.id}',${isLocked})">${isLocked ? '🔒 Locked' : '🔓 Unlocked'}</button>`;
@@ -6226,11 +6245,16 @@ const firebaseConfig = {
             ? `<div style="display:flex;gap:8px;margin-bottom:10px;align-items:center">
                 <button class="btn btn-sm btn-gold" style="font-size:12px" onclick="ttSaveTable('${t.id}')">💾 Save</button>
                 <button class="btn btn-sm" style="font-size:12px;background:#ef4444;color:#fff;border:none" onclick="ttCancelEditTable()">✕ Cancel</button>
+                ${infoBtn}
                </div>`
             : `<div style="display:flex;gap:8px;margin-bottom:10px;align-items:center">
                 ${!isLocked ? `<button class="btn btn-sm" style="font-size:12px;background:#22c55e;color:#fff;border:none" onclick="ttEditTableExpand('${t.id}')">✏️ Edit</button>` : ''}
                 ${lockBtn}
+                ${infoBtn}
                </div>`;
+        } else {
+          // Non-admins: just the info button if present
+          if (infoBtn) expandToolbar = `<div style="margin-bottom:10px">${infoBtn}</div>`;
         }
         expandHtml = `<div class="tt-list-expand" id="tt-expand-${t.id}">${expandToolbar}${tableHtml}</div>`;
       }
@@ -6261,6 +6285,18 @@ const firebaseConfig = {
     // Re-open after re-render
     const el2 = document.getElementById('tt-expand-' + id);
     if (el2) el2.classList.add('open');
+  }
+
+  function ttShowGuidelines() {
+    document.getElementById('tt-guidelines-modal-title').textContent = 'Koala iPads — Booking Guidelines';
+    document.getElementById('tt-guidelines-modal-body').innerHTML = `
+      <ul style="margin:0;padding-left:20px">
+        <li style="margin-bottom:8px"><strong>Premium slots (L3–L6):</strong> 20 available per week. Maximum 2 per class per week across R–2 + Special Class.</li>
+        <li style="margin-bottom:8px"><strong>Basic slots (L1–L2):</strong> 10 available per week. Use these for any 3rd session needed.</li>
+        <li style="margin-bottom:8px"><strong>Swapping:</strong> Check for unbooked slots first. Negotiate short-term swaps with colleagues if needed.</li>
+        <li style="margin-bottom:8px"><strong>Leaving a slot free?</strong> Note it in your booking box (e.g. "not using wk 10") so the team knows and can use it.</li>
+      </ul>`;
+    openModal('tt-guidelines-modal');
   }
 
   async function ttToggleLock(id, currentlyLocked) {
@@ -11248,6 +11284,7 @@ const firebaseConfig = {
   function ttToggleExpand(id)          { if (window.ttToggleExpand)      window.ttToggleExpand(id); }
   function ttEditTableExpand(id)       { if (window.ttEditTableExpand)   window.ttEditTableExpand(id); }
   function ttToggleLock(id,locked)     { if (window.ttToggleLock)        window.ttToggleLock(id,locked); }
+  function ttShowGuidelines()          { if (window.ttShowGuidelines)     window.ttShowGuidelines(); }
   function ttOpenAddPerson()           { if (window.ttOpenAddPerson)     window.ttOpenAddPerson(); }
   function ttCloseAddPerson()          { if (window.ttCloseAddPerson)    window.ttCloseAddPerson(); }
   function ttPersonPdfSelected(el)     { if (window.ttPersonPdfSelected) window.ttPersonPdfSelected(el); }

@@ -6153,8 +6153,15 @@ const firebaseConfig = {
     el.innerHTML = '<div class="spinner"></div>';
     try {
       const snap = await getDocs(collection(db,'timetables_site'));
-      _ttSiteData = snap.docs.map(d => ({ id: d.id, ...d.data() }))
-        .sort((a,b) => (a.name||'').localeCompare(b.name||''));
+      _ttSiteData = snap.docs.map(d => {
+        const data = { id: d.id, ...d.data() };
+        // Convert rows from {c0,c1,...} objects back to arrays
+        if (Array.isArray(data.rows) && data.rows.length && typeof data.rows[0] === 'object' && !Array.isArray(data.rows[0])) {
+          const len = data.columns ? data.columns.length : Object.keys(data.rows[0]).length;
+          data.rows = data.rows.map(r => Array.from({length: len}, (_,i) => r['c'+i] || ''));
+        }
+        return data;
+      }).sort((a,b) => (a.name||'').localeCompare(b.name||''));
       ttRenderSite();
     } catch(e) {
       el.innerHTML = `<div style="color:var(--red);padding:20px">Error loading timetables: ${e.message}</div>`;
@@ -6424,7 +6431,9 @@ const firebaseConfig = {
     const t = _ttSiteData.find(x => x.id === id);
     if (!t) return;
     try {
-      await updateDoc(doc(db,'timetables_site',id), { rows: t.rows, updatedAt: serverTimestamp() });
+      // Firestore doesn't support nested arrays — store rows as objects {c0, c1, c2, ...}
+      const rowsToSave = t.rows.map(r => Object.fromEntries(r.map((v,i) => ['c'+i, v||''])));
+      await updateDoc(doc(db,'timetables_site',id), { rows: rowsToSave, updatedAt: serverTimestamp() });
       _ttEditingId = null;
       showToast('Table saved!', 'success');
       await ttLoadSite();

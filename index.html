@@ -1857,55 +1857,68 @@
     </div>
   </div>
 
-  <!-- Main: centre (absences + notices) + right panel -->
-  <div id="kiosk-body" style="display:grid;grid-template-columns:1fr 340px;min-height:calc(100vh - 68px)">
+  <!--
+    OPTION 2 LAYOUT
+    Top zone  (~62%): Absences full-width, large font, scales to row count
+    Bottom zone (~38%): Left = Notices (auto-scroll), Right = Events/Crew/NIT
+  -->
+  <div id="kiosk-body" style="display:flex;flex-direction:column;height:calc(100vh - 68px);overflow:hidden">
 
-    <!-- Centre -->
-    <div style="display:flex;flex-direction:column;border-right:1px solid rgba(255,255,255,0.08)">
-      <!-- Absences -->
-      <div style="padding:22px 32px 18px;border-bottom:1px solid rgba(255,255,255,0.08)">
-        <div style="font-size:11px;font-weight:700;letter-spacing:2px;color:rgba(255,255,255,0.4);text-transform:uppercase;margin-bottom:12px">Staff Absences &amp; Duties</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:12px;margin-bottom:10px">
-          <div style="font-size:13px;font-weight:700;color:#f5ac1c;text-transform:uppercase;letter-spacing:1px">Absent</div>
-          <div style="font-size:13px;font-weight:700;color:#f5ac1c;text-transform:uppercase;letter-spacing:1px">Reliever</div>
-          <div style="font-size:13px;font-weight:700;color:#f5ac1c;text-transform:uppercase;letter-spacing:1px">Duty</div>
-          <div style="font-size:13px;font-weight:700;color:#f5ac1c;text-transform:uppercase;letter-spacing:1px">NIT Coverage</div>
-        </div>
-        <div id="k-absences-track" style="display:flex;flex-direction:column;gap:6px;transition:transform 0.8s ease">
-          <div style="color:rgba(255,255,255,0.3);font-size:16px;padding:12px 0">Loading…</div>
-        </div>
+    <!-- TOP ZONE: Absences (~62% of body) -->
+    <div style="flex:0 0 62%;display:flex;flex-direction:column;padding:16px 36px 12px;border-bottom:2px solid rgba(255,255,255,0.1);min-height:0;overflow:hidden">
+      <div style="font-size:10px;font-weight:700;letter-spacing:2px;color:rgba(255,255,255,0.4);text-transform:uppercase;margin-bottom:8px;flex-shrink:0">Staff Absences &amp; Duties</div>
+      <div style="display:grid;grid-template-columns:1.2fr 1fr 1.2fr 1.6fr;gap:16px;margin-bottom:6px;flex-shrink:0">
+        <div style="font-size:12px;font-weight:700;color:#f5ac1c;text-transform:uppercase;letter-spacing:1px">Absent</div>
+        <div style="font-size:12px;font-weight:700;color:#f5ac1c;text-transform:uppercase;letter-spacing:1px">Reliever</div>
+        <div style="font-size:12px;font-weight:700;color:#f5ac1c;text-transform:uppercase;letter-spacing:1px">Duty</div>
+        <div style="font-size:12px;font-weight:700;color:#f5ac1c;text-transform:uppercase;letter-spacing:1px">NIT Coverage</div>
       </div>
-      <!-- Notices -->
-      <div style="flex:1;padding:18px 32px 20px;display:flex;flex-direction:column">
-        <div style="font-size:11px;font-weight:700;letter-spacing:2px;color:rgba(255,255,255,0.4);text-transform:uppercase;margin-bottom:12px">Daily Notices</div>
-        <div id="k-clubs-wrap" style="display:none;margin-bottom:12px;background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.3);border-radius:8px;padding:10px 14px">
-          <div style="font-size:10px;font-weight:700;letter-spacing:1.5px;color:#4ade80;text-transform:uppercase;margin-bottom:6px">🎯 Today's Student Clubs</div>
-          <div id="k-clubs" style="display:flex;flex-direction:column;gap:4px;font-size:14px;font-weight:600"></div>
-        </div>
-        <div id="k-ensembles-wrap" style="display:none;margin-bottom:12px;background:rgba(124,58,237,0.1);border:1px solid rgba(124,58,237,0.3);border-radius:8px;padding:10px 14px">
-          <div style="font-size:10px;font-weight:700;letter-spacing:1.5px;color:#a78bfa;text-transform:uppercase;margin-bottom:6px">🎵 Today's Music Ensembles</div>
-          <div id="k-ensembles" style="display:flex;flex-direction:column;gap:4px;font-size:14px;font-weight:600"></div>
-        </div>
-        <div id="k-notices" style="display:flex;flex-direction:column;gap:8px"></div>
+      <div id="k-absences-track" style="display:flex;flex-direction:column;gap:4px;flex:1;min-height:0;overflow:hidden">
+        <div style="color:rgba(255,255,255,0.3);font-size:16px;padding:12px 0">Loading…</div>
       </div>
     </div>
 
-    <!-- Right panel -->
-    <div style="background:#161d45;padding:22px 20px;display:flex;flex-direction:column">
-      <div style="font-size:11px;font-weight:700;letter-spacing:2px;color:rgba(255,255,255,0.4);text-transform:uppercase;margin-bottom:14px">Still To Come This Week</div>
-      <div id="k-events" style="display:flex;flex-direction:column;gap:8px;flex:1"></div>
-      <div id="k-birthdays-wrap" style="display:none;margin-top:16px;border-top:1px solid rgba(255,255,255,0.08);padding-top:14px">
-        <div style="font-size:11px;font-weight:700;letter-spacing:2px;color:rgba(255,255,255,0.4);text-transform:uppercase;margin-bottom:10px">🎂 Birthdays</div>
-        <div id="k-birthdays"></div>
+    <!-- BOTTOM ZONE: Notices (left, auto-scroll) + Side panel (right) -->
+    <div style="flex:1;display:grid;grid-template-columns:1fr 280px;min-height:0;overflow:hidden">
+
+      <!-- Bottom-left: Notices -->
+      <div style="display:flex;flex-direction:column;padding:12px 32px 12px;border-right:1px solid rgba(255,255,255,0.1);min-height:0;overflow:hidden">
+        <div style="font-size:10px;font-weight:700;letter-spacing:2px;color:rgba(255,255,255,0.4);text-transform:uppercase;margin-bottom:6px;flex-shrink:0">Daily Notices</div>
+        <!-- Clubs & Ensembles as compact inline chips -->
+        <div id="k-chips-row" style="display:flex;gap:8px;flex-wrap:wrap;flex-shrink:0;margin-bottom:6px">
+          <div id="k-clubs-wrap" style="display:none;background:rgba(34,197,94,0.12);border:1px solid rgba(34,197,94,0.35);border-radius:6px;padding:4px 10px;font-size:12px;font-weight:600">
+            <span style="color:#4ade80">🎯 </span><span id="k-clubs" style="color:#fff"></span>
+          </div>
+          <div id="k-ensembles-wrap" style="display:none;background:rgba(124,58,237,0.12);border:1px solid rgba(124,58,237,0.35);border-radius:6px;padding:4px 10px;font-size:12px;font-weight:600">
+            <span style="color:#a78bfa">🎵 </span><span id="k-ensembles" style="color:#fff"></span>
+          </div>
+        </div>
+        <!-- Auto-scrolling notices viewport -->
+        <div id="k-notices-viewport" style="flex:1;overflow:hidden;position:relative;min-height:0">
+          <div id="k-notices" style="display:flex;flex-direction:column;gap:5px;position:absolute;top:0;left:0;right:0"></div>
+        </div>
       </div>
-      <div id="k-crew-wrap" style="display:none;margin-top:16px;border-top:1px solid rgba(255,255,255,0.08);padding-top:14px">
-        <div style="font-size:11px;font-weight:700;letter-spacing:2px;color:rgba(255,255,255,0.4);text-transform:uppercase;margin-bottom:10px">🧹 Clean-Up Crew</div>
-        <div id="k-crew" style="display:flex;flex-direction:column;gap:6px"></div>
+
+      <!-- Bottom-right: Events / Crew / NIT / Birthdays -->
+      <div style="background:#161d45;padding:12px 16px;display:flex;flex-direction:column;gap:8px;overflow:hidden">
+        <div>
+          <div style="font-size:9px;font-weight:700;letter-spacing:2px;color:rgba(255,255,255,0.4);text-transform:uppercase;margin-bottom:6px">Still To Come This Week</div>
+          <div id="k-events" style="display:flex;flex-direction:column;gap:4px"></div>
+        </div>
+        <div id="k-birthdays-wrap" style="display:none;border-top:1px solid rgba(255,255,255,0.08);padding-top:8px">
+          <div style="font-size:9px;font-weight:700;letter-spacing:2px;color:rgba(255,255,255,0.4);text-transform:uppercase;margin-bottom:5px">🎂 Birthdays</div>
+          <div id="k-birthdays"></div>
+        </div>
+        <div id="k-crew-wrap" style="display:none;border-top:1px solid rgba(255,255,255,0.08);padding-top:8px">
+          <div style="font-size:9px;font-weight:700;letter-spacing:2px;color:rgba(255,255,255,0.4);text-transform:uppercase;margin-bottom:5px">🧹 Clean-Up Crew</div>
+          <div id="k-crew" style="display:flex;flex-direction:column;gap:3px"></div>
+        </div>
+        <div id="k-nit-wrap" style="display:none;border-top:1px solid rgba(255,255,255,0.08);padding-top:8px">
+          <div style="font-size:9px;font-weight:700;letter-spacing:2px;color:rgba(255,255,255,0.4);text-transform:uppercase;margin-bottom:5px">📋 NIT Payback Owed</div>
+          <div id="k-nit" style="display:flex;flex-direction:column;gap:3px"></div>
+        </div>
       </div>
-      <div id="k-nit-wrap" style="display:none;margin-top:16px;border-top:1px solid rgba(255,255,255,0.08);padding-top:14px">
-        <div style="font-size:11px;font-weight:700;letter-spacing:2px;color:rgba(255,255,255,0.4);text-transform:uppercase;margin-bottom:10px">📋 NIT Payback Owed</div>
-        <div id="k-nit" style="display:flex;flex-direction:column;gap:5px"></div>
-      </div>
+
     </div>
   </div>
 </div>
@@ -2010,10 +2023,8 @@
         var wrap = document.getElementById('k-ensembles-wrap');
         var list = document.getElementById('k-ensembles');
         if (wrap && list) {
-          list.innerHTML = entries.map(function(e){
-            return '<div style="color:#fff">'+kioskEsc(e)+'</div>';
-          }).join('');
-          wrap.style.display = 'block';
+          list.textContent = entries.join('  ·  ');
+          wrap.style.display = 'flex';
         }
       }).catch(function(){});
   }
@@ -2033,7 +2044,7 @@
         var list = document.getElementById('k-nit');
         if (wrap && list) {
           list.innerHTML = entries.map(function(e){
-            return '<div style="color:rgba(255,255,255,0.85);font-size:13px">'+kioskEsc(e)+'</div>';
+            return '<div style="color:rgba(255,255,255,0.85);font-size:12px;line-height:1.4">'+kioskEsc(e)+'</div>';
           }).join('');
           wrap.style.display = 'block';
         }
@@ -2056,8 +2067,8 @@
         var wrap = document.getElementById('k-clubs-wrap');
         var list = document.getElementById('k-clubs');
         if (wrap && list) {
-          list.innerHTML = clubs.map(function(c){ return '<div style="color:#fff">'+kioskEsc(c)+'</div>'; }).join('');
-          wrap.style.display = 'block';
+          list.textContent = clubs.join('  ·  ');
+          wrap.style.display = 'flex';
         }
       }).catch(function(){});
   }
@@ -2082,17 +2093,22 @@
       if (!filled.length) {
         track.innerHTML = '<div style="color:rgba(255,255,255,0.3);font-size:16px;padding:12px 0">No absences recorded for today.</div>';
       } else {
+        // Dynamic font: large for few absences, smaller for many — stays readable
+        var n = filled.length;
+        var fMain = n <= 4 ? 20 : n <= 6 ? 18 : n <= 8 ? 16 : 14;
+        var fSub  = n <= 4 ? 17 : n <= 6 ? 15 : n <= 8 ? 13 : 12;
+        var pad   = n <= 5 ? '10px 14px' : n <= 8 ? '7px 12px' : '5px 10px';
         track.innerHTML = filled.map(function(r) {
           var f = r.mapValue.fields;
           var absent   = (f.absent   && f.absent.stringValue)   || '';
           var reliever = (f.reliever && f.reliever.stringValue)  || '—';
           var duty     = (f.duty     && f.duty.stringValue)      || '—';
           var nit      = (f.nit      && f.nit.stringValue)       || '—';
-          return '<div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:12px;background:rgba(255,255,255,0.05);border-radius:10px;padding:14px 16px;border-left:4px solid rgba(245,172,28,0.5);margin-bottom:6px">' +
-            '<div style="font-size:18px;font-weight:700;color:#fff">'                    + kioskEsc(absent)   + '</div>' +
-            '<div style="font-size:16px;color:rgba(255,255,255,0.75)">'                  + kioskEsc(reliever) + '</div>' +
-            '<div style="font-size:16px;color:rgba(255,255,255,0.75)">'                  + kioskEsc(duty)     + '</div>' +
-            '<div style="font-size:16px;color:rgba(255,255,255,0.75)">'                  + kioskEsc(nit)      + '</div>' +
+          return '<div style="display:grid;grid-template-columns:1.2fr 1fr 1.2fr 1.6fr;gap:16px;background:rgba(255,255,255,0.05);border-radius:8px;padding:'+pad+';border-left:4px solid rgba(245,172,28,0.6)">' +
+            '<div style="font-size:'+fMain+'px;font-weight:700;color:#fff;line-height:1.3">'        + kioskEsc(absent)   + '</div>' +
+            '<div style="font-size:'+fSub+'px;color:rgba(255,255,255,0.78);line-height:1.3">'       + kioskEsc(reliever) + '</div>' +
+            '<div style="font-size:'+fSub+'px;color:rgba(255,255,255,0.78);line-height:1.3">'       + kioskEsc(duty)     + '</div>' +
+            '<div style="font-size:'+fSub+'px;color:rgba(255,255,255,0.72);line-height:1.3">'       + kioskEsc(nit)      + '</div>' +
           '</div>';
         }).join('');
       }
@@ -2107,16 +2123,15 @@
           try { text = item.mapValue.fields.text.stringValue; } catch(e) {
             try { text = item.stringValue; } catch(e2) {}
           }
-          return '<div style="background:rgba(255,255,255,0.05);border-radius:10px;padding:12px 14px;border-left:3px solid rgba(245,172,28,0.5)">' +
-            '<div style="font-size:15px;color:rgba(255,255,255,0.9);line-height:1.5;font-weight:500">' + kioskEsc(text) + '</div>' +
+          return '<div style="background:rgba(255,255,255,0.05);border-radius:7px;padding:7px 12px;border-left:3px solid rgba(245,172,28,0.5)">' +
+            '<div style="font-size:13px;color:rgba(255,255,255,0.9);line-height:1.45;font-weight:500">' + kioskEsc(text) + '</div>' +
           '</div>';
         }).join('');
       }
-      // Rescale after content renders
-      setTimeout(kioskAutoScale, 100);
+      // Trigger auto-scroll check after DOM paints
+      setTimeout(kioskNoticesScroll, 200);
     }).catch(function() {
       document.getElementById('k-absences-track').innerHTML = '<div style="color:rgba(255,255,255,0.3)">Could not load daybook.</div>';
-      setTimeout(kioskAutoScale, 100);
     });
   }
 
@@ -2189,9 +2204,9 @@
           '<div style="font-size:12px;font-weight:700;color:' + (isToday?'#f5ac1c':'rgba(255,255,255,0.45)') + ';text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">' + dayLabel + '</div>' +
           grouped[date].map(function(ev) {
             var col = catColors[ev.category] || '#94a3b8';
-            return '<div style="background:rgba(255,255,255,0.05);border-radius:8px;padding:10px 12px;border-left:4px solid ' + col + ';margin-bottom:5px">' +
-              '<div style="font-size:15px;font-weight:700;color:#fff;line-height:1.3">' + kioskEsc(ev.title) + '</div>' +
-              (ev.audience ? '<div style="font-size:12px;color:rgba(255,255,255,0.5);margin-top:3px">' + kioskEsc(ev.audience) + '</div>' : '') +
+            return '<div style="background:rgba(255,255,255,0.05);border-radius:6px;padding:6px 10px;border-left:3px solid ' + col + ';margin-bottom:4px">' +
+              '<div style="font-size:13px;font-weight:700;color:#fff;line-height:1.3">' + kioskEsc(ev.title) + '</div>' +
+              (ev.audience ? '<div style="font-size:11px;color:rgba(255,255,255,0.5);margin-top:2px">' + kioskEsc(ev.audience) + '</div>' : '') +
             '</div>';
           }).join('') +
         '</div>';
@@ -2212,7 +2227,7 @@
       if (crew) {
         var names = crew.split(/[,&]/).map(function(n){ return n.trim(); }).filter(Boolean);
         document.getElementById('k-crew').innerHTML = names.map(function(n){
-          return '<div style="font-size:17px;font-weight:700;color:rgba(255,255,255,0.9);padding:4px 0;border-bottom:1px solid rgba(255,255,255,0.06)">' + kioskEsc(n) + '</div>';
+          return '<div style="font-size:14px;font-weight:700;color:rgba(255,255,255,0.9);padding:2px 0;border-bottom:1px solid rgba(255,255,255,0.06)">' + kioskEsc(n) + '</div>';
         }).join('');
         document.getElementById('k-crew-wrap').style.display = 'block';
       }
@@ -2247,23 +2262,50 @@
     }).catch(function(){});
   }
 
-  // Auto-scale kiosk content to fit screen with no scrolling
-  function kioskAutoScale() {
-    var screen  = document.getElementById('kiosk-screen');
-    var header  = screen ? screen.querySelector(':scope > div:first-child') : null;
-    var body    = document.getElementById('kiosk-body');
-    if (!screen || !header || !body) return;
-    // Reset scale first so we can measure natural height
-    body.style.transform       = 'none';
-    body.style.transformOrigin = 'top left';
-    body.style.width           = '100vw';
-    var availH   = screen.clientHeight - header.offsetHeight;
-    var naturalH = body.scrollHeight;
-    if (naturalH > availH) {
-      var scale = availH / naturalH;
-      body.style.transform = 'scale(' + scale.toFixed(4) + ')';
-      body.style.width     = (100 / scale).toFixed(2) + 'vw';
+  // Auto-scroll notices if content overflows the bottom-left panel
+  var _noticesScrollInterval = null;
+  function kioskNoticesScroll() {
+    var viewport = document.getElementById('k-notices-viewport');
+    var inner    = document.getElementById('k-notices');
+    if (!viewport || !inner) return;
+    // Clear any existing scroll animation
+    if (_noticesScrollInterval) { clearInterval(_noticesScrollInterval); _noticesScrollInterval = null; }
+    var maxScroll = inner.scrollHeight - viewport.clientHeight;
+    if (maxScroll <= 10) {
+      // Content fits — reset to top, no scrolling needed
+      inner.style.transition = 'none';
+      inner.style.top = '0px';
+      return;
     }
+    // Content overflows — slow scroll down then jump back to top
+    var currentY = 0;
+    inner.style.transition = 'none';
+    inner.style.top = '0px';
+    var SPEED_PX = 40;   // pixels per second
+    var PAUSE_MS = 2000; // pause at top/bottom before scrolling
+    var pausing  = true;
+    var pauseEnd = Date.now() + PAUSE_MS;
+    _noticesScrollInterval = setInterval(function() {
+      if (pausing) {
+        if (Date.now() >= pauseEnd) pausing = false;
+        return;
+      }
+      currentY += SPEED_PX / 20; // interval is 50ms
+      if (currentY >= maxScroll) {
+        currentY = maxScroll;
+        pausing  = true;
+        pauseEnd = Date.now() + PAUSE_MS;
+        // After pause at bottom, snap back to top and pause again
+        setTimeout(function() {
+          inner.style.transition = 'none';
+          currentY = 0;
+          inner.style.top = '0px';
+          pausing  = true;
+          pauseEnd = Date.now() + PAUSE_MS;
+        }, PAUSE_MS);
+      }
+      inner.style.top = '-' + currentY.toFixed(1) + 'px';
+    }, 50);
   }
 
   // Start
@@ -2272,7 +2314,6 @@
     setInterval(kioskClock, 30000);
     kioskLoad();
     setInterval(kioskLoad, 5 * 60 * 1000);
-    window.addEventListener('resize', kioskAutoScale);
   });
 })();
 </script>

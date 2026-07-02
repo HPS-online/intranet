@@ -1384,9 +1384,10 @@
     .tt-type-table { background:#d1fae5; color:#065f46; }
 
     /* Inline table display */
-    .tt-inline-table { width:100%; border-collapse:collapse; font-size:13px; margin-top:4px; }
-    .tt-inline-table th { background:var(--navy); color:var(--white); padding:8px 10px; text-align:left; font-size:12px; font-weight:600; }
-    .tt-inline-table td { padding:8px 10px; border-bottom:1px solid var(--gray2); vertical-align:top; }
+    .tt-inline-table { width:100%; border-collapse:collapse; font-size:13px; margin-top:4px; border:1px solid #b0b8d4; }
+    .tt-inline-table th { background:var(--navy); color:var(--white); padding:8px 10px; text-align:left; font-size:12px; font-weight:600; border-right:1px solid rgba(255,255,255,0.15); }
+    .tt-inline-table td { padding:8px 10px; border-bottom:1px solid #b0b8d4; border-right:1px solid #b0b8d4; vertical-align:top; }
+    .tt-inline-table td:last-child { border-right:none; }
     .tt-inline-table tr:last-child td { border-bottom:none; }
     .tt-inline-table tr:hover td { background:#f8f8fc; }
     .tt-inline-edit input { width:100%; border:1px solid var(--gray2); border-radius:4px; padding:4px 6px; font-family:inherit; font-size:13px; }

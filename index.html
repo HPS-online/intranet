@@ -1375,7 +1375,8 @@
     .tt-list-row { display:flex; align-items:center; gap:12px; padding:11px 16px; border-bottom:1px solid var(--gray2); background:var(--white); }
     .tt-list-row:last-child { border-bottom:none; }
     .tt-list-row:hover { background:var(--gray1); }
-    .tt-list-name { flex:1; font-size:14px; font-weight:600; color:var(--navy); }
+    .tt-list-name { flex:1; font-size:14px; font-weight:600; color:var(--navy); text-decoration:none; }
+    .tt-list-name-link:hover { text-decoration:underline; color:var(--gold-dark,#b37d00); }
     .tt-list-actions { display:flex; gap:6px; align-items:center; flex-shrink:0; }
     .tt-list-expand { padding:12px 16px 14px; border-bottom:1px solid var(--gray2); background:#fafbff; display:none; }
     .tt-list-expand.open { display:block; }
@@ -6171,7 +6172,7 @@ const firebaseConfig = {
       let actions = '';
       if (t.type === 'pdf') {
         if (t.pdfUrl) {
-          actions += `<a href="${escHtml(t.pdfUrl)}" target="_blank" rel="noopener" class="btn btn-primary btn-sm" style="font-size:12px">📄 View PDF</a>`;
+          // PDF name is the link — no separate View button needed
         }
         if (currentIsAdmin) {
           actions += `<label class="btn btn-sm btn-outline" style="font-size:12px;cursor:pointer">🔄 Replace<input type="file" accept=".pdf" style="display:none" onchange="ttReplacePdf('${t.id}',this)"></label>`;
@@ -6180,7 +6181,7 @@ const firebaseConfig = {
       } else {
         // Table type — toggle expand
         const isEditing = _ttEditingId === t.id;
-        actions += `<button class="btn btn-sm btn-outline" style="font-size:12px" onclick="ttToggleExpand('${t.id}')">📋 View</button>`;
+        // Table name is the toggle — no separate View button needed
         if (currentIsAdmin && !isEditing) {
           actions += `<button class="btn btn-sm btn-outline" style="font-size:12px" onclick="ttEditTableExpand('${t.id}')">✏ Edit</button>`;
           actions += `<button class="btn btn-sm btn-outline" style="font-size:12px;color:var(--red)" onclick="ttDeleteSite('${t.id}','${escHtml(t.name)}')">🗑</button>`;
@@ -6215,8 +6216,14 @@ const firebaseConfig = {
         expandHtml = `<div class="tt-list-expand" id="tt-expand-${t.id}">${tableHtml}</div>`;
       }
 
+      const nameEl = t.type === 'pdf'
+        ? (t.pdfUrl
+            ? `<a href="${escHtml(t.pdfUrl)}" target="_blank" rel="noopener" class="tt-list-name tt-list-name-link">${escHtml(t.name)}</a>`
+            : `<span class="tt-list-name" style="color:var(--subtext)">${escHtml(t.name)}</span>`)
+        : `<span class="tt-list-name tt-list-name-link" onclick="ttToggleExpand('${t.id}')" style="cursor:pointer">${escHtml(t.name)}</span>`;
+
       return `<div class="tt-list-row" id="tt-site-card-${t.id}">
-          <span class="tt-list-name">${escHtml(t.name)}</span>
+          ${nameEl}
           <span class="tt-list-actions">${actions}</span>
         </div>${expandHtml}`;
     }).join('');

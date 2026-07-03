@@ -6251,22 +6251,25 @@ const firebaseConfig = {
           ? `<button class="btn btn-sm btn-outline" style="font-size:12px;border-color:#6366f1;color:#6366f1" onclick="ttShowGuidelines()">ℹ️ Guidelines</button>`
           : '';
         let expandToolbar = '';
-        if (currentIsAdmin) {
-          const lockBtn = `<button class="btn btn-sm btn-outline" style="font-size:12px" title="${isLocked?'Unlock to allow editing':'Lock to prevent editing'}" onclick="ttToggleLock('${t.id}',${isLocked})">${isLocked ? '🔒 Locked' : '🔓 Unlocked'}</button>`;
-          expandToolbar = editing
-            ? `<div style="display:flex;gap:8px;margin-bottom:10px;align-items:center">
-                <button class="btn btn-sm btn-gold" style="font-size:12px" onclick="ttSaveTable('${t.id}')">💾 Save</button>
-                <button class="btn btn-sm" style="font-size:12px;background:#ef4444;color:#fff;border:none" onclick="ttCancelEditTable()">✕ Cancel</button>
-                ${infoBtn}
-               </div>`
-            : `<div style="display:flex;gap:8px;margin-bottom:10px;align-items:center">
-                ${!isLocked ? `<button class="btn btn-sm" style="font-size:12px;background:#22c55e;color:#fff;border:none" onclick="ttEditTableExpand('${t.id}')">✏️ Edit</button>` : ''}
-                ${lockBtn}
-                ${infoBtn}
-               </div>`;
+        // Lock button — admins only
+        const lockBtn = currentIsAdmin
+          ? `<button class="btn btn-sm btn-outline" style="font-size:12px" title="${isLocked?'Unlock to allow editing':'Lock to prevent editing'}" onclick="ttToggleLock('${t.id}',${isLocked})">${isLocked ? '🔒 Locked' : '🔓 Unlocked'}</button>`
+          : '';
+        if (editing) {
+          // Save/Cancel visible to anyone in edit mode
+          expandToolbar = `<div style="display:flex;gap:8px;margin-bottom:10px;align-items:center">
+              <button class="btn btn-sm btn-gold" style="font-size:12px" onclick="ttSaveTable('${t.id}')">💾 Save</button>
+              <button class="btn btn-sm" style="font-size:12px;background:#ef4444;color:#fff;border:none" onclick="ttCancelEditTable()">✕ Cancel</button>
+              ${infoBtn}
+             </div>`;
         } else {
-          // Non-admins: just the info button if present
-          if (infoBtn) expandToolbar = `<div style="margin-bottom:10px">${infoBtn}</div>`;
+          // Edit button visible to all staff when unlocked; lock toggle admin only
+          const editBtn = !isLocked
+            ? `<button class="btn btn-sm" style="font-size:12px;background:#22c55e;color:#fff;border:none" onclick="ttEditTableExpand('${t.id}')">✏️ Edit</button>`
+            : '';
+          expandToolbar = `<div style="display:flex;gap:8px;margin-bottom:10px;align-items:center">
+              ${editBtn}${lockBtn}${infoBtn}
+             </div>`;
         }
         expandHtml = `<div class="tt-list-expand" id="tt-expand-${t.id}">${expandToolbar}${tableHtml}</div>`;
       }

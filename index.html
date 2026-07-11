@@ -4429,7 +4429,7 @@
       <div class="modal-box" style="max-width:780px;width:95%;max-height:92vh;overflow-y:auto;padding:0">
         <div id="lm-md-header" style="background:var(--navy);color:#fff;padding:20px 24px;border-radius:var(--radius) var(--radius) 0 0;display:flex;justify-content:space-between;align-items:flex-start;gap:12px">
           <div>
-            <div id="lm-md-type-badge" style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--gold);margin-bottom:4px"></div>
+            <div id="lm-md-type-badge" style="display:flex;gap:5px;margin-bottom:6px"></div>
             <div id="lm-md-title" style="font-size:18px;font-weight:800">Leadership Meeting</div>
             <div id="lm-md-meta" style="font-size:12px;opacity:0.7;margin-top:3px"></div>
           </div>
@@ -4463,25 +4463,8 @@
           </div>
 
           <div style="margin-bottom:20px">
-            <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--subtext);margin-bottom:8px">Agenda Items</div>
-            <div id="lm-md-agenda" style="overflow-x:auto">
-              <table style="width:100%;border-collapse:collapse;font-size:13px">
-                <thead>
-                  <tr style="background:var(--navy);color:#fff">
-                    <th style="padding:8px 10px;text-align:left;font-weight:600;width:28%">Item</th>
-                    <th style="padding:8px 10px;text-align:left;font-weight:600;width:17%">Proposer</th>
-                    <th style="padding:8px 10px;text-align:center;font-weight:600;width:10%">Time</th>
-                    <th style="padding:8px 10px;text-align:left;font-weight:600">Notes</th>
-                  </tr>
-                </thead>
-                <tbody id="lm-md-agenda-body"></tbody>
-              </table>
-            </div>
-          </div>
-
-          <div>
-            <label class="form-label" style="margin:0">General Notes / Minutes</label>
-            <div id="lm-md-body" style="white-space:pre-wrap;font-size:13px;color:var(--subtext);margin-top:6px"></div>
+            <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--subtext);margin-bottom:8px">Section Notes</div>
+            <div id="lm-md-sections" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px"></div>
           </div>
 
           <div style="margin:20px 0">
@@ -4518,12 +4501,8 @@
         </div>
         <div style="padding:24px;display:flex;flex-direction:column;gap:18px">
 
-          <!-- Focus Area + Date + Time -->
-          <div style="display:grid;grid-template-columns:1.4fr 1fr 0.8fr;gap:14px">
-            <div>
-              <label class="form-label">Focus Area * <span style="font-weight:400;text-transform:none;font-size:10px;color:var(--subtext)">(this meeting's colour, from the Types of Work Wheel)</span></label>
-              <select id="lm-focus" class="form-input"></select>
-            </div>
+          <!-- Date + Time -->
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
             <div>
               <label class="form-label">Date *</label>
               <input type="date" id="lm-date" class="form-input">
@@ -4533,7 +4512,6 @@
               <input type="time" id="lm-time" class="form-input">
             </div>
           </div>
-          <div id="lm-focus-desc" style="font-size:12px;color:var(--subtext);margin-top:-10px"></div>
 
           <!-- Chair + Minute-taker -->
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
@@ -4572,32 +4550,10 @@
             <input type="text" id="lm-additional-attendees" class="form-input" placeholder="e.g. Nouman for an ICT item…">
           </div>
 
-          <!-- Agenda items -->
+          <!-- Section notes — one box per TMS colour, built by JS from FOCUS_AREAS -->
           <div>
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-              <label class="form-label" style="margin:0">Agenda Items</label>
-              <button class="btn btn-sm" style="background:var(--navy);color:#fff;font-size:12px" onclick="lmAddAgendaRow()">+ Add Row</button>
-            </div>
-            <div style="overflow-x:auto">
-              <table style="width:100%;border-collapse:collapse;font-size:13px">
-                <thead>
-                  <tr style="background:var(--gray1)">
-                    <th style="padding:7px 8px;text-align:left;font-weight:600;border:1px solid var(--gray2);width:28%">Item</th>
-                    <th style="padding:7px 8px;text-align:left;font-weight:600;border:1px solid var(--gray2);width:17%">Proposer</th>
-                    <th style="padding:7px 8px;text-align:center;font-weight:600;border:1px solid var(--gray2);width:10%">Mins</th>
-                    <th style="padding:7px 8px;text-align:left;font-weight:600;border:1px solid var(--gray2)">Notes / Outcome</th>
-                    <th style="padding:7px 8px;text-align:center;font-weight:600;border:1px solid var(--gray2);width:40px"></th>
-                  </tr>
-                </thead>
-                <tbody id="lm-agenda-body"></tbody>
-              </table>
-            </div>
-          </div>
-
-          <!-- General notes -->
-          <div>
-            <label class="form-label">General Notes / Minutes</label>
-            <textarea id="lm-body" class="form-input" rows="6" style="resize:vertical" placeholder="Any general notes not captured in the agenda items above…"></textarea>
+            <label class="form-label" style="margin-bottom:8px;display:block">Section Notes <span style="font-weight:400;text-transform:none;font-size:10px;color:var(--subtext)">(briefly touch on each — leave any blank that don't apply this meeting)</span></label>
+            <div id="lm-sections-container" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px"></div>
           </div>
 
           <!-- Action items -->
@@ -4606,6 +4562,7 @@
               <label class="form-label" style="margin:0">Action Items</label>
               <button class="btn btn-sm" style="background:var(--navy);color:#fff;font-size:12px" onclick="lmAddActionRow()">+ Add Row</button>
             </div>
+            <div id="lm-carried-note" style="display:none;font-size:12px;color:var(--navy);background:var(--gray1);border-radius:6px;padding:8px 12px;margin-bottom:8px"></div>
             <div style="overflow-x:auto">
               <table style="width:100%;border-collapse:collapse;font-size:13px">
                 <thead>
@@ -9634,9 +9591,12 @@ const firebaseConfig = {
   const DEFAULT_MEETING_TYPES = ['Staff Meeting','PAC','Maths','Wellbeing','Culture Crew','English','Social','WHS','Garden'];
   const PRIORITY_COLOURS = { Low:'#3b82f6', Med:'#f59e0b', High:'#e74c3c' };
 
-  // ── Leadership "colour meeting" focus areas (TMS Types of Work Wheel) ──
+  // ── Leadership "colour meeting" focus areas (TMS Types of Work Wheel,
+  // plus two standing practical sections that aren't part of the wheel
+  // but need a spot every meeting regardless) ──
   const FOCUS_AREAS = [
-    { key:'Standing Items', colour:'#242b63', desc:'Urgent / recurring business — not a colour-focus week' },
+    { key:'Standing Items',        colour:'#242b63', desc:'Urgent / recurring business — not a colour-focus week' },
+    { key:'Seesaw — Week Ahead',   colour:'#0ea5e9', desc:'Key messages for the week-ahead family Seesaw post — events, pupil-free days, closures, timetable changes' },
     { key:'Advising',       colour:'#1a7a4c', desc:'Gathering and reporting information' },
     { key:'Innovating',     colour:'#8dc63f', desc:'Creating and experimenting with ideas' },
     { key:'Promoting',      colour:'#f5c518', desc:'Exploring and presenting opportunities' },
@@ -9647,7 +9607,6 @@ const firebaseConfig = {
     { key:'Maintaining',    colour:'#29b6c4', desc:'Upholding and safeguarding standards and processes' },
     { key:'Linking',        colour:'#6b7280', desc:'Coordinating and integrating the work of others' },
   ];
-  function focusAreaMeta(key) { return FOCUS_AREAS.find(f => f.key === key) || FOCUS_AREAS[0]; }
 
   let _meetingsCurrentType  = 'all';
   let _meetingsAllDocs      = [];
@@ -10438,14 +10397,46 @@ const firebaseConfig = {
   let _lmAttendeeChips= [];   // [{name,email}] resolved from access_lists/leadership
   let _lmAccessEmails = [];   // working copy while Manage Access modal is open
 
-  function lmPopulateFocusSelect() {
-    const sel = document.getElementById('lm-focus');
-    if (!sel) return;
-    sel.innerHTML = FOCUS_AREAS.map(f => `<option value="${esc(f.key)}">${esc(f.key)}</option>`).join('');
-    sel.onchange = () => {
-      const meta = focusAreaMeta(sel.value);
-      document.getElementById('lm-focus-desc').textContent = meta.desc;
-    };
+  // Build the "one box per colour" section-notes inputs in the edit modal.
+  // prefill = { 'Standing Items': 'text…', 'Advising': 'text…', ... }
+  function lmRenderSectionInputs(prefill) {
+    prefill = prefill || {};
+    const container = document.getElementById('lm-sections-container');
+    if (!container) return;
+    container.innerHTML = FOCUS_AREAS.map(f => `
+      <div style="border:1px solid var(--gray2);border-left:5px solid ${f.colour};border-radius:8px;padding:10px 12px">
+        <div style="display:flex;align-items:center;gap:7px;margin-bottom:2px">
+          <span style="width:9px;height:9px;border-radius:50%;background:${f.colour};display:inline-block;flex-shrink:0"></span>
+          <span style="font-weight:700;color:var(--navy);font-size:13px">${esc(f.key)}</span>
+        </div>
+        <div style="font-size:11px;color:var(--subtext);margin-bottom:7px;font-style:italic">${esc(f.desc)}</div>
+        <textarea class="form-input lm-section-input" data-key="${esc(f.key)}" rows="3" style="resize:vertical;font-size:12px" placeholder="Notes…">${esc(prefill[f.key] || '')}</textarea>
+      </div>
+    `).join('');
+  }
+
+  // Gather non-empty section textareas into { key: text }
+  function lmGatherSections() {
+    const sections = {};
+    document.querySelectorAll('.lm-section-input').forEach(ta => {
+      const val = ta.value.trim();
+      if (val) sections[ta.dataset.key] = val;
+    });
+    return sections;
+  }
+
+  // ── Action carry-forward ────────────────────────────────
+  // Actions don't live in a separate collection — each meeting record just
+  // keeps its own actionItems array. To stop things falling through the
+  // cracks between meetings, a new record auto-pulls in whatever was still
+  // marked "not done" on the most recent existing record. Once someone
+  // ticks it done and saves, it stops being carried into the next one.
+  function lmGetCarriedActions() {
+    if (!_lmAllDocs.length) return { items: [], sourceDate: null };
+    const sorted = [..._lmAllDocs].sort((a,b) => (b.date||'').localeCompare(a.date||''));
+    const latest = sorted[0];
+    const open = (latest.actionItems || []).filter(a => !a.done);
+    return { items: open, sourceDate: latest.date || null };
   }
 
   function lmRenderLegend() {
@@ -10517,7 +10508,6 @@ const firebaseConfig = {
   async function lmInit() {
     document.getElementById('lm-manage-access-btn').style.display = currentIsAdmin ? '' : 'none';
     lmRenderLegend();
-    lmPopulateFocusSelect();
     const listEl = document.getElementById('lm-list');
     listEl.innerHTML = '<div style="color:var(--subtext);padding:32px;text-align:center">Loading meetings…</div>';
     await meetingsLoadStaff();
@@ -10560,10 +10550,19 @@ const firebaseConfig = {
         const completed = (d.actionItems||[]).filter(a=>a.done).length;
         const pendingBadge   = pending   > 0 ? `<span style="background:#e74c3c;color:#fff;font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;margin-left:8px">${pending} action${pending>1?'s':''} pending</span>` : '';
         const completedBadge = completed > 0 ? `<span style="background:#22c55e;color:#fff;font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;margin-left:4px">${completed} action${completed>1?'s':''} completed</span>` : '';
-        const meta = focusAreaMeta(d.focusArea);
-        html += `<div onclick="openLmDetail('${d.id}')" style="background:var(--white);border:1px solid var(--gray2);border-left:5px solid ${meta.colour};border-radius:var(--radius);padding:14px 18px;cursor:pointer;transition:box-shadow 0.15s;display:flex;justify-content:space-between;align-items:center;gap:12px" onmouseover="this.style.boxShadow='var(--shadow)'" onmouseout="this.style.boxShadow=''">
+        const sections = d.sections || {};
+        const coveredKeys = FOCUS_AREAS.filter(f => (sections[f.key]||'').trim());
+        // Dots: filled + coloured for sections covered this meeting, faint hollow for the rest
+        const dots = FOCUS_AREAS.map(f => {
+          const covered = !!(sections[f.key]||'').trim();
+          return covered
+            ? `<span title="${esc(f.key)}" style="width:9px;height:9px;border-radius:50%;background:${f.colour};display:inline-block"></span>`
+            : `<span title="${esc(f.key)}" style="width:9px;height:9px;border-radius:50%;border:1.5px solid var(--gray2);display:inline-block"></span>`;
+        }).join('');
+        const firstColour = coveredKeys.length ? coveredKeys[0].colour : 'var(--gray2)';
+        html += `<div onclick="openLmDetail('${d.id}')" style="background:var(--white);border:1px solid var(--gray2);border-left:5px solid ${firstColour};border-radius:var(--radius);padding:14px 18px;cursor:pointer;transition:box-shadow 0.15s;display:flex;justify-content:space-between;align-items:center;gap:12px" onmouseover="this.style.boxShadow='var(--shadow)'" onmouseout="this.style.boxShadow=''">
           <div>
-            <div style="font-weight:700;font-size:15px;color:var(--navy);margin-bottom:2px">${esc(meta.key)}${twBadge}${pendingBadge}${completedBadge}</div>
+            <div style="display:flex;align-items:center;gap:5px;margin-bottom:5px">${dots}${twBadge}${pendingBadge}${completedBadge}</div>
             <div style="font-size:12px;color:var(--subtext)">${dateStr}${timeStr}${d.chair ? ' · Chair: '+esc(d.chair) : ''}${d.minutesTaker ? ' · Minutes: '+esc(d.minutesTaker) : ''}</div>
           </div>
           <div style="flex-shrink:0;color:var(--subtext);font-size:18px">›</div>
@@ -10578,12 +10577,16 @@ const firebaseConfig = {
     const d = _lmAllDocs.find(x => x.id === id);
     if (!d) return;
     _lmCurrentId = id;
-    const meta = focusAreaMeta(d.focusArea);
     const dateStr = d.date ? new Date(d.date+'T00:00:00').toLocaleDateString('en-AU',{weekday:'long',day:'numeric',month:'long',year:'numeric'}) : '—';
     const tw = d.date ? termWeekLabel(d.date) : null;
     const twStr = tw && !tw.comingUp ? ` · Term ${tw.term}, Week ${tw.week}` : '';
-    document.getElementById('lm-md-header').style.borderTop = `4px solid ${meta.colour}`;
-    document.getElementById('lm-md-type-badge').textContent = meta.key;
+    const sections = d.sections || {};
+    document.getElementById('lm-md-type-badge').innerHTML = FOCUS_AREAS.map(f => {
+      const covered = !!(sections[f.key]||'').trim();
+      return covered
+        ? `<span title="${esc(f.key)}" style="width:9px;height:9px;border-radius:50%;background:${f.colour};display:inline-block"></span>`
+        : `<span title="${esc(f.key)}" style="width:9px;height:9px;border-radius:50%;border:1.5px solid rgba(255,255,255,0.3);display:inline-block"></span>`;
+    }).join('');
     document.getElementById('lm-md-title').textContent      = 'Leadership Meeting';
     document.getElementById('lm-md-meta').textContent       = dateStr + (d.time ? ' at ' + d.time : '') + twStr;
     document.getElementById('lm-md-chair').textContent         = d.chair || '—';
@@ -10593,19 +10596,18 @@ const firebaseConfig = {
     const addWrap = document.getElementById('lm-md-additional-wrap');
     if (d.additionalAttendees) { addEl.textContent = d.additionalAttendees; addWrap.style.display = ''; }
     else { addWrap.style.display = 'none'; }
-    document.getElementById('lm-md-body').textContent = d.body || 'No general notes recorded.';
 
-    const agTbody = document.getElementById('lm-md-agenda-body');
-    agTbody.innerHTML = '';
-    (d.agendaItems||[]).forEach(a => {
-      const tr = document.createElement('tr');
-      tr.innerHTML = `<td style="padding:7px 10px;border:1px solid var(--gray2)">${esc(a.item||'')}</td>
-        <td style="padding:7px 10px;border:1px solid var(--gray2)">${esc(a.proposer||'')}</td>
-        <td style="padding:7px 10px;border:1px solid var(--gray2);text-align:center">${esc(a.time||'')}</td>
-        <td style="padding:7px 10px;border:1px solid var(--gray2)">${esc(a.notes||'')}</td>`;
-      agTbody.appendChild(tr);
-    });
-    if (!(d.agendaItems||[]).length) agTbody.innerHTML = '<tr><td colspan="4" style="padding:10px;color:var(--subtext);text-align:center">No agenda items recorded.</td></tr>';
+    const secEl = document.getElementById('lm-md-sections');
+    const filled = FOCUS_AREAS.filter(f => (sections[f.key]||'').trim());
+    secEl.innerHTML = filled.length ? filled.map(f => `
+      <div style="border:1px solid var(--gray2);border-left:5px solid ${f.colour};border-radius:8px;padding:10px 12px">
+        <div style="display:flex;align-items:center;gap:7px;margin-bottom:5px">
+          <span style="width:9px;height:9px;border-radius:50%;background:${f.colour};display:inline-block;flex-shrink:0"></span>
+          <span style="font-weight:700;color:var(--navy);font-size:13px">${esc(f.key)}</span>
+        </div>
+        <div style="white-space:pre-wrap;font-size:13px;color:var(--subtext)">${esc(sections[f.key])}</div>
+      </div>
+    `).join('') : '<div style="color:var(--subtext);font-size:13px;padding:8px 0">No section notes recorded.</div>';
 
     const acTbody = document.getElementById('lm-md-actions-body');
     acTbody.innerHTML = '';
@@ -10639,7 +10641,7 @@ const firebaseConfig = {
     if (!currentIsAdmin) return;
     if (!_lmCurrentId) return;
     const d = _lmAllDocs.find(x => x.id === _lmCurrentId);
-    const label = d ? focusAreaMeta(d.focusArea).key + (d.date ? ' — ' + d.date : '') : 'this meeting';
+    const label = d ? 'this Leadership Meeting' + (d.date ? ' — ' + d.date : '') : 'this meeting';
     if (!confirm('Delete "' + label + '"? This cannot be undone.')) return;
     try {
       await deleteDoc(doc(db, 'leadership_meetings', _lmCurrentId));
@@ -10657,26 +10659,32 @@ const firebaseConfig = {
     _lmIsNew     = true;
     _lmCurrentId = null;
     await meetingsLoadStaff();
-    lmPopulateFocusSelect();
     document.getElementById('lm-modal-title').textContent = 'New Leadership Meeting Record';
-    document.getElementById('lm-focus').value             = 'Standing Items';
-    document.getElementById('lm-focus-desc').textContent  = focusAreaMeta('Standing Items').desc;
     document.getElementById('lm-date').value              = new Date().toISOString().slice(0,10);
     document.getElementById('lm-time').value               = '';
     document.getElementById('lm-chair').value              = '';
     document.getElementById('lm-minutes-taker').value      = '';
     document.getElementById('lm-apologies').value          = '';
-    document.getElementById('lm-body').value               = '';
     document.getElementById('lm-attachments').value        = '';
     document.getElementById('lm-existing-attachments').innerHTML = '';
     document.getElementById('lm-error').style.display      = 'none';
-    document.getElementById('lm-agenda-body').innerHTML    = '';
     document.getElementById('lm-actions-body').innerHTML   = '';
     document.getElementById('lm-additional-attendees').value = '';
     _lmApologyChips = [];
     lmRenderApologyChips();
+    lmRenderSectionInputs({});
     await lmLoadAttendees();
-    lmAddAgendaRow();
+
+    const carried = lmGetCarriedActions();
+    const noteEl = document.getElementById('lm-carried-note');
+    if (carried.items.length) {
+      carried.items.forEach(a => lmAddActionRow(a));
+      const dateStr = carried.sourceDate ? new Date(carried.sourceDate+'T00:00:00').toLocaleDateString('en-AU',{day:'numeric',month:'short'}) : 'the last meeting';
+      noteEl.textContent = `↻ ${carried.items.length} action${carried.items.length>1?'s':''} carried forward from ${dateStr}, still open — tick Done or edit below.`;
+      noteEl.style.display = '';
+    } else {
+      noteEl.style.display = 'none';
+    }
     lmAddActionRow();
     closeLmDetail();
     document.getElementById('lm-edit-modal').style.display = 'flex';
@@ -10687,19 +10695,17 @@ const firebaseConfig = {
     if (!d) return;
     _lmIsNew = false;
     await meetingsLoadStaff();
-    lmPopulateFocusSelect();
     document.getElementById('lm-modal-title').textContent = 'Edit Leadership Meeting Record';
-    document.getElementById('lm-focus').value             = d.focusArea || 'Standing Items';
-    document.getElementById('lm-focus-desc').textContent  = focusAreaMeta(d.focusArea).desc;
     document.getElementById('lm-date').value              = d.date || '';
     document.getElementById('lm-time').value               = d.time || '';
     document.getElementById('lm-chair').value              = d.chair || '';
     document.getElementById('lm-minutes-taker').value      = d.minutesTaker || '';
     document.getElementById('lm-apologies').value          = d.apologies || '';
-    document.getElementById('lm-body').value               = d.body || '';
     document.getElementById('lm-attachments').value        = '';
     document.getElementById('lm-error').style.display      = 'none';
     document.getElementById('lm-additional-attendees').value = d.additionalAttendees || '';
+    document.getElementById('lm-carried-note').style.display = 'none';
+    lmRenderSectionInputs(d.sections || {});
 
     _lmApologyChips = (d.apologies || '').split(',').map(s=>s.trim()).filter(Boolean);
     lmRenderApologyChips();
@@ -10714,10 +10720,6 @@ const firebaseConfig = {
       exEl.innerHTML += `<div style="display:inline-flex;align-items:center;gap:6px;background:var(--gray1);border:1px solid var(--gray2);border-radius:6px;padding:4px 10px;font-size:12px">
         📄 ${esc(att.name)} <button onclick="lmDeleteAttach(${i})" style="background:none;border:none;cursor:pointer;color:var(--red);font-size:14px;line-height:1;padding:0 2px">✕</button></div>`;
     });
-
-    document.getElementById('lm-agenda-body').innerHTML = '';
-    (d.agendaItems||[]).forEach(a => lmAddAgendaRow(a));
-    if (!(d.agendaItems||[]).length) lmAddAgendaRow();
 
     document.getElementById('lm-actions-body').innerHTML = '';
     (d.actionItems||[]).forEach(a => lmAddActionRow(a));
@@ -10737,20 +10739,6 @@ const firebaseConfig = {
   function closeLmEdit() { document.getElementById('lm-edit-modal').style.display = 'none'; }
 
   // ── Dynamic table rows ──────────────────────────────────
-  function lmAddAgendaRow(a) {
-    a = a || {};
-    const tbody = document.getElementById('lm-agenda-body');
-    const tr = document.createElement('tr');
-    tr.className = 'lm-agenda-row';
-    tr.innerHTML = `
-      <td style="border:1px solid var(--gray2);padding:4px"><input class="form-input" style="padding:5px 8px;font-size:12px;width:100%" placeholder="Agenda item…" value="${esc(a.item||'')}"></td>
-      <td style="border:1px solid var(--gray2);padding:4px"><input class="form-input" style="padding:5px 8px;font-size:12px;width:100%" placeholder="Who?" value="${esc(a.proposer||'')}"></td>
-      <td style="border:1px solid var(--gray2);padding:4px"><input class="form-input" style="padding:5px 8px;font-size:12px;width:100%;text-align:center" placeholder="5 min" value="${esc(a.time||'')}"></td>
-      <td style="border:1px solid var(--gray2);padding:4px"><textarea class="form-input" style="padding:5px 8px;font-size:12px;width:100%;min-height:110px;resize:vertical;line-height:1.5" placeholder="Notes / outcome…">${esc(a.notes||'')}</textarea></td>
-      <td style="border:1px solid var(--gray2);padding:4px;text-align:center"><button onclick="this.closest('tr').remove()" style="background:none;border:none;cursor:pointer;color:var(--red);font-size:16px">✕</button></td>`;
-    tbody.appendChild(tr);
-  }
-
   function lmAddActionRow(a) {
     a = a || {};
     const tbody = document.getElementById('lm-actions-body');
@@ -10774,14 +10762,10 @@ const firebaseConfig = {
     const saveBtn = document.getElementById('lm-save-btn');
     errEl.style.display = 'none';
 
-    const focusArea = document.getElementById('lm-focus').value;
-    const date       = document.getElementById('lm-date').value.trim();
+    const date = document.getElementById('lm-date').value.trim();
     if (!date) { errEl.textContent = 'Please select a Date.'; errEl.style.display=''; return; }
 
-    const agendaItems = Array.from(document.querySelectorAll('.lm-agenda-row')).map(tr => {
-      const inputs = tr.querySelectorAll('input,select,textarea');
-      return { item: inputs[0].value.trim(), proposer: inputs[1].value.trim(), time: inputs[2].value.trim(), notes: inputs[3] ? inputs[3].value.trim() : '' };
-    }).filter(a => a.item);
+    const sections = lmGatherSections();
 
     const actionItems = Array.from(document.querySelectorAll('.lm-action-row')).map(tr => {
       const inputs = tr.querySelectorAll('input');
@@ -10808,7 +10792,6 @@ const firebaseConfig = {
     }
 
     const payload = {
-      focusArea,
       meetingType: 'Leadership', // kept for parity with general meeting record shape (email subject etc.)
       date,
       time:         document.getElementById('lm-time').value.trim(),
@@ -10816,8 +10799,7 @@ const firebaseConfig = {
       minutesTaker: document.getElementById('lm-minutes-taker').value.trim(),
       apologies:            document.getElementById('lm-apologies').value.trim(),
       additionalAttendees:  document.getElementById('lm-additional-attendees').value.trim(),
-      body:         document.getElementById('lm-body').value.trim(),
-      agendaItems,
+      sections,
       actionItems,
       attachments,
       updatedAt:    new Date().toISOString(),
@@ -10873,13 +10855,13 @@ const firebaseConfig = {
         toEmails = emails.join(', ');
         toName   = 'Leadership Team';
       }
-      const meta = focusAreaMeta(d.focusArea);
       const dateStr = d.date ? new Date(d.date+'T00:00:00').toLocaleDateString('en-AU',{weekday:'long',day:'numeric',month:'long',year:'numeric'}) : '—';
+      const sections = d.sections || {};
 
-      let agendaText = '';
-      (d.agendaItems||[]).forEach((a,i) => {
-        agendaText += `${i+1}. ${a.item}${a.proposer?' ('+a.proposer+')':''}\n`;
-        if (a.notes) agendaText += `   ${a.notes}\n`;
+      let sectionsText = '';
+      FOCUS_AREAS.forEach(f => {
+        const txt = (sections[f.key]||'').trim();
+        if (txt) sectionsText += `── ${f.key.toUpperCase()} ──\n${txt}\n\n`;
       });
 
       let actionsText = '';
@@ -10887,15 +10869,14 @@ const firebaseConfig = {
         actionsText += `${i+1}. ${a.action} — Owner: ${a.owner||'TBC'}\n`;
       });
 
-      const subject = `Leadership Meeting Minutes (${meta.key}) — ${dateStr}`;
+      const subject = `Leadership Meeting Minutes — ${dateStr}`;
       const body    = [
-        `LEADERSHIP MEETING MINUTES — FOCUS: ${meta.key.toUpperCase()}`,
+        `LEADERSHIP MEETING MINUTES`,
         `Date: ${dateStr}${d.time ? ' at '+d.time : ''}`,
         `Chair: ${d.chair||'—'}   |   Minute-taker: ${d.minutesTaker||'—'}`,
         d.apologies ? `Apologies: ${d.apologies}` : '',
         '',
-        agendaText ? '── AGENDA ITEMS ──\n' + agendaText : '',
-        d.body ? '── GENERAL NOTES ──\n' + d.body + '\n' : '',
+        sectionsText || 'No section notes recorded.\n',
         actionsText ? '── ACTION ITEMS ──\n' + actionsText : '',
         '',
         '──────────────────────────────',
@@ -10987,7 +10968,6 @@ const firebaseConfig = {
   window.lmEditCurrent          = lmEditCurrent;
   window.lmDeleteAttach         = lmDeleteAttach;
   window.closeLmEdit            = closeLmEdit;
-  window.lmAddAgendaRow         = lmAddAgendaRow;
   window.lmAddActionRow         = lmAddActionRow;
   window.lmSave                 = lmSave;
   window.lmEmailSummary         = lmEmailSummary;
@@ -12174,7 +12154,6 @@ const firebaseConfig = {
   function lmEditCurrent()                { if (window.lmEditCurrent)               window.lmEditCurrent(); }
   function lmDeleteAttach(i)              { if (window.lmDeleteAttach)              window.lmDeleteAttach(i); }
   function closeLmEdit()                  { if (window.closeLmEdit)                 window.closeLmEdit(); }
-  function lmAddAgendaRow()               { if (window.lmAddAgendaRow)              window.lmAddAgendaRow(); }
   function lmAddActionRow()               { if (window.lmAddActionRow)              window.lmAddActionRow(); }
   function lmSave()                       { if (window.lmSave)                      window.lmSave(); }
   function lmEmailSummary(selfOnly)       { if (window.lmEmailSummary)              window.lmEmailSummary(selfOnly); }

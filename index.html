@@ -7003,7 +7003,6 @@ const firebaseConfig = {
       document.getElementById('nav-leadership').style.display = currentIsLeadershipMember ? '' : 'none';
 
       setGreeting();
-      populateStaffDropdowns();
       loadAllTickets();
       ticketRoutingLoad();
       setupReportDropdowns();
@@ -7248,13 +7247,9 @@ const firebaseConfig = {
     const homeBadge = document.getElementById('home-term-badge');
     if (homeBadge) {
       if (tw && !tw.comingUp) {
-        const hats = HAT_TERMS.includes(tw.term);
-        homeBadge.innerHTML = `<span style="background:rgba(255,255,255,0.15);color:var(--gold2);font-size:11px;font-weight:700;padding:3px 12px;border-radius:20px;letter-spacing:0.3px">Term ${tw.term} · Week ${tw.week}</span>`
-          + (hats ? `<span style="background:rgba(245,172,28,0.2);color:var(--gold2);font-size:11px;font-weight:600;padding:3px 12px;border-radius:20px">🧢 Hats on</span>` : '');
+        homeBadge.innerHTML = `<span style="background:rgba(255,255,255,0.15);color:var(--gold2);font-size:11px;font-weight:700;padding:3px 12px;border-radius:20px;letter-spacing:0.3px">Term ${tw.term} · Week ${tw.week}</span>`;
       } else if (tw && tw.comingUp) {
-        const hats = HAT_TERMS.includes(tw.term);
-        homeBadge.innerHTML = `<span style="background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.55);font-size:11px;padding:3px 12px;border-radius:20px">Coming up · Term ${tw.term} Week ${tw.week}</span>`
-          + (hats ? `<span style="background:rgba(245,172,28,0.15);color:var(--gold2);font-size:11px;font-weight:600;padding:3px 12px;border-radius:20px">🧢 Hats on</span>` : '');
+        homeBadge.innerHTML = `<span style="background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.55);font-size:11px;padding:3px 12px;border-radius:20px">Coming up · Term ${tw.term} Week ${tw.week}</span>`;
       } else {
         homeBadge.innerHTML = `<span style="background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.4);font-size:11px;padding:3px 12px;border-radius:20px">School Holidays</span>`;
       }
@@ -7865,13 +7860,10 @@ const firebaseConfig = {
       label.parentNode.insertBefore(badge, label.nextSibling);
     }
     if (tw) {
-      const hats = HAT_TERMS.includes(tw.term);
       if (!tw.comingUp) {
-        badge.innerHTML = `<span style="background:var(--navy);color:var(--gold2);font-size:11px;font-weight:700;padding:2px 10px;border-radius:20px;letter-spacing:0.3px">Term ${tw.term} · Week ${tw.week}</span>`
-          + (hats ? `<span style="background:#fef3c7;color:#92400e;font-size:11px;font-weight:600;padding:2px 10px;border-radius:20px">🧢 Hats on</span>` : '');
+        badge.innerHTML = `<span style="background:var(--navy);color:var(--gold2);font-size:11px;font-weight:700;padding:2px 10px;border-radius:20px;letter-spacing:0.3px">Term ${tw.term} · Week ${tw.week}</span>`;
       } else {
-        badge.innerHTML = `<span style="background:var(--gray2);color:var(--gray3);font-size:11px;padding:2px 10px;border-radius:20px">Coming up · Term ${tw.term} Week ${tw.week}</span>`
-          + (hats ? `<span style="background:#fef3c7;color:#92400e;font-size:11px;font-weight:600;padding:2px 10px;border-radius:20px">🧢 Hats on</span>` : '');
+        badge.innerHTML = `<span style="background:var(--gray2);color:var(--gray3);font-size:11px;padding:2px 10px;border-radius:20px">Coming up · Term ${tw.term} Week ${tw.week}</span>`;
       }
     } else {
       badge.innerHTML = '<span style="background:var(--gray2);color:var(--gray3);font-size:11px;padding:2px 10px;border-radius:20px">School Holidays</span>';
@@ -8245,21 +8237,6 @@ const firebaseConfig = {
       return matchSearch && matchCat && matchSt && matchPri;
     });
     renderAllTickets(filtered);
-  }
-
-  // ══════════════════════════════════════
-  // STAFF DROPDOWNS — loaded from Firestore allowlist
-  // ══════════════════════════════════════
-  async function populateStaffDropdowns() {
-    const sel = document.getElementById('nt-assigned');
-    sel.innerHTML = '<option value="">Unassigned</option>';
-    try {
-      const snap = await getDocs(collection(db, 'allowed_users'));
-      snap.forEach(d => {
-        const s = d.data();
-        sel.innerHTML += `<option value="${s.email}" data-name="${s.name || s.email}">${s.name || s.email}</option>`;
-      });
-    } catch(e) { console.error('Could not load staff list', e); }
   }
 
   // ══════════════════════════════════════
@@ -9255,8 +9232,7 @@ const firebaseConfig = {
       document.getElementById('add-user-success').textContent =
         `✅ ${name} added and invitation email sent to ${email}.`;
 
-      // Refresh dropdowns and user list
-      populateStaffDropdowns();
+      // Refresh user list
       loadAdminUsers();
 
     } catch(e) {
@@ -9273,7 +9249,6 @@ const firebaseConfig = {
       await deleteDoc(doc(db, 'allowed_users', email.toLowerCase()));
       showToast(`${displayName} removed.`, 'success');
       loadAdminUsers();
-      populateStaffDropdowns();
     } catch(e) {
       console.error(e);
       showToast('Error removing user.', 'error');

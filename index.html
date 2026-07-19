@@ -7414,19 +7414,10 @@ const firebaseConfig = {
     maxBar.style.width = maxPct + '%';
     maxBar.style.background = 'linear-gradient(90deg, #4caf50, #f5ac1c, #e67e22, #e74c3c, #9b59b6)';
 
-    // Hat notice driven by daily max
+    // Hat notice removed from Daybook UV widget (element kept hidden, not deleted)
     const hatEl = document.getElementById('uv-hat-notice');
     if (hatEl) {
-      if (maxUV >= 3) {
-        hatEl.style.display = '';
-        hatEl.textContent = '🧢 Hats ON today — predicted max UV ' + maxRounded;
-      } else {
-        hatEl.style.display = '';
-        hatEl.textContent = '✅ Hats OFF today — predicted max UV ' + maxRounded;
-        hatEl.style.background = 'rgba(76,175,80,0.18)';
-        hatEl.style.borderColor = 'rgba(76,175,80,0.4)';
-        hatEl.style.color = '#4caf50';
-      }
+      hatEl.style.display = 'none';
     }
 
     const h = now.getHours(), m = String(now.getMinutes()).padStart(2,'0');

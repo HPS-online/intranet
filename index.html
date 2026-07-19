@@ -1854,7 +1854,6 @@
         <div style="font-size:11px;font-weight:700;letter-spacing:1px;color:rgba(255,255,255,0.4);text-transform:uppercase">UV</div>
         <div id="k-uv-number" style="font-size:26px;font-weight:800;color:#f5ac1c">—</div>
         <div id="k-uv-label" style="font-size:14px;font-weight:700;color:rgba(255,255,255,0.65)">Loading…</div>
-        <div id="k-hat-rule" style="font-size:13px;font-weight:700;color:#f5ac1c;display:none;padding-left:6px;border-left:1px solid rgba(255,255,255,0.2);margin-left:4px">🧢 Hats on</div>
       </div>
       <div style="width:1px;height:32px;background:rgba(255,255,255,0.12)"></div>
       <div id="k-pbl-header" style="display:none;max-width:320px">
@@ -1983,20 +1982,33 @@
     return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   }
 
+  // Optional ?date=YYYY-MM-DD to preview the kiosk for a different day (testing only)
+  function kioskPreviewDate() {
+    var p = new URLSearchParams(window.location.search).get('date');
+    if (p && /^\d{4}-\d{2}-\d{2}$/.test(p)) {
+      var parts = p.split('-');
+      var d = new Date(parseInt(parts[0],10), parseInt(parts[1],10) - 1, parseInt(parts[2],10));
+      if (!isNaN(d.getTime())) return d;
+    }
+    return null;
+  }
+
   function kioskClock() {
-    var now  = new Date();
+    var preview = kioskPreviewDate();
+    var now  = preview || new Date();
     var days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
     var mons = ['January','February','March','April','May','June','July','August','September','October','November','December'];
     var ymd  = kioskYmd(now);
-    var h    = now.getHours(), m = String(now.getMinutes()).padStart(2,'0');
+    var realNow = new Date();
+    var h    = realNow.getHours(), m = String(realNow.getMinutes()).padStart(2,'0');
     var time = String(h).padStart(2,'0') + ':' + m;
-    document.getElementById('k-date').textContent    = days[now.getDay()] + ' ' + now.getDate() + ' ' + mons[now.getMonth()] + ' ' + now.getFullYear();
+    document.getElementById('k-date').textContent    = days[now.getDay()] + ' ' + now.getDate() + ' ' + mons[now.getMonth()] + ' ' + now.getFullYear() + (preview ? '  ·  PREVIEW' : '');
     document.getElementById('k-time').textContent    = time;
     document.getElementById('k-termweek').textContent = kioskTermWeek(ymd);
   }
 
   function kioskLoad() {
-    var now = new Date();
+    var now = kioskPreviewDate() || new Date();
     var ymd = kioskYmd(now);
     kioskLoadDaybook(ymd);
     kioskLoadUV();
@@ -2010,7 +2022,9 @@
 
   function kioskLoadEnsembles(ymd) {
     var days   = ['sun','mon','tue','wed','thu','fri','sat'];
-    var dayKey = days[new Date().getDay()];
+    var parts  = ymd.split('-');
+    var dOfWeek = new Date(parseInt(parts[0],10), parseInt(parts[1],10) - 1, parseInt(parts[2],10)).getDay();
+    var dayKey = days[dOfWeek];
     if (dayKey === 'sun' || dayKey === 'sat') return;
     fetch('https://firestore.googleapis.com/v1/projects/hps-net/databases/(default)/documents/ensembles_config/timetable')
       .then(function(r){ return r.json(); })
@@ -2064,7 +2078,8 @@
 
   function kioskLoadClubs(ymd) {
     var days = ['sun','mon','tue','wed','thu','fri','sat'];
-    var dayKey = days[new Date().getDay()];
+    var cParts = ymd.split('-');
+    var dayKey = days[new Date(parseInt(cParts[0],10), parseInt(cParts[1],10) - 1, parseInt(cParts[2],10)).getDay()];
     if (dayKey === 'sun' || dayKey === 'sat') return;
     fetch('https://firestore.googleapis.com/v1/projects/hps-net/databases/(default)/documents/clubs_config/timetable')
       .then(function(r){ return r.json(); })
@@ -2158,7 +2173,6 @@
       else if (uv >= 3) { label = 'Moderate';  color = '#facc15'; }
       document.getElementById('k-uv-label').textContent  = label;
       document.getElementById('k-uv-number').style.color = color;
-      document.getElementById('k-hat-rule').style.display = uv >= 3 ? 'block' : 'none';
     }).catch(function(){});
   }
 
@@ -11905,9 +11919,8 @@ const firebaseConfig = {
     const termEl = document.getElementById('trt-term-badge');
     const termHeaderEl = document.getElementById('trt-term-badge-header');
     if (tw && !tw.comingUp) {
-      const hats = HAT_TERMS.includes(tw.term);
       termEl.innerHTML = `Term ${tw.term} &nbsp;·&nbsp; Week ${tw.week}`;
-      if (termHeaderEl) termHeaderEl.textContent = `📅 Term ${tw.term} · Week ${tw.week}` + (hats ? ' 🧢' : '');
+      if (termHeaderEl) termHeaderEl.textContent = `📅 Term ${tw.term} · Week ${tw.week}`;
     } else if (tw) {
       termEl.innerHTML = `Coming up · Term ${tw.term} Week ${tw.week}`;
       if (termHeaderEl) termHeaderEl.textContent = `📅 Term ${tw.term} · Week ${tw.week}`;
@@ -11987,10 +12000,9 @@ const firebaseConfig = {
       else if (uv >= 6) { colour = '#ea580c'; label = 'High'; }
       else if (uv >= 3) { colour = '#d97706'; label = 'Moderate'; }
       uvEl.innerHTML = `<span style="font-size:22px;font-weight:800;color:${colour}">${uv}</span>
-        <span style="font-size:13px;font-weight:600;color:${colour};margin-left:6px">${label}</span>`
-        + (uv >= 3 ? `<div style="margin-top:6px;font-size:12px;font-weight:600;color:#92400e;background:#fef3c7;padding:2px 10px;border-radius:20px;display:inline-block">🧢 Hats required</div>` : '');
+        <span style="font-size:13px;font-weight:600;color:${colour};margin-left:6px">${label}</span>`;
       const uvH = document.getElementById('trt-uv-header');
-      if (uvH) uvH.textContent = `☀️ UV ${uv} — ${label}` + (uv >= 3 ? ' 🧢' : '');
+      if (uvH) uvH.textContent = `☀️ UV ${uv} — ${label}`;
     } catch(e) { uvEl.textContent = 'UV data unavailable'; }
   }
 

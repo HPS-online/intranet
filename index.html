@@ -1862,7 +1862,12 @@
       </div>
       <div style="width:1px;height:32px;background:rgba(255,255,255,0.12)"></div>
       <div id="k-termweek" style="background:rgba(245,172,28,0.15);border:1px solid rgba(245,172,28,0.4);border-radius:20px;padding:5px 16px;font-size:14px;font-weight:700;color:#f5ac1c"></div>
-      <div id="k-date" style="font-size:15px;font-weight:700;color:rgba(255,255,255,0.8)"></div>
+      <div style="display:flex;align-items:center;gap:6px">
+        <button onclick="kioskShiftDay(-1)" title="Previous day" style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.75);border-radius:6px;width:26px;height:26px;font-size:14px;cursor:pointer;line-height:1">‹</button>
+        <div id="k-date" style="font-size:15px;font-weight:700;color:rgba(255,255,255,0.8)"></div>
+        <button onclick="kioskShiftDay(1)" title="Next day" style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.75);border-radius:6px;width:26px;height:26px;font-size:14px;cursor:pointer;line-height:1">›</button>
+        <button id="k-today-btn" onclick="kioskGoToday()" title="Back to today" style="display:none;background:rgba(245,172,28,0.18);border:1px solid rgba(245,172,28,0.4);color:#f5ac1c;border-radius:6px;padding:0 10px;height:26px;font-size:12px;font-weight:700;cursor:pointer">Today</button>
+      </div>
       <div id="k-time" style="font-size:26px;font-weight:800;min-width:80px;text-align:right"></div>
     </div>
   </div>
@@ -1993,8 +1998,33 @@
     return null;
   }
 
+  // Shared "which day is the kiosk showing" state — null means "follow real today"
+  var kioskViewDate = kioskPreviewDate();
+
+  function kioskIsToday(d) {
+    var t = new Date();
+    return d.getFullYear() === t.getFullYear() && d.getMonth() === t.getMonth() && d.getDate() === t.getDate();
+  }
+
+  function kioskShiftDay(delta) {
+    var base = kioskViewDate || new Date();
+    var next = new Date(base.getFullYear(), base.getMonth(), base.getDate() + delta);
+    kioskViewDate = kioskIsToday(next) ? null : next;
+    kioskClock();
+    kioskLoad();
+  }
+
+  function kioskGoToday() {
+    kioskViewDate = null;
+    kioskClock();
+    kioskLoad();
+  }
+
+  window.kioskShiftDay = kioskShiftDay;
+  window.kioskGoToday  = kioskGoToday;
+
   function kioskClock() {
-    var preview = kioskPreviewDate();
+    var preview = kioskViewDate;
     var now  = preview || new Date();
     var days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
     var mons = ['January','February','March','April','May','June','July','August','September','October','November','December'];
@@ -2005,10 +2035,12 @@
     document.getElementById('k-date').textContent    = days[now.getDay()] + ' ' + now.getDate() + ' ' + mons[now.getMonth()] + ' ' + now.getFullYear() + (preview ? '  ·  PREVIEW' : '');
     document.getElementById('k-time').textContent    = time;
     document.getElementById('k-termweek').textContent = kioskTermWeek(ymd);
+    var todayBtn = document.getElementById('k-today-btn');
+    if (todayBtn) todayBtn.style.display = preview ? '' : 'none';
   }
 
   function kioskLoad() {
-    var now = kioskPreviewDate() || new Date();
+    var now = kioskViewDate || new Date();
     var ymd = kioskYmd(now);
     kioskLoadDaybook(ymd);
     kioskLoadUV();
@@ -2107,7 +2139,7 @@
       var noticesEl = document.getElementById('k-notices');
       if (!doc.fields) {
         track.innerHTML = '<div style="color:rgba(255,255,255,0.3);font-size:16px;padding:12px 0">No daybook entry for today.</div>';
-        noticesEl.innerHTML = '<div style="color:rgba(255,255,255,0.3);font-size:13px">No notices today.</div>';
+        noticesEl.innerHTML = '<div style="color:rgba(255,255,255,0.3);font-size:15px">No notices today.</div>';
         return;
       }
       // Parse rows
@@ -2142,15 +2174,15 @@
       var items = [];
       try { items = doc.fields.infoItems.arrayValue.values || []; } catch(e) {}
       if (!items.length) {
-        noticesEl.innerHTML = '<div style="color:rgba(255,255,255,0.3);font-size:13px">No notices today.</div>';
+        noticesEl.innerHTML = '<div style="color:rgba(255,255,255,0.3);font-size:15px">No notices today.</div>';
       } else {
         noticesEl.innerHTML = items.map(function(item) {
           var text = '';
           try { text = item.mapValue.fields.text.stringValue; } catch(e) {
             try { text = item.stringValue; } catch(e2) {}
           }
-          return '<div style="background:rgba(255,255,255,0.05);border-radius:7px;padding:7px 12px;border-left:3px solid rgba(245,172,28,0.5)">' +
-            '<div style="font-size:13px;color:rgba(255,255,255,0.9);line-height:1.45;font-weight:500">' + kioskEsc(text) + '</div>' +
+          return '<div style="background:rgba(255,255,255,0.05);border-radius:7px;padding:9px 14px;border-left:3px solid rgba(245,172,28,0.5)">' +
+            '<div style="font-size:15px;color:rgba(255,255,255,0.9);line-height:1.45;font-weight:500">' + kioskEsc(text) + '</div>' +
           '</div>';
         }).join('');
       }

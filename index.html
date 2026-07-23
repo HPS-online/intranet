@@ -2481,9 +2481,9 @@
     <button class="nav-btn" onclick="showView('timetables');closeMobileNav()" style="display:block;width:100%;text-align:left;padding:14px 20px;border-radius:0;font-size:14px">📆 Timetables</button>
     <button class="nav-btn" onclick="showView('tickets');closeMobileNav()" style="display:block;width:100%;text-align:left;padding:14px 20px;border-radius:0;font-size:14px">🎫 Lodge a Ticket</button>
     <button class="nav-btn" onclick="showView('meetings');closeMobileNav()" style="display:block;width:100%;text-align:left;padding:14px 20px;border-radius:0;font-size:14px">📝 Meetings</button>
-    <button class="nav-btn" id="mobile-nav-leadership" onclick="showView('leadershipMeetings');closeMobileNav()" style="display:none;width:100%;text-align:left;padding:14px 20px;border-radius:0;font-size:14px">🔒 Leadership</button>
     <button class="nav-btn" onclick="showView('hub');closeMobileNav()" style="display:block;width:100%;text-align:left;padding:14px 20px;border-radius:0;font-size:14px">🏫 Highbury Hub</button>
     <button class="nav-btn" onclick="showView('suggest');closeMobileNav()" style="display:block;width:100%;text-align:left;padding:14px 20px;border-radius:0;font-size:14px">💡 Suggest an Edit</button>
+    <button class="nav-btn" id="mobile-nav-leadership" onclick="showView('leadershipMeetings');closeMobileNav()" style="display:none;width:100%;text-align:left;padding:14px 20px;border-radius:0;font-size:14px;color:#f5ac1c">Leadership Minutes</button>
     <button class="nav-btn admin-only" id="mobile-nav-admin" onclick="showView('admin');closeMobileNav()" style="display:none;width:100%;text-align:left;padding:14px 20px;border-radius:0;font-size:14px;color:#f5ac1c">⚙️ Admin</button>
     <div style="margin-top:auto;padding:16px 20px;border-top:1px solid rgba(255,255,255,0.1)">
       <button class="btn btn-outline btn-sm" id="mobile-sign-out-btn" style="color:#fff;border-color:rgba(255,255,255,0.3);width:100%">Sign Out</button>
@@ -2508,9 +2508,9 @@
         <button class="nav-btn" onclick="showView('timetables')">Timetables</button>
         <button class="nav-btn" onclick="showView('tickets')">Lodge a Ticket</button>
         <button class="nav-btn" onclick="showView('meetings')">Meetings</button>
-        <button class="nav-btn" id="nav-leadership" onclick="showView('leadershipMeetings')" style="display:none">🔒 Leadership</button>
         <button class="nav-btn" onclick="showView('hub')">Highbury Hub</button>
         <button class="nav-btn" onclick="showView('suggest')">Suggest an Edit</button>
+        <button class="nav-btn" id="nav-leadership" onclick="showView('leadershipMeetings')" style="display:none;color:#f5ac1c;border:1px solid rgba(245,172,28,0.35)">Leadership Minutes</button>
         <button class="nav-btn admin-only" id="nav-admin" onclick="showView('admin')" style="display:none;color:#f5ac1c;border:1px solid rgba(245,172,28,0.35)">Admin</button>
       </nav>
     </div>
@@ -4451,8 +4451,8 @@
     <div id="view-leadershipMeetings" class="view">
       <div class="page-header" style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px">
         <div>
-          <h2>🔒 Leadership Meetings</h2>
-          <p>Not visible to general staff. Colour-coded to the TMS Types of Work Wheel — pick a focus area for each meeting so the team deliberately covers all nine work functions over time, not just the ones we naturally gravitate to.</p>
+          <h2>Leadership Minutes</h2>
+          <p>Not visible to general staff. Each meeting we pick a focus area to look through as a lens — deliberate practice at a work style that doesn't come naturally to us, rather than just the ones we gravitate to.</p>
         </div>
         <div style="display:flex;gap:10px;flex-wrap:wrap">
           <button class="btn btn-outline" onclick="lmOpenManageAccess()" id="lm-manage-access-btn" style="color:var(--navy);border-color:var(--navy);font-size:13px;display:none">⚙ Manage Access</button>
@@ -4475,7 +4475,6 @@
       <div class="modal-box" style="max-width:780px;width:95%;max-height:92vh;overflow-y:auto;padding:0">
         <div id="lm-md-header" style="background:var(--navy);color:#fff;padding:20px 24px;border-radius:var(--radius) var(--radius) 0 0;display:flex;justify-content:space-between;align-items:flex-start;gap:12px">
           <div>
-            <div id="lm-md-type-badge" style="display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;background:rgba(255,255,255,0.12);padding:3px 10px;border-radius:20px"></div>
             <div id="lm-md-title" style="font-size:18px;font-weight:800">Leadership Meeting</div>
             <div id="lm-md-meta" style="font-size:12px;opacity:0.7;margin-top:3px"></div>
           </div>
@@ -4489,6 +4488,11 @@
         </div>
 
         <div style="padding:24px">
+          <div id="lm-md-lens-banner" style="border-radius:8px;padding:14px 18px;margin-bottom:20px">
+            <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--subtext);margin-bottom:3px">Today's Lens</div>
+            <div id="lm-md-lens-name" style="font-size:17px;font-weight:800"></div>
+            <div id="lm-md-lens-desc" style="font-size:12.5px;color:var(--subtext);margin-top:2px"></div>
+          </div>
           <div style="margin-bottom:18px">
             <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--subtext);margin-bottom:4px">Present</div>
             <div id="lm-md-present" style="font-weight:600"></div>
@@ -4563,7 +4567,7 @@
           <!-- Focus Area + Date + Time -->
           <div style="display:grid;grid-template-columns:1.6fr 1fr 0.8fr;gap:14px">
             <div>
-              <label class="form-label">This Meeting's Focus <span style="font-weight:400;text-transform:none;font-size:10px;color:var(--subtext)">(from the Types of Work Wheel — options your team has least strength in are marked)</span></label>
+              <label class="form-label">Today's Lens <span style="font-weight:400;text-transform:none;font-size:10px;color:var(--subtext)">(what we're looking through this meeting — practice at what doesn't come naturally)</span></label>
               <select id="lm-focus" class="form-input"></select>
             </div>
             <div>
@@ -4575,7 +4579,10 @@
               <input type="time" id="lm-time" class="form-input">
             </div>
           </div>
-          <div id="lm-focus-desc" style="font-size:12px;color:var(--subtext);margin-top:-10px"></div>
+          <div>
+            <div id="lm-focus-desc" style="font-size:12px;color:var(--subtext)"></div>
+            <div id="lm-focus-lastused" style="font-size:11px;color:var(--subtext);font-style:italic;margin-top:2px"></div>
+          </div>
 
           <!-- Chair + Minute-taker -->
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
@@ -9671,6 +9678,18 @@ const firebaseConfig = {
     return order[0].key;
   }
 
+  // "Last used as focus: Week 2, Term 3 (22 Jul)" — shown under the lens
+  // dropdown so the team can see at a glance how long it's been.
+  function lmLastUsedInfo(key) {
+    const past = _lmAllDocs.filter(d => d.focusArea === key && d.date).sort((a,b) => b.date.localeCompare(a.date));
+    if (!past.length) return 'Not used as a focus yet.';
+    const last = past[0];
+    const dateStr = new Date(last.date+'T00:00:00').toLocaleDateString('en-AU',{day:'numeric',month:'short'});
+    const tw = termWeekLabel(last.date);
+    const twStr = tw && !tw.comingUp ? `Term ${tw.term}, Week ${tw.week}` : dateStr;
+    return `Last used as focus: ${twStr} (${dateStr})`;
+  }
+
   let _meetingsCurrentType  = 'all';
   let _meetingsAllDocs      = [];
   let _meetingsCurrentId    = null;
@@ -10468,6 +10487,7 @@ const firebaseConfig = {
     sel.innerHTML = FOCUS_AREAS.map(f => `<option value="${esc(f.key)}">${esc(f.key)}${f.isGap ? ' — team gap' : ''}</option>`).join('');
     sel.onchange = () => {
       document.getElementById('lm-focus-desc').textContent = focusAreaMeta(sel.value).desc;
+      document.getElementById('lm-focus-lastused').textContent = lmLastUsedInfo(sel.value);
     };
   }
 
@@ -10656,7 +10676,12 @@ const firebaseConfig = {
     const tw = d.date ? termWeekLabel(d.date) : null;
     const twStr = tw && !tw.comingUp ? ` · Term ${tw.term}, Week ${tw.week}` : '';
     const meta = focusAreaMeta(d.focusArea);
-    document.getElementById('lm-md-type-badge').innerHTML = `<span style="width:8px;height:8px;border-radius:50%;background:${meta.colour};display:inline-block"></span>${esc(meta.key)}`;
+    const banner = document.getElementById('lm-md-lens-banner');
+    banner.style.background = meta.colour + '18';
+    banner.style.borderLeft = `5px solid ${meta.colour}`;
+    document.getElementById('lm-md-lens-name').textContent = meta.key;
+    document.getElementById('lm-md-lens-name').style.color = meta.colour;
+    document.getElementById('lm-md-lens-desc').textContent = meta.desc;
     document.getElementById('lm-md-title').textContent      = 'Leadership Meeting';
     document.getElementById('lm-md-meta').textContent       = dateStr + (d.time ? ' at ' + d.time : '') + twStr;
     document.getElementById('lm-md-present').textContent       = (d.present && d.present.length) ? d.present : (d.apologies !== undefined ? '—' : '—');
@@ -10741,6 +10766,7 @@ const firebaseConfig = {
     const recommended = lmRecommendFocus();
     document.getElementById('lm-focus').value = recommended;
     document.getElementById('lm-focus-desc').textContent = focusAreaMeta(recommended).desc;
+    document.getElementById('lm-focus-lastused').textContent = lmLastUsedInfo(recommended);
     document.getElementById('lm-date').value              = new Date().toISOString().slice(0,10);
     document.getElementById('lm-time').value               = '';
     document.getElementById('lm-chair').value              = '';
@@ -10783,6 +10809,7 @@ const firebaseConfig = {
     lmPopulateFocusSelect();
     document.getElementById('lm-focus').value = d.focusArea || FOCUS_AREAS[0].key;
     document.getElementById('lm-focus-desc').textContent = focusAreaMeta(d.focusArea).desc;
+    document.getElementById('lm-focus-lastused').textContent = lmLastUsedInfo(d.focusArea);
     document.getElementById('lm-date').value              = d.date || '';
     document.getElementById('lm-time').value               = d.time || '';
     document.getElementById('lm-chair').value              = d.chair || '';

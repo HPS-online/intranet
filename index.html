@@ -4475,7 +4475,7 @@
       <div class="modal-box" style="max-width:780px;width:95%;max-height:92vh;overflow-y:auto;padding:0">
         <div id="lm-md-header" style="background:var(--navy);color:#fff;padding:20px 24px;border-radius:var(--radius) var(--radius) 0 0;display:flex;justify-content:space-between;align-items:flex-start;gap:12px">
           <div>
-            <div id="lm-md-type-badge" style="display:flex;gap:5px;margin-bottom:6px"></div>
+            <div id="lm-md-type-badge" style="display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;background:rgba(255,255,255,0.12);padding:3px 10px;border-radius:20px"></div>
             <div id="lm-md-title" style="font-size:18px;font-weight:800">Leadership Meeting</div>
             <div id="lm-md-meta" style="font-size:12px;opacity:0.7;margin-top:3px"></div>
           </div>
@@ -4489,44 +4489,57 @@
         </div>
 
         <div style="padding:24px">
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px">
-            <div>
-              <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--subtext);margin-bottom:4px">Chair / Facilitator</div>
-              <div id="lm-md-chair" style="font-weight:600"></div>
-            </div>
-            <div>
-              <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--subtext);margin-bottom:4px">Minute-taker</div>
-              <div id="lm-md-minutes-taker" style="font-weight:600"></div>
-            </div>
+          <div style="margin-bottom:18px">
+            <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--subtext);margin-bottom:4px">Present</div>
+            <div id="lm-md-present" style="font-weight:600"></div>
           </div>
-          <div style="margin-bottom:20px">
+          <div style="margin-bottom:18px">
             <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--subtext);margin-bottom:4px">Apologies</div>
             <div id="lm-md-apologies" style="color:var(--subtext)"></div>
           </div>
-          <div style="margin-bottom:20px" id="lm-md-additional-wrap">
+          <div style="margin-bottom:18px" id="lm-md-additional-wrap">
             <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--subtext);margin-bottom:4px">Additional Attendees</div>
             <div id="lm-md-additional-attendees" style="color:var(--subtext)"></div>
           </div>
-
-          <div style="margin-bottom:20px">
-            <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--subtext);margin-bottom:8px">Section Notes</div>
-            <div id="lm-md-sections" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px"></div>
+          <div style="margin-bottom:18px;font-size:12px;color:var(--subtext)">
+            Chair: <span id="lm-md-chair" style="font-weight:600;color:var(--navy)"></span> &nbsp;·&nbsp;
+            Minute-taker: <span id="lm-md-minutes-taker" style="font-weight:600;color:var(--navy)"></span>
           </div>
 
           <div style="margin:20px 0">
-            <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--subtext);margin-bottom:8px">Action Items</div>
+            <div style="font-size:13px;font-weight:800;color:var(--navy);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;border-bottom:2px solid var(--gray2);padding-bottom:4px">Actions from Previous Minutes</div>
             <div id="lm-md-actions" style="overflow-x:auto">
               <table style="width:100%;border-collapse:collapse;font-size:13px">
                 <thead>
-                  <tr style="background:var(--navy);color:#fff">
-                    <th style="padding:8px 10px;text-align:center;font-weight:600;width:36px">Done</th>
-                    <th style="padding:8px 10px;text-align:left;font-weight:600;width:50%">Action</th>
-                    <th style="padding:8px 10px;text-align:left;font-weight:600">Owner</th>
+                  <tr style="background:var(--gray1)">
+                    <th style="padding:7px 8px;text-align:center;font-weight:600;border:1px solid var(--gray2);width:36px">Done</th>
+                    <th style="padding:7px 8px;text-align:left;font-weight:600;border:1px solid var(--gray2)">Action</th>
+                    <th style="padding:7px 8px;text-align:left;font-weight:600;border:1px solid var(--gray2);width:26%">Owner</th>
                   </tr>
                 </thead>
                 <tbody id="lm-md-actions-body"></tbody>
               </table>
             </div>
+          </div>
+
+          <div style="margin:20px 0">
+            <div style="font-size:13px;font-weight:800;color:var(--navy);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;border-bottom:2px solid var(--gray2);padding-bottom:4px">Items</div>
+
+            <div id="lm-md-weekahead-wrap" style="margin-bottom:14px">
+              <div style="font-weight:700;color:var(--navy);font-size:13px;margin-bottom:4px">Week Ahead</div>
+              <div id="lm-md-weekahead" style="white-space:pre-wrap;font-size:13px;color:var(--subtext)"></div>
+            </div>
+            <div id="lm-md-seesaw-wrap" style="margin-bottom:14px">
+              <div style="font-weight:700;color:var(--navy);font-size:13px;margin-bottom:4px">Information for Family — Seesaw Message</div>
+              <div id="lm-md-seesaw" style="white-space:pre-wrap;font-size:13px;color:var(--subtext)"></div>
+            </div>
+
+            <div id="lm-md-people" style="display:flex;flex-direction:column;gap:12px"></div>
+          </div>
+
+          <div style="margin:20px 0" id="lm-md-aob-wrap">
+            <div style="font-size:13px;font-weight:800;color:var(--navy);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;border-bottom:2px solid var(--gray2);padding-bottom:4px">Any Other Business</div>
+            <div id="lm-md-aob" style="white-space:pre-wrap;font-size:13px;color:var(--subtext)"></div>
           </div>
 
           <div>
@@ -4547,8 +4560,12 @@
         </div>
         <div style="padding:24px;display:flex;flex-direction:column;gap:18px">
 
-          <!-- Date + Time -->
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+          <!-- Focus Area + Date + Time -->
+          <div style="display:grid;grid-template-columns:1.6fr 1fr 0.8fr;gap:14px">
+            <div>
+              <label class="form-label">This Meeting's Focus <span style="font-weight:400;text-transform:none;font-size:10px;color:var(--subtext)">(from the Types of Work Wheel — options your team has least strength in are marked)</span></label>
+              <select id="lm-focus" class="form-input"></select>
+            </div>
             <div>
               <label class="form-label">Date *</label>
               <input type="date" id="lm-date" class="form-input">
@@ -4558,6 +4575,7 @@
               <input type="time" id="lm-time" class="form-input">
             </div>
           </div>
+          <div id="lm-focus-desc" style="font-size:12px;color:var(--subtext);margin-top:-10px"></div>
 
           <!-- Chair + Minute-taker -->
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
@@ -4582,9 +4600,9 @@
             <input type="hidden" id="lm-apologies">
           </div>
 
-          <!-- Attendees (auto-populated from the leadership access list) -->
+          <!-- Attendees (Present — auto-populated from the leadership access list) -->
           <div>
-            <label class="form-label">Attendees <span style="font-weight:400;text-transform:none;font-size:10px;color:var(--subtext)">(auto-populated from Leadership access list — click ✕ to mark as apology)</span></label>
+            <label class="form-label">Present <span style="font-weight:400;text-transform:none;font-size:10px;color:var(--subtext)">(auto-populated from Leadership access list — click ✕ to mark as apology)</span></label>
             <div id="lm-attendees-chips" style="display:flex;flex-wrap:wrap;gap:6px;min-height:40px;padding:8px 10px;border:1.5px solid var(--gray2);border-radius:7px;background:var(--gray1)">
               <span style="color:var(--subtext);font-size:13px;font-style:italic" id="lm-attendees-empty">Loading…</span>
             </div>
@@ -4596,16 +4614,10 @@
             <input type="text" id="lm-additional-attendees" class="form-input" placeholder="e.g. Nouman for an ICT item…">
           </div>
 
-          <!-- Section notes — one box per TMS colour, built by JS from FOCUS_AREAS -->
-          <div>
-            <label class="form-label" style="margin-bottom:8px;display:block">Section Notes <span style="font-weight:400;text-transform:none;font-size:10px;color:var(--subtext)">(briefly touch on each — leave any blank that don't apply this meeting)</span></label>
-            <div id="lm-sections-container" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px"></div>
-          </div>
-
-          <!-- Action items -->
+          <!-- Actions from Previous Minutes -->
           <div>
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-              <label class="form-label" style="margin:0">Action Items</label>
+              <label class="form-label" style="margin:0">Actions from Previous Minutes</label>
               <button class="btn btn-sm" style="background:var(--navy);color:#fff;font-size:12px" onclick="lmAddActionRow()">+ Add Row</button>
             </div>
             <div id="lm-carried-note" style="display:none;font-size:12px;color:var(--navy);background:var(--gray1);border-radius:6px;padding:8px 12px;margin-bottom:8px"></div>
@@ -4622,6 +4634,29 @@
                 <tbody id="lm-actions-body"></tbody>
               </table>
             </div>
+          </div>
+
+          <!-- Items -->
+          <div>
+            <label class="form-label" style="margin-bottom:8px;display:block">Items</label>
+
+            <div style="margin-bottom:14px">
+              <label class="form-label" style="font-size:12px">Week Ahead</label>
+              <textarea id="lm-weekahead" class="form-input" rows="3" style="resize:vertical" placeholder="What's coming up this week…"></textarea>
+            </div>
+
+            <div style="margin-bottom:14px">
+              <label class="form-label" style="font-size:12px">Information for Family — Seesaw Message</label>
+              <textarea id="lm-seesaw" class="form-input" rows="3" style="resize:vertical" placeholder="Key messages for the week-ahead family Seesaw post…"></textarea>
+            </div>
+
+            <div id="lm-people-container" style="display:flex;flex-direction:column;gap:10px"></div>
+          </div>
+
+          <!-- Any Other Business -->
+          <div>
+            <label class="form-label">Any Other Business</label>
+            <textarea id="lm-aob" class="form-input" rows="4" style="resize:vertical" placeholder="Anything else raised…"></textarea>
           </div>
 
           <!-- Attachments -->
@@ -9603,22 +9638,38 @@ const firebaseConfig = {
   const DEFAULT_MEETING_TYPES = ['Staff Meeting','PAC','Maths','Wellbeing','Culture Crew','English','Social','WHS','Garden'];
   const PRIORITY_COLOURS = { Low:'#3b82f6', Med:'#f59e0b', High:'#e74c3c' };
 
-  // ── Leadership "colour meeting" focus areas (TMS Types of Work Wheel,
-  // plus two standing practical sections that aren't part of the wheel
-  // but need a spot every meeting regardless) ──
+  // ── Leadership meeting focus areas (TMS Types of Work Wheel).
+  // isGap flags the roles confirmed against Highbury's actual TMP results —
+  // nobody on the team has Advising or Maintaining as a major or related
+  // preference; Innovating only has related (no major) coverage. These are
+  // the areas most likely to get skipped if the team just follows instinct. ──
   const FOCUS_AREAS = [
-    { key:'Standing Items',        colour:'#242b63', desc:'Urgent / recurring business — not a colour-focus week' },
-    { key:'Seesaw — Week Ahead',   colour:'#0ea5e9', desc:'Key messages for the week-ahead family Seesaw post — events, pupil-free days, closures, timetable changes' },
-    { key:'Advising',       colour:'#1a7a4c', desc:'Gathering and reporting information' },
-    { key:'Innovating',     colour:'#8dc63f', desc:'Creating and experimenting with ideas' },
+    { key:'Advising',       colour:'#1a7a4c', desc:'Gathering and reporting information', isGap:true },
+    { key:'Maintaining',    colour:'#29b6c4', desc:'Upholding and safeguarding standards and processes', isGap:true },
+    { key:'Innovating',     colour:'#8dc63f', desc:'Creating and experimenting with ideas', isGap:true },
     { key:'Promoting',      colour:'#f5c518', desc:'Exploring and presenting opportunities' },
     { key:'Developing',     colour:'#f5921c', desc:'Assessing and testing the applicability of new approaches' },
     { key:'Organising',     colour:'#e0197d', desc:'Establishing and implementing ways of making things work' },
     { key:'Producing',      colour:'#8b3fa8', desc:'Concluding and delivering outputs' },
     { key:'Inspecting',     colour:'#1c6fd1', desc:'Controlling and auditing the working of systems' },
-    { key:'Maintaining',    colour:'#29b6c4', desc:'Upholding and safeguarding standards and processes' },
     { key:'Linking',        colour:'#6b7280', desc:'Coordinating and integrating the work of others' },
   ];
+  function focusAreaMeta(key) { return FOCUS_AREAS.find(f => f.key === key) || FOCUS_AREAS[0]; }
+
+  // Recommend the next focus: prefer whichever area (gaps first) hasn't
+  // been used most recently, so the rotation actually cycles rather than
+  // defaulting to the same one every time.
+  function lmRecommendFocus() {
+    const lastUsed = {};
+    _lmAllDocs.forEach(d => { if (d.focusArea && (!lastUsed[d.focusArea] || d.date > lastUsed[d.focusArea])) lastUsed[d.focusArea] = d.date; });
+    const order = [...FOCUS_AREAS].sort((a,b) => {
+      if (a.isGap !== b.isGap) return a.isGap ? -1 : 1; // gaps first
+      const ad = lastUsed[a.key] || '';
+      const bd = lastUsed[b.key] || '';
+      return ad.localeCompare(bd); // never-used / longest-ago first
+    });
+    return order[0].key;
+  }
 
   let _meetingsCurrentType  = 'all';
   let _meetingsAllDocs      = [];
@@ -10409,32 +10460,49 @@ const firebaseConfig = {
   let _lmAttendeeChips= [];   // [{name,email}] resolved from access_lists/leadership
   let _lmAccessEmails = [];   // working copy while Manage Access modal is open
 
-  // Build the "one box per colour" section-notes inputs in the edit modal.
-  // prefill = { 'Standing Items': 'text…', 'Advising': 'text…', ... }
-  function lmRenderSectionInputs(prefill) {
+  // Populate the single Focus Area select — gap areas listed first and
+  // flagged, pre-selected to whichever's due next in rotation.
+  function lmPopulateFocusSelect() {
+    const sel = document.getElementById('lm-focus');
+    if (!sel) return;
+    sel.innerHTML = FOCUS_AREAS.map(f => `<option value="${esc(f.key)}">${esc(f.key)}${f.isGap ? ' — team gap' : ''}</option>`).join('');
+    sel.onchange = () => {
+      document.getElementById('lm-focus-desc').textContent = focusAreaMeta(sel.value).desc;
+    };
+  }
+
+  // Build one free-text box per person on the Leadership access list,
+  // matching the traditional "one section per leader" Word doc layout.
+  // prefill = { 'Belinda': 'text…', 'Daniel': 'text…', ... } keyed by first name.
+  function lmRenderPersonBoxes(prefill) {
     prefill = prefill || {};
-    const container = document.getElementById('lm-sections-container');
+    const container = document.getElementById('lm-people-container');
     if (!container) return;
-    container.innerHTML = FOCUS_AREAS.map(f => `
-      <div style="border:1px solid var(--gray2);border-left:5px solid ${f.colour};border-radius:8px;padding:10px 12px">
-        <div style="display:flex;align-items:center;gap:7px;margin-bottom:2px">
-          <span style="width:9px;height:9px;border-radius:50%;background:${f.colour};display:inline-block;flex-shrink:0"></span>
-          <span style="font-weight:700;color:var(--navy);font-size:13px">${esc(f.key)}</span>
-        </div>
-        <div style="font-size:11px;color:var(--subtext);margin-bottom:7px;font-style:italic">${esc(f.desc)}</div>
-        <textarea class="form-input lm-section-input" data-key="${esc(f.key)}" rows="3" style="resize:vertical;font-size:12px" placeholder="Notes…">${esc(prefill[f.key] || '')}</textarea>
+    if (!_lmAttendeeChips.length && !_lmApologyChips.length) {
+      container.innerHTML = '<div style="color:var(--subtext);font-size:13px;font-style:italic">Add members via ⚙ Manage Access to get a section per person here.</div>';
+      return;
+    }
+    // Union of current attendees + apologies, so someone away this meeting
+    // still has a spot (in case something needs noting for them).
+    const names = [..._lmAttendeeChips.map(m=>m.name), ..._lmApologyChips]
+      .map(n => n.split(' ')[0])
+      .filter((n,i,arr) => arr.indexOf(n) === i);
+    container.innerHTML = names.map(name => `
+      <div>
+        <label class="form-label" style="font-size:12px">${esc(name)}</label>
+        <textarea class="form-input lm-person-input" data-name="${esc(name)}" rows="2" style="resize:vertical" placeholder="${esc(name)}'s items…">${esc(prefill[name] || '')}</textarea>
       </div>
     `).join('');
   }
 
-  // Gather non-empty section textareas into { key: text }
-  function lmGatherSections() {
-    const sections = {};
-    document.querySelectorAll('.lm-section-input').forEach(ta => {
+  // Gather non-empty person textareas into { firstName: text }
+  function lmGatherPersonNotes() {
+    const personNotes = {};
+    document.querySelectorAll('.lm-person-input').forEach(ta => {
       const val = ta.value.trim();
-      if (val) sections[ta.dataset.key] = val;
+      if (val) personNotes[ta.dataset.name] = val;
     });
-    return sections;
+    return personNotes;
   }
 
   // ── Action carry-forward ────────────────────────────────
@@ -10456,7 +10524,7 @@ const firebaseConfig = {
     if (!el) return;
     el.innerHTML = FOCUS_AREAS.map(f =>
       `<span style="display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;color:var(--navy);background:var(--gray1);padding:4px 10px;border-radius:20px">
-        <span style="width:9px;height:9px;border-radius:50%;background:${f.colour};display:inline-block"></span>${esc(f.key)}
+        <span style="width:9px;height:9px;border-radius:50%;background:${f.colour};display:inline-block"></span>${esc(f.key)}${f.isGap ? ' <span style="color:var(--red);font-weight:700">•gap</span>' : ''}
       </span>`
     ).join('');
   }
@@ -10562,19 +10630,14 @@ const firebaseConfig = {
         const completed = (d.actionItems||[]).filter(a=>a.done).length;
         const pendingBadge   = pending   > 0 ? `<span style="background:#e74c3c;color:#fff;font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;margin-left:8px">${pending} action${pending>1?'s':''} pending</span>` : '';
         const completedBadge = completed > 0 ? `<span style="background:#22c55e;color:#fff;font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;margin-left:4px">${completed} action${completed>1?'s':''} completed</span>` : '';
-        const sections = d.sections || {};
-        const coveredKeys = FOCUS_AREAS.filter(f => (sections[f.key]||'').trim());
-        // Dots: filled + coloured for sections covered this meeting, faint hollow for the rest
-        const dots = FOCUS_AREAS.map(f => {
-          const covered = !!(sections[f.key]||'').trim();
-          return covered
-            ? `<span title="${esc(f.key)}" style="width:9px;height:9px;border-radius:50%;background:${f.colour};display:inline-block"></span>`
-            : `<span title="${esc(f.key)}" style="width:9px;height:9px;border-radius:50%;border:1.5px solid var(--gray2);display:inline-block"></span>`;
-        }).join('');
-        const firstColour = coveredKeys.length ? coveredKeys[0].colour : 'var(--gray2)';
-        html += `<div onclick="openLmDetail('${d.id}')" style="background:var(--white);border:1px solid var(--gray2);border-left:5px solid ${firstColour};border-radius:var(--radius);padding:14px 18px;cursor:pointer;transition:box-shadow 0.15s;display:flex;justify-content:space-between;align-items:center;gap:12px" onmouseover="this.style.boxShadow='var(--shadow)'" onmouseout="this.style.boxShadow=''">
+        const meta = focusAreaMeta(d.focusArea);
+        html += `<div onclick="openLmDetail('${d.id}')" style="background:var(--white);border:1px solid var(--gray2);border-left:5px solid ${meta.colour};border-radius:var(--radius);padding:14px 18px;cursor:pointer;transition:box-shadow 0.15s;display:flex;justify-content:space-between;align-items:center;gap:12px" onmouseover="this.style.boxShadow='var(--shadow)'" onmouseout="this.style.boxShadow=''">
           <div>
-            <div style="display:flex;align-items:center;gap:5px;margin-bottom:5px">${dots}${twBadge}${pendingBadge}${completedBadge}</div>
+            <div style="display:flex;align-items:center;gap:7px;margin-bottom:5px">
+              <span style="width:9px;height:9px;border-radius:50%;background:${meta.colour};display:inline-block"></span>
+              <span style="font-weight:700;font-size:14px;color:var(--navy)">${esc(meta.key)}</span>
+              ${twBadge}${pendingBadge}${completedBadge}
+            </div>
             <div style="font-size:12px;color:var(--subtext)">${dateStr}${timeStr}${d.chair ? ' · Chair: '+esc(d.chair) : ''}${d.minutesTaker ? ' · Minutes: '+esc(d.minutesTaker) : ''}</div>
           </div>
           <div style="flex-shrink:0;color:var(--subtext);font-size:18px">›</div>
@@ -10592,15 +10655,11 @@ const firebaseConfig = {
     const dateStr = d.date ? new Date(d.date+'T00:00:00').toLocaleDateString('en-AU',{weekday:'long',day:'numeric',month:'long',year:'numeric'}) : '—';
     const tw = d.date ? termWeekLabel(d.date) : null;
     const twStr = tw && !tw.comingUp ? ` · Term ${tw.term}, Week ${tw.week}` : '';
-    const sections = d.sections || {};
-    document.getElementById('lm-md-type-badge').innerHTML = FOCUS_AREAS.map(f => {
-      const covered = !!(sections[f.key]||'').trim();
-      return covered
-        ? `<span title="${esc(f.key)}" style="width:9px;height:9px;border-radius:50%;background:${f.colour};display:inline-block"></span>`
-        : `<span title="${esc(f.key)}" style="width:9px;height:9px;border-radius:50%;border:1.5px solid rgba(255,255,255,0.3);display:inline-block"></span>`;
-    }).join('');
+    const meta = focusAreaMeta(d.focusArea);
+    document.getElementById('lm-md-type-badge').innerHTML = `<span style="width:8px;height:8px;border-radius:50%;background:${meta.colour};display:inline-block"></span>${esc(meta.key)}`;
     document.getElementById('lm-md-title').textContent      = 'Leadership Meeting';
     document.getElementById('lm-md-meta').textContent       = dateStr + (d.time ? ' at ' + d.time : '') + twStr;
+    document.getElementById('lm-md-present').textContent       = (d.present && d.present.length) ? d.present : (d.apologies !== undefined ? '—' : '—');
     document.getElementById('lm-md-chair').textContent         = d.chair || '—';
     document.getElementById('lm-md-minutes-taker').textContent = d.minutesTaker || '—';
     document.getElementById('lm-md-apologies').textContent     = d.apologies || 'None recorded';
@@ -10609,17 +10668,23 @@ const firebaseConfig = {
     if (d.additionalAttendees) { addEl.textContent = d.additionalAttendees; addWrap.style.display = ''; }
     else { addWrap.style.display = 'none'; }
 
-    const secEl = document.getElementById('lm-md-sections');
-    const filled = FOCUS_AREAS.filter(f => (sections[f.key]||'').trim());
-    secEl.innerHTML = filled.length ? filled.map(f => `
-      <div style="border:1px solid var(--gray2);border-left:5px solid ${f.colour};border-radius:8px;padding:10px 12px">
-        <div style="display:flex;align-items:center;gap:7px;margin-bottom:5px">
-          <span style="width:9px;height:9px;border-radius:50%;background:${f.colour};display:inline-block;flex-shrink:0"></span>
-          <span style="font-weight:700;color:var(--navy);font-size:13px">${esc(f.key)}</span>
-        </div>
-        <div style="white-space:pre-wrap;font-size:13px;color:var(--subtext)">${esc(sections[f.key])}</div>
+    document.getElementById('lm-md-weekahead').textContent = d.weekAhead || 'Nothing recorded.';
+    document.getElementById('lm-md-seesaw').textContent    = d.seesaw    || 'Nothing recorded.';
+
+    const peopleEl = document.getElementById('lm-md-people');
+    const personNotes = d.personNotes || {};
+    const names = Object.keys(personNotes);
+    peopleEl.innerHTML = names.length ? names.map(name => `
+      <div>
+        <div style="font-weight:700;color:var(--navy);font-size:13px;margin-bottom:4px">${esc(name)}</div>
+        <div style="white-space:pre-wrap;font-size:13px;color:var(--subtext)">${esc(personNotes[name])}</div>
       </div>
-    `).join('') : '<div style="color:var(--subtext);font-size:13px;padding:8px 0">No section notes recorded.</div>';
+    `).join('') : '<div style="color:var(--subtext);font-size:13px">No individual items recorded.</div>';
+
+    const aobEl = document.getElementById('lm-md-aob');
+    const aobWrap = document.getElementById('lm-md-aob-wrap');
+    if (d.aob) { aobEl.textContent = d.aob; aobWrap.style.display = ''; }
+    else { aobWrap.style.display = 'none'; }
 
     const acTbody = document.getElementById('lm-md-actions-body');
     acTbody.innerHTML = '';
@@ -10631,7 +10696,7 @@ const firebaseConfig = {
         <td style="padding:7px 10px;border:1px solid var(--gray2);${doneStyle}">${esc(a.owner||'')}</td>`;
       acTbody.appendChild(tr);
     });
-    if (!(d.actionItems||[]).length) acTbody.innerHTML = '<tr><td colspan="3" style="padding:10px;color:var(--subtext);text-align:center">No action items recorded.</td></tr>';
+    if (!(d.actionItems||[]).length) acTbody.innerHTML = '<tr><td colspan="3" style="padding:10px;color:var(--subtext);text-align:center">No actions carried from previous minutes.</td></tr>';
 
     const attEl = document.getElementById('lm-md-attachments');
     attEl.innerHTML = '';
@@ -10672,11 +10737,18 @@ const firebaseConfig = {
     _lmCurrentId = null;
     await meetingsLoadStaff();
     document.getElementById('lm-modal-title').textContent = 'New Leadership Meeting Record';
+    lmPopulateFocusSelect();
+    const recommended = lmRecommendFocus();
+    document.getElementById('lm-focus').value = recommended;
+    document.getElementById('lm-focus-desc').textContent = focusAreaMeta(recommended).desc;
     document.getElementById('lm-date').value              = new Date().toISOString().slice(0,10);
     document.getElementById('lm-time').value               = '';
     document.getElementById('lm-chair').value              = '';
     document.getElementById('lm-minutes-taker').value      = '';
     document.getElementById('lm-apologies').value          = '';
+    document.getElementById('lm-weekahead').value          = '';
+    document.getElementById('lm-seesaw').value              = '';
+    document.getElementById('lm-aob').value                 = '';
     document.getElementById('lm-attachments').value        = '';
     document.getElementById('lm-existing-attachments').innerHTML = '';
     document.getElementById('lm-error').style.display      = 'none';
@@ -10684,8 +10756,8 @@ const firebaseConfig = {
     document.getElementById('lm-additional-attendees').value = '';
     _lmApologyChips = [];
     lmRenderApologyChips();
-    lmRenderSectionInputs({});
     await lmLoadAttendees();
+    lmRenderPersonBoxes({});
 
     const carried = lmGetCarriedActions();
     const noteEl = document.getElementById('lm-carried-note');
@@ -10708,16 +10780,21 @@ const firebaseConfig = {
     _lmIsNew = false;
     await meetingsLoadStaff();
     document.getElementById('lm-modal-title').textContent = 'Edit Leadership Meeting Record';
+    lmPopulateFocusSelect();
+    document.getElementById('lm-focus').value = d.focusArea || FOCUS_AREAS[0].key;
+    document.getElementById('lm-focus-desc').textContent = focusAreaMeta(d.focusArea).desc;
     document.getElementById('lm-date').value              = d.date || '';
     document.getElementById('lm-time').value               = d.time || '';
     document.getElementById('lm-chair').value              = d.chair || '';
     document.getElementById('lm-minutes-taker').value      = d.minutesTaker || '';
     document.getElementById('lm-apologies').value          = d.apologies || '';
+    document.getElementById('lm-weekahead').value          = d.weekAhead || '';
+    document.getElementById('lm-seesaw').value              = d.seesaw || '';
+    document.getElementById('lm-aob').value                 = d.aob || '';
     document.getElementById('lm-attachments').value        = '';
     document.getElementById('lm-error').style.display      = 'none';
     document.getElementById('lm-additional-attendees').value = d.additionalAttendees || '';
     document.getElementById('lm-carried-note').style.display = 'none';
-    lmRenderSectionInputs(d.sections || {});
 
     _lmApologyChips = (d.apologies || '').split(',').map(s=>s.trim()).filter(Boolean);
     lmRenderApologyChips();
@@ -10725,6 +10802,7 @@ const firebaseConfig = {
     await lmLoadAttendees();
     _lmAttendeeChips = _lmAttendeeChips.filter(m => !_lmApologyChips.includes(m.name));
     lmRenderAttendeeChips();
+    lmRenderPersonBoxes(d.personNotes || {});
 
     const exEl = document.getElementById('lm-existing-attachments');
     exEl.innerHTML = '';
@@ -10777,7 +10855,8 @@ const firebaseConfig = {
     const date = document.getElementById('lm-date').value.trim();
     if (!date) { errEl.textContent = 'Please select a Date.'; errEl.style.display=''; return; }
 
-    const sections = lmGatherSections();
+    const personNotes = lmGatherPersonNotes();
+    const present = _lmAttendeeChips.map(m => m.name).join(', ');
 
     const actionItems = Array.from(document.querySelectorAll('.lm-action-row')).map(tr => {
       const inputs = tr.querySelectorAll('input');
@@ -10805,13 +10884,18 @@ const firebaseConfig = {
 
     const payload = {
       meetingType: 'Leadership', // kept for parity with general meeting record shape (email subject etc.)
+      focusArea:    document.getElementById('lm-focus').value,
       date,
       time:         document.getElementById('lm-time').value.trim(),
       chair:        document.getElementById('lm-chair').value.trim(),
       minutesTaker: document.getElementById('lm-minutes-taker').value.trim(),
+      present,
       apologies:            document.getElementById('lm-apologies').value.trim(),
       additionalAttendees:  document.getElementById('lm-additional-attendees').value.trim(),
-      sections,
+      weekAhead:    document.getElementById('lm-weekahead').value.trim(),
+      seesaw:       document.getElementById('lm-seesaw').value.trim(),
+      aob:          document.getElementById('lm-aob').value.trim(),
+      personNotes,
       actionItems,
       attachments,
       updatedAt:    new Date().toISOString(),
@@ -10868,29 +10952,32 @@ const firebaseConfig = {
         toName   = 'Leadership Team';
       }
       const dateStr = d.date ? new Date(d.date+'T00:00:00').toLocaleDateString('en-AU',{weekday:'long',day:'numeric',month:'long',year:'numeric'}) : '—';
-      const sections = d.sections || {};
-
-      let sectionsText = '';
-      FOCUS_AREAS.forEach(f => {
-        const txt = (sections[f.key]||'').trim();
-        if (txt) sectionsText += `── ${f.key.toUpperCase()} ──\n${txt}\n\n`;
-      });
+      const meta = focusAreaMeta(d.focusArea);
 
       let actionsText = '';
       (d.actionItems||[]).forEach((a,i) => {
-        actionsText += `${i+1}. ${a.action} — Owner: ${a.owner||'TBC'}\n`;
+        actionsText += `${i+1}. ${a.action} — Owner: ${a.owner||'TBC'}${a.done ? ' [DONE]' : ''}\n`;
       });
 
-      const subject = `Leadership Meeting Minutes — ${dateStr}`;
+      let itemsText = '';
+      if (d.weekAhead) itemsText += `WEEK AHEAD\n${d.weekAhead}\n\n`;
+      if (d.seesaw)    itemsText += `INFORMATION FOR FAMILY — SEESAW MESSAGE\n${d.seesaw}\n\n`;
+      const personNotes = d.personNotes || {};
+      Object.keys(personNotes).forEach(name => {
+        itemsText += `${name.toUpperCase()}\n${personNotes[name]}\n\n`;
+      });
+
+      const subject = `Leadership Meeting Minutes (${meta.key}) — ${dateStr}`;
       const body    = [
-        `LEADERSHIP MEETING MINUTES`,
+        `LEADERSHIP MEETING MINUTES — FOCUS: ${meta.key.toUpperCase()}`,
         `Date: ${dateStr}${d.time ? ' at '+d.time : ''}`,
-        `Chair: ${d.chair||'—'}   |   Minute-taker: ${d.minutesTaker||'—'}`,
+        `Present: ${d.present || '—'}`,
         d.apologies ? `Apologies: ${d.apologies}` : '',
+        `Chair: ${d.chair||'—'}   |   Minute-taker: ${d.minutesTaker||'—'}`,
         '',
-        sectionsText || 'No section notes recorded.\n',
-        actionsText ? '── ACTION ITEMS ──\n' + actionsText : '',
-        '',
+        actionsText ? '── ACTIONS FROM PREVIOUS MINUTES ──\n' + actionsText : '',
+        '── ITEMS ──\n' + (itemsText || 'Nothing recorded.\n'),
+        d.aob ? '── ANY OTHER BUSINESS ──\n' + d.aob + '\n' : '',
         '──────────────────────────────',
         'Highbury Primary School — Staff Intranet (Leadership — not for general distribution)',
       ].filter(l => l !== undefined).join('\n');

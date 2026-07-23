@@ -4455,7 +4455,7 @@
           <p>Not visible to general staff. Each meeting we pick a focus area to look through as a lens — deliberate practice at a work style that doesn't come naturally to us, rather than just the ones we gravitate to.</p>
         </div>
         <div style="display:flex;gap:10px;flex-wrap:wrap">
-          <button class="btn btn-outline" onclick="lmOpenManageAccess()" id="lm-manage-access-btn" style="color:var(--navy);border-color:var(--navy);font-size:13px;display:none">⚙ Manage Access</button>
+          <button class="btn btn-outline" onclick="lmOpenManageAccess()" id="lm-manage-access-btn" style="color:var(--navy);border-color:var(--navy);font-size:15px;display:none">⚙ Manage Access</button>
           <button class="btn btn-gold" onclick="lmOpenNew()">+ New Meeting Record</button>
         </div>
       </div>
@@ -4475,45 +4475,45 @@
       <div class="modal-box" style="max-width:780px;width:95%;max-height:92vh;overflow-y:auto;padding:0">
         <div id="lm-md-header" style="background:var(--navy);color:#fff;padding:20px 24px;border-radius:var(--radius) var(--radius) 0 0;display:flex;justify-content:space-between;align-items:flex-start;gap:12px">
           <div>
-            <div id="lm-md-title" style="font-size:18px;font-weight:800">Leadership Meeting</div>
-            <div id="lm-md-meta" style="font-size:12px;opacity:0.7;margin-top:3px"></div>
+            <div id="lm-md-title" style="font-size:20px;font-weight:800">Leadership Meeting</div>
+            <div id="lm-md-meta" style="font-size:14px;opacity:0.7;margin-top:3px"></div>
           </div>
           <div style="display:flex;gap:8px;flex-shrink:0;flex-wrap:wrap;justify-content:flex-end">
-            <button id="lm-md-email-all-btn" class="btn btn-sm" onclick="lmEmailSummary(false)" style="background:#059669;color:#fff;font-size:12px">✉ Email All Members</button>
-            <button id="lm-md-email-self-btn" class="btn btn-sm" onclick="lmEmailSummary(true)" style="background:#0284c7;color:#fff;font-size:12px">✉ Email Myself a Copy</button>
-            <button id="lm-md-edit-btn" class="btn btn-gold btn-sm" onclick="lmEditCurrent()" style="font-size:12px">✏ Edit</button>
-            <button id="lm-md-delete-btn" class="btn btn-sm" onclick="lmDeleteCurrent()" style="background:var(--red);color:#fff;font-size:12px;display:none">🗑 Delete</button>
-            <button class="btn btn-outline btn-sm" onclick="closeLmDetail()" style="color:#fff;border-color:rgba(255,255,255,0.35);font-size:12px">✕ Close</button>
+            <button id="lm-md-email-all-btn" class="btn btn-sm" onclick="lmEmailSummary(false)" style="background:#059669;color:#fff;font-size:14px">✉ Email All Members</button>
+            <button id="lm-md-email-self-btn" class="btn btn-sm" onclick="lmEmailSummary(true)" style="background:#0284c7;color:#fff;font-size:14px">✉ Email Myself a Copy</button>
+            <button id="lm-md-edit-btn" class="btn btn-gold btn-sm" onclick="lmEditCurrent()" style="font-size:14px">✏ Edit</button>
+            <button id="lm-md-delete-btn" class="btn btn-sm" onclick="lmDeleteCurrent()" style="background:var(--red);color:#fff;font-size:14px;display:none">🗑 Delete</button>
+            <button class="btn btn-outline btn-sm" onclick="closeLmDetail()" style="color:#fff;border-color:rgba(255,255,255,0.35);font-size:14px">✕ Close</button>
           </div>
         </div>
 
         <div style="padding:24px">
-          <div id="lm-md-lens-banner" style="position:sticky;top:-1px;z-index:5;background:#fff;border-radius:8px;padding:16px 18px;margin:0 -4px 20px">
-            <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--subtext);margin-bottom:3px">Today's Lens</div>
-            <div id="lm-md-lens-name" style="font-size:20px;font-weight:800"></div>
-            <div id="lm-md-lens-desc" style="font-size:13.5px;color:var(--subtext);margin-top:2px"></div>
+          <div id="lm-md-lens-banner" style="position:sticky;top:-1px;z-index:5;background:#fff;border-radius:8px;padding:11px 16px;margin:0 -4px 18px;box-shadow:0 1px 3px rgba(0,0,0,0.08)">
+            <div style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--subtext);margin-bottom:3px">Today's Lens</div>
+            <div id="lm-md-lens-name" style="font-size:22px;font-weight:800"></div>
+            <div id="lm-md-lens-desc" style="font-size:15.5px;color:var(--subtext);margin-top:2px"></div>
           </div>
           <div style="margin-bottom:18px">
-            <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--subtext);margin-bottom:4px">Present</div>
+            <div style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--subtext);margin-bottom:4px">Present</div>
             <div id="lm-md-present" style="font-weight:600"></div>
           </div>
           <div style="margin-bottom:18px">
-            <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--subtext);margin-bottom:4px">Apologies</div>
+            <div style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--subtext);margin-bottom:4px">Apologies</div>
             <div id="lm-md-apologies" style="color:var(--subtext)"></div>
           </div>
           <div style="margin-bottom:18px" id="lm-md-additional-wrap">
-            <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--subtext);margin-bottom:4px">Additional Attendees</div>
+            <div style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--subtext);margin-bottom:4px">Additional Attendees</div>
             <div id="lm-md-additional-attendees" style="color:var(--subtext)"></div>
           </div>
-          <div style="margin-bottom:18px;font-size:12px;color:var(--subtext)">
+          <div style="margin-bottom:18px;font-size:14px;color:var(--subtext)">
             Chair: <span id="lm-md-chair" style="font-weight:600;color:var(--navy)"></span> &nbsp;·&nbsp;
             Minute-taker: <span id="lm-md-minutes-taker" style="font-weight:600;color:var(--navy)"></span>
           </div>
 
           <div style="margin:20px 0">
-            <div style="font-size:13px;font-weight:800;color:var(--navy);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;border-bottom:2px solid var(--gray2);padding-bottom:4px">Actions from Previous Minutes</div>
+            <div style="font-size:15px;font-weight:800;color:var(--navy);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;border-bottom:2px solid var(--gray2);padding-bottom:4px">Actions from Previous Minutes</div>
             <div id="lm-md-actions" style="overflow-x:auto">
-              <table style="width:100%;border-collapse:collapse;font-size:13px">
+              <table style="width:100%;border-collapse:collapse;font-size:15px">
                 <thead>
                   <tr style="background:var(--gray1)">
                     <th style="padding:7px 8px;text-align:center;font-weight:600;border:1px solid var(--gray2);width:36px">Done</th>
@@ -4527,27 +4527,27 @@
           </div>
 
           <div style="margin:20px 0">
-            <div style="font-size:13px;font-weight:800;color:var(--navy);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;border-bottom:2px solid var(--gray2);padding-bottom:4px">Items</div>
+            <div style="font-size:15px;font-weight:800;color:var(--navy);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;border-bottom:2px solid var(--gray2);padding-bottom:4px">Items</div>
 
             <div id="lm-md-weekahead-wrap" style="margin-bottom:14px">
-              <div style="font-weight:700;color:var(--navy);font-size:13px;margin-bottom:4px">Week Ahead</div>
-              <div id="lm-md-weekahead" style="white-space:pre-wrap;font-size:13px;color:var(--subtext)"></div>
+              <div style="font-weight:700;color:var(--navy);font-size:15px;margin-bottom:4px">Week Ahead</div>
+              <div id="lm-md-weekahead" style="white-space:pre-wrap;font-size:15px;color:var(--subtext)"></div>
             </div>
             <div id="lm-md-seesaw-wrap" style="margin-bottom:14px">
-              <div style="font-weight:700;color:var(--navy);font-size:13px;margin-bottom:4px">Information for Family — Seesaw Message</div>
-              <div id="lm-md-seesaw" style="white-space:pre-wrap;font-size:13px;color:var(--subtext)"></div>
+              <div style="font-weight:700;color:var(--navy);font-size:15px;margin-bottom:4px">Information for Family — Seesaw Message</div>
+              <div id="lm-md-seesaw" style="white-space:pre-wrap;font-size:15px;color:var(--subtext)"></div>
             </div>
 
             <div id="lm-md-people" style="display:flex;flex-direction:column;gap:12px"></div>
           </div>
 
           <div style="margin:20px 0" id="lm-md-aob-wrap">
-            <div style="font-size:13px;font-weight:800;color:var(--navy);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;border-bottom:2px solid var(--gray2);padding-bottom:4px">Any Other Business</div>
-            <div id="lm-md-aob" style="white-space:pre-wrap;font-size:13px;color:var(--subtext)"></div>
+            <div style="font-size:15px;font-weight:800;color:var(--navy);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;border-bottom:2px solid var(--gray2);padding-bottom:4px">Any Other Business</div>
+            <div id="lm-md-aob" style="white-space:pre-wrap;font-size:15px;color:var(--subtext)"></div>
           </div>
 
           <div>
-            <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--subtext);margin-bottom:6px">Attachments</div>
+            <div style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--subtext);margin-bottom:6px">Attachments</div>
             <div id="lm-md-attachments" style="display:flex;flex-wrap:wrap;gap:8px"></div>
           </div>
         </div>
@@ -4559,17 +4559,17 @@
     <div id="lm-edit-modal" class="modal-overlay" style="display:none">
       <div class="modal-box" style="max-width:1100px;width:95%;max-height:95vh;overflow-y:auto;padding:0">
         <div style="background:var(--navy);color:#fff;padding:20px 24px;border-radius:var(--radius) var(--radius) 0 0;display:flex;justify-content:space-between;align-items:center">
-          <div id="lm-modal-title" style="font-size:18px;font-weight:800">New Leadership Meeting Record</div>
+          <div id="lm-modal-title" style="font-size:20px;font-weight:800">New Leadership Meeting Record</div>
           <button class="btn btn-outline btn-sm" onclick="closeLmEdit()" style="color:#fff;border-color:rgba(255,255,255,0.35)">✕ Close</button>
         </div>
         <div style="padding:24px;display:flex;flex-direction:column;gap:18px">
 
           <!-- Today's Lens — sticky so it stays visible while scrolling through the record -->
-          <div id="lm-focus-card" style="position:sticky;top:-1px;z-index:5;background:#fff;border-radius:10px;padding:16px 18px;margin:0 -4px;border-left:6px solid var(--gray2)">
+          <div id="lm-focus-card" style="position:sticky;top:-1px;z-index:5;background:#fff;border-radius:10px;padding:11px 16px;margin:0 -4px;border-left:6px solid var(--gray2);box-shadow:0 1px 3px rgba(0,0,0,0.08)">
             <div style="display:grid;grid-template-columns:1.6fr 1fr;gap:14px;align-items:end">
               <div>
-                <label class="form-label" style="font-size:12px">Today's Lens <span style="font-weight:400;text-transform:none;font-size:10px;color:var(--subtext)">(what we're looking through this meeting — practice at what doesn't come naturally)</span></label>
-                <select id="lm-focus" class="form-input" style="font-size:19px;font-weight:800;padding:10px 12px;height:auto"></select>
+                <label class="form-label" style="font-size:14px">Today's Lens <span style="font-weight:400;text-transform:none;font-size:12px;color:var(--subtext)">(what we're looking through this meeting — practice at what doesn't come naturally)</span></label>
+                <select id="lm-focus" class="form-input" style="font-size:21px;font-weight:800;padding:10px 12px;height:auto"></select>
               </div>
               <div>
                 <label class="form-label">Date *</label>
@@ -4577,8 +4577,8 @@
               </div>
             </div>
             <div style="margin-top:8px">
-              <div id="lm-focus-desc" style="font-size:14.5px;color:var(--navy);font-weight:600"></div>
-              <div id="lm-focus-lastused" style="font-size:12px;color:var(--subtext);font-style:italic;margin-top:2px"></div>
+              <div id="lm-focus-desc" style="font-size:16.5px;color:var(--navy);font-weight:600"></div>
+              <div id="lm-focus-lastused" style="font-size:14px;color:var(--subtext);font-style:italic;margin-top:2px"></div>
             </div>
           </div>
 
@@ -4598,7 +4598,7 @@
 
           <!-- Apologies -->
           <div style="position:relative">
-            <label class="form-label">Apologies <span style="font-weight:400;text-transform:none;font-size:10px;color:var(--subtext)">(type a name and select, repeat for multiple)</span></label>
+            <label class="form-label">Apologies <span style="font-weight:400;text-transform:none;font-size:12px;color:var(--subtext)">(type a name and select, repeat for multiple)</span></label>
             <div id="lm-apologies-chips" style="display:flex;flex-wrap:wrap;gap:5px;min-height:36px;padding:6px 10px;border:1.5px solid var(--gray2);border-radius:7px;background:var(--white);cursor:text" onclick="document.getElementById('lm-apologies-input').focus()"></div>
             <input type="text" id="lm-apologies-input" class="form-input" placeholder="Type name to add…" autocomplete="off" oninput="staffTypeahead(this,'lm-apologies-ac')" style="margin-top:6px">
             <div id="lm-apologies-ac" class="staff-ac-list" style="display:none"></div>
@@ -4607,15 +4607,15 @@
 
           <!-- Attendees (Present — auto-populated from the leadership access list) -->
           <div>
-            <label class="form-label">Present <span style="font-weight:400;text-transform:none;font-size:10px;color:var(--subtext)">(auto-populated from Leadership access list — click ✕ to mark as apology)</span></label>
+            <label class="form-label">Present <span style="font-weight:400;text-transform:none;font-size:12px;color:var(--subtext)">(auto-populated from Leadership access list — click ✕ to mark as apology)</span></label>
             <div id="lm-attendees-chips" style="display:flex;flex-wrap:wrap;gap:6px;min-height:40px;padding:8px 10px;border:1.5px solid var(--gray2);border-radius:7px;background:var(--gray1)">
-              <span style="color:var(--subtext);font-size:13px;font-style:italic" id="lm-attendees-empty">Loading…</span>
+              <span style="color:var(--subtext);font-size:15px;font-style:italic" id="lm-attendees-empty">Loading…</span>
             </div>
           </div>
 
           <!-- Additional Attendees -->
           <div>
-            <label class="form-label">Additional Attendees <span style="font-weight:400;text-transform:none;font-size:10px;color:var(--subtext)">(guests not on the Leadership list)</span></label>
+            <label class="form-label">Additional Attendees <span style="font-weight:400;text-transform:none;font-size:12px;color:var(--subtext)">(guests not on the Leadership list)</span></label>
             <input type="text" id="lm-additional-attendees" class="form-input" placeholder="e.g. Nouman for an ICT item…">
           </div>
 
@@ -4623,11 +4623,11 @@
           <div>
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
               <label class="form-label" style="margin:0">Actions from Previous Minutes</label>
-              <button class="btn btn-sm" style="background:var(--navy);color:#fff;font-size:12px" onclick="lmAddActionRow()">+ Add Row</button>
+              <button class="btn btn-sm" style="background:var(--navy);color:#fff;font-size:14px" onclick="lmAddActionRow()">+ Add Row</button>
             </div>
-            <div id="lm-carried-note" style="display:none;font-size:12px;color:var(--navy);background:var(--gray1);border-radius:6px;padding:8px 12px;margin-bottom:8px"></div>
+            <div id="lm-carried-note" style="display:none;font-size:14px;color:var(--navy);background:var(--gray1);border-radius:6px;padding:8px 12px;margin-bottom:8px"></div>
             <div style="overflow-x:auto">
-              <table style="width:100%;border-collapse:collapse;font-size:13px">
+              <table style="width:100%;border-collapse:collapse;font-size:15px">
                 <thead>
                   <tr style="background:var(--gray1)">
                     <th style="padding:7px 8px;text-align:center;font-weight:600;border:1px solid var(--gray2);width:36px">Done</th>
@@ -4646,12 +4646,12 @@
             <label class="form-label" style="margin-bottom:8px;display:block">Items</label>
 
             <div style="margin-bottom:14px">
-              <label class="form-label" style="font-size:12px">Week Ahead</label>
+              <label class="form-label" style="font-size:14px">Week Ahead</label>
               <textarea id="lm-weekahead" class="form-input" rows="3" style="resize:vertical" placeholder="What's coming up this week…"></textarea>
             </div>
 
             <div style="margin-bottom:14px">
-              <label class="form-label" style="font-size:12px">Information for Family — Seesaw Message</label>
+              <label class="form-label" style="font-size:14px">Information for Family — Seesaw Message</label>
               <textarea id="lm-seesaw" class="form-input" rows="3" style="resize:vertical" placeholder="Key messages for the week-ahead family Seesaw post…"></textarea>
             </div>
 
@@ -4671,7 +4671,7 @@
             <div id="lm-existing-attachments" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px"></div>
           </div>
 
-          <div id="lm-error" style="display:none;color:var(--red);font-size:13px;font-weight:600"></div>
+          <div id="lm-error" style="display:none;color:var(--red);font-size:15px;font-weight:600"></div>
           <div style="display:flex;justify-content:flex-end;gap:10px">
             <button class="btn btn-outline" onclick="closeLmEdit()">Cancel</button>
             <button class="btn btn-gold" onclick="lmSave()" id="lm-save-btn">💾 Save Meeting</button>
@@ -4686,13 +4686,13 @@
       <div class="modal-box" style="max-width:520px;width:95%;max-height:90vh;overflow-y:auto;padding:0">
         <div style="background:var(--navy);color:#fff;padding:20px 24px;border-radius:var(--radius) var(--radius) 0 0;display:flex;justify-content:space-between;align-items:center">
           <div>
-            <div style="font-size:18px;font-weight:800">⚙ Manage Leadership Access</div>
-            <div style="font-size:12px;opacity:0.7;margin-top:2px">Who can see and record Leadership Meetings</div>
+            <div style="font-size:20px;font-weight:800">⚙ Manage Leadership Access</div>
+            <div style="font-size:14px;opacity:0.7;margin-top:2px">Who can see and record Leadership Meetings</div>
           </div>
           <button class="btn btn-outline btn-sm" onclick="closeLmManageAccess()" style="color:#fff;border-color:rgba(255,255,255,0.35)">✕ Close</button>
         </div>
         <div style="padding:24px;display:flex;flex-direction:column;gap:16px">
-          <div style="font-size:12px;color:var(--subtext)">Admin accounts always have access automatically. Add other staff below by name.</div>
+          <div style="font-size:14px;color:var(--subtext)">Admin accounts always have access automatically. Add other staff below by name.</div>
           <div id="lm-access-list" style="display:flex;flex-wrap:wrap;gap:6px;min-height:32px"></div>
           <div style="position:relative;display:flex;gap:8px">
             <div style="flex:1;position:relative">
@@ -4704,7 +4704,7 @@
           <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:6px">
             <button class="btn btn-gold btn-sm" onclick="lmSaveAccessList()">💾 Save Access List</button>
           </div>
-          <div id="lm-access-save-status" style="display:none;font-size:12px;color:#059669;text-align:right">✓ Saved</div>
+          <div id="lm-access-save-status" style="display:none;font-size:14px;color:#059669;text-align:right">✓ Saved</div>
         </div>
       </div>
     </div>
@@ -9649,15 +9649,15 @@ const firebaseConfig = {
   // preference; Innovating only has related (no major) coverage. These are
   // the areas most likely to get skipped if the team just follows instinct. ──
   const FOCUS_AREAS = [
-    { key:'Advising',       colour:'#1a7a4c', desc:'Gathering and reporting information', isGap:true },
-    { key:'Maintaining',    colour:'#29b6c4', desc:'Upholding and safeguarding standards and processes', isGap:true },
-    { key:'Innovating',     colour:'#8dc63f', desc:'Creating and experimenting with ideas', isGap:true },
-    { key:'Promoting',      colour:'#f5c518', desc:'Exploring and presenting opportunities' },
-    { key:'Developing',     colour:'#f5921c', desc:'Assessing and testing the applicability of new approaches' },
-    { key:'Organising',     colour:'#e0197d', desc:'Establishing and implementing ways of making things work' },
-    { key:'Producing',      colour:'#8b3fa8', desc:'Concluding and delivering outputs' },
-    { key:'Inspecting',     colour:'#1c6fd1', desc:'Controlling and auditing the working of systems' },
-    { key:'Linking',        colour:'#6b7280', desc:'Coordinating and integrating the work of others' },
+    { key:'Advising',       colour:'#1a7a4c', desc:"Have we actually gathered enough information before deciding, or are we acting on assumptions? Ask who else has dealt with this before, what's already known, and whether anyone needs to go and find out more before we commit.", isGap:true },
+    { key:'Maintaining',    colour:'#29b6c4', desc:"Are we upholding the standards, relationships and working conditions we've already set, not just chasing the next new thing? Look for what's quietly slipping — a process, a commitment to someone, a relationship with a stakeholder — that needs attention before it becomes a bigger problem.", isGap:true },
+    { key:'Innovating',     colour:'#8dc63f', desc:"Are we just doing this the way we've always done it because that's familiar, or is there genuinely a better way? Use this meeting to deliberately float new ideas and challenge current practice, even ones that feel a bit uncomfortable or half-formed.", isGap:true },
+    { key:'Promoting',      colour:'#f5c518', desc:"Who needs to know about what we're doing, and have we actually told them? Think about the people — staff, families, the broader school community — who'd want a say or a heads-up before we go further." },
+    { key:'Developing',     colour:'#f5921c', desc:"Has this idea actually been tested against reality, or does it just sound good in the room? Push on whether it's practical given our constraints, what could go wrong, and whether we have a fallback if it doesn't land the way we expect." },
+    { key:'Organising',     colour:'#e0197d', desc:"Do we have a clear plan — objectives, a timeline, who's doing what — or are we still just talking around the edges of it? Use this lens to turn intent into an actual action plan with owners and dates." },
+    { key:'Producing',      colour:'#8b3fa8', desc:"Are we actually delivering, to the standard we said we would, on the timeline we said we would? Check whether the day-to-day output is holding up, not just whether the plan looked good when we made it." },
+    { key:'Inspecting',     colour:'#1c6fd1', desc:"Are we across the numbers, the safety picture, and the compliance side of things — or just assuming it's fine? Use this meeting to actually check the data: budgets, incident reports, legal or policy obligations we might be missing." },
+    { key:'Linking',        colour:'#6b7280', desc:"Are we genuinely well-connected as a team and with the people around us, or just assuming everyone's in the loop? Check whether communication is actually flowing both ways, and whether anyone's feeling disconnected from what's going on." },
   ];
   function focusAreaMeta(key) { return FOCUS_AREAS.find(f => f.key === key) || FOCUS_AREAS[0]; }
 
@@ -10479,12 +10479,22 @@ const firebaseConfig = {
 
   // Populate the single Focus Area select — gap areas listed first and
   // flagged, pre-selected to whichever's due next in rotation.
+  // Blend a hex colour with white to get a solid (fully opaque) pastel —
+  // an alpha-based tint let content scrolling underneath the sticky lens
+  // card show through, so this guarantees a solid background instead.
+  function lmTintColour(hex, ratio) {
+    ratio = ratio || 0.12;
+    const r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16);
+    const mix = c => Math.round(c*ratio + 255*(1-ratio));
+    return `rgb(${mix(r)},${mix(g)},${mix(b)})`;
+  }
+
   // Tint the lens card to match the selected focus colour
   function lmApplyFocusCardColour(key) {
     const meta = focusAreaMeta(key);
     const card = document.getElementById('lm-focus-card');
     if (card) {
-      card.style.background   = meta.colour + '17';
+      card.style.background   = lmTintColour(meta.colour);
       card.style.borderLeft   = `6px solid ${meta.colour}`;
     }
   }
@@ -10508,7 +10518,7 @@ const firebaseConfig = {
     const container = document.getElementById('lm-people-container');
     if (!container) return;
     if (!_lmAttendeeChips.length && !_lmApologyChips.length) {
-      container.innerHTML = '<div style="color:var(--subtext);font-size:13px;font-style:italic">Add members via ⚙ Manage Access to get a section per person here.</div>';
+      container.innerHTML = '<div style="color:var(--subtext);font-size:15px;font-style:italic">Add members via ⚙ Manage Access to get a section per person here.</div>';
       return;
     }
     // Union of current attendees + apologies, so someone away this meeting
@@ -10518,7 +10528,7 @@ const firebaseConfig = {
       .filter((n,i,arr) => arr.indexOf(n) === i);
     container.innerHTML = names.map(name => `
       <div>
-        <label class="form-label" style="font-size:12px">${esc(name)}</label>
+        <label class="form-label" style="font-size:14px">${esc(name)}</label>
         <textarea class="form-input lm-person-input" data-name="${esc(name)}" rows="2" style="resize:vertical" placeholder="${esc(name)}'s items…">${esc(prefill[name] || '')}</textarea>
       </div>
     `).join('');
@@ -10552,7 +10562,7 @@ const firebaseConfig = {
     const el = document.getElementById('lm-legend');
     if (!el) return;
     el.innerHTML = FOCUS_AREAS.map(f =>
-      `<span style="display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;color:var(--navy);background:var(--gray1);padding:4px 10px;border-radius:20px">
+      `<span style="display:inline-flex;align-items:center;gap:5px;font-size:13px;font-weight:600;color:var(--navy);background:var(--gray1);padding:4px 10px;border-radius:20px">
         <span style="width:9px;height:9px;border-radius:50%;background:${f.colour};display:inline-block"></span>${esc(f.key)}${f.isGap ? ' <span style="color:var(--red);font-weight:700">•gap</span>' : ''}
       </span>`
     ).join('');
@@ -10561,7 +10571,7 @@ const firebaseConfig = {
   // ── Resolve the leadership access list into {name,email} pairs ──
   async function lmLoadAttendees() {
     const container = document.getElementById('lm-attendees-chips');
-    if (container) container.innerHTML = '<span style="color:var(--subtext);font-size:13px;font-style:italic">Loading…</span>';
+    if (container) container.innerHTML = '<span style="color:var(--subtext);font-size:15px;font-style:italic">Loading…</span>';
     await meetingsLoadStaff(); // populates _allStaffList from allowed_users (public read)
     try {
       const snap = await getDoc(doc(db, 'access_lists', 'leadership'));
@@ -10580,7 +10590,7 @@ const firebaseConfig = {
     const container = document.getElementById('lm-attendees-chips');
     if (!container) return;
     if (!_lmAttendeeChips.length) {
-      container.innerHTML = '<span style="color:var(--subtext);font-size:13px;font-style:italic" id="lm-attendees-empty">No one on the Leadership access list yet. Use ⚙ Manage Access to add members.</span>';
+      container.innerHTML = '<span style="color:var(--subtext);font-size:15px;font-style:italic" id="lm-attendees-empty">No one on the Leadership access list yet. Use ⚙ Manage Access to add members.</span>';
       return;
     }
     container.innerHTML = _lmAttendeeChips.map((m,i) =>
@@ -10647,28 +10657,28 @@ const firebaseConfig = {
     let html = '';
     Object.keys(groups).sort((a,b)=>b.localeCompare(a)).forEach(mo => {
       const label = mo === 'Unknown' ? 'Unknown Date' : (() => { const [y,m] = mo.split('-'); return new Date(y,m-1,1).toLocaleString('en-AU',{month:'long',year:'numeric'}); })();
-      html += `<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--subtext);padding:8px 0 4px">${label}</div>`;
+      html += `<div style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--subtext);padding:8px 0 4px">${label}</div>`;
       groups[mo].forEach(d => {
         const dateStr = d.date ? new Date(d.date+'T00:00:00').toLocaleDateString('en-AU',{weekday:'short',day:'numeric',month:'short',year:'numeric'}) : '—';
         const tw = d.date ? termWeekLabel(d.date) : null;
         const twBadge = tw && !tw.comingUp
-          ? `<span style="background:var(--navy);color:var(--gold2);font-size:10px;font-weight:700;padding:1px 8px;border-radius:20px;margin-left:8px">T${tw.term} W${tw.week}</span>`
+          ? `<span style="background:var(--navy);color:var(--gold2);font-size:12px;font-weight:700;padding:1px 8px;border-radius:20px;margin-left:8px">T${tw.term} W${tw.week}</span>`
           : '';
         const pending   = (d.actionItems||[]).filter(a=>!a.done).length;
         const completed = (d.actionItems||[]).filter(a=>a.done).length;
-        const pendingBadge   = pending   > 0 ? `<span style="background:#e74c3c;color:#fff;font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;margin-left:8px">${pending} action${pending>1?'s':''} pending</span>` : '';
-        const completedBadge = completed > 0 ? `<span style="background:#22c55e;color:#fff;font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;margin-left:4px">${completed} action${completed>1?'s':''} completed</span>` : '';
+        const pendingBadge   = pending   > 0 ? `<span style="background:#e74c3c;color:#fff;font-size:12px;font-weight:700;padding:2px 7px;border-radius:20px;margin-left:8px">${pending} action${pending>1?'s':''} pending</span>` : '';
+        const completedBadge = completed > 0 ? `<span style="background:#22c55e;color:#fff;font-size:12px;font-weight:700;padding:2px 7px;border-radius:20px;margin-left:4px">${completed} action${completed>1?'s':''} completed</span>` : '';
         const meta = focusAreaMeta(d.focusArea);
         html += `<div onclick="openLmDetail('${d.id}')" style="background:var(--white);border:1px solid var(--gray2);border-left:5px solid ${meta.colour};border-radius:var(--radius);padding:14px 18px;cursor:pointer;transition:box-shadow 0.15s;display:flex;justify-content:space-between;align-items:center;gap:12px" onmouseover="this.style.boxShadow='var(--shadow)'" onmouseout="this.style.boxShadow=''">
           <div>
             <div style="display:flex;align-items:center;gap:7px;margin-bottom:5px">
               <span style="width:9px;height:9px;border-radius:50%;background:${meta.colour};display:inline-block"></span>
-              <span style="font-weight:700;font-size:14px;color:var(--navy)">${esc(meta.key)}</span>
+              <span style="font-weight:700;font-size:16px;color:var(--navy)">${esc(meta.key)}</span>
               ${twBadge}${pendingBadge}${completedBadge}
             </div>
-            <div style="font-size:12px;color:var(--subtext)">${dateStr}${d.chair ? ' · Chair: '+esc(d.chair) : ''}${d.minutesTaker ? ' · Minutes: '+esc(d.minutesTaker) : ''}</div>
+            <div style="font-size:14px;color:var(--subtext)">${dateStr}${d.chair ? ' · Chair: '+esc(d.chair) : ''}${d.minutesTaker ? ' · Minutes: '+esc(d.minutesTaker) : ''}</div>
           </div>
-          <div style="flex-shrink:0;color:var(--subtext);font-size:18px">›</div>
+          <div style="flex-shrink:0;color:var(--subtext);font-size:20px">›</div>
         </div>`;
       });
     });
@@ -10685,7 +10695,7 @@ const firebaseConfig = {
     const twStr = tw && !tw.comingUp ? ` · Term ${tw.term}, Week ${tw.week}` : '';
     const meta = focusAreaMeta(d.focusArea);
     const banner = document.getElementById('lm-md-lens-banner');
-    banner.style.background = meta.colour + '18';
+    banner.style.background = lmTintColour(meta.colour);
     banner.style.borderLeft = `5px solid ${meta.colour}`;
     document.getElementById('lm-md-lens-name').textContent = meta.key;
     document.getElementById('lm-md-lens-name').style.color = meta.colour;
@@ -10709,10 +10719,10 @@ const firebaseConfig = {
     const names = Object.keys(personNotes);
     peopleEl.innerHTML = names.length ? names.map(name => `
       <div>
-        <div style="font-weight:700;color:var(--navy);font-size:13px;margin-bottom:4px">${esc(name)}</div>
-        <div style="white-space:pre-wrap;font-size:13px;color:var(--subtext)">${esc(personNotes[name])}</div>
+        <div style="font-weight:700;color:var(--navy);font-size:15px;margin-bottom:4px">${esc(name)}</div>
+        <div style="white-space:pre-wrap;font-size:15px;color:var(--subtext)">${esc(personNotes[name])}</div>
       </div>
-    `).join('') : '<div style="color:var(--subtext);font-size:13px">No individual items recorded.</div>';
+    `).join('') : '<div style="color:var(--subtext);font-size:15px">No individual items recorded.</div>';
 
     const aobEl = document.getElementById('lm-md-aob');
     const aobWrap = document.getElementById('lm-md-aob-wrap');
@@ -10737,9 +10747,9 @@ const firebaseConfig = {
       const isImg = /\.(png|jpe?g|gif|webp)$/i.test(att.name||'');
       attEl.innerHTML += isImg
         ? `<a href="${att.url}" target="_blank"><img src="${att.url}" alt="${esc(att.name)}" style="height:80px;border-radius:6px;border:1px solid var(--gray2);object-fit:cover"></a>`
-        : `<a href="${att.url}" target="_blank" style="display:inline-flex;align-items:center;gap:6px;background:var(--gray1);border:1px solid var(--gray2);border-radius:6px;padding:6px 12px;font-size:12px;font-weight:600;color:var(--navy);text-decoration:none">📄 ${esc(att.name)}</a>`;
+        : `<a href="${att.url}" target="_blank" style="display:inline-flex;align-items:center;gap:6px;background:var(--gray1);border:1px solid var(--gray2);border-radius:6px;padding:6px 12px;font-size:14px;font-weight:600;color:var(--navy);text-decoration:none">📄 ${esc(att.name)}</a>`;
     });
-    if (!(d.attachments||[]).length) attEl.innerHTML = '<span style="color:var(--subtext);font-size:13px">No attachments.</span>';
+    if (!(d.attachments||[]).length) attEl.innerHTML = '<span style="color:var(--subtext);font-size:15px">No attachments.</span>';
 
     document.getElementById('lm-md-delete-btn').style.display = currentIsAdmin ? '' : 'none';
     document.getElementById('lm-detail-modal').style.display = 'flex';
@@ -10842,8 +10852,8 @@ const firebaseConfig = {
     const exEl = document.getElementById('lm-existing-attachments');
     exEl.innerHTML = '';
     (d.attachments||[]).forEach((att,i) => {
-      exEl.innerHTML += `<div style="display:inline-flex;align-items:center;gap:6px;background:var(--gray1);border:1px solid var(--gray2);border-radius:6px;padding:4px 10px;font-size:12px">
-        📄 ${esc(att.name)} <button onclick="lmDeleteAttach(${i})" style="background:none;border:none;cursor:pointer;color:var(--red);font-size:14px;line-height:1;padding:0 2px">✕</button></div>`;
+      exEl.innerHTML += `<div style="display:inline-flex;align-items:center;gap:6px;background:var(--gray1);border:1px solid var(--gray2);border-radius:6px;padding:4px 10px;font-size:14px">
+        📄 ${esc(att.name)} <button onclick="lmDeleteAttach(${i})" style="background:none;border:none;cursor:pointer;color:var(--red);font-size:16px;line-height:1;padding:0 2px">✕</button></div>`;
     });
 
     document.getElementById('lm-actions-body').innerHTML = '';
@@ -10874,9 +10884,9 @@ const firebaseConfig = {
       <td style="border:1px solid var(--gray2);padding:4px;text-align:center;width:36px">
         <input type="checkbox" ${checked} style="width:16px;height:16px;cursor:pointer;accent-color:#22c55e" onchange="this.closest('tr').style.opacity=this.checked?'0.45':'1'">
       </td>
-      <td style="border:1px solid var(--gray2);padding:4px"><input class="form-input" style="padding:5px 8px;font-size:12px;width:100%" placeholder="What needs to be done…" value="${esc(a.action||'')}"></td>
-      <td style="border:1px solid var(--gray2);padding:4px"><input class="form-input" style="padding:5px 8px;font-size:12px;width:100%" placeholder="Person responsible…" value="${esc(a.owner||'')}"></td>
-      <td style="border:1px solid var(--gray2);padding:4px;text-align:center"><button onclick="this.closest('tr').remove()" style="background:none;border:none;cursor:pointer;color:var(--red);font-size:16px">✕</button></td>`;
+      <td style="border:1px solid var(--gray2);padding:4px"><input class="form-input" style="padding:5px 8px;font-size:14px;width:100%" placeholder="What needs to be done…" value="${esc(a.action||'')}"></td>
+      <td style="border:1px solid var(--gray2);padding:4px"><input class="form-input" style="padding:5px 8px;font-size:14px;width:100%" placeholder="Person responsible…" value="${esc(a.owner||'')}"></td>
+      <td style="border:1px solid var(--gray2);padding:4px;text-align:center"><button onclick="this.closest('tr').remove()" style="background:none;border:none;cursor:pointer;color:var(--red);font-size:18px">✕</button></td>`;
     if (a.done) tr.style.opacity = '0.45';
     tbody.appendChild(tr);
   }
@@ -11053,7 +11063,7 @@ const firebaseConfig = {
   function lmRenderAccessList() {
     const el = document.getElementById('lm-access-list');
     if (!_lmAccessEmails.length) {
-      el.innerHTML = '<span style="color:var(--subtext);font-size:13px;font-style:italic">No one added yet.</span>';
+      el.innerHTML = '<span style="color:var(--subtext);font-size:15px;font-style:italic">No one added yet.</span>';
       return;
     }
     el.innerHTML = _lmAccessEmails.map((email,i) => {

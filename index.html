@@ -4488,10 +4488,10 @@
         </div>
 
         <div style="padding:24px">
-          <div id="lm-md-lens-banner" style="border-radius:8px;padding:14px 18px;margin-bottom:20px">
+          <div id="lm-md-lens-banner" style="position:sticky;top:-1px;z-index:5;background:#fff;border-radius:8px;padding:16px 18px;margin:0 -4px 20px">
             <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--subtext);margin-bottom:3px">Today's Lens</div>
-            <div id="lm-md-lens-name" style="font-size:17px;font-weight:800"></div>
-            <div id="lm-md-lens-desc" style="font-size:12.5px;color:var(--subtext);margin-top:2px"></div>
+            <div id="lm-md-lens-name" style="font-size:20px;font-weight:800"></div>
+            <div id="lm-md-lens-desc" style="font-size:13.5px;color:var(--subtext);margin-top:2px"></div>
           </div>
           <div style="margin-bottom:18px">
             <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--subtext);margin-bottom:4px">Present</div>
@@ -4564,24 +4564,22 @@
         </div>
         <div style="padding:24px;display:flex;flex-direction:column;gap:18px">
 
-          <!-- Focus Area + Date + Time -->
-          <div style="display:grid;grid-template-columns:1.6fr 1fr 0.8fr;gap:14px">
-            <div>
-              <label class="form-label">Today's Lens <span style="font-weight:400;text-transform:none;font-size:10px;color:var(--subtext)">(what we're looking through this meeting — practice at what doesn't come naturally)</span></label>
-              <select id="lm-focus" class="form-input"></select>
+          <!-- Today's Lens — sticky so it stays visible while scrolling through the record -->
+          <div id="lm-focus-card" style="position:sticky;top:-1px;z-index:5;background:#fff;border-radius:10px;padding:16px 18px;margin:0 -4px;border-left:6px solid var(--gray2)">
+            <div style="display:grid;grid-template-columns:1.6fr 1fr;gap:14px;align-items:end">
+              <div>
+                <label class="form-label" style="font-size:12px">Today's Lens <span style="font-weight:400;text-transform:none;font-size:10px;color:var(--subtext)">(what we're looking through this meeting — practice at what doesn't come naturally)</span></label>
+                <select id="lm-focus" class="form-input" style="font-size:19px;font-weight:800;padding:10px 12px;height:auto"></select>
+              </div>
+              <div>
+                <label class="form-label">Date *</label>
+                <input type="date" id="lm-date" class="form-input">
+              </div>
             </div>
-            <div>
-              <label class="form-label">Date *</label>
-              <input type="date" id="lm-date" class="form-input">
+            <div style="margin-top:8px">
+              <div id="lm-focus-desc" style="font-size:14.5px;color:var(--navy);font-weight:600"></div>
+              <div id="lm-focus-lastused" style="font-size:12px;color:var(--subtext);font-style:italic;margin-top:2px"></div>
             </div>
-            <div>
-              <label class="form-label">Time</label>
-              <input type="time" id="lm-time" class="form-input">
-            </div>
-          </div>
-          <div>
-            <div id="lm-focus-desc" style="font-size:12px;color:var(--subtext)"></div>
-            <div id="lm-focus-lastused" style="font-size:11px;color:var(--subtext);font-style:italic;margin-top:2px"></div>
           </div>
 
           <!-- Chair + Minute-taker -->
@@ -10481,6 +10479,16 @@ const firebaseConfig = {
 
   // Populate the single Focus Area select — gap areas listed first and
   // flagged, pre-selected to whichever's due next in rotation.
+  // Tint the lens card to match the selected focus colour
+  function lmApplyFocusCardColour(key) {
+    const meta = focusAreaMeta(key);
+    const card = document.getElementById('lm-focus-card');
+    if (card) {
+      card.style.background   = meta.colour + '17';
+      card.style.borderLeft   = `6px solid ${meta.colour}`;
+    }
+  }
+
   function lmPopulateFocusSelect() {
     const sel = document.getElementById('lm-focus');
     if (!sel) return;
@@ -10488,6 +10496,7 @@ const firebaseConfig = {
     sel.onchange = () => {
       document.getElementById('lm-focus-desc').textContent = focusAreaMeta(sel.value).desc;
       document.getElementById('lm-focus-lastused').textContent = lmLastUsedInfo(sel.value);
+      lmApplyFocusCardColour(sel.value);
     };
   }
 
@@ -10641,7 +10650,6 @@ const firebaseConfig = {
       html += `<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--subtext);padding:8px 0 4px">${label}</div>`;
       groups[mo].forEach(d => {
         const dateStr = d.date ? new Date(d.date+'T00:00:00').toLocaleDateString('en-AU',{weekday:'short',day:'numeric',month:'short',year:'numeric'}) : '—';
-        const timeStr = d.time ? ' · ' + d.time : '';
         const tw = d.date ? termWeekLabel(d.date) : null;
         const twBadge = tw && !tw.comingUp
           ? `<span style="background:var(--navy);color:var(--gold2);font-size:10px;font-weight:700;padding:1px 8px;border-radius:20px;margin-left:8px">T${tw.term} W${tw.week}</span>`
@@ -10658,7 +10666,7 @@ const firebaseConfig = {
               <span style="font-weight:700;font-size:14px;color:var(--navy)">${esc(meta.key)}</span>
               ${twBadge}${pendingBadge}${completedBadge}
             </div>
-            <div style="font-size:12px;color:var(--subtext)">${dateStr}${timeStr}${d.chair ? ' · Chair: '+esc(d.chair) : ''}${d.minutesTaker ? ' · Minutes: '+esc(d.minutesTaker) : ''}</div>
+            <div style="font-size:12px;color:var(--subtext)">${dateStr}${d.chair ? ' · Chair: '+esc(d.chair) : ''}${d.minutesTaker ? ' · Minutes: '+esc(d.minutesTaker) : ''}</div>
           </div>
           <div style="flex-shrink:0;color:var(--subtext);font-size:18px">›</div>
         </div>`;
@@ -10683,7 +10691,7 @@ const firebaseConfig = {
     document.getElementById('lm-md-lens-name').style.color = meta.colour;
     document.getElementById('lm-md-lens-desc').textContent = meta.desc;
     document.getElementById('lm-md-title').textContent      = 'Leadership Meeting';
-    document.getElementById('lm-md-meta').textContent       = dateStr + (d.time ? ' at ' + d.time : '') + twStr;
+    document.getElementById('lm-md-meta').textContent       = dateStr + twStr;
     document.getElementById('lm-md-present').textContent       = (d.present && d.present.length) ? d.present : (d.apologies !== undefined ? '—' : '—');
     document.getElementById('lm-md-chair').textContent         = d.chair || '—';
     document.getElementById('lm-md-minutes-taker').textContent = d.minutesTaker || '—';
@@ -10767,8 +10775,8 @@ const firebaseConfig = {
     document.getElementById('lm-focus').value = recommended;
     document.getElementById('lm-focus-desc').textContent = focusAreaMeta(recommended).desc;
     document.getElementById('lm-focus-lastused').textContent = lmLastUsedInfo(recommended);
+    lmApplyFocusCardColour(recommended);
     document.getElementById('lm-date').value              = new Date().toISOString().slice(0,10);
-    document.getElementById('lm-time').value               = '';
     document.getElementById('lm-chair').value              = '';
     document.getElementById('lm-minutes-taker').value      = '';
     document.getElementById('lm-apologies').value          = '';
@@ -10810,8 +10818,8 @@ const firebaseConfig = {
     document.getElementById('lm-focus').value = d.focusArea || FOCUS_AREAS[0].key;
     document.getElementById('lm-focus-desc').textContent = focusAreaMeta(d.focusArea).desc;
     document.getElementById('lm-focus-lastused').textContent = lmLastUsedInfo(d.focusArea);
+    lmApplyFocusCardColour(d.focusArea);
     document.getElementById('lm-date').value              = d.date || '';
-    document.getElementById('lm-time').value               = d.time || '';
     document.getElementById('lm-chair').value              = d.chair || '';
     document.getElementById('lm-minutes-taker').value      = d.minutesTaker || '';
     document.getElementById('lm-apologies').value          = d.apologies || '';
@@ -10913,7 +10921,6 @@ const firebaseConfig = {
       meetingType: 'Leadership', // kept for parity with general meeting record shape (email subject etc.)
       focusArea:    document.getElementById('lm-focus').value,
       date,
-      time:         document.getElementById('lm-time').value.trim(),
       chair:        document.getElementById('lm-chair').value.trim(),
       minutesTaker: document.getElementById('lm-minutes-taker').value.trim(),
       present,
@@ -10997,7 +11004,7 @@ const firebaseConfig = {
       const subject = `Leadership Meeting Minutes (${meta.key}) — ${dateStr}`;
       const body    = [
         `LEADERSHIP MEETING MINUTES — FOCUS: ${meta.key.toUpperCase()}`,
-        `Date: ${dateStr}${d.time ? ' at '+d.time : ''}`,
+        `Date: ${dateStr}`,
         `Present: ${d.present || '—'}`,
         d.apologies ? `Apologies: ${d.apologies}` : '',
         `Chair: ${d.chair||'—'}   |   Minute-taker: ${d.minutesTaker||'—'}`,

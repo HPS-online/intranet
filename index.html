@@ -4351,7 +4351,10 @@
           <div>
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
               <label class="form-label" style="margin:0">Action Items</label>
-              <button class="btn btn-sm" style="background:var(--navy);color:#fff;font-size:12px" onclick="meetingsAddActionRow()">+ Add Row</button>
+              <div style="display:flex;gap:8px">
+                <button class="btn btn-sm btn-outline" style="font-size:12px" onclick="meetingsCarryOverActions()">↻ Carry Over Open Actions</button>
+                <button class="btn btn-sm" style="background:var(--navy);color:#fff;font-size:12px" onclick="meetingsAddActionRow()">+ Add Row</button>
+              </div>
             </div>
             <div style="overflow-x:auto">
               <table style="width:100%;border-collapse:collapse;font-size:13px">
@@ -4623,7 +4626,10 @@
           <div>
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
               <label class="form-label" style="margin:0">Actions from Previous Minutes</label>
-              <button class="btn btn-sm" style="background:var(--navy);color:#fff;font-size:12px" onclick="lmAddActionRow()">+ Add Row</button>
+              <div style="display:flex;gap:8px">
+                <button class="btn btn-sm btn-outline" style="font-size:12px" onclick="lmCarryOverActions()">↻ Carry Over Open Actions</button>
+                <button class="btn btn-sm" style="background:var(--navy);color:#fff;font-size:12px" onclick="lmAddActionRow()">+ Add Row</button>
+              </div>
             </div>
             <div id="lm-carried-note" style="display:none;font-size:12px;color:var(--navy);background:var(--gray1);border-radius:6px;padding:8px 12px;margin-bottom:8px"></div>
             <div style="overflow-x:auto">
@@ -7015,6 +7021,7 @@ const firebaseConfig = {
   window.meetingsSave              = meetingsSave;
   window.meetingsAddAgendaRow      = meetingsAddAgendaRow;
   window.meetingsAddActionRow      = meetingsAddActionRow;
+  window.meetingsCarryOverActions  = meetingsCarryOverActions;
   window.closeMeetingDetail        = closeMeetingDetail;
   window.meetingsDeleteCurrent     = meetingsDeleteCurrent;
   window.closeMeetingEdit          = closeMeetingEdit;
@@ -10215,6 +10222,52 @@ const firebaseConfig = {
     tbody.appendChild(tr);
   }
 
+  // Pull in still-open actions from the last record of the same meeting type.
+  // Needed alongside the automatic new-record carry-forward (see
+  // lmGetCarriedActions below) because most committees have their whole
+  // term's meeting records pre-created ahead of time — so "open a new
+  // meeting" never fires; staff just edit an already-existing future record.
+  function meetingsCarryOverActions() {
+    const type = document.getElementById('me-type').value.trim();
+    if (!type) { showToast('Select a Meeting Type first so I know which committee to pull from.', 'error'); return; }
+
+    const candidates = _meetingsAllDocs.filter(d => d.meetingType === type && d.id !== _meetingsCurrentId);
+    if (!candidates.length) { showToast(`No previous ${type} record found to carry actions from.`, ''); return; }
+
+    const currentDate = document.getElementById('me-date').value.trim();
+    const before = candidates.filter(d => currentDate && d.date && d.date < currentDate);
+    const pool   = (before.length ? before : candidates).sort((a,b) => (b.date||'').localeCompare(a.date||''));
+    const source = pool[0];
+
+    const open = (source.actionItems || []).filter(a => !a.done && (a.action||'').trim());
+    const dateStr = source.date ? new Date(source.date+'T00:00:00').toLocaleDateString('en-AU',{day:'numeric',month:'short'}) : 'the previous record';
+    if (!open.length) { showToast(`No open actions found on the last ${type} record (${dateStr}).`, ''); return; }
+
+    // Clear empty placeholder rows before appending
+    document.querySelectorAll('#me-actions-body .me-action-row').forEach(tr => {
+      const inputs = tr.querySelectorAll('input');
+      if (!inputs[1].value.trim() && !inputs[2].value.trim()) tr.remove();
+    });
+
+    // Don't re-add actions already sitting on this record
+    const existing = new Set(Array.from(document.querySelectorAll('#me-actions-body .me-action-row')).map(tr => {
+      const inputs = tr.querySelectorAll('input');
+      return (inputs[1].value.trim() + '|' + inputs[2].value.trim()).toLowerCase();
+    }));
+
+    let added = 0;
+    open.forEach(a => {
+      const key = ((a.action||'').trim() + '|' + (a.owner||'').trim()).toLowerCase();
+      if (existing.has(key)) return;
+      meetingsAddActionRow({ action: a.action, owner: a.owner, done: false });
+      existing.add(key);
+      added++;
+    });
+
+    _meetingEditDirty = true;
+    showToast(added ? `↻ ${added} open action${added>1?'s':''} carried over from ${dateStr}.` : 'Those actions are already on this record.', added ? 'success' : '');
+  }
+
   // ── Save meeting ────────────────────────────────────────
   async function meetingsSave() {
     const errEl   = document.getElementById('me-error');
@@ -10945,6 +10998,46 @@ const firebaseConfig = {
     tbody.appendChild(tr);
   }
 
+  // Manual counterpart to the automatic lmGetCarriedActions() carry-forward
+  // used when creating a brand-new record — needed because future Leadership
+  // Meeting records are often pre-created ahead of time too, so the
+  // auto-carry on "new record" never runs for them.
+  function lmCarryOverActions() {
+    const candidates = _lmAllDocs.filter(d => d.id !== _lmCurrentId);
+    if (!candidates.length) { showToast('No previous Leadership Meeting record found to carry actions from.', ''); return; }
+
+    const currentDate = document.getElementById('lm-date').value.trim();
+    const before = candidates.filter(d => currentDate && d.date && d.date < currentDate);
+    const pool   = (before.length ? before : candidates).sort((a,b) => (b.date||'').localeCompare(a.date||''));
+    const source = pool[0];
+
+    const open = (source.actionItems || []).filter(a => !a.done && (a.action||'').trim());
+    const dateStr = source.date ? new Date(source.date+'T00:00:00').toLocaleDateString('en-AU',{day:'numeric',month:'short'}) : 'the previous record';
+    if (!open.length) { showToast(`No open actions found on the last Leadership Meeting record (${dateStr}).`, ''); return; }
+
+    document.querySelectorAll('#lm-actions-body .lm-action-row').forEach(tr => {
+      const inputs = tr.querySelectorAll('input');
+      if (!inputs[1].value.trim() && !inputs[2].value.trim()) tr.remove();
+    });
+
+    const existing = new Set(Array.from(document.querySelectorAll('#lm-actions-body .lm-action-row')).map(tr => {
+      const inputs = tr.querySelectorAll('input');
+      return (inputs[1].value.trim() + '|' + inputs[2].value.trim()).toLowerCase();
+    }));
+
+    let added = 0;
+    open.forEach(a => {
+      const key = ((a.action||'').trim() + '|' + (a.owner||'').trim()).toLowerCase();
+      if (existing.has(key)) return;
+      lmAddActionRow({ action: a.action, owner: a.owner, done: false });
+      existing.add(key);
+      added++;
+    });
+
+    _lmEditDirty = true;
+    showToast(added ? `↻ ${added} open action${added>1?'s':''} carried over from ${dateStr}.` : 'Those actions are already on this record.', added ? 'success' : '');
+  }
+
   // ── Save meeting ────────────────────────────────────────
   async function lmSave() {
     const errEl   = document.getElementById('lm-error');
@@ -11167,6 +11260,7 @@ const firebaseConfig = {
   window.lmDeleteAttach         = lmDeleteAttach;
   window.closeLmEdit            = closeLmEdit;
   window.lmAddActionRow         = lmAddActionRow;
+  window.lmCarryOverActions     = lmCarryOverActions;
   window.lmSave                 = lmSave;
   window.lmEmailSummary         = lmEmailSummary;
   window.markLmAttendeeAsApology= markLmAttendeeAsApology;
@@ -12317,6 +12411,7 @@ const firebaseConfig = {
   function meetingsSave()           { if (window.meetingsSave)           window.meetingsSave(); }
   function meetingsAddAgendaRow()   { if (window.meetingsAddAgendaRow)   window.meetingsAddAgendaRow(); }
   function meetingsAddActionRow()   { if (window.meetingsAddActionRow)   window.meetingsAddActionRow(); }
+  function meetingsCarryOverActions() { if (window.meetingsCarryOverActions) window.meetingsCarryOverActions(); }
   function closeMeetingDetail()     { if (window.closeMeetingDetail)     window.closeMeetingDetail(); }
   function meetingsDeleteCurrent()  { if (window.meetingsDeleteCurrent)  window.meetingsDeleteCurrent(); }
   function closeMeetingEdit()       { if (window.closeMeetingEdit)       window.closeMeetingEdit(); }
@@ -12352,6 +12447,7 @@ const firebaseConfig = {
   function lmDeleteAttach(i)              { if (window.lmDeleteAttach)              window.lmDeleteAttach(i); }
   function closeLmEdit()                  { if (window.closeLmEdit)                 window.closeLmEdit(); }
   function lmAddActionRow()               { if (window.lmAddActionRow)              window.lmAddActionRow(); }
+  function lmCarryOverActions()           { if (window.lmCarryOverActions)          window.lmCarryOverActions(); }
   function lmSave()                       { if (window.lmSave)                      window.lmSave(); }
   function lmEmailSummary(selfOnly)       { if (window.lmEmailSummary)              window.lmEmailSummary(selfOnly); }
   function markLmAttendeeAsApology(i)     { if (window.markLmAttendeeAsApology)     window.markLmAttendeeAsApology(i); }

@@ -11550,9 +11550,9 @@ const firebaseConfig = {
 
   async function hubInit() {
     const addBtn = document.getElementById('hub-add-section-btn');
-    if (addBtn) addBtn.style.display = currentIsAdmin ? '' : 'none';
+    if (addBtn) addBtn.style.display = '';
     const note = document.getElementById('hub-staff-note');
-    if (note) note.style.display = currentIsAdmin ? 'none' : '';
+    if (note) note.style.display = 'none';
     await hubLoadAll();
   }
 
@@ -11586,7 +11586,7 @@ const firebaseConfig = {
   function hubRender() {
     const el = document.getElementById('hub-sections-list');
     if (!_hubSections.length) {
-      el.innerHTML = '<div class="db-empty">No sections yet. ' + (currentIsAdmin ? 'Click <strong>+ Add Section</strong> to get started.' : '') + '</div>';
+      el.innerHTML = '<div class="db-empty">No sections yet. Click <strong>+ Add Section</strong> to get started.</div>';
       return;
     }
     el.innerHTML = _hubSections.map(sec => hubRenderSection(sec)).join('');
@@ -11595,8 +11595,8 @@ const firebaseConfig = {
   function hubRenderSection(sec) {
     const subs = _hubSubs[sec.id] || [];
     const totalItems = subs.reduce((n, sub) => n + (_hubItems[sub.id]||[]).length, 0);
-    const adminBtns = currentIsAdmin ? `
-      <button onclick="hubEditSection('${sec.id}')" style="background:none;border:none;cursor:pointer;color:var(--subtext);font-size:14px;padding:4px" title="Edit section">✏️</button>` : '';
+    const adminBtns = `
+      <button onclick="hubEditSection('${sec.id}')" style="background:none;border:none;cursor:pointer;color:var(--subtext);font-size:14px;padding:4px" title="Edit section">✏️</button>`;
     return `
       <div class="hub-section-card" id="hub-sec-${sec.id}" style="background:#fff;border:1px solid var(--gray2);border-radius:var(--radius);overflow:hidden">
         <div style="display:flex;align-items:center;gap:12px;padding:14px 18px;cursor:pointer" onclick="hubToggleSection('${sec.id}')">

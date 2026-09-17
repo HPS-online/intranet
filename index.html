@@ -5898,7 +5898,8 @@ const firebaseConfig = {
       if (pane === 'instrumental' && txt.includes('instrumental')) t.classList.add('active');
       if (pane === 'service-providers' && txt.includes('service')) t.classList.add('active');
     });
-    if (pane === 'specialist') tagSpecCols();
+    if (pane === 'yard-duty')  ttLoadYardDutyLive();
+    if (pane === 'specialist') { ttLoadSpecialistLive(); tagSpecCols(); }
     if (pane === 'site')       ttLoadSite();
     if (pane === 'individual') ttLoadIndividual();
     if (pane === 'inclement')  inclementLoad();
@@ -6856,6 +6857,193 @@ const firebaseConfig = {
     } catch(e) { showToast('Error saving table: ' + e.message, 'error'); }
   }
 
+  // ── YARD DUTY / SPECIALIST TIMETABLES — editable via Site Timetables ──
+  // These live as ordinary entries in the same `timetables_site` collection
+  // used above, so staff edit them with the exact same Edit/Save/Add Row UI
+  // already built for Site Timetables (found under the "Site Timetables"
+  // tab). The dedicated Yard Duty / Specialist tabs just read that same
+  // data and redraw it in their nicer, purpose-built layout (with the
+  // highlight-by-name and print features), so there is one source of truth.
+
+  // Convert a Firestore doc's rows ({c0:'',c1:''...} objects, because
+  // Firestore rejects arrays nested inside arrays) back into plain arrays.
+  function ttRowsFromDoc(data) {
+    let rows = data.rows || [];
+    if (Array.isArray(rows) && rows.length && typeof rows[0] === 'object' && !Array.isArray(rows[0])) {
+      const len = data.columns ? data.columns.length : Object.keys(rows[0]).length;
+      rows = rows.map(r => Array.from({length: len}, (_,i) => r['c'+i] || ''));
+    }
+    return rows;
+  }
+
+  const YARD_DUTY_DOC_ID   = 'yard-duty-roster';
+  const SPECIALIST_DOC_ID  = 'specialist-timetable';
+
+  const YARD_DUTY_SEED_COLUMNS = ['Area','Monday','Tuesday','Wednesday','Thursday','Friday'];
+  const YARD_DUTY_SEED_ROWS = [
+    ['__SPAN:Before School — 8:20 – 8:40'],
+    ['Kangaroo Building','Keely','Sara','Hannah','Belinda','Daniel'],
+    ['Lorikeet Building','Brad','Brad','Brad','Hannah','Nikki'],
+    ['Koala Building','Danni','Belinda','Lisa','Emily','Sara'],
+    ['__SPAN:Recess — 10:30 – 11:00'],
+    ['Kangaroo Building','Tamika','Jess','Lauren','Nicole','Sam'],
+    ['North Oval','Sara','Mel','Daniel','Tehya','Laura'],
+    ['Basketball Courts','Katherine','Nikki','Adele','Shane','Beck'],
+    ['South Oval / Green / Sandpits','Kristel','Sharon','Bianca','Mike','Mel'],
+    ['Nature Play','Nicole','Callie','Beck','Bianca','Sim'],
+    ['JP Playground','Eleanor','Tamika','Keely','Lauren','Gabby'],
+    ['__SPAN:Lunch — 12:50 – 1:20'],
+    ['Kangaroo Building','Tonya','Laura','Sharon','Callie','Kristel'],
+    ['North Oval','Gabby','Adele','Tamika','Nikki','Shane'],
+    ['Basketball','Shane','Bianca','Carolyne','Eleanor','Tehya'],
+    ['South Oval / Green / Sandpits','Lauren','Gabby','Sara','Katherine','Keely'],
+    ['Nature Play','Megan','Sam','Katherine','Tonya','Steph'],
+    ['JP Playground','Tehya','Carolyne','Tonya','Mel','Hannah'],
+    ['Library','Beck','Eleanor','Sam','Laura','Callie'],
+    ['__SPAN:After School — 3:00 – 3:20'],
+    ['Lorikeet Building','Belinda','Kristel','Katy','Daniel','Belinda'],
+    ['Koala Building','Daniel','Norma','Megan','Megan','Emily'],
+  ];
+
+  const SPEC_DAYS    = ['Monday','Tuesday','Wednesday','Thursday','Friday'];
+  const SPEC_SUBJECTS_BY_DAY = [
+    ['Auslan','PE','Science','Music'],
+    ['Auslan','PE','Science','Music'],
+    ['Chinese','PE','Science','Music'],
+    ['Chinese','PE','Science','Music'],
+    ['Chinese','PE','Science','Music'],
+  ];
+  const SPECIALIST_SEED_COLUMNS = ['Time', ...SPEC_DAYS.flatMap((day,i) => SPEC_SUBJECTS_BY_DAY[i].map(s => day + ' — ' + s))];
+  const SPECIALIST_SEED_ROWS = [
+    ['8:40–8:50','Norma','Brad','Danni','Kirrabelle','Norma','Brad','Danni','Kirrabelle','Emily','Brad','Katy','Lisa','Emily','Brad','Katy','Kirrabelle','Emily','Brad','Katy','Kirrabelle'],
+    ['L1 8:50–9:40','NIT','NIT','NIT','NIT','NIT','NIT','NIT','NIT','Sam Yr3 Rm17','NIT','NIT','NIT','Tamika Yr3 Rm16','NIT','NIT','NIT','Bianca Yr2 Rm4','NIT','NIT','Jnr Choir'],
+    ['L2 9:40–10:30','Adele Yr5','Jess Yr4','Nikki UP','Tamika Yr3','Shane Yr6','Tonya Yr6','Megan Yr½','Callie Yr4','Lauren Yr1','Shane Yr6','Tonya Yr6','Sharon JpSp','Beck Rec','Sharon JpSp','Sam Yr3','Adele Yr5','Steph Rec','Sim Yr1','Tehya Yr¾','Mike Yr4'],
+    ['__SPAN:— Recess 10:30–11:00 —'],
+    ['L3 11:00–11:50','Tonya Yr6','Sam Yr3','Nicole Rec','Tehya Yr¾','Kristel Yr5','Tamika Yr3','Bianca Yr2','Sam Yr3','Nicole Rec','Adele Yr5','Kristel Yr5','Lauren Yr1','Carolyne Yr1','Steph Rec','Tehya Yr¾','Tonya Yr6','Nicole Rec','Beck Rec','Tamika Yr3','Eleanor Yr2'],
+    ['L4 11:50–12:40','Tehya Yr¾','Shane Yr6','Eleanor Yr2','Lauren Yr1','Nikki UP','Laura Rec','Katherine Rec','Snr Choir','Laura Rec','Eleanor Yr2','Jess Yr4','Megan Yr½','Eleanor Yr2','Lauren Yr1','Nikki UP','Kristel Yr5','Katherine Rec','Tonya Yr6','Sam Yr3','Nicole Rec'],
+    ['__SPAN:— Lunch 12:40–1:20 —'],
+    ['L5 1:20–2:10','Callie Yr4','Kristel Yr5','Beck Rec','Shane Yr6','Jess Yr4','Adele Yr5','Eleanor Yr2','Carolyne Yr1','Beck Rec','Katherine Rec','Callie Yr4','Nikki UP','Katherine Rec','Callie Yr4','Mike Yr4','Megan Yr½','Megan Yr½','Kristel Yr5','Negin Yr5','NIT'],
+    ['L6 2:10–3:00','Sharon JpSp','Megan Yr½','Carolyne Yr1','Katherine Rec','Sharon JpSp','Tehya Yr¾','Lauren Yr1','Beck Rec','NIT','Bianca Yr2','Tamika Yr3','Carolyne Yr1','NIT','Nicole Rec','Shane Yr6','Bianca Yr2','NIT','Nikki UP','Callie Yr4','Music Admin'],
+  ];
+
+  const SPECIALIST_STAFF_NAMES = new Set(['Adele','Beck','Brad','Callie','Carolyne','Danni','Eleanor','Emily','Jess','Katherine','Katy','Kirrabelle','Kristel','Laura','Lauren','Lisa','Megan','Mike','Negin','Nikki','Nicole','Norma','Sam','Shane','Sharon','Sim','Steph','Tamika','Tehya','Tonya']);
+
+  async function ttEnsureSeeded(docId, name, category, columns, rows) {
+    const dref = doc(db, 'timetables_site', docId);
+    const snap = await getDoc(dref);
+    if (snap.exists()) return snap;
+    const rowsToSave = rows.map(r => Object.fromEntries(r.map((v,i) => ['c'+i, v||''])));
+    await setDoc(dref, {
+      name, category, type: 'table',
+      columns, rows: rowsToSave,
+      order: -1, // keep above regular site timetables in that list
+      createdBy: currentUser ? currentUser.email : 'system',
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+    });
+    return await getDoc(dref);
+  }
+
+  async function ttLoadYardDutyLive() {
+    const wrap = document.getElementById('duty-tables-wrap');
+    if (!wrap) return;
+    try {
+      const snap = await ttEnsureSeeded(YARD_DUTY_DOC_ID, 'Yard Duty Roster', 'Yard Duty', YARD_DUTY_SEED_COLUMNS, YARD_DUTY_SEED_ROWS);
+      const data = snap.data();
+      ttRenderYardDutyTable(data.columns || YARD_DUTY_SEED_COLUMNS, ttRowsFromDoc(data));
+    } catch(e) {
+      console.error('Yard duty live load failed, showing built-in layout instead.', e);
+    }
+  }
+
+  async function ttLoadSpecialistLive() {
+    const tbl = document.getElementById('spec-table');
+    if (!tbl) return;
+    try {
+      const snap = await ttEnsureSeeded(SPECIALIST_DOC_ID, 'Specialist Timetable', 'Specialist', SPECIALIST_SEED_COLUMNS, SPECIALIST_SEED_ROWS);
+      const data = snap.data();
+      ttRenderSpecialistTable(data.columns || SPECIALIST_SEED_COLUMNS, ttRowsFromDoc(data));
+    } catch(e) {
+      console.error('Specialist timetable live load failed, showing built-in layout instead.', e);
+    }
+  }
+
+  function ttRenderYardDutyTable(columns, rows) {
+    const wrap = document.getElementById('duty-tables-wrap');
+    if (!wrap) return;
+    const dayCount = columns.length - 1; // columns[0] is 'Area'
+    let html = '';
+    let periodRows = [];
+    let periodHeader = null;
+    const flushPeriod = () => {
+      if (!periodHeader) { periodRows = []; return; }
+      const parts = periodHeader.split(' — ');
+      const title = parts[0] || periodHeader;
+      const time  = parts[1] || '';
+      html += `<div class="duty-period">
+        <div class="duty-period-header"><h3>${escHtml(title)}</h3>${time ? `<span class="duty-time">${escHtml(time)}</span>` : ''}</div>
+        <div class="home-card"><div class="daybook-table-wrap">
+        <table class="duty-table">
+          <thead><tr><th>Area</th>${columns.slice(1).map(c=>`<th>${escHtml(c)}</th>`).join('')}</tr></thead>
+          <tbody>${periodRows.map(r => `<tr><td class="area-name">${escHtml(r[0]||'')}</td>${r.slice(1,1+dayCount).map(name => `<td>${name ? `<span class="duty-cell" data-name="${escHtml(name)}">${escHtml(name)}</span>` : ''}</td>`).join('')}</tr>`).join('')}</tbody>
+        </table>
+        </div></div>
+      </div>`;
+      periodRows = [];
+    };
+    rows.forEach(r => {
+      const first = r[0] || '';
+      if (first.startsWith('__SPAN:')) {
+        flushPeriod();
+        periodHeader = first.replace(/^__SPAN:/, '');
+      } else {
+        periodRows.push(r);
+      }
+    });
+    flushPeriod();
+    wrap.innerHTML = html || '<div class="db-empty">No yard duty data yet.</div>';
+    const sel = document.getElementById('duty-name-select');
+    if (sel && sel.value) highlightDuties(sel.value);
+  }
+
+  function ttRenderSpecialistTable(columns, rows) {
+    const tbl = document.getElementById('spec-table');
+    if (!tbl) return;
+    const dataCols = columns.slice(1); // drop 'Time'
+    const dayGroups = []; // [{day, subjects:[...]}]
+    dataCols.forEach(c => {
+      const [day, subject] = c.split(' — ');
+      let grp = dayGroups[dayGroups.length-1];
+      if (!grp || grp.day !== day) { grp = { day, subjects: [] }; dayGroups.push(grp); }
+      grp.subjects.push(subject || '');
+    });
+    const theadHtml = `<tr>
+        <th rowspan="2" style="width:80px">Time</th>
+        ${dayGroups.map(g => `<th colspan="${g.subjects.length}" class="day-header">${escHtml(g.day)}</th>`).join('')}
+      </tr>
+      <tr>${dayGroups.map(g => g.subjects.map(s => `<th>${escHtml(s)}</th>`).join('')).join('')}</tr>`;
+    const bodyRows = rows.map(r => {
+      const first = r[0] || '';
+      if (first.startsWith('__SPAN:')) {
+        return `<tr><td colspan="${dataCols.length+1}" class="recess">${escHtml(first.replace(/^__SPAN:/, ''))}</td></tr>`;
+      }
+      const cells = r.slice(1, 1+dataCols.length).map(text => {
+        text = (text||'').trim();
+        if (!text) return '<td></td>';
+        if (text === 'NIT') return '<td class="nit">NIT</td>';
+        const firstWord = text.split(' ')[0];
+        if (SPECIALIST_STAFF_NAMES.has(firstWord)) return `<td data-s="${escHtml(firstWord)}">${escHtml(text)}</td>`;
+        return `<td>${escHtml(text)}</td>`;
+      }).join('');
+      return `<tr><td class="lesson-label">${escHtml(first)}</td>${cells}</tr>`;
+    }).join('');
+    tbl.querySelector('thead').innerHTML = theadHtml;
+    tbl.querySelector('tbody').innerHTML = bodyRows;
+    tagSpecCols();
+    const sel = document.getElementById('spec-name-select');
+    if (sel && sel.value) highlightSpec(sel.value);
+  }
+
   // ── INDIVIDUAL TIMETABLES ──────────────────
 
   async function ttLoadIndividual() {
@@ -7119,6 +7307,7 @@ const firebaseConfig = {
       ticketRoutingLoad();
       setupReportDropdowns();
       showView('home');
+      ttLoadYardDutyLive(); // pre-load so it's ready the moment Timetables is opened
 
     } else {
       console.log('AUTH STATE: signed out');
@@ -10043,6 +10232,8 @@ const firebaseConfig = {
   function meetingsDeleteAttach(idx) {
     const d = _meetingsAllDocs.find(x => x.id === _meetingsCurrentId);
     if (!d || !d.attachments) return;
+    const att = d.attachments[idx];
+    if (att && att.storagePath) { deleteObject(ref(storage, att.storagePath)).catch(()=>{}); }
     d.attachments.splice(idx, 1);
     meetingsEditCurrent();
   }
@@ -10268,6 +10459,24 @@ const firebaseConfig = {
     showToast(added ? `↻ ${added} open action${added>1?'s':''} carried over from ${dateStr}.` : 'Those actions are already on this record.', added ? 'success' : '');
   }
 
+  // ── Attachment array sanitiser ──────────────────────────
+  // Firestore rejects an array that (directly or via an old bug) contains
+  // another array as one of its elements ("Property array contains an
+  // invalid nested entity"). Older saves of this record may have pushed a
+  // nested array by mistake; this flattens any of those out and drops
+  // anything that isn't a proper {name/url} attachment object, so a record
+  // that's already carrying bad data can be saved again instead of being
+  // permanently stuck.
+  function sanitizeAttachments(arr) {
+    const out = [];
+    const walk = (v) => {
+      if (Array.isArray(v)) { v.forEach(walk); return; }
+      if (v && typeof v === 'object' && (v.url || v.name)) out.push(v);
+    };
+    (arr || []).forEach(walk);
+    return out;
+  }
+
   // ── Save meeting ────────────────────────────────────────
   async function meetingsSave() {
     const errEl   = document.getElementById('me-error');
@@ -10299,10 +10508,14 @@ const firebaseConfig = {
       return { action: inputs[1].value.trim(), owner: inputs[2].value.trim(), done: checkbox.checked };
     }).filter(a => a.action);
 
+    // Pre-generate the doc reference so new meetings get a stable id to
+    // upload attachments under before the record itself is written.
+    const meetingRef = _meetingsIsNew ? doc(collection(db, 'meetings')) : doc(db, 'meetings', _meetingsCurrentId);
+
     let attachments = [];
     if (!_meetingsIsNew && _meetingsCurrentId) {
       const existing = _meetingsAllDocs.find(x => x.id === _meetingsCurrentId);
-      attachments = existing ? [...(existing.attachments||[])] : [];
+      attachments = sanitizeAttachments(existing ? existing.attachments : []);
     }
 
     const fileInput = document.getElementById('me-attachments');
@@ -10311,9 +10524,15 @@ const firebaseConfig = {
       saveBtn.disabled    = true;
       for (const file of fileInput.files) {
         try {
-          const base64 = await new Promise((res,rej) => { const r=new FileReader(); r.onload=()=>res(r.result); r.onerror=()=>rej(new Error('Read failed')); r.readAsDataURL(file); });
-          attachments.push({ name: file.name, url: base64, type: file.type });
-        } catch(e) { console.error('File read error', e); }
+          const sRef = ref(storage, `meeting-attachments/${meetingRef.id}/${Date.now()}_${file.name}`);
+          await uploadBytes(sRef, file);
+          const url = await getDownloadURL(sRef);
+          attachments.push({ name: file.name, url, type: file.type, storagePath: sRef.fullPath });
+        } catch(e) {
+          console.error('File upload error', e);
+          errEl.textContent = 'Attachment upload failed: ' + e.message;
+          errEl.style.display = '';
+        }
       }
     }
 
@@ -10339,10 +10558,10 @@ const firebaseConfig = {
       if (_meetingsIsNew) {
         payload.createdAt = new Date().toISOString();
         payload.createdBy = currentUser ? currentUser.email : 'unknown';
-        const ref = await addDoc(collection(db, 'meetings'), payload);
-        _meetingsAllDocs.unshift({ id: ref.id, ...payload });
+        await setDoc(meetingRef, payload);
+        _meetingsAllDocs.unshift({ id: meetingRef.id, ...payload });
       } else {
-        await setDoc(doc(db, 'meetings', _meetingsCurrentId), payload, { merge: true });
+        await setDoc(meetingRef, payload, { merge: true });
         const idx = _meetingsAllDocs.findIndex(x => x.id === _meetingsCurrentId);
         if (idx >= 0) _meetingsAllDocs[idx] = { id: _meetingsCurrentId, ...payload };
       }
@@ -10976,6 +11195,8 @@ const firebaseConfig = {
   function lmDeleteAttach(idx) {
     const d = _lmAllDocs.find(x => x.id === _lmCurrentId);
     if (!d || !d.attachments) return;
+    const att = d.attachments[idx];
+    if (att && att.storagePath) { deleteObject(ref(storage, att.storagePath)).catch(()=>{}); }
     d.attachments.splice(idx, 1);
     lmEditCurrent();
   }
@@ -11056,10 +11277,14 @@ const firebaseConfig = {
       return { action: inputs[1].value.trim(), owner: inputs[2].value.trim(), done: checkbox.checked };
     }).filter(a => a.action);
 
+    // Pre-generate the doc reference so new records get a stable id to
+    // upload attachments under before the record itself is written.
+    const lmRef = _lmIsNew ? doc(collection(db, 'leadership_meetings')) : doc(db, 'leadership_meetings', _lmCurrentId);
+
     let attachments = [];
     if (!_lmIsNew && _lmCurrentId) {
       const existing = _lmAllDocs.find(x => x.id === _lmCurrentId);
-      attachments = existing ? [...(existing.attachments||[])] : [];
+      attachments = sanitizeAttachments(existing ? existing.attachments : []);
     }
 
     const fileInput = document.getElementById('lm-attachments');
@@ -11068,9 +11293,15 @@ const firebaseConfig = {
       saveBtn.disabled    = true;
       for (const file of fileInput.files) {
         try {
-          const base64 = await new Promise((res,rej) => { const r=new FileReader(); r.onload=()=>res(r.result); r.onerror=()=>rej(new Error('Read failed')); r.readAsDataURL(file); });
-          attachments.push({ name: file.name, url: base64, type: file.type });
-        } catch(e) { console.error('File read error', e); }
+          const sRef = ref(storage, `leadership-attachments/${lmRef.id}/${Date.now()}_${file.name}`);
+          await uploadBytes(sRef, file);
+          const url = await getDownloadURL(sRef);
+          attachments.push({ name: file.name, url, type: file.type, storagePath: sRef.fullPath });
+        } catch(e) {
+          console.error('File upload error', e);
+          errEl.textContent = 'Attachment upload failed: ' + e.message;
+          errEl.style.display = '';
+        }
       }
     }
 
@@ -11099,10 +11330,10 @@ const firebaseConfig = {
       if (_lmIsNew) {
         payload.createdAt = new Date().toISOString();
         payload.createdBy = currentUser ? currentUser.email : 'unknown';
-        const ref = await addDoc(collection(db, 'leadership_meetings'), payload);
-        _lmAllDocs.unshift({ id: ref.id, ...payload });
+        await setDoc(lmRef, payload);
+        _lmAllDocs.unshift({ id: lmRef.id, ...payload });
       } else {
-        await updateDoc(doc(db, 'leadership_meetings', _lmCurrentId), payload);
+        await setDoc(lmRef, payload, { merge: true });
         const idx = _lmAllDocs.findIndex(x => x.id === _lmCurrentId);
         if (idx >= 0) _lmAllDocs[idx] = { id: _lmCurrentId, ..._lmAllDocs[idx], ...payload };
       }
